@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   ********************************************************************************************************************************************
+   *  Authors: Sachin S Kumar, Chitra S Pai, Anu P																				     		  *
+   *																																		  *
+   * This component  is used to show the pop up when  user delete files														                  *
+   * 																																		  *
+   *  Revisions made.                                                       																  *																																*
+   ********************************************************************************************************************************************
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="424" height="130" backgroundAlpha="1.0" backgroundColor="#e0effb" borderColor="#000000" borderStyle="solid" cornerRadius="3">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			
+			/**
+			 * This function is used to remove the pop_up
+			 */
+			public function removeme():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			/**
+			 * This function  call method to delete the files
+			 */
+			public function pleasedeleteme():void
+			{
+				//if user login using the multipple mode
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW)
+				{
+					mx.core.FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW.wbComp.del_file();
+				}
+				// If the user login using the consolidate mode
+				else
+				{
+					mx.core.FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.wbComp.del_file();
+				}
+				
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:ApplicationControlBar left="0" top="0" width="100%" color="#009DFF" fillAlphas="[1.0, 1.0]" fillColors="[#99d0ff, #ffffff]">
+		<mx:Label color="#000000" text="Confirm File Delete"/>
+	</mx:ApplicationControlBar>
+	<mx:Label id="deleteMessage" width="100%" color="#000000" fontSize="12" horizontalCenter="0" text="Are you sure you want to delete the file(s)?" textAlign="center" verticalCenter="0"/>
+	<mx:Button id="btn_yes_del" x="143" y="82" width="65" label="Yes" click="pleasedeleteme()" color="#000000"/>
+	<mx:Button x="218" y="82" width="63" label="No" click="removeme()" color="#000000"/>
+</mx:Canvas>
+

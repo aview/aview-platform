@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: InsertLectureTime.mxml
+Module		: Video Editing
+Developer(s): Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains the UI related code for entering the time frame in minutes and seconds or by seeking the slider
+for inserting the new lecture.
+
+-->
+<!--- Main Title Container -->
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="370" height="130" borderColor="#2a5da4" close="cancel()" color="#000000"
+				creationComplete="insertLectureTimeCreationComplete()" horizontalAlign="center"
+				horizontalCenter="0" horizontalScrollPolicy="off"
+				layout="absolute" showCloseButton="true" title="Insert new recorded lecture" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!--- Number validator for validating start time minute -->
+		<mx:NumberValidator id="startTimeMinValidator" allowNegative="false" domain="int"
+							property="text" source="{ txtStartTimeMin }"
+							trigger="{ txtStartTimeMin }" triggerEvent="change"/>
+		<!--- Number validator for validating start time seconds -->
+		<mx:NumberValidator id="startTimeSecValidator" allowNegative="false" domain="int"
+							maxValue="59" property="text" source="{ txtStartTimeSec }"
+							trigger="{ txtStartTimeSec }" triggerEvent="change"/>
+	</fx:Declarations>
+	<!-- Script to include handler -->
+	<fx:Script source="../scripts/InsertLectureTimeScript.as"/>
+	<!--- Label for insert lecture information -->
+	<mx:Label id="lblInsertLecture" x="10" y="10" color="#000000" text="Insert a new lecture from"/>
+	<!--- Text input for entering the minutes -->
+	<mx:TextInput id="txtStartTimeMin" x="{lblInsertLecture.x+lblInsertLecture.width}" y="10"
+				  width="50" height="20" change="onTextChange(event)" click="onClickTextBox(event)"
+				  color="#000000" focusOut="onTextBoxLoseFocus(event)" maxChars="2" paddingTop="0"
+				  restrict="0-9" text="00"/>
+	<!--- Label for displaying the colon -->
+	<mx:Label id="lblFirstColon" x="{txtStartTimeMin.x+txtStartTimeMin.width}" y="10" width="20"
+			  color="#000000" text="  : "/>
+	<!--- Text input for entering the seconds -->
+	<mx:TextInput id="txtStartTimeSec" x="{lblFirstColon.x+lblFirstColon.width}" y="10" width="50"
+				  height="20" change="onTextChange(event)" click="onClickTextBox(event)"
+				  color="#000000" focusOut="onTextBoxLoseFocus(event)" maxChars="2" paddingTop="0"
+				  restrict="0-9" text="00"/>
+
+
+	<!--- Start button -->
+	<components:MxImageButton id="btnOk" x="{lblFirstColon.x-75}" y="45" width="70" label="Start"
+			   chromeColor="#e0effb" click="saveChanges()" color="#000000" cornerRadius="3"/>
+	<!--- Cancel button -->
+	<components:MxImageButton id="Cancel" x="{lblFirstColon.x+lblFirstColon.width}" y="45" width="70" label="Cancel"
+			   chromeColor="#e0effb" click="{cancel()}" color="#000000" cornerRadius="3"/>
+
+</mx:TitleWindow>

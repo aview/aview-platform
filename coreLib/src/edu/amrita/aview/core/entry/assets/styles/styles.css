@@ -1,0 +1,321 @@
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace components "components.*";
+@namespace components1 "edu.amrita.aview.common.components.*";
+@namespace skins "assets.skins.*";
+@namespace skins1 "edu.amrita.aview.common.skins.*";
+@font-face
+{
+    src: url("../fonts/MyriadWebPro.ttf");
+    font-family: main;
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face
+{
+    src: url("../fonts/MyriadWebPro-Bold.ttf");
+    font-family: main;
+    font-style: normal;
+    font-weight: bold;
+}
+.logTitleWindow {
+	close-button-disabled-skin: Embed(source="../flash/jukebox.swf",symbol="Panel_closeButtonDisabledSkin");
+	close-button-down-skin: Embed(source="../flash/jukebox.swf",symbol="Panel_closeButtonDownSkin");
+	close-button-over-skin: Embed(source="../flash/jukebox.swf",symbol="Panel_closeButtonOverSkin");
+	close-button-up-skin: Embed(source="../flash/jukebox.swf",symbol="Panel_closeButtonUpSkin");
+	
+        border-skin: Embed("../images/windowSkin.png", scaleGridLeft="11", scaleGridRight="20", scaleGridTop="50", scaleGridBottom="60");
+
+		padding-top: 55;
+		padding-left: 45;
+		padding-right: 45;
+		padding-bottom: 40;
+        
+}
+
+.loginTitle
+{
+	font-weight:bold;
+	font-size: 14;
+}
+
+.alertTitleStyle
+{
+	font-weight:bold;
+	font-size:12;
+	color:#FFFFFF; 
+	text-align:left;
+}
+
+mx|TitleWindow {
+	/* border-skin: Embed("../images/dialog_skin.png",
+			scaleGridLeft="15",
+			scaleGridRight="288",
+			scaleGridTop="38",
+			scaleGridBottom="124"); */
+	close-button-up-skin: Embed("../images/Medium_close.png");
+	close-button-over-skin: Embed("../images/Medium_close_over.png");
+	close-button-down-skin: Embed("../images/Medium_close.png");
+	background-color:#e0effb;
+	corner-radius:6;
+	color:#FFFFFF;
+	fontSize:12;
+	fontWeight:bold;
+	chromeColor:#2a5ea4;
+	accentColor:#2a5ea4;
+	borderColor:#e0effb;
+}
+
+.appContainer {
+	background-size: "100%";
+} 
+
+.popupButton {
+	open-duration: 0;
+	close-duration: 0;
+}
+
+.linkButtonMenu {}
+
+
+Ratings{
+	horizontal-gap:10;
+	padding-top:0;
+	padding-left:6;
+}
+
+RatingItem{
+	border-alpha:0.5;
+	fill-colors:#E6E6E6,#C7C7C7;
+	fill-alphas:0.9,1;
+}
+
+.dataGridHeader
+{
+	fontWeight:bold;	
+}
+
+SuperTabNavigator {
+	border-style:none;
+	corner-Radius: 0;
+	tab-style-name: "myButtonStyleName";
+	first-button-style-name: "myButtonStyleName";
+	last-button-style-name: "myButtonStyleName";
+	selected-tab-text-style-name: "mySelectedTabs";
+	tab-height: 27;
+	padding-top:0;
+}
+
+.tabPopupButton {
+	skin: Embed("../images/icon_pulldown.png");
+}
+
+.tabContainer {
+	background-image:Embed("../images/tabnav_skin.png",
+		scaleGridLeft="10",
+		scaleGridRight="430",
+		scaleGridTop="60",
+		scaleGridBottom="64");
+}
+
+.myButtonStyleName {
+	font-weight:normal;
+	text-align:left;
+/*	tabCloseButton: Embed("../images/icon_close.png"); */
+	skin:Embed("../images/tab_skin.png",
+			scaleGridLeft="1",
+			scaleGridRight="160",
+			scaleGridTop="0",
+			scaleGridBottom="21");
+	selected-up-skin:Embed("../images/tab_selected_skin.png",
+			scaleGridLeft="1",
+			scaleGridRight="160",
+			scaleGridTop="1",
+			scaleGridBottom="20");
+	selected-over-skin:Embed("../images/tab_selected_skin.png",
+			scaleGridLeft="1",
+			scaleGridRight="160",
+			scaleGridTop="1",
+			scaleGridBottom="20");
+	over-skin:Embed("../images/tab_over_skin.png",
+			scaleGridLeft="1",
+			scaleGridRight="160",
+			scaleGridTop="1",
+			scaleGridBottom="20");
+}
+
+
+.mySelectedTabs {
+	/* font-weight:bold; */
+}
+
+
+.title
+{
+	/* color:#535353; */
+	color:#666666;
+    font-family: main; 
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+.smallTitle
+{
+	color:#535353;	
+    font-family: main; 
+    font-size: 12pt;
+}
+
+.appTitle
+{
+	color:#FFFFFF;
+    font-family: main; 
+    font-size: 20pt;
+}
+
+
+
+.welcome {
+	font-family: main;
+	color: #535353;
+	font-size: 12;
+	font-weight: bold;
+}
+	
+.linkButtonList {
+	corner-radius: 0;
+	text-align:left;
+	font-weight:normal;
+}	
+
+.viewAllLink {
+	text-decoration:underline;
+	color: #0000CC;
+	roll-over-color: #FFFFFF;
+}
+
+
+  
+.firstButton {
+	skin: Embed("../images/button_bar_first.png",
+			scaleGridLeft="8",
+			scaleGridRight="27",
+			scaleGridTop="8",
+			scaleGridBottom="21");
+	over-skin: Embed("../images/button_bar_first_over.png",
+			scaleGridLeft="8",
+			scaleGridRight="27",
+			scaleGridTop="8",
+			scaleGridBottom="21");
+}
+
+.middleButton {
+	skin: Embed("../images/button_bar_middle.png",
+			scaleGridLeft="8",
+			scaleGridRight="27",
+			scaleGridTop="8",
+			scaleGridBottom="21");
+	over-skin: Embed("../images/button_bar_middle_over.png",
+			scaleGridLeft="8",
+			scaleGridRight="27",
+			scaleGridTop="8",
+			scaleGridBottom="21");
+}
+
+.lastButton {
+	skin: Embed("../images/button_bar_last.png",
+			scaleGridLeft="8",
+			scaleGridRight="27",
+			scaleGridTop="8",
+			scaleGridBottom="21");
+	over-skin: Embed("../images/button_bar_last_over.png",
+			scaleGridLeft="8",
+			scaleGridRight="27",
+			scaleGridTop="8",
+			scaleGridBottom="21");
+}
+
+.iconClose {
+	skin: Embed("../images/icon_close16.png");
+	over-skin: Embed("../images/icon_close_over16.png");
+}
+
+.tabCloseButton {
+	skin: Embed("../images/icon_close16.png");
+	over-skin: Embed("../images/icon_close_over16.png");
+}
+
+.iconMinimize {
+	skin: Embed("../images/icon_minimize16.png"); 
+	over-skin: Embed("../images/icon_minimize_over16.png"); 
+}
+.iconMaximize {
+	skin: Embed("../images/icon_maximize16.png"); 
+	over-skin: Embed("../images/icon_maximize_over16.png"); 
+}
+.iconRestore {
+	skin: Embed("../images/icon_restore.png");
+	over-skin: Embed("../images/icon_restore.png");
+}
+.nestedTab {
+	button-style-name: nestedTabButton;
+	first-button-style-name: nestedTabButton;		
+	last-button-style-name: nestedTabButton;
+}
+
+.nestedTabButton {
+	skin: Embed("../images/blank.png");
+	font-weight: normal;
+	text-roll-over-color: #CCCCCC;
+	text-roll-over-color: #CCCCCC;
+}
+
+CursorManager
+{
+	/* You can use PNGs, SWFs or JPEGs */
+	busy-cursor: Embed(source="../flash/loading5.swf");
+} 
+
+.videoPauseStyle
+{
+	font-family: Georgia;
+	font-size: 12;
+	color: #f11515;
+	font-weight: bold;
+}
+
+.myTabs
+{
+	fontWeight:bold; backgroundColor:#E0EFFB;
+}
+
+.myLabel
+{
+	textDecoration:"none"	
+}
+.myLinkLabel
+{
+	
+	textDecoration:"underline";
+}
+
+s|SkinnableComponent
+{
+	/*	RTCR: TODO: Window not available for web version*/
+	skin-class: ClassReference("edu.amrita.aview.core.shared.skins.CustomWindowSkin"); statusColor: #2a5da4;
+}
+
+.toggleSwitch
+{
+	skinClass:ClassReference("edu.amrita.aview.core.shared.components.toggleSwitch.ToggleSwiitchSkin");
+}
+
+.statusFontColor
+{
+	color: #FFFFFF;
+}
+.quicknotecolor
+{
+	statusBarBackgroundColor: #2a5da4; color: #000000;
+}

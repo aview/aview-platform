@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: AddQuestionPaperQuestions.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to create 'Specific' pattern type question paper question .
+'Specific' means an user can select questions based on category , subcategory , difficulty level and question type .
+These question paper questions are created before the user starts a quiz .
+-->
+
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:Extended="edu.amrita.aview.core.evaluation.components.Extended.*"
+						 height="422"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#FFFFFF"
+						 dropShadowVisible="false"
+						 focusColor="#A9F9A0"
+						 initialize="{initAddQPQ()}"						 
+						 fontFamily="Arial"
+						 creationPolicy="all"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:checkBox="edu.amrita.aview.core.shared.components.checkBox.*" xmlns:checkBox1="edu.amrita.aview.core.shared.components.checkBox.*">
+	<!--script to include handler-->
+	<fx:Script source="AddQuestionPaperQuestionsUIHandler.as"/>
+	<mx:VBox y="2"
+			 right="5"
+			 width="100%"
+			 horizontalScrollPolicy="off"
+			 paddingLeft="12"
+			 paddingRight="3">
+		<s:Label height="15"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 text="Specific Questions"
+				 verticalAlign="middle" color="#000000"/>
+		<mx:HBox width="895"
+				 chromeColor="#e0effb" color="#000000">
+			<!--Combobox to show categories-->
+			<s:ComboBox id="cbCategories"
+						width="100"
+						change="{getSubcategories()}"
+						dataProvider="{categories}"
+						labelField="qbCategoryName"
+						prompt="Categories"
+						fontFamily="Arial"
+						fontSize="12"
+						fontWeight="normal"
+						textAlign="left"/>
+			<!--Combobox to show sub categories-->
+			<s:ComboBox id="cbSubcategories"
+						width="120"
+						dataProvider="{subCategories}"
+						fontFamily="Arial"
+						fontSize="12"
+						fontWeight="normal"
+						textAlign="left"
+						labelField="qbSubcategoryName"
+						prompt="Subcategories"/>
+			<!--Combobox to show difficulty levels-->
+			<s:ComboBox id="cbLevels"
+						dataProvider="{levels}"
+						labelField="qbDifficultyLevelName"
+						prompt="Difficulty Level"
+						fontFamily="Arial"
+						fontSize="12"
+						textAlign="left"
+						fontWeight="normal"/>
+			<!--Combobox to show question types-->
+			<s:ComboBox id="cbTypes"
+						dataProvider="{questionTypes}"
+						labelField="qbQuestionTypeName"
+						prompt="Question Type"
+						fontFamily="Arial"
+						fontSize="12"
+						textAlign="left"
+						fontWeight="normal"/>
+
+			<!--Text for searching-->
+			<s:TextInput id="txtInpSearchString"
+						 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+			<!--Search Button-->
+			<components:ImageButton width="62" label="Search" click="{getQbQuestions()}" chromeColor="#e0effb"
+									fontFamily="Arial" fontSize="12" fontWeight="normal" color="#000000" cornerRadius="3"/>
+			<!--Reset Button-->
+			<components:ImageButton width="62" label="Reset" click="{resetAllComponents()}" chromeColor="#e0effb"
+									fontFamily="Arial" fontSize="12" fontWeight="normal" color="#000000" cornerRadius="3"/>
+		</mx:HBox>
+				
+		<!--Fix for Bug #11946-->
+		<!-- Datagrid to hold specific questions -->
+		<checkBox1:CheckBoxDataGrid id="dgSpecificQuestions"
+								   width="100%"
+								   height="259"
+								   allowMultipleSelection="true"
+								   dataProvider="{qpSpecificQuestions}"
+								   wordWrap="true"
+								   chromeColor="#e0effb"
+								   textAlign="left"
+								   doubleClick="{dgSpecificQnsDoubleClickHandler(event)}"
+								   doubleClickEnabled="true"
+								   focusEnabled="true"
+								   itemRollOver="{addToolTip(event)}"
+								   itemRollOut="{removeToolTip(event)}" color="#000000">
+			<checkBox:columns>
+				<!-- Header column to select/deselect all rows -->
+				<checkBox1:CheckBoxHeaderColumn width="30"
+											   click="{toggleSelectionQpSpecificQuestions()}"
+											   editable="false"
+											   headerRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxHeaderRenderer"
+											   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxRenderer"/>
+				<!-- Column for question text -->
+				<mx:DataGridColumn width="200"
+								   dataField="questionText"
+								   headerText="Question"
+								   wordWrap="false" />
+				<!-- Column for category -->
+				<mx:DataGridColumn minWidth="50"
+								   headerText="Category"
+								   labelFunction="getCategory"
+								   wordWrap="true"/>
+				<!-- Column for subcategory -->
+				<mx:DataGridColumn minWidth="50"
+								   headerText="Subcategory"
+								   labelFunction="getSubcategory"
+								   wordWrap="true"/>
+				<!-- Column for difficulty level -->
+				<mx:DataGridColumn minWidth="50"
+								   headerText="Difficulty Level"
+								   labelFunction="getDifficultyLevel"
+								   wordWrap="true"/>
+				<!-- Column for question type -->
+				<mx:DataGridColumn minWidth="50"
+								   headerText="Question Type"
+								   labelFunction="getQuestionType"
+								   wordWrap="true"/>
+				<!-- Column for marks -->
+				<mx:DataGridColumn width="50"
+								   dataField="marks"
+								   headerText="Marks"/>
+			</checkBox:columns>
+		</checkBox1:CheckBoxDataGrid>
+		<mx:HBox width="100%"
+				 horizontalCenter="0"
+				 paddingBottom="10"
+				 paddingTop="10"
+				 chromeColor="#e0effb"
+				 verticalCenter="0"
+				 horizontalAlign="center">
+			<!-- Add Button-->
+			<components:ImageButton id="btnAdd"
+					  width="150"
+					  label="Add to Question Paper"
+					  horizontalCenter="0"
+					  fontFamily="Arial"
+					  fontSize="12"
+					  fontWeight="normal" chromeColor="#e0effb"
+					  click="onClickBtnAdd(event)" color="#000000" cornerRadius="3"/>
+			<!-- Close Button-->
+			<components:ImageButton width="150"
+					  id="btnClose"
+					  label="Close"
+					  click="{closeAddQPQ()	}"
+					  fontFamily="Arial"
+					  fontSize="12"
+					  fontWeight="normal" chromeColor="#e0effb" color="#000000" cornerRadius="3"/>
+		</mx:HBox>
+	</mx:VBox>
+</components:InsidePanel>

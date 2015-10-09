@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: SliderThumbSkin.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains the styling of slider thumb.
+
+-->
+<!-- Main UI component -->
+<mx:UIComponent xmlns:mx="http://www.adobe.com/2006/mxml"
+				initialize="init()">
+	<mx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.playback.editing.EditingConstants;
+			
+			import mx.core.FlexGlobals;
+			
+			/**
+			 * Array for gradient color.
+			 */
+			private var gradientColorsArray:Array=[0x000000, 0xffffff];
+			
+			/**
+			 * Thumb color.
+			 */
+			private static var thumbColor:uint=0x5a5a5a;
+			
+			/**
+			 * Setter of 'thumbGraphicsColor'.
+			 */
+			public function set thumbGraphicsColor(newThumbColor:uint):void
+			{
+				thumbColor=newThumbColor;
+			}
+			
+			/**
+			 * @protected
+			 * Function overrides the display list property.
+			 *
+			 * @param unscaledWidth of type Number
+			 * @param unscaledHeight of type Number
+			 * @return void
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				var triangleHeight:uint=20;
+				var triangle:Shape=new Shape();
+				triangle.graphics.beginFill(thumbColor);
+				triangle.graphics.moveTo(-10 + triangleHeight / 2, 0);
+				triangle.graphics.lineTo(-10 + triangleHeight, 15);
+				triangle.graphics.lineTo(-10, 15);
+				triangle.graphics.lineTo(-10 + triangleHeight / 2, 0);
+				triangle.rotation=180;
+				triangle.graphics.lineTo(0, (5 * this.parentApplication.editingToolContainer.ribbonHeight + 5 * EditingConstants.SCALE_RIBBON_PADDING + EditingConstants.SCALE_LONG_NEEDLE_HT) * -1);
+				triangle.graphics.lineStyle(2, thumbColor);
+				this.addChild(triangle);
+			}
+			
+			/**
+			 * @private
+			 * Function applying the style property.
+			 *
+			 * @param void
+			 * @return void
+			 */
+			private function init():void
+			{
+				if (FlexGlobals.topLevelApplication.mainApp.styleManager.getStyleDeclaration('.SliderThumbSkin'))
+				{
+					gradientColorsArray=FlexGlobals.topLevelApplication.mainApp.styleManager.getStyleDeclaration('.SliderThumbSkin').getStyle('backgroundGradientColors');
+					this.alpha=FlexGlobals.topLevelApplication.mainApp.styleManager.getStyleDeclaration('.SliderThumbSkin').getStyle('backgroundAlpha');
+				}
+				// AKCR: wow:wowo:wowow: wowow :L
+				if (parent.parent.parent.parent)
+				{
+					this.parent.height=0;
+					this.parent.width=0;
+				}
+				else
+				{
+					this.height=20;
+					this.width=20;
+				}
+			}
+		]]>
+	</mx:Script>
+
+	<mx:states>
+		<mx:State name="up">
+			<mx:SetProperty name="alpha" target="{this}" value="0.9"/>
+		</mx:State>
+		<mx:State name="over">
+			<mx:SetProperty name="alpha" target="{this}" value="1"/>
+		</mx:State>
+		<mx:State name="down">
+			<mx:SetProperty name="alpha" target="{this}" value="1"/>
+		</mx:State>
+	</mx:states>
+</mx:UIComponent>

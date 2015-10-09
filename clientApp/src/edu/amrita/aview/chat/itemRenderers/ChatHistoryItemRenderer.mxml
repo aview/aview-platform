@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ChatHistoryItemRenderer.mxml
+Module		: chat
+Developer(s): Soumya M.D,NidhiSarasan
+Reviewer(s)	: Vishnupreethi K
+
+Item renderer for lstchtHistory in ChatHistory.mxml
+-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				autoDrawBackground="true"
+				xmlns:layout="org.alivepdf.layout.*"
+				height="30"
+				creationComplete="creationCompleteHandler(event)"
+				>
+	<s:layout>
+
+		<s:HorizontalLayout>
+
+		</s:HorizontalLayout>
+	</s:layout>
+	<!-- Script to include handler -->
+	<fx:Script source="ChatHistoryItemRendererScript.as"/>
+	<!-- CheckBox to select  chat history-->
+	<s:CheckBox id="chkSelection"
+				change="chkSelectionChangeHandler(event)"
+				verticalCenter="0"
+				left="10">
+	</s:CheckBox>
+	<s:Image id="iconChatType"
+			 source="{iconChatTypeSrc}">
+	</s:Image>
+	<!-- Label to show the title-->
+	<s:Label text="{data.titleWithDate}"
+			 width="100%"
+			 height="100%"
+			 verticalAlign="middle">
+	</s:Label>
+</s:ItemRenderer>

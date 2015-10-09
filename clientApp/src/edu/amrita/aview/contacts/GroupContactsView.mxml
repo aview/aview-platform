@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
+		 xmlns:itemRenderers="edu.amrita.aview.meeting.itemRenderers.*"
+		 >
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="GroupContactsViewHandler.as">
+	
+	</fx:Script>
+	<mx:VBox width="100%"
+			 height="100%">
+		<s:HGroup width="100%"
+				  height="35"
+				  verticalAlign="middle"
+				  paddingLeft="16"
+				  gap="0">
+		<!--	<s:Label color="#026293"
+					 fontSize="18"
+					 fontWeight="normal"
+					 id="lblContactTitle"
+					 text="{contactTitlePrefix}"/>-->
+			
+			<s:Label id="contactTitleLbl"
+					 color="#026293"
+					 fontSize="18"
+					 fontWeight="normal"
+					 text="{groupContactsModel.contactsTitle}"
+					 toolTip="{groupContactsModel.contactsTitle}"
+					 width="100%"
+					 maxDisplayedLines="1"/>						
+		</s:HGroup>
+		<mx:HBox width="100%"
+				 height="48"
+				 paddingLeft="10"
+				 verticalAlign="middle">
+			<s:BorderContainer width="175"
+							   height="30"
+							   borderColor="#A7A7A7"
+							   borderWeight="0"
+							   cornerRadius="5">
+				<s:layout>
+					<s:HorizontalLayout gap="2"
+										paddingBottom="1"
+										paddingLeft="3"
+										paddingRight="2"
+										paddingTop="1"
+										verticalAlign="middle"/>
+				</s:layout>
+				<s:TextInput id="filterContactList"
+							 x="27"
+							 width="100%"
+							 height="26"
+							 borderVisible="false"
+							 change="search(event)"
+							 click="filterContactListClickHandler()"
+							 color="#939393"
+							 focusIn="filterContactListClickHandler()"
+							 focusOut="focusOutfilterContactList()"
+							 fontFamily="Arial"
+							 fontStyle="italic"
+							 keyDown="search(event)"
+							 keyUp="search(event)"
+							 skinClass="edu.amrita.aview.meeting.assets.skin.CustomTextInputSkin"
+							 styleName="searchTxtBox"
+							 text="Filter Contacts"/>
+			</s:BorderContainer>
+			<s:Image width="30"
+					 height="29"
+					 id="btnGroupChat"
+					 click="startGroupChat(event)"
+					 source="{groupChatIcon}"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 toolTip="Chat With Selected members of the group"
+					 verticalAlign="top"/>
+			<s:Image width="30"
+					 height="29"
+					 id="btnPrivateChat"
+					 click="startPrivateChat(event)"
+					 source="{privateChatIcon}"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 toolTip="Private Chat"
+					 verticalAlign="top"/>
+			<s:Image width="30"
+					 height="29"
+					 id="imgAddUser"
+					 source="{add_user}"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 click="addingUsers(event)"
+					 toolTip="Add User"
+					 visible="true"
+					 includeInLayout="true"/>
+			<s:Image width="30"
+					 height="29"
+					 id="imgDeleteContacts"
+					 click="deleteClickHandler()"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 source="{delete_user}"
+					 toolTip="Delete"/>
+		</mx:HBox>
+		<mx:HBox width="100%"
+				 height="100%"
+				 verticalGap="1">
+			<itemRenderers:CheckBoxDataGrid id="contactUserList"
+										 width="100%"
+										 height="100%"
+										 allowMultipleSelection="true"
+										 borderColor="#7A7E81"
+										 borderVisible="true"
+										 chromeColor="#A5B8CA"
+										 color="#535354"
+										 dataProvider="{groupContactsModel.groupUsers}"
+										 focusEnabled="false"
+										 fontFamily="Arial"
+										 fontWeight="bold"
+										 rollOverColor="#CEDBEF"
+										 selectionColor="#CEDBEF"
+										 textAlign="left"
+										 verticalGridLineColor="#dadddf"
+										 variableRowHeight="false"
+										 verticalAlign="middle"
+										 verticalScrollPolicy="on"
+										 itemClick="toggleRowSelection(event)"
+										 wordWrap="true">
+				<itemRenderers:columns>
+					<itemRenderers:CheckBoxHeaderColumn width="20"
+													 editable="false"
+													 click="{toggleHeaderSelection()}"
+													 headerRenderer="edu.amrita.aview.meeting.itemRenderers.CheckBoxHeaderRenderer"
+													 itemRenderer="edu.amrita.aview.meeting.itemRenderers.CheckBoxRenderer"/>
+					<mx:DataGridColumn width="250" minWidth="250"
+									   dataField="user.userDisplayName"
+									   headerText="Contacts"
+									   wordWrap="true"
+									   itemRenderer="edu.amrita.aview.contacts.itemRenderers.ContactsUserListItemRenderer"/>
+					<mx:DataGridColumn headerText="Institute"
+									   width="250" minWidth="250"
+									   dataField="user.instituteName"
+									   itemRenderer="edu.amrita.aview.contacts.itemRenderers.InstituteNameItemRenderer"/>
+					
+				</itemRenderers:columns>
+			</itemRenderers:CheckBoxDataGrid>
+		</mx:HBox>
+	</mx:VBox>
+</s:Group>

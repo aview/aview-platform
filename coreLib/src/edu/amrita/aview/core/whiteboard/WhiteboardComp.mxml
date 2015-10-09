@@ -1,0 +1,644 @@
+<!--
+******************************************************************************************************************************************************************************************
+*  Authors: Sachin S Kumar, Chitra S Pai, Anu P
+*
+*  This program is used to implement the white board functionality in A-VIEW. The main functionalities  are
+*  a tool box  having options for pen tool, rectangle tool, line tool, circle tool, eraser tool and text tool ,
+*  option for export a page, import previously exported pages etc                                                      																																										*
+******************************************************************************************************************************************************************************************
+-->
+<!--- The Base container for the whiteboard componnent. -->
+<s:BorderContainer xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:components="edu.amrita.aview.core.shared.components.*"
+				   width="99%" height="99%" backgroundAlpha="1" backgroundColor="0xffffff"
+				   borderColor="#5C5C5C" borderVisible="false" color="#0072FF" cornerRadius="0"
+				   creationComplete="init()" creationPolicy="all">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.login.boilerplate.Strings;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!--- Resize effect applied while clossing the collaboration menu list
+		<s:Resize id="collaborationListClose" target="{collaborationList}" widthFrom="{collaborationList.width}" widthTo="0"
+				  heightFrom="{collaborationList.height}" heightTo="0"/>-->
+		<!--- Resize effect applied while opening the collaboration menu list
+		<s:Resize id="collaborationListOpen" target="{collaborationList}" widthFrom="0" widthTo="120" heightFrom="0" heightTo="105"/>-->
+		<s:Rotate id="rotate" angleFrom="0" angleTo="180" duration="10" target="{toolshowhideButton}"/>
+		<s:Rotate id="rotate1" angleFrom="180" angleTo="0" duration="10"
+				  target="{toolshowhideButton}"/>
+		<s:Rotate id="rotate2" angleFrom="0" angleTo="180" duration="10"
+				  target="{propshowhideButton}"/>
+		<s:Rotate id="rotate3" angleFrom="180" angleTo="0" duration="10"
+				  target="{propshowhideButton}"/>
+	</fx:Declarations>
+	<fx:Script source="WhiteBoardHandler.as"/>
+	<!--- This container contains all other whiteboard containers and controles except the bottom status bar
+	and the collaboration menu list -->
+<s:BorderContainer id="wbOuterCanvas" width="100%" height="100%" backgroundAlpha="1"
+				   backgroundColor="0xffffff" borderColor="#5C5C5C" borderVisible="false"
+				   color="#0072FF" creationPolicy="all">
+
+		<!---This  contains the application conts like open button, save button, navigation buttons etc -->
+		<!---<mx:HBox width="100%"
+				 color="#009DFF"
+				 height="35"
+				 verticalScrollPolicy="off"
+				 horizontalScrollPolicy="off"
+				 borderStyle="solid"
+				 backgroundColor="#99D0FF"
+				 cornerRadius="4"
+				 resize="whiteboardControlBox_resizeHandler(event)">
+			
+		</mx:HBox>-->
+	       <s:BorderContainer width="100%" height="31" backgroundColor="#E1F0FB"
+							  borderVisible="false">
+			   <s:layout>
+				   <s:HorizontalLayout paddingBottom="3" paddingLeft="5" paddingRight="5"
+									   paddingTop="2" verticalAlign="middle"/>
+			   </s:layout>
+			   <s:HGroup width="100%" height="100%" horizontalAlign="right" verticalAlign="middle">
+				   <mx:Text id="pageNoTxt" x="12" y="4" color="#045098" text="Page No: {pageNumber} "/>
+				   <s:BorderContainer id="RH" width="100%" height="26" backgroundAlpha="0.0"
+									  borderColor="#1B94E9" borderVisible="false">
+					   <s:layout>
+						   <s:HorizontalLayout verticalAlign="middle" horizontalAlign="center" />
+					   </s:layout>
+					   <!--- Text component to show current collaboration mode-->
+					   <mx:Text id="lblCollaborationModeBottom" color="#045098" fontWeight="bold"
+								horizontalCenter="0" text="Whiteboard"/>
+				   </s:BorderContainer>
+				   <!---Displays the current page number, also by entering page numbers a user can directly go to the desired pages of a whiteboard file-->
+				   <mx:VRule x="12" y="0" width="1" height="100%" chromeColor="#B8CEDF"/>
+				   <s:HGroup height="100%" verticalAlign="middle" horizontalAlign="center" enabled="{presenterControls.visible}">
+					   <s:Image id="previousBtn" buttonMode="true" click="{navigateToPreviousPage();}"
+								enabled="false" smooth="true" smoothingQuality="high"
+								source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/titlePrevious.png')"
+								useHandCursor="true"/>
+					   <s:TextInput id="currentPagwb" width="33" height="22" color="#030303"
+									focusOut="{checkCurrPageValueChange()}"
+									enter="{navigateToSpecificPage()}" fontSize="11" fontWeight="normal"
+									maxChars="4" restrict="0,1,2,3,4,5,6,7,8,9"
+									skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"
+									text="{pageNumber}" textAlign="center"
+									toolTip="{resourceManager.getString('myResource','doccomp.enterpagenumtool')}"/>
+					   <!--label to display the total page number of the currently loaded document-->
+					   <s:Label id="totPagwb" color="#030303" fontSize="11" fontWeight="normal"
+								text="{'/'+totalPages.toString()}" textAlign="left"
+								verticalAlign="bottom"/>
+					   <s:Image id="nextBtn" buttonMode="true" click="{navigateToNextPage();}"
+								smooth="true" smoothingQuality="high" toolTip="Next Page"
+								source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/titleNext.png')"
+								useHandCursor="true"/>
+					   <mx:VRule width="1" height="100%" chromeColor="#B8CEDF"/>
+					  <!-- <s:Label id="pageNumDisplay"
+								y="2"
+								width="15"
+								height="23"
+								color="#010101"
+								fontSize="11"
+								mouseOver="removeToolOptions(event)"
+								text="/1"
+								textAlign="left"
+								verticalAlign="middle"/>-->
+				   </s:HGroup>
+			   </s:HGroup>
+			   <!--<s:Button id="popOutBtn" height="32" width="44" click="popOutWhiteboardWindow()" toolTip="Pop-out"
+						 />-->
+			   <components:ImageButton id="popOutBtn"
+									   visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+									   width="27" height="23" buttonMode="true"
+									   click="popOutWhiteboardWindow()" cornerRadius="2"
+									   includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+									   toolTip="Popout" useHandCursor="true"/>
+		   </s:BorderContainer>
+
+		<!--- Container which holds the main drawing area( ie. whiteboard page).  width="745" height="515"-->
+		<s:BorderContainer id="whiteboardBaseCanvas" y="30"  width="780" height="540"
+						   borderColor="#5C5C5C" borderStyle="solid" borderVisible="false"
+						   creationPolicy="all" resize="whiteboardBaseCanvas_resizeHandler(event)">
+
+			<!--- Container which holds erasers of different sizes. User can select
+			small/medium/Large eraser.-->
+			
+			
+
+			<!--- The container actually hold a UIComponet on which we are drawing shapes  -->
+			<!-- Change #16442, 16393, 16386 -->
+			<s:BorderContainer id="wbCanvas" x="2" y="32" width="100%" height="100%"
+							   backgroundColor="#ffffff" borderColor="#337BB7" borderStyle="solid"
+							   borderVisible="false" dropShadowVisible="false" fontSize="11"
+							   verticalCenter="0">
+				<s:Label id="testLabel" top="50" />
+			</s:BorderContainer>
+
+		</s:BorderContainer>
+
+		<!---This is white transpaerent image which prevents from drawing over the page no information.
+		While drawing if it comes over this component it dispaches a mouseup event that
+		eventually ends the drawing-->
+		
+		<s:Image id="pageNoImage" left="3" top="36"
+				 source="@Embed(source='assets/images/pageNo.png')"/>
+		<!--- Page number of the current whiteboard page-->
+		
+		
+		<!---This  container contains tools and menu/control buttons -->
+	<!--- <s:BorderContainer id="whiteboardControlBox"
+						   width="100%"
+						   color="#009DFF"
+						   height="35"
+						   borderStyle="solid"
+						   backgroundColor="#99D0FF"
+						   click="menuButtonClickHandler(event)"
+						   cornerRadius="4"
+						   >
+			<s:layout>
+				<s:HorizontalLayout columnWidth="100" gap="0" horizontalAlign="center"
+									verticalAlign="top"/>
+			</s:layout>-->
+			<!--//PNCR: commeted to avoid duplicate call. The same is calling in HBox also.
+			resize="whiteboardControlBox_resizeHandler(event)"-->
+			<!---This  container contains all controls which are enable only for
+			users having presenter controls -->
+			<s:Spacer width="100%"/>
+			<!--- This HGroup container contains all the drawing tools-->
+<!---	</s:BorderContainer> -->
+		
+</s:BorderContainer>
+        
+	
+	<!--- The list contain different collaboration previlleges for viewers that can be
+	set by a presenter. When presenter press the collaboration control button
+	this list is showing as a menu.-->
+	
+
+	<!--- This container is the status bar for the whiteboard -->
+	
+	
+	<s:BorderContainer id="presenterControls" x="2" y="32" width="51" height="330"
+					   backgroundColor="#EBEAEA" borderColor="#337BB7" borderWeight="1" 
+					   chromeColor="#CCCCCC" click="menuButtonClickHandler(event)" cornerRadius="5"
+					   >
+		<s:Image id="showhideButton" x="34" y="2" width="11" height="7"
+				 source="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/wbshowhideup.png')"/>
+		<s:Image id="toolTitleBar" buttonMode="true" mouseDown="toolTitleBarhandleDown(event)"
+				 mouseUp="toolTitleBarhandleUp(event)"
+				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/toolstab.png')"
+				 useHandCursor="true"/>
+		<s:Image id="toolshowhideButton" left="35" top="1" buttonMode="true" toolTip="Hide toolbar"
+				 click="showhidetoolTitleBar();"
+				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/wbshowhideup.png')"
+				 useHandCursor="true"/>
+		<s:Image id="toolMenu" visible="false" top="15" width="49" buttonMode="true"
+				 click="showhidetoolTitleBar();"
+				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/toolbox.png')"
+				 useHandCursor="true"/>
+		<mx:VBox id="toolsbox" left="2" right="143" top="15" height="311" borderVisible="false"
+				 horizontalAlign="center" verticalAlign="top" verticalGap="2">
+			<!---Button used to show/hide collaboration menu list -->
+			<!---<s:Button height="32"
+			width="34"
+			id="collaborationControlButton"
+			icon="@Embed(source='assets/images/collaborationMode.png')"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.collaborationtooltip')}"
+			click="showCollaborationOptions()"
+			color="#000000"
+			mouseOver="removeToolOptions(event)"/> -->			
+			<components:ImageButton id="newPage" width="45" height="29" click="newPageHandler();"
+									color="#000000"
+									imageSkin="@Embed('edu/amrita/aview/core/whiteboard/assets/images/newsheet.png')"
+									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/newsheetdisabled.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="New Page"/>		
+			
+			
+			<!--- Previous Page Button Contol -->
+			<!--<s:Button id="previousBtn"
+			click="{navigateToPreviousPage();}"
+			icon="@Embed(source='assets/images/back.png')"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.prevoiustooltip')}"
+			height="32"
+			width="24"
+			enabled="false"
+			mouseOver="removeToolOptions(event)"/> -->
+			
+			<!--- Next Page Button Contol -->
+			<!--	<s:Button id="nextBtn"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.nextpagetooltip')}"
+			click="{navigateToNextPage();}"
+			icon="@Embed(source='assets/images/front.png')"
+			height="32"
+			width="24"
+			enabled="false"
+			mouseOver="removeToolOptions(event)"/> -->
+			
+			<!--- Next Page Button Contol  --><!---mouseOver="removeToolOptions(event)" fixed for 16382 -->
+			<components:ImageButton id="showPointer" width="45" height="29"
+									click="enableDisablePointer()" color="#000000" cornerRadius="2"
+									imageSkin="{pointerIcon}"
+									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/showPointer_newdisabled.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="{resourceManager.getString('myResource','whiteboardcomp.removepointertool')}"/>
+			
+			<!--- Clear button--><!--mouseOver="removeToolOptions(event)" fixed for 16382 -->
+			<components:ImageButton id="clearBtn" width="45" height="29" click="clearScratchPad()"
+									color="#000000" cornerRadius="2"
+									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/clearWhiteboard_new.png')"
+									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/clearWhiteboard_newselected.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="{resourceManager.getString('myResource','whiteboardcomp.clearwhiteboardtool')}"/>
+			
+			<!---This button used to restore the whiteboard drawing after teacher clear it
+			//Bug #15215. Removed the restore button.
+			<components:ImageButton id="restorBtn"
+			height="32"
+			width="34"
+			click="restoreLastClear()"
+			color="#000000"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.restorewhiteboardtool')}"
+			skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+			imageSkinDisabled="@Embed(source='assets/images/restoreDisabled.png')"
+			imageSkin="@Embed(source='assets/images/restoreEnabled.png')"
+			enabled="false"
+			mouseOver="removeToolOptions(event)" visible="false" />-->
+			<components:ImageButton id="btnUndo" width="45" height="29" click="undo()"
+									color="#000000"
+									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/undo_new.png')"
+									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/undo_newdisabled.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="Undo"/>
+			<components:ImageButton id="btnRedo" width="45" height="29" click="redo()"
+									color="#000000"
+									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/redo_new.png')"
+									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/redo_newdisabled.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="Redo"/>
+			
+			<!--<s:Button id="btnUndo"
+			height="32"
+			width="30"
+			click="undo()"
+			color="#000000"
+			toolTip="Undo"
+			label="U"/>
+			<s:Button id="btnRedo"
+			height="32"
+			width="30"
+			click="redo()"
+			color="#000000"
+			toolTip="Redo"
+			label="R"/>-->
+			<components:ImageButton id="btnSelect" width="45" height="29"
+									click="enableObjectSelection()" color="#000000"
+									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/select_new.png')"
+									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/select_newselected.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="Select Object"/>
+			<!--- Button to  select text tool -->
+			<!--mouseOver="removeToolOptions(event)" fixed for 16382 -->
+			
+			<components:ImageButton id="btnTextTool" width="45" height="29" fontSize="10"
+									imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/textTool_new.png')"
+									click="setTexttool()"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="{resourceManager.getString('myResource','whiteboardcomp.texttooltip')}"/> 
+			<!--- Button to  select free hand tool -->
+			<components:ImageButton id="btnFreehand" width="45" height="29" click="setFreehandTool()"
+									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/freehand_new.png')"
+									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/freehand_newselected.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="{resourceManager.getString('myResource','whiteboardcompimagefreehandtool')}"/>
+			<!--- Button to  select eraser tool -->
+			<components:ImageButton id="btnEraser" width="45" height="29"
+									click="showHideEraserMenu();shapesOptionBox.visible=false;"
+									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/Eraser_new.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasertooltip')}"/>
+			
+			<!--<s:BorderContainer id="eraserOptionBox" left="60" height="127" width="100" backgroundColor="#ebeaea" borderWeight="2" borderColor="#cccccc" borderStyle="solid"> 
+			<s:layout>
+			<s:BasicLayout/>
+			</s:layout>-->
+			<!-- disabledIcon="@Embed(source='assets/images/eraserSmallSelected.png')" -->
+			<!--<s:Button toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"
+			id="btnEraserSmall" horizontalCenter="0" icon="@Embed(source='assets/images/eraserSmall.png')"
+			width="26" y="3" height="26" click="setEraserTool(event)"/>-->
+			<!--disabledIcon="@Embed(source='assets/images/eraserMediumSelected.png')" -->
+			<!--<s:Button toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"
+			id="btnEraserMedium" horizontalCenter="0" icon="@Embed(source='assets/images/eraserMedium.png')"
+			y="32" width="36" height="36" click="setEraserTool(event)"/>-->
+			<!--disabledIcon="@Embed(source='assets/images/eraserLargeSelected.png')" -->
+			<!--<s:Button toolTip="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"
+			id="btnEraserLarge" horizontalCenter="0" icon="@Embed(source='assets/images/eraserLarge.png')"
+			y="72" width="51" height="51" click="setEraserTool(event)"/>-->
+			<!--</s:BorderContainer>-->	
+			<!--- Button to  select Shapes tool -->
+			<components:ImageButton id="btnShapes" width="45" height="29" click="showHideShapeMenu();eraserOptionBox.visible=false;"
+									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/defaultShape.png')"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="Shapes"/>
+			<!--- Button to enablle pop out functionality. Using pop out functinality user can open whiteboard
+			in a seperate window-->
+			<!--For Web: Made full screen button invisible-->
+			
+			
+			
+		</mx:VBox>
+		
+		<s:BorderContainer id="eraserOptionBox" visible="false" left="49" top="262" width="134"
+						   backgroundColor="#ebeaea" borderColor="#96A0A9" borderStyle="solid"> 
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout> 
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false" buttonMode="true"
+							   click="setEraserTool(event,'s')" useHandCursor="true">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="btnEraserSmall" buttonMode="true"
+						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/eraserSmall_new.png')"
+						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"
+						 useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
+						 text="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"
+						 verticalAlign="middle"/>
+			</s:BorderContainer>
+			
+			<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false" buttonMode="true"
+							   click="setEraserTool(event,'m')" useHandCursor="true">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="btnEraserMedium" buttonMode="true"
+						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/eraserMedium_new.png')"
+						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"
+						 useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
+						 text="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"
+						 verticalAlign="middle"/>
+			</s:BorderContainer>
+			
+			<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false" buttonMode="true"
+							   click="setEraserTool(event,'l')" useHandCursor="true">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="btnEraserLarge" buttonMode="true"
+						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/eraserLarge_new.png')"
+						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"
+						 useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
+						 text="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"
+						 verticalAlign="middle"/>
+			</s:BorderContainer>
+			<!-- disabledIcon="@Embed(source='assets/images/eraserSmallSelected.png')" -->
+			<!--<s:Image id="btnEraserSmall" width="134" 
+			label="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"
+			click="setEraserTool(event)"
+			icon="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/eraserSmall_new.png')"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"/>-->
+			<!--disabledIcon="@Embed(source='assets/images/eraserMediumSelected.png')" -->
+			<!--<s:Button id="btnEraserMedium" width="134"
+			label="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"
+			click="setEraserTool(event)"
+			icon="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/eraserMedium_new.png')"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"/>-->
+			<!--disabledIcon="@Embed(source='assets/images/eraserLargeSelected.png')" -->
+			<!--<s:Button id="btnEraserLarge" width="134"
+			label="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"
+			click="setEraserTool(event)"
+			icon="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/eraserLarge_new.png')"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"/>
+		-->			</s:BorderContainer>
+		<s:BorderContainer id="shapesOptionBox" visible="false" left="49" top="294" width="134"
+						   backgroundColor="#ebeaea" borderColor="#96A0A9" borderStyle="solid">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false" buttonMode="true" click="setRectTool(event)"
+							   useHandCursor="true">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="btnRectangel" buttonMode="true" click="setRectTool(event)"
+						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/rectangle_new.png')"
+						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagecomptooltip')}"
+						 useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
+						 text="Rectangle"
+						 verticalAlign="middle"/>
+			</s:BorderContainer>
+			
+			<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false" buttonMode="true" click="setCircleTool(event)"
+							   useHandCursor="true">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="btnCircle" buttonMode="true" click="setCircleTool(event)"
+						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/circle_new.png')"
+						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagecircletool')}"
+						 useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
+						 text="{resourceManager.getString('myResource','whiteboardcomp.imagecircletool')}"
+						 verticalAlign="middle"/>
+			</s:BorderContainer>
+			
+			<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false" buttonMode="true" click="setlineTool()"
+							   useHandCursor="true">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="btnLine" buttonMode="true" click="setlineTool()"
+						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/line_new.png')"
+						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagestraighttool')}"
+						 useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
+						 text="{resourceManager.getString('myResource','whiteboardcomp.imagestraighttool')}"
+						 verticalAlign="middle"/>
+			</s:BorderContainer>
+			<!--- Button to  select rectangle tool -->
+			<!--<s:Button id="btnRectangel" width="134"
+			label="{resourceManager.getString('myResource','whiteboardcomp.imagecomptooltip')}"
+			click="setRectTool(event)"
+			icon="@Embed('edu/amrita/aview/core/whiteboard/assets/images/rectangle_new.png')"
+			mouseOver="removeToolOptions(event)" 
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagecomptooltip')}"/>-->
+			
+			<!--- Button to  select circle tool -->
+			<!--<s:Button id="btnCircle" width="134"
+			label="{resourceManager.getString('myResource','whiteboardcomp.imagecircletool')}"
+			click="setCircleTool(event)"
+			icon="@Embed('edu/amrita/aview/core/whiteboard/assets/images/circle_new.png')"
+			mouseOver="removeToolOptions(event)"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagecircletool')}"/>-->
+			
+			<!--- Button to  select line tool -->
+			<!--<s:Button id="btnLine" width="134"
+			label="{resourceManager.getString('myResource','whiteboardcomp.imagestraighttool')}"
+			click="setlineTool()"
+			icon="@Embed('edu/amrita/aview/core/whiteboard/assets/images/line_new.png')"
+			mouseOver="removeToolOptions(event)"
+			toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagestraighttool')}"/>-->
+		</s:BorderContainer>
+		
+	</s:BorderContainer>
+	<!--For Guest Login: Disable ToolBox container for Guest user-->
+	<s:BorderContainer id="toolBoxContainer" x="70" y="32" width="418" backgroundColor="#EBEAEA"
+					   borderColor="#337BB7" cornerRadius="5" visible="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" includeInLayout="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" >
+		<!--<s:layout>
+		<s:HorizontalLayout gap="0"/>
+		</s:layout>
+		-->
+		<!--- Button to eanable shape selection -->
+		<!--- //PNCR: As per the requirement, changed the function to just enable the action. The disabling will be done in other buttons click event.-->
+		
+		
+		<!--<s:Button id="btnSelect"
+		height="32"
+		width="30"
+		click="enableObjectSelection()"
+		color="#000000"
+		toolTip="Select Object"
+		label="S"/>-->
+		
+		<s:Image id="propertiesTitleBar" buttonMode="true"
+				 mouseDown="propertiesTitleBarhandleDown(event)"
+				 mouseUp="propertiesTitleBarhandleUp(event)"
+				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/propertiestab.png')"
+				 useHandCursor="true"/>
+		<s:Image id="propMenu" visible="false" y="0" left="15" width="64" height="49"
+				 buttonMode="true" click="showhideProbTitleBar();"
+				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/properties.png')"
+				 useHandCursor="true"/>
+		<mx:HBox id="propBox" y="0" left="14" height="49" borderVisible="false"
+				 horizontalAlign="left" horizontalGap="0">
+			
+			
+			<!--- Container which holds contols to set the text tool font size -->
+			<s:BorderContainer id="textToolOptionBox" width="86" height="48"
+							   backgroundColor="#EBEAEA" borderColor="#000000" borderStyle="solid"
+							   borderVisible="false" horizontalCenter="0">
+				<s:layout>
+					<s:BasicLayout/>
+				</s:layout>
+				<s:Image left="10" top="18" height="28"
+						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/Textsize.png')"/>
+				<s:Spacer width="100%"/> 
+				<s:Label x="5" y="5" height="14" color="#000000" fontFamily="Calibri" fontSize="12"
+						 text="Font Size" textAlign="center"/>
+				<s:NumericStepper id="textFondStepper" y="20" width="45" borderColor="#A5AEB6"
+								  change="changeTextFontSize(event)" chromeColor="#99D0FF"
+								  color="#0072FF" fontFamily="Calibri" horizontalCenter="10"
+								  maximum="50" minimum="12" toolTip="Font Size"
+								  value="{textFondStepper.minimum}"/>
+			</s:BorderContainer>
+			<s:Image left="48"
+					 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
+			<!-- //PNCR: #BugFix: 14762 Commeted because, added it programically in function 'changePresenterButtonsMode' 
+			imageSkinDisabled="@Embed(source='assets/images/textToolSelected.png')" -->
+			<!--- Numeric stepper to set line thickness -->
+			<s:BorderContainer id="lineThicknessStepperBox" width="94" height="48"
+							   backgroundColor="#EBEAEA" borderColor="#000000" borderStyle="solid"
+							   borderVisible="false" horizontalCenter="0">
+				<s:Image left="12" top="19" height="27"
+						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/Linethickness.png')"/>
+				<s:Label y="5" height="14" color="#000000" fontFamily="Calibri" fontSize="12"
+						 horizontalCenter="-6" text="Line Thickness"/>
+				
+				<!--mouseOver="removeToolOptions(event)" fixed for 16382 -->
+				<s:NumericStepper id="lineThicknessStepper" y="20" width="40" borderColor="#A5AEB6"
+								  change="changeLineThickness(event)" chromeColor="#99D0FF"
+								  fontFamily="Calibri" horizontalCenter="10"
+								  keyUp="validatNumericStepper(lineThicknessStepper)" maximum="10"
+								  minimum="1" 
+								  textAlign="center"
+								  toolTip="{resourceManager.getString('myResource','whiteboardcomp.linethicktooltip')}"/>
+			</s:BorderContainer>
+			<s:Image source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
+			<!--- Color picker component to select line color -->
+			<s:BorderContainer id="colorBox" width="90" height="48" backgroundColor="#EBEAEA"
+							   borderColor="#000000" borderStyle="solid" borderVisible="false">
+				<s:Label y="5" color="#000000" fontFamily="Calibri" fontSize="12"
+						 horizontalCenter="-23" text="Color"/>
+				<s:HGroup y="20" gap="1" horizontalAlign="center" horizontalCenter="0">
+					
+					<!--mouseOver="removeToolOptions(event)" fixed for 16382 -->
+					<mx:ColorPicker id="lineColorComboBox" width="20" height="23"
+									change="changeLineColor(event)" chromeColor="#2D5680"
+									
+									toolTip="{resourceManager.getString('myResource','whiteboardcomp.linecolortooltip')}"/>
+					<!--- This canvas container contains buttons to select some predefined color very quickly -->
+					<!--mouseOver="removeToolOptions(event)" fixed for 16382 -->
+					<mx:Canvas width="48" height="25" >
+						<s:Button id="btnBlack" x="0" y="0" width="11" height="11"
+								  chromeColor="#000000" click="setQuickAccessColor(event)"
+								  cornerRadius="0"/>
+						<s:Button id="btnBlue" x="0" y="12" width="11" height="11"
+								  chromeColor="#0000FF" click="setQuickAccessColor(event)"
+								  cornerRadius="0"/>
+						<s:Button id="btnGreen" x="12" y="0" width="11" height="11"
+								  chromeColor="#00FF00" click="setQuickAccessColor(event)"
+								  cornerRadius="0"/>
+						<s:Button id="btnRed" x="12" y="12" width="11" height="11"
+								  chromeColor="#FF0000" click="setQuickAccessColor(event)"
+								  cornerRadius="0"/>
+						<s:Button id="btnSeaBlue" x="24" y="0" width="11" height="11"
+								  chromeColor="#009DFF" click="setQuickAccessColor(event)"
+								  cornerRadius="0"/>
+						<s:Button id="btnMagenta" x="24" y="12" width="11" height="11"
+								  chromeColor="#FF00FF" click="setQuickAccessColor(event)"
+								  cornerRadius="0"/>
+						<s:Button id="btnSkyBlue" x="36" y="0" width="11" height="11"
+								  chromeColor="#00FFFF" click="setQuickAccessColor(event)"
+								  cornerRadius="0"/>
+						<s:Button id="btnYellow" x="36" y="12" width="11" height="11"
+								  chromeColor="#FFFF00" click="setQuickAccessColor(event)"
+								  cornerRadius="0"/>
+					</mx:Canvas>
+				</s:HGroup>
+				
+			</s:BorderContainer>
+			<s:Image source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
+			<s:BorderContainer id="collaborationBox" width="123" height="48"
+							   backgroundColor="#EBEAEA" borderColor="#000000" borderStyle="solid"
+							   borderVisible="false" horizontalCenter="0">
+				<s:Label y="5" color="#000000" fontFamily="Calibri" fontSize="12"
+						 horizontalCenter="0" text="Collaboration Mode"/>
+				<s:ComboBox id="collaborationList" y="21" width="110" height="22" minWidth="100"
+							borderColor="#FFFFFF" borderVisible="true"
+							change="setCollaborationModeInCollabObject()" chromeColor="#FFFFFF"
+							color="#000000"
+							contentBackgroundColor="#FFFFFF"
+							dataProvider="{collaborationListDataProvider}" doubleClickEnabled="true"
+							fontFamily="Calibri" fontSize="12" horizontalCenter="3"
+							horizontalScrollPolicy="off" labelField="label" selectionColor="#99d0ff"
+							skinClass="edu.amrita.aview.core.shared.skins.CustomComboSkin"
+							symbolColor="#000000"
+							toolTip="Controls how viewers can use the whiteboard"
+							verticalScrollPolicy="off"/>
+			</s:BorderContainer>
+			<mx:Spacer width="100%"/>
+			
+			
+		</mx:HBox>
+		<s:Image id="propshowhideButton" left="0" top="1" buttonMode="true"
+				 click="showhideProbTitleBar()"
+				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/propertiesshowhide.png')"
+				 useHandCursor="true"/>
+	</s:BorderContainer>
+	
+</s:BorderContainer>

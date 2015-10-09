@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ConsolidatedView.mxml
+Module		: Classroom
+Developer(s): Salil George, Ganesan A, Jeevanantham N, Meena S
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+ConsolidatedView component helps user to view Document sharing, User list and chat modules in a single page.
+
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		backgroundColor="#071124"
+		width="100%"
+		height="100%"
+		xmlns:dropDownList="views.components.customComboBox.dropDownList.*"
+		creationComplete="init(event)">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.service.streaming.VideoConnection;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import views.toolSets.PresenterVideoContainer;
+			import views.toolSets.ViewerVideoContainer;
+			
+			/**
+			 * Holds presenter stream name
+			 */
+			[Bindable]
+			public var presenterTitle:String="";
+			/**
+			 * Holds selected viewer stream name
+			 */
+			[Bindable]
+			public var viewerTitle:String="";
+			/**
+			 *  viewerVideoContainer is used to hold the video of selected viewer in All-in-one mode.
+			 */
+			[Bindable]
+			public var viewerVideoContainer:ViewerVideoContainer = new ViewerVideoContainer();
+			/**
+			 *  presenterVideoContainer is used to hold the video of presenter in All-in-one mode.
+			 */
+			[Bindable]
+			public var presenterVideoContainer:PresenterVideoContainer = new PresenterVideoContainer();
+			/**
+			 *  presenterValuesArray is used to hold the dropdown values in All-in-one mode.
+			 */
+			[Bindable]
+			public var presenterValuesArray:ArrayCollection=new ArrayCollection([{contextName: 'Users'}]);
+			/**
+			 *  allinoneItemsData is used to hold the dropdown values in All-in-one mode.
+			 */
+			[Bindable]
+			public var allinoneItemsData:ArrayCollection=new ArrayCollection([{contextName: 'Chat'}, {contextName: 'Question'}]);
+			/**
+			 *  selectedUserName is used to hold currently selected viewer name.
+			 */
+			var selectedUserName:String;
+			/**
+			 * To watch the changes of presenterVideoContainer
+			 */
+			public var teacherWidthWatcher:ChangeWatcher=null;
+			/**
+			 * To watch the changes of viewerVideoContainer
+			 */
+			public var viewerWidthWatcher:ChangeWatcher=null;
+			
+			/**
+			 * @public
+			 *
+			 * This function is used to load Chat/Question/Viewer video according to the selected index in All in one screen
+			 *
+			 * @return void
+			 */
+			public function viewerListChangeHandler():void
+			{
+				if(FlexGlobals.topLevelApplication.screenTypes == Constants.SCREENTYPE_ALLINONE){
+					if(chatContainer != null)
+					{
+						chatContainer.removeAllElements();
+					} 
+					if(dropdownViewer.selectedIndex== 0){
+					    FlexGlobals.topLevelApplication.chat.percentHeight=100;
+						FlexGlobals.topLevelApplication.chat.percentWidth=100;
+						chatContainer.addElement(FlexGlobals.topLevelApplication.chat);
+						if (FlexGlobals.topLevelApplication.chat.chatToolSet)
+						{
+							FlexGlobals.topLevelApplication.chat.chatToolSet.includeInLayout=true;
+							FlexGlobals.topLevelApplication.chat.chatToolSet.visible=true;
+							if (ClassroomContext.isModerator)
+							{
+								FlexGlobals.topLevelApplication.chat.chatClearTool.includeInLayout=true;
+								FlexGlobals.topLevelApplication.chat.chatClearTool.visible=true;
+							}
+						}
+						if(FlexGlobals.topLevelApplication.chatComp!=null){
+							FlexGlobals.topLevelApplication.chatComp.enableStyle();
+						}
+					} 
+					else if(dropdownViewer.selectedIndex== 1){
+						FlexGlobals.topLevelApplication.questComponent.questionDataGrid.percentHeight = 65;
+						FlexGlobals.topLevelApplication.questComponent.questionDataGrid.percentWidth = 100;
+						FlexGlobals.topLevelApplication.questComponent.questionActionGroup.percentHeight = 35;
+						FlexGlobals.topLevelApplication.questComponent.questionActionGroup.percentWidth = 100;
+						FlexGlobals.topLevelApplication.questComponent.percentHeight = 100;
+						FlexGlobals.topLevelApplication.questComponent.percentWidth = 100;
+						FlexGlobals.topLevelApplication.questComponent.questionInput.percentWidth =58;
+						FlexGlobals.topLevelApplication.questComponent.postQuestionButton.percentWidth = 21;
+						FlexGlobals.topLevelApplication.questComponent.voteQuestionButton.percentWidth = 21;
+						chatContainer.addElement(FlexGlobals.topLevelApplication.questComponent);
+					}
+					else if(dropdownViewer.selectedIndex >= 2){
+						if(FlexGlobals.topLevelApplication.mainApp.selectedViewersData.length >= 1)
+						{ 
+							selectedUserName = dropdownViewer.selectedItem.contextName;
+							viewerVideoContainer.percentHeight = 100;
+							viewerVideoContainer.percentWidth = 50;
+							chatContainer.addElement(viewerVideoContainer);
+							FlexGlobals.topLevelApplication.mainApp.addSelectedViewerVideoToPanel(selectedUserName,true);
+						 }
+						else{
+							viewerVideoContainer.percentHeight = 100;
+							viewerVideoContainer.percentWidth = 50;
+							chatContainer.addElement(viewerVideoContainer);
+							FlexGlobals.topLevelApplication.mainApp.addSelectedViewerVideoToPanel(null,true);
+						} 
+					}
+				}
+			}
+			/**
+			 * @public
+			 *
+			 * This function is used to load Users/Presenter video according to the selected index in All in one screen
+			 * @return void
+			 */
+			public function presenterListChangeHandler():void
+			{
+				if(videoContainer != null)
+				{
+					videoContainer.removeAllElements();
+				} 
+				if(dropdownPresenter.selectedIndex == 0){
+					FlexGlobals.topLevelApplication.users.percentHeight=100;
+					FlexGlobals.topLevelApplication.users.percentWidth=100;
+					videoContainer.addElement(FlexGlobals.topLevelApplication.mainApp.lstUsers);
+				} 
+				else if(dropdownPresenter.selectedIndex == 1){
+					presenterVideoContainer.percentHeight = 100;
+					presenterVideoContainer.percentWidth = 50;
+					videoContainer.addElement(presenterVideoContainer);
+					FlexGlobals.topLevelApplication.mainApp.startPresentersStream();
+				}
+				
+			}
+			/**
+			 * @private
+			 *
+			 * To initialize the video container width
+			 *
+			 * @param event
+			 * @return void
+			 */
+			
+			private function init(event:FlexEvent):void
+			{
+				if (teacherWidthWatcher == null)
+					teacherWidthWatcher=BindingUtils.bindSetter(setTeacherWidth, presenterVideoContainer.presenterVideoContainer, "width"); 
+			    if (viewerWidthWatcher == null)
+					viewerWidthWatcher=BindingUtils.bindSetter(setViewerWidth, viewerVideoContainer.viewerVideoContainer, "width");
+			}
+			/**
+			 * @public
+			 *
+			 * To set presenterVideo width
+			 *
+			 * @param value holds the width of presenterVideo for AllInOne mode
+			 * @return void
+			 */
+			public function setTeacherWidth(value:Number):void
+			{
+				FlexGlobals.topLevelApplication.mainApp.teacherVideoChange(presenterVideoContainer.presenterVideoContainer.width,presenterVideoContainer.presenterVideoContainer.height);
+			}
+			/**
+			 * @public
+			 *
+			 * To set viewerVideo width
+			 *
+			 * @param value holds the width of viewerVideo for All-in-One mode
+			 * @return void
+			 */
+			public function setViewerWidth(value:Number):void
+			{
+				FlexGlobals.topLevelApplication.mainApp.viewerVideoChange(viewerVideoContainer.viewerVideoContainer.width,viewerVideoContainer.viewerVideoContainer.height);
+			}
+			public function setPresenterArray(obj:Object=null):void{
+				if(obj!=null){
+					presenterValuesArray.addItem(obj);
+				}
+				dropdownPresenter.selectedIndex = 1;
+				presenterListChangeHandler();
+			}
+		]]>
+	</fx:Script>
+	<fx:Style source="/views/assets/css/mobilestyles.css"/>
+	<s:HGroup width="100%"
+			  height="100%">
+		<s:VGroup width="100%"
+				  height="100%"
+				  right="0">
+			<dropDownList:DropDownList id="dropdownPresenter"
+									   dataProvider="{presenterValuesArray}"
+									   visible="true"
+									   includeInLayout="true"
+									   fontSize="14"
+									   fontWeight="bold"
+									   width="100%"
+									   height="10%"
+									   popUpWidth="100"
+									   labelField="contextName"
+									   verticalScrollPolicy="auto"
+									   selectedIndex="0"
+									   requestedRowCount="2"
+									   change="presenterListChangeHandler()"
+									   styleName="customComboBox">
+			</dropDownList:DropDownList>
+			<!-- Containers to presenter video-->
+			<s:Group id="videoContainer"
+					 width="100%"
+					 height="45%"
+					 left="0"
+					 creationComplete="presenterListChangeHandler()">
+			</s:Group>
+			<dropDownList:DropDownList id="dropdownViewer"
+									   dataProvider="{allinoneItemsData}"
+									   visible="true"
+									   includeInLayout="true"
+									   fontSize="14"
+									   width="100%"
+									   fontWeight="bold"
+									   height="10%"
+									   popUpWidth="100"
+									   labelField="contextName"
+									   verticalScrollPolicy="auto"
+									   requestedRowCount="3"
+									   selectedIndex="0"
+									   change="viewerListChangeHandler()"
+									   styleName="customComboBox">
+			</dropDownList:DropDownList>
+			<!-- Containers to chat view-->
+			<s:Group id="chatContainer"
+					 width="100%"
+					 height="45%"
+					 left="0"
+					 creationComplete="viewerListChangeHandler()">
+			</s:Group>
+		</s:VGroup>
+	</s:HGroup>
+</s:View>

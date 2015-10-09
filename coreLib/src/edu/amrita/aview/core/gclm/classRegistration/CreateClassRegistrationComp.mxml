@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+File		: CreateClassRegistrationComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	:
+
+This component is used to create a new class registration,
+
+Based on the logged in user credentials this component behaves as follows:
+Master Admin: Can add class registration for any user for any class
+
+Institute Administrators: Can create class registrations for any users within their insitute
+for any class
+
+Others: Can create class registration for any class only for themselves. This class registration will
+be approval pending status. The master admin/admin or moderators has to approve the registration
+-->
+<components1:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:xt="library://ns.tink.ws/flex/mx"
+						 width="575"
+						 height="470"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 xmlns:components1="edu.amrita.aview.core.shared.components.*">
+	<fx:Declarations>
+		<s:RadioButtonGroup id="rbgIsModerator"/>
+		<s:RadioButtonGroup id="rbgAttendingNode"/>
+	</fx:Declarations>
+	<fx:Script source="CreateClassRegistrationCompUIHandler.as"/>
+	<!-- Container -->
+	<mx:Canvas left="5"
+			   right="5"
+			   top="5"
+			   bottom="5"
+			   borderColor="#A3D7FF"
+			   chromeColor="#CCCCCC"
+			   borderVisible="true"
+			   borderStyle="solid"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- label to show * -->
+		<s:Label left="10"
+				 top="10"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- label to show class -->
+		<s:Label left="20"
+				 top="10"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Class : "/>
+		<!-- Filter combobox for class name -->
+		<xt:FilterComboBox id="cmbClasses"
+						   left="143"
+						   top="8"
+						   width="200"
+						   height="25"
+						   dataProvider="{classesAC}"
+						   change="setCourseAndInstitute()"
+						   dropdownFactory="{GCLMContext.dropdownFactory}"
+						   labelField="className"
+						   selectSingleMatch="true"
+						   prompt=""
+						   removeFilterOnSelection="true"/>
+		<!-- label to show class name -->
+		<s:Label id="lblClassName"
+				 left="143"
+				 top="10"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text=""
+				 visible="false"/>
+		<!-- label to show course name -->
+		<s:Label left="20"
+				 top="45"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Course Name : "/>
+		<!-- label to show course name -->
+		<s:Label id="lblCourseName"
+				 left="143"
+				 top="43"
+				 width="200"
+				 height="25"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 paddingTop="2"/>
+		<!-- label to show institute name -->
+		<s:Label left="20"
+				 top="80"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Institute Name : "/>
+		<!-- label to show institute name -->
+		<s:Label id="lblInstituteName"
+				 left="143"
+				 top="78"
+				 width="400"
+				 height="25"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 paddingTop="2"/>
+		<!-- label to show * -->
+		<s:Label left="10"
+				 top="115"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- label to show user name -->
+		<s:Label left="20"
+				 top="115"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="User Name : "/>
+		<!-- label to show user details -->
+		<s:Label left="20"
+				 top="150"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="User Details :"/>
+		<!-- label to show user name -->
+		<s:TextInput id="txtInpUserName"
+					 left="143"
+					 top="113"
+					 width="200"
+					 height="25"
+					 restrict="{GCLMContext.allowedCharactersForName}"
+					 change="resetUser()"/>
+		<!-- NPCR : Avoid 3806 bug fix -->
+		<!--	3806	-->
+		<!--Validate Button -->
+		<components:ImageButton id="btnValidate"
+				  y="113"
+				  left="353"
+				  width="80"
+				  height="25"
+				  label="Validate"
+				  chromeColor="#E0EFFB"
+				  click="checkUser()"
+				  cornerRadius="3"
+				  enabled="false"/>
+		<!-- NPCR : Avoid 3806 bug fix -->
+		<!--	3806	-->
+		<!-- label to show user name -->
+		<s:Label id="lblUserName"
+				 left="143"
+				 top="113"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text=""
+				 visible="false"/>
+		<!-- label to show user details -->
+		<s:Label id="lblUserDetails"
+				 left="143"
+				 top="151"
+				 width="400"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text=""/>
+		<!-- label to show error user -->
+		<s:Label id="lblErrorUser"
+				 left="143"
+				 top="151.5"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="bold"
+				 paddingLeft="0"
+				 text=""
+				 color="#ED3814"/>
+		<!-- label to show * -->
+		<s:Label left="10"
+				 top="185"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- label to show attending form -->
+		<s:Label left="19"
+				 top="185"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Attending From"/>
+		<!-- Radio button for personal computer -->	
+		<s:RadioButton width="152"
+					   left="142"
+					   top="186"
+					   label="Personal Computer"
+					   id="rbPersonalComputer"
+					   groupName="rbgAttendingNode"/>
+		<!-- Radio button for classroom -->	
+		<s:RadioButton id="rbClassroom"
+					   left="290"
+					   top="186"
+					   width="152"
+					   label="Classroom"
+					   groupName="rbgAttendingNode"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="220"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show is Moderator -->
+		<s:Label left="19"
+				 top="220"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Is Moderator :"/>
+		<!-- Radio Button for is moderator -->
+		<s:RadioButton id="rbYesModerator"
+						left="142"
+						top="221"
+						width="50"
+						label="Yes"
+						groupName="rbgIsModerator"/>
+		<!-- Radio Button for no moderator -->
+		<s:RadioButton width="50"
+					   left="200"
+					   top="221"
+					   label="No"
+					   id="rbNoModerator"
+					   groupName="rbgIsModerator"/>
+		<!-- Label to show (Only Teachers can be moderators) -->
+		<s:Label x="248"
+				 y="221.5"
+				 fontSize="9"
+				 paddingTop="2"
+				 text="(Only Teachers can be moderators)"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="255"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"
+				 id="lblUserStatusImp"/>
+		<!-- Label to show * -->
+		<mx:Label left="10"
+				  top="290"
+				  color="#ED3814"
+				  fontFamily="Times New Roman"
+				  fontSize="13"
+				  fontWeight="bold"
+				  text="*"
+				  id="lblUserStatusImp0"/>
+		<!-- Label to show status -->
+		<s:Label left="19"
+				 top="255"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Status :"
+				 id="lblUserStatus"/>
+		<!-- Label to show modules -->
+		<mx:Label left="19"
+				  top="290"
+				  fontFamily="Arial"
+				  fontSize="12"
+				  fontWeight="normal"
+				  paddingLeft="0"
+				  text="Modules :"
+				  id="lblUserStatus0"/>
+		<!-- Combo box for user status -->
+		<!-- Fix for Bug #14860 -->
+		<s:ComboBox id="cmbUserStatus"
+					left="142"
+					top="255"
+					height="25"
+					chromeColor="#E0EFFB"
+					prompt="Select"
+					dataProvider="{classRegistrationStatusesAC}"
+					labelField="statusName"/>
+		<!-- Save button -->
+		<components:ImageButton id="btnSaveClassReg"
+				  bottom="20"
+				  width="83"
+				  height="25"
+				  label="Save"
+				  chromeColor="#E0EFFB"
+				  click="saveClassRegistration()"
+				  cornerRadius="3"
+				  horizontalCenter="-60"/>
+		<!-- Cancel Button -->
+		<components:ImageButton bottom="20"
+				  width="83"
+				  height="25"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="closeCreateClassRegistrationComp();"
+				  cornerRadius="3"
+				  horizontalCenter="60"/>
+		<!-- Checkbox for all -->
+		<mx:CheckBox id="chkModulesAll"
+					 left="142"
+					 top="290"
+					 label="All"
+					 chromeColor="#E0EFFB"
+					 click="modulesAllClickHandler(event)"/>
+		<!-- Checkbox for audio video -->
+		<mx:CheckBox id="chkModuleAudioVideo"
+					 left="142"
+					 top="310"
+					 label="Audio/Video"
+					 chromeColor="#E0EFFB"
+					 click="moduleClickHandler(event)"/>
+		<!-- Checkbox for document sharing -->
+		<mx:CheckBox id="chkModuleDocument"
+					 left="260"
+					 top="310"
+					 label="Document Sharing"
+					 chromeColor="#E0EFFB"
+					 click="moduleClickHandler(event)"/>
+		<!-- Checkbox for desktop sharing -->
+		<mx:CheckBox id="chkModuleDesktop"
+					 left="406"
+					 top="310"
+					 label="Desktop Sharing"
+					 chromeColor="#E0EFFB"
+					 click="moduleClickHandler(event)"/>
+		<!-- Checkbox for Video Sharing -->
+		<mx:CheckBox id="chkModuleVideoSharing"
+					 left="142"
+					 top="330"
+					 label="Video Sharing"
+					 chromeColor="#E0EFFB"
+					 click="moduleClickHandler(event)"/>
+		<!-- Checkbox for Video Sharing -->
+		<mx:CheckBox id="chkModule2D"
+					 left="260"
+					 top="330"
+					 label="2D"
+					 chromeColor="#E0EFFB"
+					 click="moduleClickHandler(event)"/>
+		<!-- Checkbox for moduleClickHandler -->
+		<mx:CheckBox id="chkModule3D"
+					 left="406"
+					 top="330"
+					 label="3D"
+					 chromeColor="#E0EFFB"
+					 click="moduleClickHandler(event)"/>
+		<!--	3806
+		<mx:Button id="btnValidate" y="113" left="353" width="80" height="25" label="Validate" enabled="false"
+		click="checkUser()"/>
+		3806	-->
+
+	</mx:Canvas>
+	<!-- createClassRegistration component close icon -->
+	<components:WindowCloseImage right="5"
+			 top="-25"
+			 id="imgClose"
+			 click="closeCreateClassRegistrationComp()"/>
+</components1:InsidePanel>

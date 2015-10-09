@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: UserList.mxml
+Module		: Common
+Developer(s): Ajith Kumar R,Aneesh P.S, Ashish Pillai,SonyKAntony
+Reviewer(s)	: Veena Gopal K.V
+UserList is a custom component for holding names and icons of all online users in A-VIEW.
+-->
+<!--
+Dependencies : main.mxml,Video_ScriptCode.as
+-->
+<!--
+VGCR:- description for each section
+-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx" height="100%"
+				   backgroundAlpha="0.0" borderVisible="false">
+	<fx:Declarations>
+		<mx:Resize id="offlineUserExpand"
+				   heightFrom="0"
+				   heightTo="200"
+				   target="{offlineUsersList}"/>
+		<mx:Resize id="offlineUserColapse"
+				   heightFrom="200"
+				   heightTo="0"
+				   target="{offlineUsersList}"/>
+	</fx:Declarations>
+	<fx:Script source="Icons.as" />
+	<fx:Script source="UserListHandler.as"/>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.myHeaderStyles
+		{
+		color: #21518b;
+		fontSize:14px;
+		fontFamily:Calibri;
+		fontWeight: bold;
+		}
+		
+	</fx:Style>
+	
+	<mx:VBox x="0" y="0" width="100%" height="100%" verticalGap="0">
+	
+		<mx:HBox id="usersSort" width="100%" height="44" backgroundColor="#E7E8ED"
+				 horizontalAlign="center" verticalAlign="middle">
+			
+			<s:ComboBox id="comboSort" width="85" height="25" change="applyFilters()"
+						contentBackgroundColor="#E7E8ED" dataProvider="{Constants.SORT_OPTION}"
+						fontSize="11" horizontalScrollPolicy="off"
+						itemRenderer="edu.amrita.aview.core.entry.ComboBoxItemRender"
+						labelField="sortOpt" prompt="  -Select-" toolTip="Select a search type to filter the user list"/>
+			
+			<s:TextInput id="userSearch" x="102" width="95" height="24" change="applyFilters()"
+						 color="#B1ABAB" contentBackgroundColor="#E7E8ED"
+						 focusIn="clearUserSearch()" fontSize="11"
+						 focusOut="resetUserSearch()"
+						 text="{Constants.USER_SEARCH_STR}"
+						 toolTip="{Constants.USER_SEARCH_TOOLTIP}"/>
+			<s:Button skinClass="edu.amrita.aview.core.shared.skins.BorderlessButtonSkin"
+					  id="releaseAllSingle"
+					  click="releaseAll()"
+					  height="25" 
+					  width="27"
+					  toolTip="Release All Handraises"
+					  icon="{ReleaseIcon}"
+					  cornerRadius="5"
+					  enabled = "{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE?true:false}"/>
+		</mx:HBox>
+		<mx:HBox id="usersBox"
+				 width="100%"
+				 height="100%"
+				 verticalAlign="middle"
+				 horizontalAlign="center">
+			
+			<mx:DataGrid id="userGrid" height="100%" alternatingItemColors="['#FFFFFF','#FFFFFF']"
+						 borderColor="#989EA9" click="onClick()" draggableColumns="false"
+						 focusColor="#FBD2B9" fontFamily="Arial" fontSize="12"
+						 headerStyleName="myHeaderStyles"
+						 itemRollOver="lastRollOverIndex = event.rowIndex;trace('event.rowIndex'+event.rowIndex)"
+						 resizableColumns="false" rightClick="createlist()" rollOverColor="#DDF2FC"
+						 rowHeight="44" scroll="datagrid1_scrollHandler(event)"
+						 selectionColor="#DDF2FC" sortableColumns="false" verticalScrollPolicy="on">
+				<mx:columns>
+					<mx:DataGridColumn itemRenderer="edu.amrita.aview.core.shared.components.userList.UserNameRenderer" 
+									   headerText="Users: {userCount}" width="164"
+									   wordWrap="true"/>
+					<mx:DataGridColumn itemRenderer="edu.amrita.aview.core.shared.components.userList.UserSelectedCount"
+									   width="22" headerText="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE?'IC':'MC'}" id="countStatus" fontFamily="Arial" textAlign="center" paddingLeft="0" fontSize="12"
+									   wordWrap="true">
+						<!--<mx:headerRenderer>
+							<fx:Component>
+								<mx:Text id="countStatusToolTip" toolTip="Interaction Count"/>
+							</fx:Component>
+						</mx:headerRenderer>-->
+					</mx:DataGridColumn>
+					<mx:DataGridColumn itemRenderer="edu.amrita.aview.core.shared.components.userList.StatusIconRenderer"
+									   width="48" textAlign="left"
+									   headerText="Status"
+									   wordWrap="true"/>
+				</mx:columns>
+				
+			</mx:DataGrid>
+			
+		</mx:HBox>
+		
+		
+		<mx:HBox width="100%"
+				 buttonMode="true"
+				 click="showHideclickHandler(event)"
+				 paddingLeft="5"
+				 paddingRight="5"
+				 includeInLayout="{(ClassroomContext.aviewClass.classType == 'Meeting')}"
+				 visible="{(ClassroomContext.aviewClass.classType == 'Meeting')}"
+				 useHandCursor="true"
+				 verticalAlign="middle">
+			<mx:Label width="100%"
+					  fontWeight="bold"
+					  text="Users not attending"
+					  click="showHideclickHandler(event)"
+					  useHandCursor="true"
+					  buttonMode="true"/>
+			<mx:HBox dropShadowVisible="false"
+					 horizontalAlign="center"
+					 horizontalGap="0"
+					 paddingBottom="5"
+					 paddingLeft="5"
+					 paddingRight="5"
+					 paddingTop="5"
+					 verticalAlign="middle"
+					 verticalCenter="0"
+					 horizontalCenter="0">
+				<mx:Image id="imgArrowDown"
+						  buttonMode="true" visible="false" includeInLayout="false"
+						  click="showHideclickHandler(event)"
+						  source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/arrowDown.png')"
+						  useHandCursor="true"/>
+				<mx:Image id="imgArrowUp"
+						  buttonMode="true"
+						  visible="true" includeInLayout="true"
+						  click="showHideclickHandler(event)"
+						  source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/arrowUp.png')"
+						  useHandCursor="true"/>
+			</mx:HBox>
+		</mx:HBox>
+		
+		<mx:List id="offlineUsersList"
+				 width="100%"
+				 height="0"
+				 includeInLayout="{(ClassroomContext.aviewClass.classType == 'Meeting')}"
+				 visible="{(ClassroomContext.aviewClass.classType == 'Meeting')}"
+				 dataProvider="{offlineUsersArray}">
+			<mx:itemRenderer>
+				<fx:Component>
+					<mx:HBox width="100%"
+							 paddingBottom="5"
+							 paddingLeft="7"
+							 paddingRight="7"
+							 paddingTop="5" verticalScrollPolicy="off" horizontalScrollPolicy="off"
+							 verticalAlign="middle">
+						<mx:Image id="imgUserOnline"
+								  visible="{data.user.userStatus=='online'?true:false}"
+								  includeInLayout="{data.user.userStatus=='online'?true:false}"
+								  source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/online.png')"/>
+						<mx:Image id="imgUserBusy"
+								  visible="{data.user.userStatus=='busy'?true:false}"
+								  includeInLayout="{data.user.userStatus=='busy'?true:false}"
+								  source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/busy.png')"/>
+						<mx:Image id="imgUserOffline"
+								  visible="{data.user.userStatus=='offline'?true:false}"
+								  includeInLayout="{data.user.userStatus=='offline'?true:false}"
+								  source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/offline.png')"/>
+						
+						<s:Label text="{data.user.userDisplayName}" 
+								 maxDisplayedLines="1" 
+								 toolTip="{data.user.userDisplayName}" width="100%"/>
+					</mx:HBox>
+				</fx:Component>
+			</mx:itemRenderer>
+		</mx:List>
+		
+	</mx:VBox>
+	<!--<s:CheckBox id="chkUserCount" right="63" top="48" chromeColor="#E0EFFB" click="showHideIC()"
+				selected="true"
+				toolTip="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE?Constants.PRESENTER_INTERACT:Constants.MONITOR_INTERACT}"/>-->
+	<s:CheckBox id="chkUserStatus" right="86" top="48" chromeColor="#E0EFFB"
+				click="showHideUserStatus()" selected="false"
+				toolTip="Show/Hide current audio/video capability"/>
+</s:BorderContainer>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StateDistrictDropDown.mxml
+Module		: Common
+Developer(s): Sethu Subramanian N
+Reviewer(s)	: Monisha Mohanan,Veena Gopal K.V
+
+This is a common component which is used to display the list of states and distrcits. Both the lists have Auto complete option. 
+When ever a state is selected, the disticts which are not related to that state is filtered out.
+
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+		   fontSize="12"
+		   fontFamily="Arial"
+		   preinitialize="preinitializeHandler(event)"
+		   xmlns:xt="library://ns.tink.ws/flex/mx">
+	<!-- Script to include handler -->
+	<mx:Script source="StateDistrictDropDownHandler.as"/>
+	<!-- Label to show state -->
+	<s:Label text="State : "
+			 top="5"
+			 left="1"
+			 fontSize="11"
+			 fontFamily="Arial"/>
+	<autoComplete:AutoComplete id="statesCB"
+							   width="{cmbwidth}"
+							   height="{cmbHeight}"
+							   top="0"
+							   right="1"
+							   dataProvider="{statesAC}"
+							   labelField="stateName"
+							   toolTip="stateName"
+							   enter="getDistrictsCombo()"
+							   select="getDistrictsCombo()"/>
+
+	<!-- Label to show District -->
+	<s:Label text="District : "
+			 top="45"
+			 left="1"
+			 fontSize="11"
+			 fontFamily="Arial"/>
+	<!-- ComboBox to show districts -->
+	<s:ComboBox id="districtsCB"
+				top="40"
+				width="{cmbwidth}"
+				right="1"
+				height="{cmbHeight}"
+				dataProvider="{districtsAC}"
+				labelField="districtName"/>
+
+</mx:Canvas>

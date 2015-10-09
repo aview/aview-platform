@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: WhiteBoardToolBox.mxml
+Module		: WhiteBoard
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+This component is used to,
+
+	1.Open white board menu.
+	2.Open shapes call-out.
+	3.Open eraser call-out.
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 xmlns:toolSets="views.toolSets.*"
+		 xmlns:whiteBoard="views.toolSets.whiteBoard.*">
+
+	<fx:Declarations>
+		<whiteBoard:WhiteBoardMenuCallout id="wbMenuComp"
+										  mouseDownOutside="closeWhiteBoardmenuHandler(event)"/>
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.shared.events.mobileCustomEvents.WhiteBoardActionEvent;
+			
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexMouseEvent;
+			
+			import spark.events.IndexChangeEvent;
+			/**
+			 * Holds icon for pointer share button
+			 */
+			[Bindable]
+			public var mobilePointerIcon:Class;
+			/**
+			 * Holds selected button instance
+			 */
+			private var selectedObjectData:Object;
+			/**
+			 * Set to true, when user clicks on clear whiteboard button
+			 */
+			public var isClearClicked:Boolean=false;
+			/**
+			 * Used to set clear icon for clear/restore button
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/clear_screen.png")]
+			public var clearIcon:Class;
+			/**
+			 * Used to set restore icon for clear/restore button
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/restore_screen.png")]
+			public var restoreIcon:Class;
+			/**
+			 * Static constants for object id
+			 */
+			private static const CLEAR_RESTORE_BTN:String="btnClearRestore";
+			private static const CLEAR_BTN_ID:String="clearBtn";
+			private static const RESTORE_BTN_ID:String="restorBtn";
+			private static const BEFORE:String="before";
+			private static const START:String="start";
+			private static const SIZE_TOOL_NAME:String="SizeCallout";
+			private static const COLOR_TOOL_NAME:String="ColorPalatteCallout";
+			/**
+			 * @private
+			 *
+			 * To dispatch event based on the selected button
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function excuteWhiteBoardAction(event:MouseEvent):void
+			{
+				selectedObjectData=new Object();
+				//If user selects clear_restore button, again check for selected id
+				//Otherwise set selectObjectData id as selected target id
+				if (event.target.id == CLEAR_RESTORE_BTN)
+				{
+					//If user selects clear button, set selectObjectDatae id as clear button id
+					//Otherwise set selectObjectData id as restore button id
+					if (!isClearClicked)
+					{
+						selectedObjectData.btnId=CLEAR_BTN_ID;
+					}
+					else
+					{
+						selectedObjectData.btnId=RESTORE_BTN_ID;
+					}
+				}
+				else
+				{
+					selectedObjectData.btnId=event.target.id;
+					selectedObjectData.eventTarget=event.target;
+				}
+				dispatchEvent(new WhiteBoardActionEvent(WhiteBoardActionEvent.WHITE_BOARD_ACTION, selectedObjectData));
+			}
+			/**
+			 * @private
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function openTooltipHandler(event:MouseEvent):void
+			{
+				var whiteboradToolTip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.target as DisplayObject);
+				whiteboradToolTip.handleToolTipPosition(event.target as DisplayObject);
+			}
+
+			/**
+			 * @protected
+			 *
+			 * To open white board menu call-out
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function btnMenuClickHandler(event:MouseEvent):void
+			{
+				wbMenuComp.open(btnMenu);
+				wbMenuComp.horizontalPosition=BEFORE;
+				wbMenuComp.verticalPosition=START;
+				wbMenuComp.upDateList();
+				btnMenu.enabled=false;
+
+				var whiteboradToolTip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.target as DisplayObject);
+				whiteboradToolTip.handleToolTipPosition(event.target as DisplayObject);
+			}
+
+			/**
+			 * @protected
+			 *
+			 * To close white board menu call-out
+			 *
+			 * @param event of FlexMouseEvent
+			 * @return void
+			 */
+			protected function closeWhiteBoardmenuHandler(event:FlexMouseEvent):void
+			{
+				if (FlexGlobals.topLevelApplication.isPopupExist(SIZE_TOOL_NAME) || FlexGlobals.topLevelApplication.isPopupExist(COLOR_TOOL_NAME))
+				{
+					event.preventDefault();
+				}
+				else
+				{
+					wbMenuComp.close();
+					btnMenu.enabled=true;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle"/>
+	</s:layout>
+	<s:VGroup width="100%"
+			  height="100%"
+			  gap="-1">
+		<!--Menu button-->
+		<s:VGroup id="menuGroup"
+				  width="100%"
+				  height="33%">
+			<s:Button id="btnMenu"
+					  width="100%"
+					  height="100%"
+					  enabled="false"
+					  icon="@Embed('/views/assets/android_menu_icon.png')"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  click="btnMenuClickHandler(event)"
+					  toolTip="Whiteboard Menu"
+					  rollOver="openTooltipHandler(event)"
+					  mouseDown="openTooltipHandler(event)"/>
+		</s:VGroup>
+		<!--Clear and restore button-->
+		<s:VGroup id="presenterControls"
+				  height="40%"
+				  width="100%"
+				  gap="-1"
+				  includeInLayout="false"
+				  enabled="false">
+			<s:Button id="btnClearRestore"
+					  width="100%"
+					  height="100%"
+					  icon="{clearIcon}"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  click="excuteWhiteBoardAction(event)"
+					  toolTip="Clear Whiteboard"
+					  rollOver="openTooltipHandler(event)"
+					  mouseDown="openTooltipHandler(event)"
+					  enabled="false"/>
+
+			<s:Button id="btnCollaboration"
+					  width="100%"
+					  height="100%"
+					  icon="@Embed('/views/assets/collaboration_mode.png')"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  click="excuteWhiteBoardAction(event)"
+					  toolTip="Collaboration mode"
+					  rollOver="openTooltipHandler(event)"
+					  mouseDown="openTooltipHandler(event)"
+					   enabled="false"/>
+
+		</s:VGroup>
+		<s:VGroup id="toolBoxContainer"
+				  width="100%"
+				  height="80%"
+				  bottom="0"
+				  gap="-1">
+			<!--Eraser button-->
+			<s:Button id="btnEraser"
+					  width="100%"
+					  height="100%"
+					  icon="@Embed('/views/assets/select_eraser.png')"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  click="excuteWhiteBoardAction(event)"
+					  toolTip="Eraser"
+					  rollOver="openTooltipHandler(event)"
+					  mouseDown="openTooltipHandler(event)"
+					  enabled="false"/>
+			<!--White board shapes-->
+			<s:CalloutButton id="wbToolBox"
+							 width="100%"
+							 height="100%"
+							 skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							 click="excuteWhiteBoardAction(event)"
+							 icon="@Embed('/views/assets/shapes.png')"
+							 horizontalPosition="before"
+							 toolTip="Shapes/Tool"
+							 enabled="false">
+				<s:calloutContent>
+					<s:VGroup width="100%"
+							  height="100%"
+							  verticalAlign="middle"
+							  horizontalAlign="center"
+							  top="10"
+							  id="mainContainer"
+							  bottom="10">
+						<!--Shapes-->
+						<s:VGroup width="100%"
+								  height="10%"
+								  paddingTop="5"
+								  verticalAlign="middle"
+								  horizontalAlign="center">
+
+							<s:Label text="Shapes"
+									 fontWeight="bold"/>
+							<s:Line width="90%">
+								<s:stroke>
+									<s:SolidColorStroke color="0x000000"
+														weight="1"
+														alpha="0.4"/>
+								</s:stroke>
+							</s:Line>
+						</s:VGroup>
+						<s:HGroup width="100%"
+								  height="40%">
+							<s:Button id="btnRectangle"
+									  width="100%"
+									  height="100%"
+									  icon="@Embed('/views/assets/rect_25.png')"
+									  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+									  click="excuteWhiteBoardAction(event)"
+									  toolTip="Rectangle"
+									  rollOver="openTooltipHandler(event)"
+									  mouseDown="openTooltipHandler(event)"/>
+							<s:Button id="btnCircle"
+									  width="100%"
+									  height="100%"
+									  icon="@Embed('/views/assets/circle_25.png')"
+									  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+									  click="excuteWhiteBoardAction(event)"
+									  toolTip="Circle"
+									  rollOver="openTooltipHandler(event)"
+									  mouseDown="openTooltipHandler(event)"/>
+							<s:Button id="btnLine"
+									  width="100%"
+									  height="100%"
+									  icon="@Embed('/views/assets/line_25.png')"
+									  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+									  click="excuteWhiteBoardAction(event)"
+									  toolTip="Straight Line"
+									  rollOver="openTooltipHandler(event)"
+									  mouseDown="openTooltipHandler(event)"/>
+						</s:HGroup>
+						<!--Tools-->
+						<s:VGroup width="100%"
+								  height="10%"
+								  paddingTop="5"
+								  verticalAlign="middle"
+								  horizontalAlign="center">
+
+							<s:Label text="Tools"
+									 fontWeight="bold"/>
+							<s:Line width="90%">
+								<s:stroke>
+									<s:SolidColorStroke color="0x000000"
+														weight="1"
+														alpha="0.4"/>
+								</s:stroke>
+							</s:Line>
+						</s:VGroup>
+						<s:HGroup width="100%"
+								  height="40%"
+								  left="1"
+								  right="1">
+							<s:Button id="btnFreehand"
+									  width="100%"
+									  height="100%"
+									  icon="@Embed('/views/assets/pen_25.png')"
+									  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+									  click="excuteWhiteBoardAction(event)"
+									  toolTip="Free hand tool"
+									  rollOver="openTooltipHandler(event)"
+									  mouseDown="openTooltipHandler(event)"/>
+							<s:Button id="btnTextTool"
+									  width="100%"
+									  height="100%"
+									  label="A"
+									  fontWeight="bold"
+									  fontSize="20"
+									  color="0xA9A9A9"
+									  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+									  click="excuteWhiteBoardAction(event)"
+									  toolTip="Text tool"
+									  rollOver="openTooltipHandler(event)"
+									  mouseDown="openTooltipHandler(event)"/>
+						</s:HGroup>
+					</s:VGroup>
+
+				</s:calloutContent>
+			</s:CalloutButton>
+		</s:VGroup>
+	</s:VGroup>
+</s:Group>

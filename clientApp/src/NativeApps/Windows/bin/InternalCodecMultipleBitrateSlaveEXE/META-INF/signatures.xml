@@ -1,0 +1,53 @@
+<signatures>
+	<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"
+			   Id="PackageSignature">
+		<SignedInfo>
+			<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+			<SignatureMethod Algorithm="http://www.w3.org/TR/xmldsig-core#rsa-sha1"/>
+			<Reference URI="#PackageContents">
+				<Transforms>
+					<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+				</Transforms>
+				<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+				<DigestValue>nmIS/0/eF0/qmkrm9Df7BKTBdyuFMW/LbcK06GObwfs=</DigestValue>
+			</Reference>
+		</SignedInfo>
+		<SignatureValue Id="PackageSignatureValue">5TTjfx5SAt1jOhp86wHtDuzDXNgNTY2DajqK0x3WWIsfLlolxFu3pThUYePRGbnOGYvg613Ka8ts
+ugTelrYhL8/e1v4NgAwF7QtEfVhyNskcJZJG0NsTBYc08AkKLxyswk5n4357gL0qhL5KXfaBABka
+dJTxBflaHEAAsuhPXlg=</SignatureValue>
+		<KeyInfo>
+			<X509Data>
+				<X509Certificate>MIICCzCCAXOgAwIBAgIaMjY3MDRhY2E6MTMxNjA2NzA2ZGM6LTgwMDAwDQYJKoZIhvcNAQEFBQAw
+MjELMAkGA1UEBhMCVVMxCTAHBgNVBAoTADEJMAcGA1UECxMAMQ0wCwYDVQQDEwRhbW1hMB4XDTEx
+MDcyNDA4MjYzMFoXDTM2MDcyNTA4MjYzMFowMjELMAkGA1UEBhMCVVMxCTAHBgNVBAoTADEJMAcG
+A1UECxMAMQ0wCwYDVQQDEwRhbW1hMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDszwmpPRuT
+2I52A67W9A8D4TxuUXefbbDkZHN0K68tt1SMSz6rgRjFqSt9OImb5qoz0Bgl+f+8diqp/14rQota
+N4bcpGaZikv2l4dSMWSx/OaqbgVjZsBqqes6p7rHPDcprH96HM4zlKV+wMG8RnVKrA4EoF7kjUHg
+06lXNQ6LAwIDAQABoxcwFTATBgNVHSUEDDAKBggrBgEFBQcDAzANBgkqhkiG9w0BAQUFAAOCAIEA
+3xazGNlrkAWYQWz1C5a+jk1B/DgsGu+Y4cMLskrh+qVok+mQu8zAti7Sk7Gktmt4dg783hbVZiK3
+XexJ/txv5izQyJvQ4Q5DLupmqaaX0ZBXIU3dgbqGRUmpK7Pitv9wzR1As4GRuFTAOH/ARiFHBqJ7
+bP4jmwrHm3ov7d9evoo=</X509Certificate>
+			</X509Data>
+		</KeyInfo>
+		<Object>
+			<Manifest Id="PackageContents">
+				<Reference URI="mimetype">
+					<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256">
+					</DigestMethod>
+					<DigestValue>0/oCb84THKMagtI0Dy0KogEu92TegdesqRr/clXct1c=</DigestValue>
+				</Reference>
+				<Reference URI="META-INF/AIR/application.xml">
+					<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256">
+					</DigestMethod>
+					<DigestValue>9zbO3d/gWpEEZOHannENVJ3VZ7Zla4AdP0N3jCGNC84=</DigestValue>
+				</Reference>
+				<Reference URI="TestSlave.swf">
+					<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256">
+					</DigestMethod>
+					<DigestValue>o7+AICJMwM0SQafNbGTImU/xDCuOPrEMxZ/aiGH/tJE=</DigestValue>
+				</Reference>
+			</Manifest>
+		</Object>
+
+	</Signature>
+</signatures>

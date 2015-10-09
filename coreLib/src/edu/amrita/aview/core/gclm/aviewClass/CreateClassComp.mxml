@@ -1,0 +1,1139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+File		: CreateClassComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N, Ashish Pillai
+Reviewer(s)	:
+
+This component has the display components that is used to create new AVIEW class or edit
+existing AVIEW class details.
+
+Based on the logged in user credentials this component behaves as follows:
+Master Admin: Can view all classes, Create, edit and Delete of classes for any course any institute
+
+Institute Administrators: Can view all the classes belongs to their institute/child institutes. Create, Edit and Delete of classes are also possible within their institute boundary
+
+Presenter and Viewer: Can view only those classes for which they have been registered.
+
+Moderator: Moderator can edit class details.
+-->
+
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						xmlns:s="library://ns.adobe.com/flex/spark"
+						xmlns:mx="library://ns.adobe.com/flex/mx"
+						xmlns:xt="library://ns.tink.ws/flex/mx"
+						xmlns:components="edu.amrita.aview.core.shared.components.*"
+						width="600"
+						height="520"
+						backgroundColor="#e0effb"
+						color="#0653B3"
+						creationPolicy="all"
+						dropShadowVisible="false"
+						fontFamily="Arial"
+						fontSize="15"
+						fontWeight="bold"
+						textAlign="center"
+						creationComplete="classCompCreationComplete()">
+	<fx:Script source="CreateClassCompUIHandler.as"/>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<!--
+		<mx:StringValidator id="val_aviewClassName" maxLength="50" minLength="1" property="text"
+		requiredFieldError="Please enter Class Name" source="{aviewClassName}"
+		tooLongError="The string is too long"
+		tooShortError="The string is too short"/>
+		<mx:NumberValidator id="val_courseNameClass" lowerThanMinError="Please select Course Name"
+		minValue="0" property="selectedIndex" source="{cmbCourse}"/>
+		<mx:StringValidator id="val_startDate" property="text"
+		requiredFieldError="Please enter Start Date" source="{startDate}"/>
+		<mx:StringValidator id="val_endDate" property="text"
+		requiredFieldError="Please enter End Date" source="{endDate}"/>
+		<mx:StringValidator id="val_maxUsers" property="text"
+		requiredFieldError="Please enter maximum number of users"
+		source="{maxUsers}"/>
+		<mx:NumberValidator id="val_minBandwidth" lowerThanMinError="Please select Minimum bandwidth"
+		minValue="-1" property="selectedIndex" source="{minBandwidth}"/>
+		<mx:NumberValidator id="val_maxBandwidth" lowerThanMinError="Please select Maximum bandwidth"
+		minValue="-1" property="selectedIndex" source="{maxBandwidth}"/>
+		-->
+		<!--Server Settings-->
+		<!--<mx:NumberValidator id="val_dataServer" source="{classServers.dataServer}" property="selectedIndex" minValue="0" lowerThanMinError="Please select Data Server "/>
+		<mx:NumberValidator id="val_contentServer" source="{classServers.contentServer}" property="selectedIndex" minValue="0" lowerThanMinError="Please select Content Server "/>
+		<mx:NumberValidator id="val_desktopShareServer" source="{classServers.desktopShareServer}" property="selectedIndex" minValue="0" lowerThanMinError="Please select Desktop Share Server "/>
+		<mx:NumberValidator id="val_viewerVideoServer" source="{classServers.viewerVideoServer}" property="selectedIndex" minValue="0" lowerThanMinError="Please select Viewer Video Server "/>
+		<mx:NumberValidator id="val_presenterVideoServer" source="{classServers.presenterVideoServer}" property="selectedIndex" minValue="0" lowerThanMinError="Please select Presenter Video Server "/>-->
+		<!-- Fixed Bug #1324 end -->
+		
+		<mx:RadioButtonGroup id="rbgAmPmStartClass"/>
+		<mx:RadioButtonGroup id="rbgAmPmEndClass"/>
+		<mx:RadioButtonGroup id="rbgNumberOfVideoStream"/>
+		<mx:RadioButtonGroup id="rbgClassMode"/>
+		<mx:RadioButtonGroup id="rbgClassTypeGroup"/>
+		<mx:RadioButtonGroup id="rbgAudioVideoInteractionModeGroup"/>
+		
+		
+	</fx:Declarations>
+	<!-- Container for create class -->
+	<mx:Canvas fontSize="12"
+			   fontFamily="Arial"
+			   fontWeight="normal"
+			   textAlign="left"
+			   height="100%"
+			   width="100%">
+		<!-- Tab navigator -->
+		<mx:TabNavigator id="tabNavClass"
+						 left="5"
+						 right="5"
+						 top="2"
+						 height="440"
+						 backgroundColor="#E0EFFB"
+						 borderColor="#A3D7FF"
+						 borderStyle="solid"
+						 chromeColor="#C1DEF5"
+						 fontFamily="Arial"
+						 fontSize="12"
+						 fontWeight="normal"
+						 includeInLayout="true"
+						 tabWidth="120"
+						 textAlign="left">
+			<!-- Create class form container -->
+			<mx:Canvas id="canClassSettings"
+					   label="Class Settings"
+					   backgroundColor="#E0EFFB"
+					   borderColor="#A3D7FF"
+					   chromeColor="#CCCCCC">
+				<!-- Label to show * -->
+				<mx:Label left="10"
+						  top="24"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"/>
+				<!-- Label to show class name -->
+				<mx:Label left="20"
+						  top="25"
+						  text="Class Name : "/>
+				<!-- Text input to accepts aview class name -->
+				<mx:TextInput id="txtInpAviewClassName"
+							  left="135"
+							  top="25"
+							  width="250"
+							  height="25"
+							  maxChars="99"
+							  restrict="a-zA-Z0-9_&amp; \-"/>
+				<!-- Label to show * -->
+				<mx:Label left="10"
+						  top="64"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"/>
+				<!-- Label to show course name -->
+				<mx:Label left="20"
+						  top="65"
+						  text="Course Name : "/>
+				<!-- Filter combo box for cmb course -->
+				<xt:FilterComboBox id="cmbCourse"
+								   left="135"
+								   top="65"
+								   width="250"
+								   height="25"
+								   dataProvider="{activeCourses}"
+								   dropdownFactory="{GCLMContext.dropdownFactory}"
+								   change="courseChangeHandler()"
+								   prompt=""
+								   removeFilterOnSelection="true"
+								   labelField="courseName"
+								   selectSingleMatch="true"/>
+				<!-- Label to show * -->
+				<mx:Label left="10"
+						  top="144"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"/>
+				<!-- Label to show start date -->
+				<mx:Label left="20"
+						  top="145"
+						  width="89"
+						  text="Start Date : "/>
+				<!-- Label to show intitute name -->
+				<mx:Label left="20"
+						  top="105"
+						  width="89"
+						  text="Institute Name :"/>
+				<!-- Start date field -->
+				<components:DateFieldWithKeyDownHandler id="dateStartDate"
+														left="135"
+														top="145"
+														width="179"
+														height="25"
+														doubleClick="{dateStartDate.text=''}"
+														doubleClickEnabled="true"
+														formatString="DD/MM/YYYY"
+														selectableRange="{{rangeStart: new Date()}}"
+														yearNavigationEnabled="true"/>
+				<!-- Label to show * -->
+				<mx:Label left="10"
+						  top="184"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"/>
+				<!-- Label to show end date -->
+				<mx:Label left="20"
+						  top="185"
+						  width="89"
+						  text="End Date : "/>
+				<!-- End date field -->
+				<components:DateFieldWithKeyDownHandler id="dateEndDate"
+														left="135"
+														top="185"
+														width="179"
+														height="25"
+														doubleClick="{dateEndDate.text=''}"
+														doubleClickEnabled="true"
+														selectableRange="{{rangeStart: new Date()}}"
+														formatString="DD/MM/YYYY"
+														yearNavigationEnabled="true"/>
+				<!-- Label to show * -->
+				<mx:Label left="10"
+						  top="230"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"/>
+				<!-- Label to show class mode -->
+				<mx:Label left="19"
+						  top="230"
+						  text=" Class Mode :"/>
+				<!-- Radio button for class mode, Adhoc label -->
+				<mx:RadioButton id="rbAdhocClassType"
+								left="135"
+								top="230"
+								label="Adhoc"
+								groupName="rbgClassMode"
+								selected="true"
+								click="setCalendarDetailsEnableAccess(false)"/>
+				<!-- Radio button for class mode, Scheduled label -->
+				<mx:RadioButton id="rbScheduledClassType"
+								left="200"
+								top="230"
+								label="Scheduled"
+								groupName="rbgClassMode"
+								selected="false"
+								click="setCalendarDetailsEnableAccess(true)"/>
+				<!-- Label to show start time -->
+				<mx:Label left="20"
+						  top="275"
+						  width="89"
+						  text="Start Time : "
+						  enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Label to show hours -->
+				<mx:Label left="135"
+						  top="275"
+						  text="Hour:"
+						  enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Numberic stepper for showing hours -->
+				<mx:NumericStepper id="nsHoursStartClass"
+								   left="170"
+								   top="275"
+								   width="50"
+								   color="#000000"
+								   cornerRadius="3"
+								   creationComplete="event.target.mx_internal::inputField.restrict='0-9'; "
+								   enabled="{hasEnabledCalendarDetails}"
+								   maximum="12"
+								   minimum="0"/>
+				<!-- Label to show minute-->
+				<mx:Label left="228"
+						  top="275"
+						  text="Mins:"
+						  enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Numberic stepper for showing minutes-->
+				<mx:NumericStepper id="nsMinsStartClass"
+								   left="258"
+								   top="275"
+								   width="50"
+								   color="#000000"
+								   cornerRadius="3"
+								   creationComplete="event.target.mx_internal::inputField.restrict='0-9';"
+								   enabled="{hasEnabledCalendarDetails}"
+								   maximum="59"
+								   minimum="0"/>
+				<!-- Radio button for am -->
+				<mx:RadioButton id="rbAmStartClass"
+								left="317"
+								top="270"
+								label="am"
+								groupName="rbgAmPmStartClass"
+								selected="true"
+								enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Radio button for pm -->
+				<mx:RadioButton id="rbPmStartClass"
+								left="317"
+								top="290"
+								label="pm"
+								groupName="rbgAmPmStartClass"
+								enabled="{hasEnabledCalendarDetails}"/>
+				<!-- label to show end time -->
+				<mx:Label left="20"
+						  top="325"
+						  width="89"
+						  text="End Time : "
+						  enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Label to show hours -->
+				<mx:Label left="135"
+						  top="325"
+						  text="Hour:"
+						  enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Numeric Stepper to show hours -->
+				<mx:NumericStepper id="nsHoursEndClass"
+								   left="170"
+								   top="325"
+								   width="50"
+								   color="#000000"
+								   cornerRadius="3"
+								   creationComplete="event.target.mx_internal::inputField.restrict='0-9'; "
+								   enabled="{hasEnabledCalendarDetails}"
+								   maximum="12"
+								   minimum="0"/>
+				<!-- Label to show minutes -->
+				<mx:Label left="228"
+						  top="325"
+						  height="24"
+						  text="Mins:"
+						  enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Numeric stepper to show minutes -->
+				<mx:NumericStepper id="nsMinsEndClass"
+								   left="258"
+								   top="325"
+								   width="50"
+								   color="#000000"
+								   cornerRadius="3"
+								   creationComplete="event.target.mx_internal::inputField.restrict='0-9'; "
+								   enabled="{hasEnabledCalendarDetails}"
+								   maximum="59"
+								   minimum="0"/>
+				<!-- Radio button for am -->
+				<mx:RadioButton id="rbAmEndClass"
+								left="317"
+								top="320"
+								label="am"
+								groupName="rbgAmPmEndClass"
+								selected="true"
+								enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Radio button for pm -->
+				<mx:RadioButton id="rbPmEndClass"
+								left="317"
+								top="340"
+								label="pm"
+								groupName="rbgAmPmEndClass"
+								enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Label to show * -->
+				<mx:Label left="10"
+						  top="369"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"
+						  enabled="{hasEnabledCalendarDetails}"/>
+				<!-- Label to show weekdays -->
+				<mx:Label left="19"
+						  top="370"
+						  text=" Weekdays :"
+						  enabled="{hasEnabledCalendarDetails}"/>
+				<!--Fix for Bug#14856 :Start
+				Removed keyDown handler-->
+				<!-- Label to show monday -->
+				<mx:CheckBox id="chkMonWeekDay"
+							 left="135"
+							 top="370"
+							 label="Mon"
+							 chromeColor="#E0EFFB"
+							 enabled="{hasEnabledCalendarDetails}"
+							 />
+				<!-- Label to show Tuesday -->
+				<mx:CheckBox id="chkTueWeekDay"
+							 left="185"
+							 top="370"
+							 label="Tue"
+							 chromeColor="#E0EFFB"
+							 enabled="{hasEnabledCalendarDetails}"
+							 />
+				<!-- Label to show wednesday -->
+				<mx:CheckBox id="chkWedWeekDay"
+							 left="235"
+							 top="370"
+							 label="Wed"
+							 chromeColor="#E0EFFB"
+							 enabled="{hasEnabledCalendarDetails}"
+							 />
+				<!-- Label to show Thursday -->
+				<mx:CheckBox id="chkThuWeekDay"
+							 left="285"
+							 top="370"
+							 label="Thu"
+							 chromeColor="#E0EFFB"
+							 enabled="{hasEnabledCalendarDetails}"
+							 />
+				<!-- Label to show friday -->
+				<mx:CheckBox id="chkFriWeekDay"
+							 left="335"
+							 top="370"
+							 label="Fri"
+							 chromeColor="#E0EFFB"
+							 enabled="{hasEnabledCalendarDetails}"
+							 />
+				<!-- Label to show saturday -->
+				<mx:CheckBox id="chkSatWeekDay"
+							 left="385"
+							 top="370"
+							 label="Sat"
+							 chromeColor="#E0EFFB"
+							 enabled="{hasEnabledCalendarDetails}"
+							 />
+				<!-- Label to show sunday -->
+				<mx:CheckBox id="chkSunWeekDay"
+							 left="435"
+							 top="370"
+							 label="Sun"
+							 chromeColor="#E0EFFB"
+							 enabled="{hasEnabledCalendarDetails}"
+							 />
+				<!--Fix for Bug#14856 :End-->
+				<!-- Label to show institute name -->
+				<mx:Label id="lblInstiteName"
+						  left="135"
+						  top="103"
+						  fontSize="12"
+						  width="250"/>
+				<!-- Label to show no servers -->
+				<s:Label id="lblNoServers"
+						 left="135"
+						 top="125"
+						 color="#ED3814"
+						 fontSize="9"
+						 fontWeight="bold"/>
+				<!-- Label to show no course -->
+				<s:Label id="lblNoCourse"
+						 x="135"
+						 top="95"
+						 color="#ED3814"
+						 fontSize="9"
+						 fontWeight="bold"/>
+			</mx:Canvas>
+			<!-- Container for description area -->
+			<mx:Canvas id="canClassDescription"
+					   label="Class Description"
+					   borderColor="#A3D7FF"
+					   chromeColor="#CCCCCC">
+				<!-- Label to show class description -->
+				<mx:Label top="10"
+						  fontSize="15"
+						  fontWeight="bold"
+						  horizontalCenter="0"
+						  text="Class Description"/>	
+				<!-- Text area for class description -->
+				<s:TextArea left="10"
+							top="30"
+							right="10"
+							bottom="10"
+							id="textAreaClassDescription"
+							maxChars="3600"
+							restrict="{allowedCharactersForClassDescription}"/>
+			</mx:Canvas>
+			<!-- Container for admin settings -->
+			<mx:Canvas id="canAdminSettings"
+					   label="Admin Settings"
+					   backgroundColor="#E0EFFB"
+					   borderColor="#A3D7FF"
+					   chromeColor="#CCCCCC">
+				<!-- Label to show * -->
+				<mx:Label left="35"
+						  top="24"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"/>
+				<!-- Label to show maximum number of students -->
+				<mx:Label left="45"
+						  top="25"
+						  text="Maximum number of students :"/>
+				<!-- Text input to accepts maximum users -->
+				<mx:TextInput id="txtInpMaxUsers"
+							  left="225"
+							  top="25"
+							  height="25"
+							  maxChars="9"
+							  restrict="0-9"/>
+				<!-- Label to show * -->
+				<mx:Label left="35"
+						  top="104"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"/>
+				<!-- Label to show Minimum bandwidth to publish -->
+				<mx:Label left="45"
+						  top="65"
+						  text="Minimum bandwidth to publish :"/>
+				<!-- Label to show (for students) -->
+				<mx:Label left="110"
+						  top="120"
+						  text="(for students)"/>
+				<!-- Label to show for Interaction -->
+				<mx:Label left="46"
+						  top="160"
+						  text="for Interaction"/>
+				<!-- Fix Bug#1021 start
+				1. Removed the prompt property
+				-->
+				<!-- Combo box for MinBandwidth-->
+				<mx:ComboBox id="cmbMinBandwidth"
+							 left="225"
+							 top="65"
+							 height="25"
+							 enabled="{StringUtil.trim(lblInstiteName.text).length>0?true:false}"
+							 change ="{filterBandwidthValues(tmpMinimumPublishingBandwidths)}"
+							 dataProvider="{tmpMinimumPublishingBandwidths}"
+							 labelField="value">
+				</mx:ComboBox>
+				<!-- Fix Bug#1021 end -->
+				<!-- Label to show * -->
+				<mx:Label left="35"
+						  top="64"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontFamily="Times New Roman"
+						  fontSize="13"
+						  fontWeight="bold"
+						  text="*"/>
+				<!-- Label to show Maximum bandwith to publish -->
+				<mx:Label left="45"
+						  top="105"
+						  height="21"
+						  text="Maximum bandwith to publish :"
+						  truncateToFit="true"/>
+				<!-- Label to show (for students) -->
+				<mx:Label left="110"
+						  top="80"
+						  text="(for students)"/>
+				<!-- Fix Bug#1021 start
+				1. Removed the prompt property
+				-->
+				<!-- Combo box for MaxBandwidth -->
+				<mx:ComboBox id="cmbMaxBandwidth"
+							 left="225"
+							 top="105"
+							 height="25"
+							 enabled="{StringUtil.trim(lblInstiteName.text).length>0?true:false}"
+							 change="{filterBandwidthValues(tmpMaximimPublishingBandwidths)}"
+							 dataProvider="{tmpMaximimPublishingBandwidths}"
+							 labelField="value">
+				</mx:ComboBox>
+				<!-- Label to show Maximum Number of Viewers -->
+				<mx:Label left="45"
+						  top="145"
+						  height="21"
+						  text="Maximum Number of Viewers :"
+						  truncateToFit="true"/>
+				<!-- Combo box for MaxNumInteraction -->
+				<mx:ComboBox id="cmbMaxNumInteraction"
+							 left="225"
+							 top="150"
+							 height="25"
+							 dataProvider="{aviewClassInteractionCount}">
+				</mx:ComboBox>
+				<!-- Label to show Registration Type -->
+				<mx:Label left="45"
+						  top="190"
+						  height="21"
+						  text="Registration Type :"
+						  truncateToFit="true"/>
+				<!-- Combo box for RegistraionType -->
+				<mx:ComboBox id="cmbRegistraionType"
+							 left="225"
+							 top="190"
+							 height="25"
+							 dataProvider="{aviewClassRegistraionType}">
+				</mx:ComboBox>
+				<!-- Label to show class type -->
+				<mx:Label left="45"
+						  top="225"
+						  height="21"
+						  text="Class Type :"
+						  truncateToFit="true"/>
+				<!-- Radio button for class room type -->
+				<mx:RadioButton id="rbClassRoomType"
+								left="225"
+								top="235"
+								label="Classroom"
+								groupName="rbgClassTypeGroup"
+								selected="true"
+								click="webinarClassRoomDateSetting()"/>
+				<!-- Radio button for webinar type -->
+				<mx:RadioButton id="rbWebinarType"
+								left="315"
+								top="235"
+								label="Webinar"
+								groupName="rbgClassTypeGroup"
+								selected="false"
+								click="webinarClassRoomDateSetting()"/>
+				<!-- Text for ClassRoomInstruction -->
+				<!-- Fix for Bug #20281 start -->  
+				<mx:Text id="txtClassRoomInstruction"
+						 left="45"
+						 top="250"
+						 width="100%"
+						 color="#ED3814"/>
+				<!-- Fix for Bug #20281 end -->  
+				<!-- Fix Bug#1021 end -->
+				<!-- Fix for Bug #19558 start -->  
+				<!-- Label to show canMonitor  -->
+				<mx:Label left="45"
+						  top="270"
+						  height="21"
+						  text="Upload Viewer Photos : "
+						  truncateToFit="true"/>
+				<!-- Radio button for Yes type -->
+				<mx:RadioButton id="rbCanMonitorYes"
+								left="225"
+								top="270"
+								label="Yes"
+								groupName="rbgCanMonitorGroup"
+								selected="false"
+								click="setMonitorIntervalFrequencyditable(rbCanMonitorYes.selected)"/>
+				<!-- Radio button for No type -->
+				<mx:RadioButton id="rbCanMonitorNo"
+								left="300"
+								top="270"
+								label="No"
+								groupName="rbgCanMonitorGroup"
+								selected="true"
+								click="setMonitorIntervalFrequencyditable(!rbCanMonitorNo.selected)"/>
+				<!-- Label to show Monitor interval frequency -->
+				<mx:Label id="rbMonitorIntervalFreqLbl"
+						  left="45"
+						  top="305"
+						  height="21"
+						  text="Upload Frequency :"
+						  truncateToFit="true"/>
+				<!-- Fix for Bug #19558 end -->	
+				<!-- Combo box for Monitor interval frequency -->
+				<mx:ComboBox id="cmbUploadFrequency"
+							 left="225"
+							 top="305"
+							 height="25"
+							 selectedIndex="-1"
+							 dataProvider="{uploadFrequencyValue}"
+							 enabled="false">
+				</mx:ComboBox>
+				<!-- Label to show Monitor interval frequency -->
+				<mx:Label id="rbMinutes"
+						  left="315"
+						  top="305"
+						  height="21"
+						  text="Minutes"
+						  truncateToFit="true"/>
+				<!-- Label to show Audio video interaction mode  -->
+				<mx:Label left="45"
+						  top="340"
+						  height="21"
+						  text="Video Mode: "
+						  truncateToFit="true"/>
+				
+				
+				<mx:Canvas x="226" y="340" borderColor="#b5b5b5" borderStyle="solid" borderVisible="true"
+						   chromeColor="#B5B5B5" cornerRadius="3">
+					<s:HGroup gap="-1">
+						<s:BorderContainer id="videoModeDelayContainer" width="96" height="28"
+										   backgroundColor="#FFFFFF" borderVisible="false"
+										   cornerRadius="3">
+							<s:layout>
+								<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+													paddingLeft="2" paddingRight="2"
+													paddingTop="1" verticalAlign="middle"/>
+							</s:layout>
+							
+							<!-- Fix for bug 19923 start -->
+							<mx:RadioButton id="rbFullType" 
+											chromeColor="#E0EFFB" toolTip="Recommended for interactive sessions (Less Delay)"
+											click="changeSelection('videoMode')"
+											fontFamily="Arial" fontSize="12"
+											fontWeight="bold"
+											groupName="rbgAudioVideoInteractionModeGroup"
+											selected="true"
+											label="Less Delay"
+											tabIndex="0"/>						
+						</s:BorderContainer>
+						<mx:VRule width="2" height="28" chromeColor="#cfcfcf"/>
+						<s:BorderContainer id="VideoModeQualityContainer" width="143" height="28"
+										   borderColor="#7f97b0" borderVisible="false"
+										   backgroundColor="#F0F0F0"
+										   cornerRadius="3">
+							<s:layout>
+								<s:HorizontalLayout gap="0" horizontalAlign="center"
+													paddingBottom="2" paddingLeft="2"
+													paddingRight="2" paddingTop="1"
+													verticalAlign="middle"/>
+							</s:layout>
+							
+							<mx:RadioButton id="rbMinimalType"
+											chromeColor="#E0EFFB" toolTip="Recommended for presentation-only sessions (Higher Video Quality)"
+											click="changeSelection('videoMode');toggleCheckFmle(event)"
+											color="#026293" fontFamily="Arial"
+											fontSize="12" fontWeight="bold"
+											groupName="rbgAudioVideoInteractionModeGroup"
+											selected="false"
+											label="Higher Video Quality"
+											tabIndex="1"/>
+							<!-- Fix for bug 19923 end -->
+						</s:BorderContainer>
+					</s:HGroup>
+					
+				</mx:Canvas>
+				<!-- Label to show Enable people count  -->
+				<mx:Label left="45"
+				          top="375"
+				          height="21"
+				          text="Enable People Count: "
+				          truncateToFit="true"/>
+				<!-- Radio button for Yes type -->
+				<mx:RadioButton id="rbEnablepeopleCountYes"
+				                left="225"
+				                top="375"
+				                selected="false"
+				                label="Yes"
+				                groupName="rbgEnablePeopleCountGroup"/>
+				
+				<!-- Radio button for No type -->
+			   <mx:RadioButton id="rbEnablepeopleCountNo"
+				               left="300"
+				               top="375"
+				               selected="true"
+				               label="No"
+				               groupName="rbgEnablePeopleCountGroup"/>										
+
+			</mx:Canvas>
+			<!-- Container for video settings -->
+			<mx:Canvas id="canVideoSettings"
+					   width="100%"
+					   height="100%"
+					   label="Video Settings "
+					   borderColor="#A3D7FF"
+					   chromeColor="#CCCCCC">
+				<!-- Label to show Settings for Teacher Video -->
+				<mx:Label top="20"
+						  fontSize="15"
+						  fontWeight="bold"
+						  horizontalCenter="0"
+						  text="Settings for Teacher Video"/>
+				<!-- Label to show Video Compression -->
+				<mx:Label left="52"
+						  top="80"
+						  text="Video Compression : "/>
+				<!-- Combo box for VideoCompression -->
+				<!-- Fix for Bug #14857 start --> 
+				<mx:ComboBox id="cmbVideoCompression"
+							 left="160"
+							 top="80"
+							 dataProvider="{Constants.VIDEO_COMPRESSION_TECHNIQUES}"
+							 focusOut="resetVideoData()"
+							 enter="resetVideoData()"
+							 change="resetVideoData()"
+							 selectedIndex="1"
+							 labelField="value"/>
+				<!-- Fix for Bug #14857 end -->
+				<!-- text for Number of video streams -->
+				<mx:Text left="75"
+						 top="150"
+						 text="Number of video streams : "/>
+				<!-- Added for New UI , Bandwidth selection start -->
+				<!-- Radio button for SingleVideoStream -->
+				<mx:RadioButton id="rbSingleVideoStream"
+								left="217"
+								top="150"
+								label="Single"
+								click="showMultipleVideoStream(false)"
+								groupName="rbgNumberOfVideoStream"
+								selected="true"
+								enabled="false"/>
+				<!-- Radio button for MultipleVideoStream -->
+				<mx:RadioButton id="rbMultipleVideoStream"
+								right="150"
+								top="150"
+								width="64"
+								label="Multiple"
+								click="showMultipleVideoStream(true)"
+								groupName="rbgNumberOfVideoStream"
+								selected="false"
+								enabled="false"/>
+				<!-- Label to show Select the Bandwidth -->
+				<mx:Label top="200"
+						  horizontalCenter="0"
+						  text="Select the Bandwidth(s) ">
+					<!-- Tool tip -->
+					<mx:toolTip>The sum of selected bandwidths should be less than 50% of teacher's upload bandwidth.
+						For ex : Assume that teacher's available bandwidth is 1 mbps, 
+						then the sum of the selected bandwidth should be 500 kbps
+					</mx:toolTip>
+				</mx:Label>
+				<!-- List to show AvailableBandwidth -->
+				<mx:List id="lstAvailableBandwidth"
+						 top="220"
+						 width="132"
+						 height="120"
+						 dataProvider="{bandwidthsStillAvailableForSelection}"
+						 doubleClick="addToSelectedBandwidthHandler(event)"
+						 doubleClickEnabled="true"
+						 horizontalCenter="-130"
+						 labelField="value">
+				</mx:List>
+				<!-- Add to list button -->
+				<mx:Button id="btnAddToList"
+						   top="240"
+						   label="&gt;&gt;"
+						   chromeColor="#E0EFFB"
+						   click="addToSelectedBandwidthHandler(event)"
+						   color="#000000"
+						   cornerRadius="3"
+						   horizontalCenter="0"/>
+				<!-- Remove from list button -->
+				<mx:Button id="btnRemoveFromList"
+						   top="298"
+						   label="&lt;&lt;"
+						   chromeColor="#E0EFFB"
+						   click="removeFromSelectedBandwidthHandler(event)"
+						   color="#000000"
+						   cornerRadius="3"
+						   horizontalCenter="0"/>
+				<!-- List to show selected bandwidth-->
+				<mx:List id="lstSelectedBandwidth"
+						 top="220"
+						 width="132"
+						 height="120"
+						 dataProvider="{bandwidthsSelectedForStreaming}"
+						 doubleClick="removeFromSelectedBandwidthHandler(event)"
+						 doubleClickEnabled="true"
+						 editable="false"
+						 horizontalCenter="130"
+						 labelField="value">
+				</mx:List>
+				<!-- Added for New UI , Bandwidth selection end -->
+			</mx:Canvas>
+			
+			<!-- Container for server settings -->
+			<mx:Canvas id="canServerSettings"
+					   label="Server Settings"
+					   borderColor="#A3D7FF"
+					   chromeColor="#CCCCCC"
+					   enabled="{hasSelectedCourse}">
+				<!-- Label to show * -->
+				<mx:Label x="16"
+						  y="19"
+						  text="*"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontSize="13"
+						  fontWeight="bold"
+						  fontFamily="Times New Roman"/>
+				<!-- Label to show Collaboration server -->
+				<mx:Label left="24"
+						  top="20"
+						  text="{Constants.FMS_DATA_DISPLAY}">
+					<mx:toolTip>Select the server which you want to configure as {Constants.FMS_DATA_DISPLAY}</mx:toolTip>
+				</mx:Label>
+				<!-- Combo box for data server -->
+				<mx:ComboBox id="cmbDataServer"
+							 left="200"
+							 top="20"
+							 width="182"
+							 height="25"
+							 itemRenderer="mx.controls.Label"
+							 dataProvider="{fmsDataServersAC}"
+							 labelField="serverName">
+					<!-- Tool tip -->
+					<mx:toolTip>
+					</mx:toolTip>
+				</mx:ComboBox>
+				<!-- Label to show * -->
+				<mx:Label x="16"
+						  y="59"
+						  text="*"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontSize="13"
+						  fontWeight="bold"
+						  fontFamily="Times New Roman"/>
+				<!-- Label to show Content Server -->
+				<mx:Label left="24"
+						  top="60"
+						  text="{Constants.CONTENT_SERVER_DISPLAY}">
+					<mx:toolTip>Select the server which you want to configure as {Constants.CONTENT_SERVER_DISPLAY}</mx:toolTip>
+				</mx:Label>
+				<!-- Combo box for Content Server -->
+				<mx:ComboBox id="cmbContentServer"
+							 left="200"
+							 top="60"
+							 width="182"
+							 height="25"
+							 itemRenderer="mx.controls.Label"
+							 dataProvider="{contentServersAC}"
+							 labelField="serverName">
+					<!-- Tool tip -->
+					<mx:toolTip>
+					</mx:toolTip>
+				</mx:ComboBox>
+				<!-- Label to show * -->
+				<mx:Label x="16"
+						  y="99"
+						  text="*"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontSize="13"
+						  fontWeight="bold"
+						  fontFamily="Times New Roman"/>
+				<!-- Label to show Desktop Sharing Server -->
+				<mx:Label left="24"
+						  top="100"
+						  text="{Constants.FMS_DESKTOP_SHARING_DISPLAY}">
+					<mx:toolTip>Select the server which you want to configure as {Constants.FMS_DESKTOP_SHARING_DISPLAY}</mx:toolTip>
+				</mx:Label>
+				<!-- Combo box for desktop share server -->
+				<mx:ComboBox id="cmbDesktopShareServer"
+							 left="200"
+							 top="100"
+							 width="182"
+							 height="25"
+							 itemRenderer="mx.controls.Label"
+							 dataProvider="{fmDesktopSharingServersAC}"
+							 labelField="serverName">
+					<!-- Tool tip -->
+					<mx:toolTip>
+					</mx:toolTip>
+				</mx:ComboBox>
+				<!-- Label to show * -->
+				<mx:Label x="16"
+						  y="139"
+						  text="*"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontSize="13"
+						  fontWeight="bold"
+						  fontFamily="Times New Roman"/>
+				<!-- Label to show Viewer Video Server -->
+				<mx:Label left="24"
+						  top="140"
+						  text="{Constants.FMS_VIEWER_DISPLAY}">
+					<mx:toolTip>Select the server which you want to configure as {Constants.FMS_VIEWER_DISPLAY}</mx:toolTip>
+				</mx:Label>
+				<!-- Combo box for ViewerVideoServer -->
+				<mx:ComboBox id="cmbViewerVideoServer"
+							 left="200"
+							 top="140"
+							 width="182"
+							 height="25"
+							 itemRenderer="mx.controls.Label"
+							 dataProvider="{fmVideoViewerServersAC}"
+							 labelField="serverName">
+					<!-- Tool tip -->
+					<mx:toolTip>
+					</mx:toolTip>
+				</mx:ComboBox>
+				
+				<!-- Label to show * -->
+				<mx:Label x="16"
+						  y="179"
+						  text="*"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontSize="13"
+						  fontWeight="bold"
+						  fontFamily="Times New Roman"/>
+				<!-- Label to show Presenter Video Server -->
+				<mx:Label id="lblFirstVideoServer"
+						  left="24"
+						  top="180"
+						  text="{Constants.FMS_PRESENTER_DISPLAY} - 1">
+					<mx:toolTip>Select the server which you want to configure as {Constants.FMS_PRESENTER_DISPLAY}</mx:toolTip>
+				</mx:Label>
+				<!-- Combo box for Presenter Video Server1-->
+				<mx:ComboBox id="cmbPresenterVideoServer1"
+							 left="200"
+							 top="180"
+							 width="182"
+							 height="25"
+							 itemRenderer="mx.controls.Label"
+							 dataProvider="{fmVideoPresenterServersAC}"
+							 labelField="serverName">
+					<!-- Tool tip -->
+					<mx:toolTip>
+					</mx:toolTip>
+				</mx:ComboBox>
+				<!-- Label to show firstBandwidthText -->
+				<mx:Label x="387"
+						  y="182"
+						  id="firstBandwidthText"
+						  fontThickness="10"/>
+				
+				<!-- Label to show SecondStarMark -->
+				<mx:Label x="16"
+						  y="219"
+						  id="lblSecondStarMark"
+						  text="*"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontSize="13"
+						  fontWeight="bold"
+						  fontFamily="Times New Roman"
+						  visible="{rbMultipleVideoStream.selected}"/>
+				<!-- Label to show SecondVideoServerLabel -->
+				<mx:Label id="lblSecondVideoServerLabel"
+						  visible="{rbMultipleVideoStream.selected}"
+						  left="24"
+						  top="220"
+						  text="{Constants.FMS_PRESENTER_DISPLAY} - 2">
+					<mx:toolTip>Select the server which you want to configure as {Constants.FMS_PRESENTER_DISPLAY}</mx:toolTip>
+				</mx:Label>
+				<!-- Combo box for PresenterVideoServer2 -->
+				<mx:ComboBox id="cmbPresenterVideoServer2"
+							 visible="{rbMultipleVideoStream.selected}"
+							 left="200"
+							 top="220"
+							 width="182"
+							 height="25"
+							 itemRenderer="mx.controls.Label"
+							 dataProvider="{fmVideoPresenterServersAC}"
+							 labelField="serverName">
+					<!-- Tool tip -->
+					<mx:toolTip>
+					</mx:toolTip>
+				</mx:ComboBox>
+				<!-- Label to show SecondBandwidthText -->
+				<mx:Label x="387"
+						  y="222"
+						  id="lblSecondBandwidthText"
+						  fontThickness="10"
+						  visible="{rbMultipleVideoStream.selected}"/>
+				
+				<!-- Label to show ThirdStarMark -->
+				<mx:Label x="16"
+						  y="259"
+						  id="lblThirdStarMark"
+						  text="*"
+						  width="12"
+						  height="18"
+						  color="#ED3814"
+						  fontSize="13"
+						  fontWeight="bold"
+						  fontFamily="Times New Roman"
+						  visible="{rbMultipleVideoStream.selected}"/>
+				<!-- Label to show ThirdVideoServerLabel -->
+				<mx:Label id="lblThirdVideoServerLabel"
+						  visible="{rbMultipleVideoStream.selected}"
+						  left="24"
+						  top="260"
+						  text="{Constants.FMS_PRESENTER_DISPLAY} - 3">
+					<!-- Tool tip -->
+					<mx:toolTip>Select the server which you want to configure as {Constants.FMS_PRESENTER_DISPLAY}</mx:toolTip>
+				</mx:Label>
+				<!-- Combo box for PresenterVideoServer3 -->
+				<mx:ComboBox id="cmbPresenterVideoServer3"
+							 visible="{rbMultipleVideoStream.selected}"
+							 left="200"
+							 top="260"
+							 width="182"
+							 height="25"
+							 itemRenderer="mx.controls.Label"
+							 dataProvider="{fmVideoPresenterServersAC}"
+							 labelField="serverName">
+					<!-- Tooltip -->
+					<mx:toolTip>
+					</mx:toolTip>
+				</mx:ComboBox>
+				<!-- Label to show ThirdBandwidthText-->
+				<mx:Label x="387"
+						  y="262"
+						  id="lblThirdBandwidthText"
+						  fontThickness="10"
+						  visible="{rbMultipleVideoStream.selected}"/>
+			</mx:Canvas>
+			
+		</mx:TabNavigator>
+		<!-- Button to save -->
+		<components:MxImageButton id="btnSaveClass"
+								  bottom="15"
+								  label="Save"
+								  chromeColor="#E0EFFB"
+								  click="preCheckCreateClass();"
+								  color="#000000"
+								  cornerRadius="3"
+								  fontFamily="Arial"
+								  fontSize="12"
+								  fontWeight="normal"
+								  horizontalCenter="-50"/>
+		<!-- Button to cancel -->
+		<components:MxImageButton bottom="15"
+								  label="Cancel"
+								  chromeColor="#E0EFFB"
+								  click="closeCreateClassComp();"
+								  color="#000000"
+								  cornerRadius="3"
+								  fontFamily="Arial"
+								  fontSize="12"
+								  fontWeight="normal"
+								  horizontalCenter="50"/>
+		
+		
+	</mx:Canvas>
+	<!-- Icon to close create component -->
+	<components:WindowCloseImage right="5"
+								 top="-25"
+								 id="imgClose"
+								 click="closeCreateClassComp()"/>
+</components:InsidePanel>

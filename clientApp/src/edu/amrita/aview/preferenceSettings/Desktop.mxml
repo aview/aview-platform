@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="415"
+		  height="435"
+		  paddingBottom="5"
+		  paddingLeft="5"
+		  paddingRight="5"
+		  paddingTop="35"
+		  gap="25" xmlns:toggleSwitch="edu.amrita.aview.common.components.toggleSwitch.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+	<s:HGroup id="UserlistTitleGrp"
+			  width="100%"
+			  height="68"
+			  verticalAlign="top">
+		<s:VGroup width="293">
+			<s:Label fontSize="14"
+					 fontWeight="bold"
+					 text="Un-interrupted Desktop Sharing"/>
+			<s:HGroup>
+				<!--<s:Label width="14" height="12" fontSize="20" fontWeight="bold" text="•"
+						 verticalAlign="top"/>-->
+				<s:Label width="360" height="40" color="#868686"
+						 lineHeight="120%"
+						 text="Enabling this feature will not stop sharing your desktop when you switch to other tabs (Document, Whiteboard, etc.,)."
+						 verticalAlign="middle"/>
+			</s:HGroup>
+		</s:VGroup>
+		<toggleSwitch:ToggleSwitch id="chkBoxDesktopSharingInteraction"
+								   width="50"
+								   height="10"
+								   left="5"
+								   deselectedLabel="Off"
+								   selectedLabel="On"
+								   styleName="toggleSwitch"/>
+	</s:HGroup>
+	<mx:HRule width="100%"
+			  height="1"
+			  chromeColor="#CAD5DB"/>
+	<s:HGroup width="100%"
+			  height="68"
+			  id="hgSharingColorQuality"
+			  verticalAlign="top">
+		<s:VGroup id="vgSharingColorQuality" width="360" verticalAlign="middle">
+			<s:HGroup id="hgColorQualitySettings" width="100%" verticalAlign="middle" height="40">
+				<s:Label id="lblDesktopQuality"
+						 fontSize="14"
+						 fontWeight="bold"
+						 text="Desktop Sharing Quality"/>
+				<s:Spacer width="100%"/>
+				<!--For Stream Color Quality Setting-->
+				<mx:ComboBox id="videoQualityList"
+							 width="85"
+							 height="22"
+							 color="#000000"
+							 rollOverColor="#e0effb"
+							 selectionColor="#99d0ff" 
+							 toolTip="Select Quality"
+							 change="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.prefSettings.colorQualityChangeEvent()">
+					<mx:ArrayCollection id="colorQualityOption">
+							<fx:Array>
+								<fx:Object label="Low" value="0" />
+								<fx:Object label="Average" value="1000" />
+								<fx:Object label="High" value="2000" />
+							</fx:Array>
+					</mx:ArrayCollection>
+				</mx:ComboBox>
+			</s:HGroup>
+			<s:HGroup id="hgColorQualityDescription">
+				<s:Label id="lblColorQualityDescription"
+						 width="400"
+						 height="45"
+						 lineHeight="120%"
+						 color="#868686"
+						 text="Higher qualities will consume more bandwidth, higher values are recommended only when screen has animation / video."
+						 verticalAlign="middle"
+						 paddingBottom="20"/>
+			</s:HGroup>
+		</s:VGroup>
+			
+	</s:HGroup>
+</s:VGroup>

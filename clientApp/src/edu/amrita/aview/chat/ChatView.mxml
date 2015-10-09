@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: ChatView.mxml
+Module		: Chat
+Developer(s): Bri.Radha
+Reviewer(s)	: Vishnupreethi K 
+
+-->
+<!--
+VPCR: Add file description 
+-->
+
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="400" height="300" currentState="SimpleView">
+	
+	<s:states>
+		<s:State name="SimpleView"/>
+		<s:State name="ExpandedView"/>
+	</s:states>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="ChatViewHandler.as"/>
+	<s:VGroup top="2" width="100%" height="100%" gap="2">
+		<s:HGroup 
+			width="100%"
+			height="30"
+			horizontalAlign="center"
+			verticalAlign="middle"
+			gap="25">
+			<!-- Button to clear chat message-area to remove all logged chat messages -->
+			<s:Button id="clearChatButton"
+					  visible="{isModerator}"
+					  width="30"
+					  includeInLayout="{isModerator}"
+					  click="clearChatArea()"
+					  skinClass="edu.amrita.aview.common.skins.CustomTransparentButtonSkin"
+					  icon="@Embed('assets/images/clearChat_msgs.png')"
+					  toolTip="{resourceManager.getString('myResource','chatmode.clearchat')}"
+					  useHandCursor="true"
+					  buttonMode="true"/>
+			<s:HGroup horizontalAlign="right"
+					  verticalAlign="middle"
+					  gap="5" id="hGroupForZoom">
+				<s:Label fontSize="12"
+						 fontWeight="bold"
+						 text="{resourceManager.getString('myResource','chatmode.textsize')}"
+						 paddingTop="9"/>
+				<!--	Draggable slider to adjust the font size in jumps of 5	-->
+				<s:HSlider id="zoomSize"
+						   width="85"
+						   enabled="true"
+						   liveDragging="true"
+						   maximum="100"
+						   minimum="12"
+						   snapInterval="5"
+						   value="12"
+						   change="{zoomSizeChangeHandler(event)}"/>
+			</s:HGroup>
+			<s:ToggleButton id="showMembers" toolTip="click to see participants" selected="false" 
+							right="45" top="6" width="20" height="15" 
+							chromeColor="#529AE5" 
+							icon="@Embed(source='assets/images/users.png')"/>
+		</s:HGroup>
+						
+		<!-- Text area that displays the chat message-->
+		<s:TextArea id="messageArea"
+					width="100%"
+					height="90%"
+					editable="false"
+					textFlow="{_chatModel.chatSessionVO.chatHistoryTextFlow}"
+					valueCommit="{zoomChatMessageArea(event)}"/>  <!--text="{_chatModel.chatHistory}"  -->
+		<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
+			<!--Text Input to enter chat messge-->
+			<s:TextInput x="0"
+						 y="{messageArea.height}"
+						 width="85%"
+						 id="chatMessageInput"
+						 enter="sendChatMessage()"
+						 text="@{chatMessage}"/>
+			<s:Image source="@Embed('assets/images/sendChat_msg.png')"
+					 buttonMode="true"
+					 toolTip="Click to send message"
+					 click="sendChatMessage()">
+			</s:Image>
+		</s:HGroup>
+	</s:VGroup>
+	<s:VGroup includeIn="ExpandedView" height="100%" gap="3">
+		<s:Spacer height="{hGroupForZoom.height + 8}"/>
+		<s:List id="chatMembersList" includeIn="ExpandedView" width="146" height="{messageArea.height}"
+				allowMultipleSelection="true"
+				change="{onChatMemberSelectionChange(event)}"
+				dataProvider="{chatModel.chatSessionVO.members}"
+				itemRenderer="edu.amrita.aview.chat.itemRenderers.ChatMembersListItemRenderer"/>
+		<s:HGroup id="buttonGroup" width="100%" horizontalAlign="center" verticalAlign="middle" 
+				  visible="{(chatModel.chatSessionVO.isPrivateChat=='N')}"
+				  includeInLayout="{(chatModel.chatSessionVO.isPrivateChat=='N')}"
+				  >
+			<s:Button id="btnAdd" label="Add" click="{onClickAddChatMembers(event)}"/>
+			<s:Button id="btnDelete" label="Delete" enabled="false" click="{onClickDeleteChatMembers(event)}"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:HGroup>

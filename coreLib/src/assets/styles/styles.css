@@ -1,0 +1,344 @@
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace components "components.*";
+@namespace components1 "edu.amrita.aview.common.components.*";
+@namespace skins "assets.skins.*";
+@namespace skins1 "edu.amrita.aview.common.skins.*";
+@namespace skins2 "edu.amrita.aview.common.skins.*";
+@namespace skins3 "edu.amrita.aview.common.skins.*";
+@namespace skins4 "edu.amrita.aview.shared.skins.*";
+@namespace skins5 "edu.amrita.aview.core.shared.skins.*";
+@font-face
+{
+    src: url("../fonts/MyriadWebPro.ttf");
+    font-family: main;
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face
+{
+    src: url("../fonts/MyriadWebPro-Bold.ttf");
+    font-family: main;
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face
+{
+	src: url("../fonts/Calibri.ttf");
+	fontFamily: Calibri;
+	embedAsCFF:true;
+}
+
+@font-face
+{
+	src: url("../fonts/Calibri-Bold.ttf");
+	fontFamily: Calibri-Bold; 
+	embedAsCFF:true;
+}
+mx|WindowedApplication {
+	padding-top:0;
+	padding-bottom:0;
+	padding-left:0;
+	padding-right:0;
+	vertical-gap:0;
+	font-family: main;
+	color: #333333;
+	font-size: 11;
+}
+mx|Alert{
+	background-color:#e0effb;
+	corner-radius: 8;
+	color:#000000;
+	font-family:verdana;
+	font-size:11;
+	area-fill:#2a5fa3;
+/*	border-color:#2a5fa3;*/
+	border-style:solid;
+	text-align:center;
+	chromeColor:#2a5ea4;
+	accentColor:#e0effb;
+	title-style-name:alertTitleStyle;
+	buttonStyleName: "alertButton";
+}
+
+.alertButton {
+	letterSpacing: 0;
+	fontSize: 11;
+	cornerRadius: 3;
+	fontWeight: bold;
+	textRollOverColor:#2a5fa3;
+	color: #2a5fa3;
+	accentColor:#56adf2;
+	chromeColor:#e0effb;
+}
+
+mx|ComboBox
+{
+	cornerRadius:4;
+	chromeColor:#e0effb;
+}
+.alertTitleStyle
+{
+	font-weight:bold;
+	font-size:12;
+	color:#FFFFFF; 
+	text-align:left;
+}
+
+s|VScrollBar
+{
+	chromeColor:#e0effb;
+	symbolColor:#2a5ea4;
+}
+
+mx|VScrollBar
+{
+	chromeColor:#e0effb;
+	symbolColor:#2a5ea4;
+	
+}
+mx|HScrollBar
+{
+	chromeColor:#e0effb;
+	symbolColor:#2a5ea4;
+}
+
+s|HScrollBar
+{
+	chromeColor:#e0effb;
+	symbolColor:#2a5ea4;
+}
+
+s|TitleWindow {
+	skinClass:ClassReference("edu.amrita.aview.core.shared.skins.CustomTitleWindowSkin");
+	background-color:#e0effb;
+	corner-radius:6;
+	title-style-name:alertTitleStyle;
+	
+}
+
+ .appContainer {
+/*	 background-image: Embed("../images/app_skin.png" ,
+			scaleGridLeft="15",
+			scaleGridRight="970",
+			scaleGridTop="60",
+			scaleGridBottom="64" ); */
+	background-size: "100%";
+} 
+C
+mx|Button {
+/*	skin: Embed("../images/button_skin.png",
+			scaleGridLeft="8",
+			scaleGridRight="23",
+			scaleGridTop="8",
+			scaleGridBottom="21");
+	over-skin: Embed("../images/button_over_skin.png",
+			scaleGridLeft="8",
+			scaleGridRight="23",
+			scaleGridTop="8",
+			scaleGridBottom="21");*/
+	open-duration: 0;
+	close-duration: 0;
+	corner-radius: 2;
+	fontSize: 11;
+	chromeColor:#e0effb;
+	accentColor:#e0effb;
+	
+}
+
+.popupButton {
+	open-duration: 0;
+	close-duration: 0;
+}
+
+
+mx|TextInput {
+	border-skin: ClassReference("edu.amrita.aview.core.shared.skins.CustomTextInputSkin");
+	border-style:solid;
+	border-thickness: 1;
+	border-color: #030303;
+	corner-radius: 5;
+	padding-left: 2;
+	vertical-align:middle;
+	content-background-alpha:0;
+	depth-colors:#FFCC33, #FFCC99, #CC9900;
+} 
+
+.linkButtonMenu {
+	
+}
+
+mx|Panel {
+	border-color:#e0effb;
+	border-alpha:1;
+	title-style-name:alertTitleStyle;
+	chromeColor:#2a5ea4;
+	cornerRadius:6;
+}
+
+s|Panel {
+	skinClass:ClassReference("edu.amrita.aview.core.shared.skins.CustomPanelSkin");
+	cornerRadius:6;
+	border-color:#2a5ea4;
+	border-visible:true;
+	border-alpha:1;
+	/*	
+	title-style-name:alertTitleStyle;
+	chromeColor:#2a5ea4;*/
+}
+mx|Label{
+	fontSize: 11;	
+}
+
+Ratings{
+	horizontal-gap:10;
+	padding-top:0;
+	padding-left:6;
+}
+
+RatingItem{
+	border-alpha:0.5;
+	fill-colors:#E6E6E6,#C7C7C7;
+	fill-alphas:0.9,1;
+}
+
+.dataGridHeader
+{
+	fontWeight:bold;	
+}
+
+SuperTabNavigator {
+	border-style:none;
+	corner-Radius: 0;
+	tab-style-name: "myButtonStyleName";
+	first-button-style-name: "myButtonStyleName";
+	last-button-style-name: "myButtonStyleName";
+	selected-tab-text-style-name: "mySelectedTabs";
+	tab-height: 27;
+	padding-top:0;
+}
+
+
+.title
+{
+	/* color:#535353; */
+	color:#666666;
+    font-family: main; 
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+.smallTitle
+{
+	color:#535353;	
+    font-family: main; 
+    font-size: 12pt;
+}
+
+.appTitle
+{
+	color:#FFFFFF;
+    font-family: main; 
+    font-size: 20pt;
+}
+
+
+mx|VSlider {
+	show-track-highlight: true;
+	theme-color: #1C7487;
+}
+
+.welcome {
+	font-family: main;
+	color: #535353;
+	font-size: 12;
+	font-weight: bold;
+}
+	
+.linkButtonList {
+	corner-radius: 0;
+	text-align:left;
+	font-weight:normal;
+}	
+
+.viewAllLink {
+	text-decoration:underline;
+	color: #0000CC;
+	roll-over-color: #FFFFFF;
+}
+
+.nestedTab {
+	button-style-name: nestedTabButton;
+	first-button-style-name: nestedTabButton;		
+	last-button-style-name: nestedTabButton;
+}
+
+.videoPauseStyle
+{
+	font-family: Georgia;
+	font-size: 12;
+	color: #f11515;
+	font-weight: bold;
+}
+
+.myTabs
+{
+	fontWeight:bold;
+	backgroundColor:#E0EFFB;
+}
+
+.myLabel
+{
+	textDecoration:"none"	
+}
+.myLinkLabel
+{
+	
+	textDecoration:"underline";
+}
+
+s|DataGrid
+{
+	alternatingRowColors: #edf4fa, #ffffff;
+}
+s|TextInput
+{
+	skin-class: ClassReference("edu.amrita.aview.core.shared.skins.CustomTextInputSkin");
+	
+}
+
+skins5|CustomHeaderRender
+{
+		textAlign:center;
+}
+
+.toggleSwitch
+{
+	skinClass:ClassReference("edu.amrita.aview.core.shared.components.toggleSwitch.ToggleSwiitchSkin");
+}
+
+mx|DataGrid
+{
+	chromeColor:#E0EFFB;
+	color:#000000;
+}
+mx|CheckBox
+{
+	chromeColor:#E0EFFB;
+	color:#000000;
+}
+s|CheckBox
+{
+	chromeColor:#E0EFFB;
+	color:#000000;
+}
+.statusFontColor
+{
+	color: #FFFFFF;
+}
+.quicknotecolor
+{
+	statusBarBackgroundColor: #2a5da4;
+	color: #FFFFFF;
+}

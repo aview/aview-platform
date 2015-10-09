@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+  VPCR: Add file description */
+-->
+<!---
+
+File		: CheckBoxItemRenderer.mxml
+Module		: common
+Developer(s): Abhirami
+Reviewer(s)	: Sivaram SK,Vishnupreethi K
+
+-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="40"
+		 height="23"
+		 horizontalAlign="center"
+		 verticalAlign="middle"
+		 xmlns:s="library://ns.adobe.com/flex/spark">
+	<!-- CheckBox itemrenderer -->
+	<s:CheckBox selected="{(data.isSelected == true)?true:false}"
+				click="{data.isSelected = (data.isSelected !=true) ? true : false;}"/>
+</mx:HBox>

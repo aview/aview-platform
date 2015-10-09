@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: DesktopPlayer.mxml
+Module		: DesktopSharing
+Developer(s): Ajith Kumar R,Remya T
+Reviewer(s)	: Meena S
+
+This file is the custom window component for viewing desktop stream.
+
+-->
+<!-- Main Window Container -->
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  minWidth="920" 
+		  minHeight="680"
+		  title="{'Desktop Sharing (A-VIEW - '+ClassroomContext.aviewClass.className+')'}"
+		  backgroundColor="#e0effb"
+		  creationComplete="init();"
+		  close="closeWindow();"
+		  systemChrome="standard"
+		  type="normal"
+		  status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+		  skinClass="edu.amrita.aview.core.shared.skins.CustomWindowSkin">
+	<!--Fix for issue #15410: Added copy right text and fix for issue #15411: Added minwidth and minheight-->
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="DesktopPlayerHandler.as"/>
+	<!--Fix for issue #15522: Changed bottom value 20 to 0-->
+	<s:BorderContainer width="100%" 
+					   height="100%" 
+					   id="desktopPlayerContainer"
+					   x="0"
+					   y="0"
+					   resize="onResize()"
+					   top="0"
+					   bottom="0"
+					   borderStyle="solid">
+		
+	</s:BorderContainer>
+</s:Window>

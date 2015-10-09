@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: DesktopSharingComponent.mxml
+Module		: DesktopSharing
+Developer(s): Remya T
+Reviewer(s)	: 
+
+This is the main desktop sharing component adding to the main application in desktop version.
+Desktop sharing components(presenter and viewer UI) is added in this component
+
+-->
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" 
+					  width="95%" 
+					  height="95%"
+					  creationComplete="creationCompleteHandler()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			
+			applicationType::desktop{
+				import mx.controls.Alert;
+			}
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			
+			private var desktopPublishSharingCompAdded:Boolean=false;
+			//Fix for issue #15382
+			// Variable used to store previous user role
+			public var previousRole:String;
+			
+			
+			private function creationCompleteHandler():void{
+				//Fix for issue #15424 and #15428
+				if(desktopPublishSharingCompAdded == false){
+					applicationType::desktop{
+						if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE){
+							changeView(true);
+						}
+						else{
+							changeView(false);
+						}
+					}
+					applicationType::mobile{
+						if(FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE){
+							changeView(true);
+						}
+						else{
+							changeView(false);
+						}
+					}
+				}
+			}
+			//Fix for issue #15315
+			public function changeView(isPresenter:Boolean):void{
+				//Fix for issue #15424 and #15428
+				if(isPresenter){
+					applicationType::desktop{
+						//Fix for issues #15386, #15417,#15418 and #15541
+						if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopViewer.isPopOut){
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopViewer.closeDesktopViewer();
+						}
+						// If already in full screen mode, switch to normal mode
+						if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopViewer.stage){
+							if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopViewer.stage.displayState == StageDisplayState.FULL_SCREEN){
+								FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopViewer.toggleFullScreen();
+							}
+						} 
+						//remove the player components
+						this.removeAllElements();
+						//add screenpublisher
+						if (!FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.usersConnection.netConnection.connected){
+							Alert.show("Your connection to server is lost. Please wait till it reconnects automatically.", "WARNING");
+							return;
+						}
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.popUpSharingMode=new SharingMode();
+						this.addElement(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.popUpSharingMode);
+					}
+				}
+				else if(!isPresenter){
+					//removes the publisher components
+					this.removeAllElements();
+					//If desktop sharing module is enabled,then create desktop player window
+					if (!ClassroomContext.IS_DESKTOP_SHARING_ENABLED){
+						return;	
+					}
+					applicationType::desktop{
+						this.addElement(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopViewer);
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopViewerWindowOpenFlag=true;
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopViewer.initDesktopPlayer();
+					}
+					applicationType::mobile{
+						this.addElement(FlexGlobals.topLevelApplication.mainApp.desktopViewer);
+						FlexGlobals.topLevelApplication.mainApp.desktopViewerWindowOpenFlag=true;
+						FlexGlobals.topLevelApplication.mainApp.desktopViewer.initDesktopPlayer();
+					}
+				}
+				else{}
+				//Fix for issue #15300
+				desktopPublishSharingCompAdded = true;
+				//Fix for issue #15382
+				applicationType::desktop{
+					previousRole = FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole;
+					//Fix for issue #18539
+					if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.unInterruptedDesktopSharingOFFAlert != null)
+					{
+						PopUpManager.removePopUp(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.unInterruptedDesktopSharingOFFAlert);
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.unInterruptedDesktopSharingOFFAlert = null;
+					}
+				}
+				applicationType::mobile{
+					previousRole = FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole;
+				}
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+</s:SkinnableContainer>

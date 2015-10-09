@@ -1,0 +1,24 @@
+[
+	{
+		"Whiteboard":
+		{
+			"IndividualModule" : 1,
+			"DebugMode" : 0,
+			"EnableLineRenderTimeDelay" : 0,
+			"LineRenderTimeDelayInMillisec" : 100,
+			"Smoothing":
+			{
+				"EnableLineSmoothing" : 1,
+				"SkipPoints" : 2,
+				"AddPointsBetweenLine" : 0
+			},
+			"DrawingFullScreen" : 0,
+			"GarbageCollection":
+			{
+				"BreakReuiredInSecBetweenWritingToCallGC" : 10,
+				"NumberOfObjectRequiredToCallGC" : 200,
+				"TimeGapRequiredInMinuteBetweenTwoGC" : 5
+			}
+		}
+	}
+]

@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: FeedbackForm.mxml
+Module			: Feedback
+Developer(s)	: Vijayakumar.R
+Reviewer(s)		: Deepika CP
+For getting the feedback about the class, video, audio, interaction, from the viewer
+
+-->
+<mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:bugreport="edu.amrita.aview.feedback.*"
+		  layout="absolute"
+		  width="522"
+		  height="480"
+		  backgroundColor="#E0EFFB"
+		  creationComplete="init(event)"
+		  preinitialize="preInitializeHandler(event)"
+		  horizontalScrollPolicy="off"
+		  verticalGap="0"
+		  move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+		  paddingBottom="4"
+		  paddingLeft="8"
+		  paddingRight="4"
+		  paddingTop="4"
+		  resize="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+		  title="Feedback"
+		  verticalScrollPolicy="off">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+		]]>
+	</fx:Script>
+	<!--Script to include handler -->
+	<fx:Script source="FeedbackFormHandler.as"/>
+
+	<fx:Declarations>
+		<!-- Method to test the bandwidth -->
+		<mx:HTTPService id="tooltipFetcher"
+						url="config/SpeedtestURL.xml"
+						result="getSpeedTestURLResultHandler(event)"
+						fault="getSpeedTestURLFaultHandler(event)"/>
+		<!-- For grouping the radio buttons -->
+		<s:RadioButtonGroup id="rbFirewall"/>
+		<s:RadioButtonGroup id="rbProxy"/>
+		<s:RadioButtonGroup id="rbAnti"/>
+
+	</fx:Declarations>
+	<!--tab navigator-->
+	<mx:TabNavigator id="feedbackformNavigator"
+					 left="6"
+					 right="6"
+					 top="16"
+					 bottom="41"
+					 backgroundColor="#E0EFFB"
+					 chromeColor="#C1DEF5">
+		<!-- rating components -->
+		<s:NavigatorContent width="100%"
+							height="100%"
+							label="Rating"
+							id="feedBackRating">
+			<s:layout>
+				<s:VerticalLayout gap="8"
+								  paddingBottom="6"
+								  paddingLeft="6"
+								  paddingRight="6"
+								  paddingTop="6"/>
+			</s:layout>
+			<bugreport:RatingComponent id="ratingComp" paddingLeft="8" paddingRight="8"/>
+			<!--Rating components title-->
+			<s:Label fontWeight="bold"
+					 text="How do you rate A-VIEW ?"/>
+			<!--other feedback -->
+			<s:Label fontStyle="italic"
+					 fontWeight="bold"
+					 text="Any other feedback?"/>
+			<s:HGroup width="100%"
+					  height="100%"
+					  paddingLeft="10"
+					  paddingRight="10">
+				<mx:TextArea id="txtOtherFeedback"
+							 width="100%"
+							 height="100%"
+							 />
+			</s:HGroup>
+
+		</s:NavigatorContent>
+		<!--System Details-->
+		<s:NavigatorContent width="100%"
+							height="100%"
+							label="System Details"
+							left="6"
+							right="6"
+							bottom="6"
+							top="6">
+			<!-- Hardware details -->
+			<mx:Canvas id="hardware"
+					   y="13"
+					   left="5"
+					   right="5"
+					   height="65"
+					   label="Hardware"
+					   backgroundColor="#E0EFFB"
+					   borderColor="#2a5ea4"
+					   borderStyle="solid"
+					   borderVisible="true"
+					   chromeColor="#CCCCCC"
+					   cornerRadius="6">
+				<mx:HBox left="12"
+						 right="4"
+						 top="11"
+						 height="20"
+						 horizontalGap="6"
+						 verticalAlign="middle">
+					<!-- total memory used -->
+					<s:Label width="210"
+							 text="Memory used by the application (MB):"
+							 maxDisplayedLines="1"/>
+					<!--private memory-->
+					<s:Label id="lblPrivate"
+							 width="68"
+							 text="{(ClassroomContext.userDetails.privateMemory/(1024*1024)).toFixed(3)}"
+							 maxDisplayedLines="1"/>
+					<!--CPU details -->
+					<s:Label width="98"
+							 text="CPU Architecture:"
+							 maxDisplayedLines="1"/>
+					<s:Label id="lblCPUArchitecture"
+							 width="79"
+							 maxDisplayedLines="1"
+							 text="{ClassroomContext.userDetails.cpuArchitecture}"/>
+				</mx:HBox>
+				<mx:HBox left="12"
+						 right="4"
+						 bottom="12"
+						 height="20"
+						 horizontalGap="6"
+						 verticalAlign="middle">
+					<!--Max.IDC level -->
+					<s:Label width="210"
+							 text="Max. IDC Level (for H.264 encoding):"
+							 maxDisplayedLines="1"/>
+					<s:Label id="lblMaxLevelIDC"
+							 width="68"
+							 maxDisplayedLines="1"
+							 text="{ClassroomContext.userDetails.maxLevelIDC}"/>
+				</mx:HBox>
+
+			</mx:Canvas>
+
+			<s:Label x="13"
+					 y="9"
+					 width="68"
+					 backgroundColor="#E0EFFB"
+					 fontWeight="bold"
+					 text="Hardware"
+					 textAlign="center"
+					 verticalAlign="middle"/>
+			<!--Operating System -->
+			<mx:Canvas id="os"
+					   y="96"
+					   left="5"
+					   right="5"
+					   height="76"
+					   label="Operating System"
+					   backgroundColor="#E0EFFB"
+					   borderColor="#2a5ea4"
+					   borderStyle="solid"
+					   borderVisible="true"
+					   chromeColor="#CCCCCC"
+					   cornerRadius="6">
+				<mx:HBox left="12"
+						 right="4"
+						 top="9"
+						 height="20"
+						 horizontalGap="6"
+						 verticalAlign="middle">
+					<!--Operating system details-->
+					<s:Label width="140"
+							 text="Operating System:"
+							 maxDisplayedLines="1"/>
+
+					<s:Label id="lblOS"
+							 width="126"
+							 text="{ClassroomContext.userDetails.operatingSystem}"
+							 maxDisplayedLines="1"/>
+
+					<s:Label width="125"
+							 text="64-bit support:"
+							 maxDisplayedLines="1"/>
+
+					<s:Label id="lbl64BitSupport"
+							 width="44"
+							 maxDisplayedLines="1"
+							 text="{getValueFromBoolean(ClassroomContext.userDetails.supports64Bit)}"/>
+				</mx:HBox>
+				<mx:HBox left="12"
+						 right="4"
+						 top="28"
+						 height="20"
+						 horizontalGap="6"
+						 verticalAlign="middle">
+					<!--Screen resoluting details -->
+					<s:Label width="140"
+							 text="Screen Resolution:"/>
+
+					<s:Label id="lblScreenResolution"
+							 width="126"
+							 text="{ClassroomContext.userDetails.screenResolutionX + 'x'+ ClassroomContext.userDetails.screenResolutionY}"
+							 maxDisplayedLines="1"/>
+
+					<s:Label width="125"
+							 text="Audio video access:"
+							 maxDisplayedLines="1"/>
+
+					<s:Label id="lblAVHardware"
+							 width="44"
+							 maxDisplayedLines="1"
+							 text="{getValueFromBoolean(!ClassroomContext.userDetails.avHardware)}"/>
+				</mx:HBox>
+				<mx:HBox left="12"
+						 right="4"
+						 bottom="7"
+						 height="20"
+						 horizontalGap="6"
+						 verticalAlign="middle">
+					<!--AIR version-->
+					<s:Label width="140"
+							 maxDisplayedLines="1"
+							 text="AIR version:"/>
+
+					<s:Label id="lblVersion"
+							 width="126"
+							 text="{ClassroomContext.userDetails.airVersion}"
+							 maxDisplayedLines="1"/>
+					<!--Local file read access -->
+					<s:Label width="125"
+							 text="Local file read access:"
+							 maxDisplayedLines="1"/>
+
+					<s:Label id="lblLocalFileAccess"
+							 width="44"
+							 maxDisplayedLines="1"
+							 text="{getValueFromBoolean(!ClassroomContext.userDetails.localFileRead)}"/>
+				</mx:HBox>
+
+			</mx:Canvas>
+
+			<s:Label x="13"
+					 y="91"
+					 width="114"
+					 backgroundColor="#E0EFFB"
+					 fontWeight="bold"
+					 text="Operating System"
+					 textAlign="center"
+					 verticalAlign="top"/>
+
+			<!--Network details -->
+			<mx:Canvas id="network"
+					   y="193"
+					   left="5"
+					   right="5"
+					   height="153"
+					   label="Network/Security"
+					   backgroundColor="#E0EFFB"
+					   borderColor="#2a5ea4"
+					   borderStyle="solid"
+					   borderVisible="true"
+					   chromeColor="#CCCCCC"
+					   cornerRadius="6">
+				<mx:HBox left="12"
+						 right="4"
+						 top="9"
+						 height="27"
+						 verticalAlign="middle">
+					<!--Bandwidth details-->
+					<s:Label width="155"
+							 text="Download bandwidth"
+							 maxDisplayedLines="1"/>
+					<s:TextInput id="txtDownload"
+								 width="60"
+								 text=""
+								 restrict="0-9"
+								 maxChars="6"/>
+
+					<s:Label width="106"
+							 text="Kbps"
+							 maxDisplayedLines="1"/>
+
+					<s:Label buttonMode="true"
+							 click="initUrl()"
+							 fontStyle="italic"
+							 text="Check my bandwidth"
+							 textDecoration="underline"
+							 useHandCursor="true"
+							 maxDisplayedLines="1"/>
+				</mx:HBox>
+				<mx:HBox left="12"
+						 right="4"
+						 top="35"
+						 height="27"
+						 verticalAlign="middle">
+
+					<s:Label width="155"
+							 text="Upload bandwidth"
+							 maxDisplayedLines="1"/>
+
+					<s:TextInput id="txtUpload"
+								 width="60"
+								 text=""
+								 restrict="0-9"
+								 maxChars="6"/>
+
+					<s:Label width="106"
+							 text="Kbps"
+							 maxDisplayedLines="1"/>
+					<!--Screen resolution details -->
+					<s:Label id="lblScreenResolutionX"
+							 visible="false"
+							 text="{Capabilities.screenResolutionX}"/>
+
+					<s:Label id="lblScreenResolutionY"
+							 visible="false"
+							 text="{Capabilities.screenResolutionY}"/>
+				</mx:HBox>
+				<mx:HBox left="12"
+						 right="4"
+						 top="61"
+						 height="21"
+						 horizontalGap="10"
+						 paddingLeft="1"
+						 verticalAlign="middle">
+					<!--Firewall details -->
+					<s:Label width="289"
+							 text="Is your computer secured with a campus firewall"/>
+
+					<s:RadioButton id="rbFirewallYes"
+								   label="Yes"
+								   groupName="rbFirewall"/>
+					<s:RadioButton id="rbFirewallNo"
+								   label="No"
+								   groupName="rbFirewall"/>
+					<s:RadioButton id="rbFirewallSure"
+								   label="Not sure"
+								   groupName="rbFirewall"
+								   selected="true"/>
+				</mx:HBox>
+				<!--Proxy server details-->
+				<mx:HBox left="12"
+						 right="4"
+						 top="81"
+						 height="22"
+						 horizontalGap="10"
+						 paddingLeft="1"
+						 verticalAlign="middle">
+					<s:Label id="chkProxyServer"
+							 width="289"
+							 text="Is your computer behind a proxy server"/>
+					<s:RadioButton id="rbProxyYes"
+								   label="Yes"
+								   groupName="rbProxy"/>
+					<s:RadioButton id="rbProxyNo"
+								   label="No"
+								   groupName="rbProxy"/>
+					<s:RadioButton id="rbProxySure"
+								   label="Not sure"
+								   groupName="rbProxy"
+								   selected="true"/>
+				</mx:HBox>
+				<mx:HBox left="12"
+						 right="4"
+						 top="102"
+						 height="20"
+						 horizontalGap="10"
+						 paddingLeft="1"
+						 verticalAlign="middle">
+					<!--Antivirus details-->
+					<s:Label id="chkAntivirus"
+							 width="289"
+							 text="Do you have an Anti-virus installed on your computer"/>
+
+					<s:RadioButton id="rbAntiYes"
+								   label="Yes"
+								   groupName="rbAnti"/>
+					<s:RadioButton id="rbAntiNo"
+								   label="No"
+								   groupName="rbAnti"/>
+					<s:RadioButton id="rbAntiSure"
+								   label="Not sure"
+								   groupName="rbAnti"
+								   selected="true"/>
+				</mx:HBox>
+				<mx:HBox left="12"
+						 right="4"
+						 top="123"
+						 horizontalAlign="right"
+						 paddingLeft="1"
+						 verticalAlign="middle">
+					<!--Specify the antivirus name-->
+					<s:TextInput id="txtName"
+								 width="205"
+								 color="#949494"
+								 fontStyle="italic"
+								 visible="{rbAnti.selectedValue=='Yes'?true:false}"
+								 text="Name of my Anti-virus"
+								 maxChars="256"
+								 focusOut="txtAntivirusFocusOutHandler(event)"
+								 click="txtAntivirusNameClickHandler(event)"/>
+				</mx:HBox>
+			</mx:Canvas>
+
+			<s:Label x="13"
+					 y="188"
+					 width="114"
+					 backgroundColor="#E0EFFB"
+					 fontWeight="bold"
+					 text="Network/Security"
+					 textAlign="center"
+					 verticalAlign="top"/>
+		</s:NavigatorContent>
+		<!--Report issue tab-->
+		<s:NavigatorContent width="100%"
+							height="100%"
+							label="Report Issue"
+							id="issueNav"
+							backgroundColor="#E0EFFB">
+			<s:layout>
+				<s:VerticalLayout gap="8" paddingLeft="2" paddingRight="2"/>
+			</s:layout>
+
+			<s:List width="100%"
+					minHeight="274"
+					maxHeight="340"
+					borderVisible="false"
+					id="issue"
+					updateComplete="setScrollPostionForList(event)"
+					contentBackgroundAlpha="1.0"
+					left="8"
+					right="8"
+					contentBackgroundColor="#E0EFFB"
+					dataProvider="{reportIssueDP}"
+					focusColor="#E0EFFB"
+					rollOverColor="#E0EFFB"
+					selectionColor="#E0EFFB">
+				<s:itemRenderer>
+					<fx:Component>
+						<bugreport:ReportIssue width="100%"/>
+					</fx:Component>
+				</s:itemRenderer>
+			</s:List>
+		</s:NavigatorContent>
+
+	</mx:TabNavigator>
+	<mx:HBox x="0"
+			 bottom="8"
+			 width="100%"
+			 horizontalAlign="center"
+			 verticalAlign="middle">
+		<!-- Submit Button-->
+		<s:Button id="btnSubmit"
+				  bottom="4"
+				  label="Submit"
+				  chromeColor="#E0EFFB"
+				  click="alertStatus=false;submitFeedback()"
+				  cornerRadius="3"
+				  horizontalCenter="0"/>
+		<!-- Cancel Button-->
+		<s:Button bottom="4"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="closeFeedback(event)"
+				  cornerRadius="3"
+				  horizontalCenter="49"/>
+	</mx:HBox>
+</mx:Panel>

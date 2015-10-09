@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   ********************************************************************************************************************************************
+   *  Authors: Sachin S Kumar, Chitra S Pai, Anu P																				     		  *
+   *																																		  *
+   * This component  is used to show the page load pop up when user navigate to new pages													                  *
+   * 																																		  *
+   *  Revisions made.                                                       																  *																																*
+   ********************************************************************************************************************************************
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="125" backgroundAlpha="1.0" backgroundColor="#F5F1F1" borderColor="#A9A5A5" borderStyle="solid" cornerRadius="12">
+	<mx:SWFLoader width="32" height="21" autoLoad="true" horizontalCenter="0" source="@Embed(source='assets/flash/loading.swf')" verticalCenter="-10"/>
+	<mx:Label horizontalCenter="0" text="Please Wait.. Page is Loading" verticalCenter="13"/>
+</mx:Canvas>
+

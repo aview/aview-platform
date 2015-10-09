@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  width="480"
+					  height="300"
+					  creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
+					  xmlns:layout="org.alivepdf.layout.*" xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<s:layout>
+		<s:VerticalLayout gap="10"
+						  horizontalAlign="center">
+
+		</s:VerticalLayout>
+	</s:layout>
+	<fx:Script source="BrowseLocalFilePathHandler.as"/>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Label text="Please select the folder where you have downloaded the lecture "
+			 paddingTop="10"
+			 paddingLeft="10"
+			 width="100%"
+			 color="#0653B3"
+			 fontWeight="bold"
+			 fontSize="12"
+			 id="lblInfo">
+	</s:Label>
+
+	<s:HGroup horizontalAlign="center">
+		<s:Label text="Select Folder:"
+				 verticalAlign="middle">
+		</s:Label>
+		<s:List id="lstBrowseFolders"
+				width="300"
+				height="80"
+				labelField="name">
+			<s:layout>
+				<s:HorizontalLayout>
+				</s:HorizontalLayout>
+			</s:layout>
+		</s:List>
+		<components:ImageButton id="btnBrowse"
+				  click="btnBrowse_clickHandler(event)"
+				  label="Browse">
+		</components:ImageButton>
+	</s:HGroup>
+	<s:TextInput id="txtFilePath"
+				 horizontalCenter="0"
+				 width="300"
+				 editable="false">
+	</s:TextInput>
+	<s:Label text="Do you want to play the lecture now ?"
+			 paddingTop="10"
+			 paddingLeft="10"
+			 width="100%"
+			 color="#0000FF"
+			 fontWeight="bold"
+			 fontSize="12"
+			 visible="false"
+			 id="lblQuestion">
+	</s:Label>
+
+	<s:HGroup horizontalAlign="center">
+		<components:ImageButton label="Play"
+				  id="btnPlay"
+				  enabled="false"
+				  click="btnPlay_clickHandler(event)"/>
+		<components:ImageButton label="Download"
+				  id="btnDownload"
+				  enabled="false"
+				  click="btnDownload_clickHandler(event)"/>
+		<components:ImageButton label="Cancel"
+				  id="btnCancel"
+				  click="btnCancel_clickHandler(event)"/>
+	</s:HGroup>
+	<mx:ProgressBar indeterminate="true"
+					labelPlacement="right"
+					indeterminateMoveInterval="14"
+					label="Downloading"
+					visible="false"
+					id="pgbDownload"/>
+
+
+</s:SkinnableContainer>

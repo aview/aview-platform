@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: FolderCreation.mxml
+Module			: Common
+Developer(s)	: Haridasan
+Reviewer(s)	    : Veena Gopal K.V
+
+The FolderCreation component is a custom component for Folder create functionality.
+This component will take all the initiative for  folder creation.
+This Component fired some  custom events for folder creation
+-->
+<!--Panel for new folder creation-->
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 visible="true"
+		 x="65"
+		 y="150"
+		 width="200"
+		 height="110"
+		 backgroundAlpha="1.0"
+		 backgroundColor="#E0EFFB"
+		 creationComplete="fName.setFocus()"
+		 creationPolicy="all"
+		 title="Enter the name for new folder" xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<fx:Script source="FolderCreationAS.as"/>
+	<fx:Metadata>
+			[Event(name="onFolderCreationSuccess",type="edu.amrita.aview.core.shared.components.fileManager.events.FolderCreationSuccess")]
+	        [Event(name="onCloseFileComponentEvent", type="edu.amrita.aview.core.shared.components.fileManager.events.CloseFileComponentEvent")]
+		</fx:Metadata>
+	<fx:Declarations>
+	</fx:Declarations>
+	<!--
+	borderColor="#6FA5E8"-->
+	<!--TextInput for entering new folder name-->
+	<s:TextInput id="fName"
+				 y="7"
+				 left="5"
+				 right="5"
+				 borderColor="#000340"
+				 maxChars="30"
+				 restrict="A-Z,a-z,0-9,!,@,#,$,%,^,(,),;,^ ,~,`,[,],,,.,},{,_"
+				 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"
+				 text="New Folder"/>
+
+	<mx:HBox bottom="10"
+			 horizontalCenter="0">
+		<!--Button to finish the new folder creation process by invoking createFolder() function-->
+		<components:ImageButton width="75"
+				  label="OK"
+				  chromeColor="#E0EFFB"
+				  click="{createFolder()}"
+				  cornerRadius="3"
+				  fontWeight="bold"/>
+		<!--Button to close the new folder panel by invoking folderCancel() function-->
+		<components:ImageButton width="75"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="{folderCancel()}"
+				  cornerRadius="3"
+				  fontWeight="bold"/>
+	</mx:HBox>
+
+</s:Panel>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ChatClearTool.mxml
+Module		: Chat
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+ChatClearTool component is used to clear the chat messages.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.shared.events.ChatEvent;
+			
+			import mx.core.FlexGlobals;
+
+			/**
+			 * @private
+			 *
+			 * To dispatch event, when presenter clicks on clrChat button
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function clrChatHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new ChatEvent(ChatEvent.CLEAR_CHAT_AREA));
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function clrChatTooltipHandler(event:MouseEvent):void
+			{
+				var clearChatTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				clearChatTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+		]]>
+	</fx:Script>
+	<!--Clear button to erase chat message(s)-->
+	<s:Button id="clearChatButton"
+			  height="15%"
+			  width="100%"
+			  focusRect="true"
+			  visible="{ClassroomContext.isModerator}"
+			  includeInLayout="{ClassroomContext.isModerator}"
+			  click="clrChatHandler(event)"
+			  icon="@Embed('/views/assets/25x25-clear-chat.png')"
+			  toolTip="Clear Chat Messages"
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="clrChatTooltipHandler(event)"
+			  mouseDown="clrChatTooltipHandler(event)"/>
+</s:Group>

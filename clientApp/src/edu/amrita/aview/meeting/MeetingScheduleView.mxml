@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 minWidth="396"
+		 minHeight="154"
+		 height="{mainContVGroup.height+63}"
+		 backgroundColor="#E0EFFB"
+		 cornerRadius="6"
+		 creationComplete="creationCompleteHandler(event)">
+	<fx:Script source="MeetingScheduleViewHandler.as">
+		
+	</fx:Script>
+	<fx:Declarations>
+		<s:DateTimeFormatter id="dtf"
+							 dateTimePattern="dd-MM-yyyy"/>
+		<mx:DateFormatter id="timeFormatter"
+						  formatString="LL:NN A"/>
+	</fx:Declarations>
+	<s:VGroup x="10"
+			  y="10"
+			  gap="15"
+			  id="mainContVGroup"
+			  width="100%">
+		<s:VGroup>
+			<s:Label fontWeight="bold" text="Meeting Title"/>
+			<s:TextInput id="txtTitle"
+						 y="17"
+						 left="10"
+						 width="374"
+						 maxChars="30"
+						 text="{meetingScheduleModel.meetingName}"
+						 restrict=" 0-9A-Za-z_\-"
+						 keyDown="if(event.keyCode == Keyboard.ENTER) onClickSave()"/>
+		</s:VGroup>
+		<s:VGroup id="meetingScheduleVGroup"
+				  visible="{meetingScheduleModel.isScheduledMeeting}"
+				  includeInLayout="{meetingScheduleModel.isScheduledMeeting}"
+				  width="380"
+				  gap="10">
+			<s:VGroup gap="10"
+					  top="5"
+					  width="100%">
+				<s:HGroup>
+					<s:VGroup>
+						<s:Label fontWeight="bold" text="Start Date:"/>
+						<mx:DateField width="100"
+									  id="startDateField" change="startDateField_changeHandler(event)"
+									  disabledRanges="{[{rangeEnd: disabledEndDate}]}"
+									  labelFunction="formatDateTime"
+									  selectedDate="{meetingScheduleModel.startDate}"
+									  parseFunction="{null}"/>
+					</s:VGroup>
+					<s:VGroup gap="0">
+						<s:Label fontWeight="bold" text="Start Time : "/>
+						<s:HGroup verticalAlign="middle">
+							<s:Label text="Hour:"/>
+							<mx:NumericStepper id="hoursStartClassa"
+											   left="170"
+											   top="275"
+											   width="50"
+											   value="{formatHour(meetingScheduleModel.startTime)}"
+											   creationComplete="event.target.mx_internal::inputField.restrict='0-9'; "
+											   maximum="12"
+											   minimum="0"/>
+							<s:Label text="Mins:"/>
+							<mx:NumericStepper id="minsStartClassa"
+											   width="50"
+											   value="{meetingScheduleModel.startTime.minutes}"
+											   creationComplete="event.target.mx_internal::inputField.restrict='0-9';"
+											   maximum="59"
+											   minimum="0"/>
+							<s:VGroup gap="0"
+									  verticalAlign="middle">
+								<s:RadioButton id="amStartClassa"
+											   label="am"
+											   groupName="amPmStartClass"
+											   selected="{formatAMPM(meetingScheduleModel.startTime)=='AM'?true:false}"/>
+								<s:RadioButton id="pmStartClassa"
+											   label="pm" selected="{formatAMPM(meetingScheduleModel.startTime)=='PM'?true:false}"
+											   groupName="amPmStartClass"/>
+							</s:VGroup>
+						</s:HGroup>
+					</s:VGroup>
+					
+					
+					
+				</s:HGroup>
+				
+				
+			</s:VGroup>
+			<s:HGroup id="grpEndDate" enabled="true">
+				<s:VGroup>
+					<s:Label fontWeight="bold" text="End Date:"/>
+					<mx:DateField width="100"
+								  enabled="false"
+								  id="endDateField"
+								  disabledRanges="{[{rangeEnd: disabledEndDate}]}"
+								  labelFunction="formatDateTime"
+								  selectedDate="{meetingScheduleModel.endDate}"
+								  parseFunction="{null}"/>
+				</s:VGroup>
+				<s:VGroup gap="0">
+					<s:Label fontWeight="bold" text="End Time : "/>
+					<s:HGroup verticalAlign="middle">
+						<s:Label text="Hour:"/>
+						<mx:NumericStepper id="hoursEndClassa"
+										   left="170"
+										   top="275"
+										   width="50"
+										   value="{formatHour(meetingScheduleModel.endTime)}"
+										   creationComplete="event.target.mx_internal::inputField.restrict='0-9'; "
+										   maximum="12"
+										   minimum="0"/>
+						<s:Label text="Mins:"/>
+						<mx:NumericStepper id="minsEndClassa"
+										   width="50"
+										   value="{meetingScheduleModel.endTime.minutes}"
+										   creationComplete="event.target.mx_internal::inputField.restrict='0-9';"
+										   maximum="59"
+										   minimum="0"/>
+						<s:VGroup gap="0"
+								  verticalAlign="middle">
+							<s:RadioButton id="amEndClassa"
+										   label="am"
+										   groupName="amPmEndClass"
+										   selected="{formatAMPM(meetingScheduleModel.endTime)=='AM'?true:false}"/>
+							<s:RadioButton id="pmEndClassa"
+										   label="pm"
+										   selected="{formatAMPM(meetingScheduleModel.endTime)=='PM'?true:false}"
+										   groupName="amPmEndClass"/>
+						</s:VGroup>
+					</s:HGroup>
+				</s:VGroup>
+			</s:HGroup>
+			
+			<s:CheckBox label="Make this meeting recurring"
+						id="recurringChkBox"
+						change="recurringchecked(event)"/>
+		</s:VGroup>
+		<s:VGroup gap="10"
+				  id="recurringVGroup"
+				  visible="false"
+				  width="100%"
+				  includeInLayout="false">
+			
+			<s:HGroup>
+				<s:RadioButton groupName="DaySelection"
+							   label="Daily"
+							   id="DailyRadioBtn"/>
+				<s:RadioButton groupName="DaySelection"
+							   label="Weekly"
+							   id="weeklyRadioBtn"/>
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle"
+					  id="weekdaysCheckBox"
+					  visible="{weeklyRadioBtn.selected}"
+					  includeInLayout="{weeklyRadioBtn.selected}">
+				<s:Label text="Repeat on every:"/>
+				<s:Label text="Su"/>
+				<s:CheckBox selected="true" id="chkSun"/>
+				
+				<s:Label text="Mo"/>
+				<s:CheckBox selected="true" id="chkMon"/>
+				
+				<s:Label text="Tu"/>
+				<s:CheckBox selected="true" id="chkTue"/>
+				
+				<s:Label text="We"/>
+				<s:CheckBox selected="true" id="chkWed"/>
+				
+				<s:Label text="Th"/>
+				<s:CheckBox selected="true" id="chkThu"/>
+				
+				<s:Label text="Fr"/>
+				<s:CheckBox selected="true" id="chkFri"/>
+				
+				<s:Label text="Sa"/>
+				<s:CheckBox selected="true" id="chkSat"/>
+			</s:HGroup>
+		</s:VGroup>
+		<s:VGroup id="emailIDCont">
+			<s:Label width="383" height="34" fontWeight="bold" 
+					 text="Sends invitation to all users and then starts the meeting(Multiple Email ID's can be seperated by comma',')"/>
+			<s:TextInput id="txtIvite"
+						 y="17"
+						 left="10"
+						 width="374"
+						 prompt="Enter guest email address"
+						 keyDown="if(event.keyCode == Keyboard.ENTER) onClickSave()"/>
+		</s:VGroup>
+		
+		<s:HGroup width="100%"
+				  bottom="5"
+				  id="btnContainer"
+				  horizontalAlign="center">
+			<s:Button x="116"
+					  y="49"
+					  label="{meetingScheduleModel.isScheduledMeeting==true?'Save' :'Invite'}"
+					  chromeColor="#E0EFFB"
+					  click="onClickSave()"
+					  color="#000000"
+					  id="btnSave"
+					  cornerRadius="3" toolTip="{meetingScheduleModel.isScheduledMeeting==true?'Sends invitation to all users' :'Sends invitation to all users and then starts the meeting'}"/>
+			<s:Button x="193"
+					  y="48"
+					  label="Cancel"
+					  chromeColor="#E0EFFB"
+					  click="onClickCancel()"
+					  color="#000000"
+					  cornerRadius="3"
+					  keyDown="if(event.keyCode == Keyboard.ENTER) onClickCancel()"/>
+		</s:HGroup>
+	</s:VGroup>
+	<mx:Image right="5"
+			  id="btnClose"
+			  top="-26"
+			  width="18"
+			  height="18"
+			  source="{closePng}"
+			  mouseOver="mouseOverHandler(event)"
+			  mouseOut="mouseOutHandler(event)"
+			  toolTip="Close"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  click="onClickCancel()"/>
+</s:Panel>

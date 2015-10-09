@@ -1,0 +1,42 @@
+<servers>
+	<server>
+		<name>ETT QA</name>
+		<domain>aps501.aview.in</domain>
+        <ip>aps501.aview.in</ip>
+		<isDefault>1</isDefault>
+	</server>
+	<server>
+		<name>Multiplatform Server</name>
+		<domain>10.3.3.58</domain>
+		<ip>10.3.3.58</ip>
+		<protocol>http</protocol>
+		<isDefault>0</isDefault>
+	</server>
+	<server>
+		<name>dev1</name>
+		<domain>10.3.2.116:9080</domain>
+		<ip>10.3.2.116:9080</ip>
+		<isDefault>0</isDefault>
+	</server>		
+	<server>
+		<name>dev2</name>
+		<domain>aerlsd140:9080</domain>
+		<ip>aerlsd140:9080</ip>
+		<isDefault>0</isDefault>
+	</server>
+	<server>
+		<name>my desktop</name>
+		<domain>localhost:8080</domain>
+		<ip>127.0.0.1:8080</ip>
+		<isDefault>0</isDefault>
+	</server>			
+	<help>
+		<url>aview.in</url>
+	</help>
+	<BiometricServer>
+		<biometricserverip>biometric.aview.in</biometricserverip>
+	</BiometricServer>
+	<ispring>
+		<url>10.3.3.45</url>
+	</ispring>
+</servers>

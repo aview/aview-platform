@@ -1,0 +1,55 @@
+services : {
+  Twitch / Justin.tv : {
+    id : 1
+    servers : {
+      "Global Load Balancing Service"        : rtmp://live-3c.justin.tv/app
+      "Asia: Singapore"                      : rtmp://live-sin-backup.justin.tv/app
+      "EU: Amsterdam, NL"                    : rtmp://live-ams.justin.tv/app
+      "EU: Frankfurt, DE"                    : rtmp://live-fra.justin.tv/app
+      "EU: London, UK"                       : rtmp://live-lhr.justin.tv/app
+      "EU: London, UK (Secondary)"           : rtmp://live-lhr-backup.justin.tv/app
+      "US Central: Dallas, TX"               : rtmp://live-dfw.justin.tv/app
+      "US Central: San Antonio, TX"          : rtmp://live-dfw-backup.justin.tv/app
+      "US East: Ashburn, VA"                 : rtmp://live-iad.justin.tv/app
+      "US East: Ashburn, VA (Secondary)"     : rtmp://live-iad-backup.justin.tv/app
+      "US East: Miami, FL"                   : rtmp://live-mia.justin.tv/app
+      "US East: New York, NY"                : rtmp://live-jfk.justin.tv/app
+      "US Midwest: Chicago, IL"              : rtmp://live-ord.justin.tv/app
+      "US West: Los Angeles, CA"             : rtmp://live-lax.justin.tv/app
+      "US West: Los Angeles, CA (Secondary)" : rtmp://live-lax-backup.justin.tv/app
+      "US West: San Francisco, CA"           : rtmp://live.justin.tv/app
+    }
+  }
+  "Vaughn Live" : {
+    id : 3
+    servers : {
+      "US Chicago (Primary)"  : rtmp://live.vaughnlive.tv:443/live
+    }
+  }
+  iNSTAGIB.tv : {
+    id : 4
+    servers : {
+      "US Chicago (Primary)"  : rtmp://live.instagib.tv:443/live
+    }
+  }
+  GoodGame.ru : {
+    id : 5
+    servers : {
+      "Primary"  :   rtmp://stream.goodgame.ru:1940/live
+    }
+  }
+  DailyMotion : {
+    id : 6
+    servers : {
+      "Primary" :    rtmp://publish.dailymotion.com/publish-dm
+    }
+  }
+  Hashd.tv : {
+    id : 7
+    servers : {
+      "US Dallas, TX"     : rtmp://edge-dal1.hashd.tv/live
+      "EU Amsterdam, NL"  : rtmp://edge-ams1.hashd.tv/live
+    }
+  }
+  
+}

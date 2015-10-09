@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuestionPaperInputBox.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used as input box while creating or
+updating question paper .
+
+QP - Question Paper
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"						 
+						 width="445"
+						 height="226"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#FFFFFF"
+						 dropShadowVisible="false"
+						 creationComplete="onCreationCompleteQPInputBox()"
+						 enabled="true"
+						 focusColor="#A9F9A0"
+						 fontFamily="Arial"
+						 fontSize="15"
+						 title="Create Question Paper"
+						 textAlign="center"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!-- Script to include handler-->
+	<fx:Script source="QuestionPaperInputBoxUIHandler.as"/>
+	<mx:VBox left="5"
+			 right="5"
+			 top="5"
+			 bottom="5"
+			 borderColor="#A3D7FF"
+			 borderStyle="solid"
+			 chromeColor="#E0EFFB"
+			 horizontalCenter="0"
+			 verticalCenter="0">
+		<mx:HBox x="0"
+				 y="0"
+				 width="100%"
+				 height="58"
+				 verticalAlign="middle"
+				 horizontalAlign="left">
+			<mx:Spacer width="25"/>
+			<!-- Mandatory field : Question Paper Name -->
+			<s:Label left="5"
+					 top="10"
+					 color="#ED3814"
+					 fontFamily="Arial"
+					 fontSize="13"
+					 fontWeight="bold"
+					 text="*"/>
+			<!-- Label for Question Paper Name-->
+			<s:Label text="Question Paper Name :"
+					 id="lblQuestionPaperName"
+					 left="15"
+					 top="10"
+					 fontFamily="Arial"
+					 fontSize="12"
+					 fontWeight="normal" color="#000000"/>
+			<!-- TextInput for question paper name-->
+			<s:TextInput width="219"
+						 height="30"
+						 id="txtInpQuestionPaperName"
+						 maxChars="{QuizContext.TEXT_LENGTH}"
+						 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"
+						 textAlign="left" color="#000000"/>
+		</mx:HBox>
+		<mx:HBox x="0"
+				 y="66"
+				 width="100%"
+				 height="58"
+				 verticalAlign="middle"
+				 horizontalAlign="left" chromeColor="#E0EFFB">
+			<mx:Spacer width="25"/>
+			<!-- Mandatory field : Maximum Total Marks -->  
+			<s:Label left="5"
+					 top="10"
+					 color="#ED3814"
+					 fontFamily="Arial"
+					 fontSize="13"
+					 fontWeight="bold"
+					 text="*"/>
+			<!-- Label to show Maximum Total Marks -->
+			<s:Label text="Maximum Total Marks :"
+					 left="5"
+					 top="10"
+					 fontFamily="Arial"
+					 fontSize="12"
+					 fontWeight="normal" color="#000000"/>			
+			<!--Fixed for Bug #1290 Max. Total Marks field should not accept alphabets while typing-->
+			<!-- Fixed Bug 4863 , restricted marks input to 3 digits -->
+			<s:TextInput id="txtInpMaxTotalMarks"
+						 width="50"
+						 restrict="\.\0-9\"
+						 maxChars="3"
+						 textAlign="left"
+						 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin" color="#000000"/>
+		</mx:HBox>
+		<mx:HBox x="0"
+				 y="140"
+				 width="100%"
+				 horizontalAlign="center"
+				 verticalAlign="middle"
+				 height="45"
+				 chromeColor="#E0EFFB">
+
+			<!-- Save Button-->
+			<components:ImageButton id="btnSave" x="114" y="2" width="62" label="Save"
+									chromeColor="#E0EFFB" click="onClickBtnSave(event)"
+									color="#000000" cornerRadius="3" fontFamily="Arial"
+									fontSize="12" fontWeight="normal"/>
+			<mx:Spacer width="25"/>
+			<!-- Cancel Button-->
+			<components:ImageButton id="btnCancel" width="62" label="Cancel" chromeColor="#E0EFFB"
+									click="closeQuestionPaperInputBox()" color="#000000"
+									cornerRadius="3" fontFamily="Arial" fontSize="12"
+									fontWeight="normal"/>
+		</mx:HBox>
+	</mx:VBox>
+</components:InsidePanel>

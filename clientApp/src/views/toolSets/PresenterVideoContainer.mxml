@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 width="100%" 
+		 height="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup id="presenterVideoContainer"
+			  width="100%"
+			  height="100%"
+			  gap="1">
+		<s:Group width="100%"
+				 height="80%"
+				 horizontalCenter="0">
+			<s:Rect id="prsenterVid"
+					width="100%"
+					height="100%"
+					left="0">
+				<s:fill>
+					<s:SolidColor color="#071124"/>
+				</s:fill>
+			</s:Rect>
+			<s:Group width="100%"
+					 height="100%"
+					 id="pnlPresenterVideo"
+					 y="{prsenterVid.y-3}"
+					 x="{prsenterVid.x-3}"
+					 horizontalCenter="0">
+				<s:VideoDisplay width="100%"
+								height="100%"
+								id="pnlPresenterVideoDisplay"/>
+			</s:Group>
+		</s:Group>
+	</s:VGroup>
+</s:Group>

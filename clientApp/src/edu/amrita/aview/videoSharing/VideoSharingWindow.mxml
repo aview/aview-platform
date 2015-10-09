@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: VideoSharingWindow.mxml
+Module		: videoSharing
+Developer(s): Livin M.Miranda,Soumya M.D
+Reviewer(s)	: Sivaram SK,Meena.S
+
+This component is invoked when popout window is created.
+-->
+
+
+<s:Window xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   systemChrome="standard"
+				   type="normal"
+				   close="closeVideoSharingWindow()"
+				   backgroundColor="#FFFFFF"
+				   windowActivate="mWwindowActivateHandler(event)"
+				   skinClass="edu.amrita.aview.common.skins.CustomWindowSkin"
+				   creationComplete="initWindow()"
+				   status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+				   resize="resizePlayer()"
+				   minHeight="680"
+				   minWidth="920">
+
+<!-- hBoxVideo-->
+	
+	<mx:HBox id="hBoxVideo"
+			 x="0"
+			 y="0"
+			 height="100%"
+			 top="0"
+			 backgroundColor="#ffffff"/>
+	<!-- copyright display hbox-->
+	<mx:HBox x="0" bottom="0" visible="false" width="100%" height="20" backgroundColor="#e0effb" color="#FFFFFF"
+			 verticalAlign="middle">
+		<!-- copyright label-->
+		<s:Label bottom="0"
+				 width="100%"
+				 horizontalCenter="0"
+				 fontSize="10" color="#FFFFFF"
+				 text="{Constants.COPY_RIGHT_FOOTER}"/>
+	</mx:HBox>
+	<fx:Script source="VideoSharingWindowScript.as">
+	</fx:Script>
+
+</s:Window>
+

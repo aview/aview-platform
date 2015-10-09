@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="edu.amrita.aview.core.entry.ClassRoomSgl"/>
+    <classEntry path="edu.amrita.aview.core.entry.ClassroomComponent"/>
+    <classEntry path="edu.amrita.aview.core.entry.ComboBoxItemRender"/>
+    <classEntry path="edu.amrita.aview.core.entry.Copyright"/>
+    <classEntry path="edu.amrita.aview.core.entry.ForgotPassword"/>
+    <classEntry path="edu.amrita.aview.core.entry.HelpMenu"/>
+    <classEntry path="edu.amrita.aview.core.entry.HideLeftPannelComp"/>
+    <classEntry path="edu.amrita.aview.core.entry.HomePage"/>
+    <classEntry path="edu.amrita.aview.core.entry.IconRenderer"/>
+    <classEntry path="edu.amrita.aview.core.evaluation.polling.Polling"/>
+    <classEntry path="edu.amrita.aview.core.evaluation.polling.PollingWindow"/>
+    <classEntry path="edu.amrita.aview.core.evaluation.quiz.QuizWindow"/>
+    <classEntry path="edu.amrita.aview.core.gclm.aviewClass.CreateClassComp"/>
+    <classEntry path="edu.amrita.aview.core.gclm.aviewClass.ClassComp"/>
+  </includeClasses>
+  <includeResources>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/settingsSelect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/settingsSelect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/pointer_enable.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/pointer_enable.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/tech info.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/tech info.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/eraserMediumSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/eraserMediumSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/eraserLarge.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/eraserLarge.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/showPanelSelect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/showPanelSelect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/cBP01.JPG" sourcePath="edu/amrita/aview/core/video/assets/images/cBP01.JPG"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/quicknote_unclicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/quicknote_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/acceptViewer.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/acceptViewer.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/Live Quiz.png" sourcePath="edu/amrita/aview/core/entry/assets/images/Live Quiz.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/textTool.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/textTool.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/volumMute.png" sourcePath="edu/amrita/aview/core/playback/assets/images/volumMute.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/mimetype" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/mimetype"/>
+    <resourceEntry destPath="locale/ta_IN/myResource.properties" sourcePath="locale/ta_IN/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/sessionAdmin/assets/images/stop.png" sourcePath="edu/amrita/aview/core/sessionAdmin/assets/images/stop.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/title image.png" sourcePath="edu/amrita/aview/core/entry/assets/images/title image.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/fonts/MyriadWebPro-Bold.ttf" sourcePath="edu/amrita/aview/core/entry/assets/fonts/MyriadWebPro-Bold.ttf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/TestSlave.swf" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/TestSlave.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/Refresh (32).png" sourcePath="edu/amrita/aview/core/entry/assets/images/Refresh (32).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_play (24X24).png" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_play (24X24).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/images/two_arrows_switch2-48.png" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/images/two_arrows_switch2-48.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/view-fullscreen1.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/view-fullscreen1.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/MFC42D.DLL" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/MFC42D.DLL"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/quiz/assets/images/Refresh (32).png" sourcePath="edu/amrita/aview/core/evaluation/quiz/assets/images/Refresh (32).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_cancel.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_cancel.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/Play.png" sourcePath="edu/amrita/aview/core/playback/assets/images/Play.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/hidePanelSelect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/hidePanelSelect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/clik_teacher.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/clik_teacher.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/video-close.png" sourcePath="edu/amrita/aview/core/video/assets/images/video-close.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/button_gloss.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/button_gloss.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/upload.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/upload.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/hidearrow.png" sourcePath="edu/amrita/aview/core/video/assets/images/hidearrow.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/pageNo.png" sourcePath="edu/amrita/aview/core/playback/assets/images/pageNo.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/sessionAdmin/assets/images/rec.png" sourcePath="edu/amrita/aview/core/sessionAdmin/assets/images/rec.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/Stop Video (32).png" sourcePath="edu/amrita/aview/core/video/assets/images/Stop Video (32).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/folder.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/folder.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/downArrow.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/downArrow.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/2DUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/2DUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/recordIndicator.png" sourcePath="edu/amrita/aview/core/entry/assets/images/recordIndicator.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/ClassRegistration_clicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/ClassRegistration_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/video-file.png" sourcePath="edu/amrita/aview/core/playback/assets/images/video-file.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/Institute_unclicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/Institute_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/questionBank/assets/images/NoImageAvailable.png" sourcePath="edu/amrita/aview/core/evaluation/questionBank/assets/images/NoImageAvailable.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/MFCO42D.DLL" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/MFCO42D.DLL"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/chatSelected.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/chatSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/cancel.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/cancel.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/My video.png" sourcePath="edu/amrita/aview/core/entry/assets/images/My video.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/biometric_clicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/biometric_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/chatUnselect.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/chatUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_pause (24X24).png" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_pause (24X24).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/video_wall_Active.png" sourcePath="edu/amrita/aview/core/entry/assets/images/video_wall_Active.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/vertical.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/vertical.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/quicknote_clicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/quicknote_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/whiteboardUnselect.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/whiteboardUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/mimetype" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/mimetype"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/pop-in.png" sourcePath="edu/amrita/aview/core/video/assets/images/pop-in.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/videoWall_Pushmute.png" sourcePath="edu/amrita/aview/core/video/assets/images/videoWall_Pushmute.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/cancel_presenter.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/cancel_presenter.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/hide-top.PNG" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/hide-top.PNG"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/MulitBitRateStreamer.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/MulitBitRateStreamer.exe"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/hide-left.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/hide-left.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/videoSelected.png" sourcePath="edu/amrita/aview/core/entry/assets/images/videoSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_mute (24X24).png" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_mute (24X24).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/chatUnselect.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/chatUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/active.png" sourcePath="edu/amrita/aview/core/shared/assets/images/active.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/restoreEnabled.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/restoreEnabled.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/PTT_talk_icon.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/PTT_talk_icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/Medium_close.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/Medium_close.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/META-INF/AIR/application.xml" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/META-INF/AIR/application.xml"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/questionPaper/assets/images/tick-icon.png" sourcePath="edu/amrita/aview/core/evaluation/questionPaper/assets/images/tick-icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/Course_clicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/Course_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/tutorials.png" sourcePath="edu/amrita/aview/core/entry/assets/images/tutorials.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/refresh.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/refresh.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/close.gif" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/close.gif"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/META-INF/AIR/application.xml" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/META-INF/AIR/application.xml"/>
+    <resourceEntry destPath="assets/flash/video_busyCur.swf" sourcePath="assets/flash/video_busyCur.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/cBP00.JPG" sourcePath="edu/amrita/aview/core/video/assets/images/cBP00.JPG"/>
+    <resourceEntry destPath="NativeApps/linux/bin/ffmpeg-script.sh" sourcePath="NativeApps/linux/bin/ffmpeg-script.sh"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/save.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/save.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/alert/assets/images/alert_confirm.gif" sourcePath="edu/amrita/aview/core/shared/components/alert/assets/images/alert_confirm.gif"/>
+    <resourceEntry destPath="edu/amrita/aview/core/lms/assets/images/Refresh.png" sourcePath="edu/amrita/aview/core/lms/assets/images/Refresh.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/fmle/ahclient.dll" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/fmle/ahclient.dll"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/keyboard.png" sourcePath="edu/amrita/aview/core/entry/assets/images/keyboard.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/selection.gif" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/selection.gif"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/components/annotations/assets/images/Pen_icon.png" sourcePath="edu/amrita/aview/core/documentSharing/components/annotations/assets/images/Pen_icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/secureIcon.png" sourcePath="edu/amrita/aview/core/entry/assets/images/secureIcon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/styles/styles.css" sourcePath="edu/amrita/aview/core/entry/assets/styles/styles.css"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/icon_grip.png" sourcePath="edu/amrita/aview/core/video/assets/images/icon_grip.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/chatUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/chatUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/button_bar_last_over.png" sourcePath="edu/amrita/aview/core/entry/assets/images/button_bar_last_over.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/dis_edit.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/dis_edit.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_clear.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_clear.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_close.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_close.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/downMenu.png" sourcePath="edu/amrita/aview/core/entry/assets/images/downMenu.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/starRating/assets/flash/rating.swf" sourcePath="edu/amrita/aview/core/shared/components/starRating/assets/flash/rating.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/joinnow.png" sourcePath="edu/amrita/aview/core/entry/assets/images/joinnow.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_alert.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_alert.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/videoWall_DisabledMic.png" sourcePath="edu/amrita/aview/core/video/assets/images/videoWall_DisabledMic.png"/>
+    <resourceEntry destPath="locale/te_IN/myResource.properties" sourcePath="locale/te_IN/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/library_clicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/library_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/fmle/startup.xml" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/fmle/startup.xml"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/settingsUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/settingsUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/user profile 32x32.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/user profile 32x32.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/downloadTopc.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/downloadTopc.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/videoshareUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/videoshareUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/copy doc.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/copy doc.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/flash/jukebox.swf" sourcePath="edu/amrita/aview/core/entry/assets/flash/jukebox.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/icon.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/taskkill.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/taskkill.exe"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_help.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_help.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/META-INF/signatures.xml" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/META-INF/signatures.xml"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/zoom_in.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/zoom_in.png"/>
+    <resourceEntry destPath="assets/images/logo/aview_classroom_logo_128x128.png" sourcePath="assets/images/logo/aview_classroom_logo_128x128.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/zoom_normal.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/zoom_normal.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/eraserSmall.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/eraserSmall.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/penSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/penSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/flash/cursor_5.swf" sourcePath="edu/amrita/aview/core/entry/assets/flash/cursor_5.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/student gray(desktop).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/student gray(desktop).png"/>
+    <resourceEntry destPath="locale/hi_IN/myResource.properties" sourcePath="locale/hi_IN/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher green(web).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher green(web).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/callSC.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/callSC.exe"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/hide.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/hide.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_close16.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_close16.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/menuIcon.png" sourcePath="edu/amrita/aview/core/video/assets/images/menuIcon.png"/>
+    <resourceEntry destPath="assets/images/logo/aview_classroom_logo_48x48.png" sourcePath="assets/images/logo/aview_classroom_logo_48x48.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/MeetingIcon.png" sourcePath="edu/amrita/aview/core/entry/assets/images/MeetingIcon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/PTT_status_talk.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/PTT_status_talk.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/Help(selected).png" sourcePath="edu/amrita/aview/core/entry/assets/images/Help(selected).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/circleSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/circleSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/releaseViewer.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/releaseViewer.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/flash/loading.swf" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/flash/loading.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/blank.png" sourcePath="edu/amrita/aview/core/entry/assets/images/blank.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/minimize.png" sourcePath="edu/amrita/aview/core/playback/assets/images/minimize.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/tabnav_skin.png" sourcePath="edu/amrita/aview/core/entry/assets/images/tabnav_skin.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_maximize16.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_maximize16.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/TestSlave.swf" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/TestSlave.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/videoWall_PushUnmute.png" sourcePath="edu/amrita/aview/core/video/assets/images/videoWall_PushUnmute.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_minimize16.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_minimize16.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/cBPback.png" sourcePath="edu/amrita/aview/core/video/assets/images/cBPback.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/hide-down.PNG" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/hide-down.PNG"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/videoUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/videoUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/quiz_clicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/quiz_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/textToolSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/textToolSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/My-Documents-icon.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/My-Documents-icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/eraserLargeSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/eraserLargeSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/notif_presenter.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/notif_presenter.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disabledownloadTopc.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disabledownloadTopc.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/speaker_on.png" sourcePath="edu/amrita/aview/core/playback/assets/images/speaker_on.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/rec.png" sourcePath="edu/amrita/aview/core/entry/assets/images/rec.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_maximize_over16.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_maximize_over16.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/button_bar_middle_over.png" sourcePath="edu/amrita/aview/core/entry/assets/images/button_bar_middle_over.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/videoWall_videoReceive.png" sourcePath="edu/amrita/aview/core/video/assets/images/videoWall_videoReceive.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/busy.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/busy.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/nowebcam.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/nowebcam.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/viewerVideo.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/viewerVideo.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/images/windows_nofullscreen.png" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/images/windows_nofullscreen.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/cut_active.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/cut_active.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/Start Video (32).png" sourcePath="edu/amrita/aview/core/entry/assets/images/Start Video (32).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/student gray(web).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/student gray(web).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/youtubeLiveStop.png" sourcePath="edu/amrita/aview/core/entry/assets/images/youtubeLiveStop.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/eraser.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/eraser.png"/>
+    <resourceEntry destPath="assets/fonts/MyriadWebPro.ttf" sourcePath="assets/fonts/MyriadWebPro.ttf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/arrowDown.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/arrowDown.png"/>
+    <resourceEntry destPath="assets/images/downMenu.png" sourcePath="assets/images/downMenu.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/pointer_disable.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/pointer_disable.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/play_stopped.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/play_stopped.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/tab_skin.png" sourcePath="edu/amrita/aview/core/entry/assets/images/tab_skin.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher green(mobile).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher green(mobile).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/presenter.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/presenter.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_add.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_add.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/textinput_skin.png" sourcePath="edu/amrita/aview/core/entry/assets/images/textinput_skin.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/pause.png" sourcePath="edu/amrita/aview/core/playback/assets/images/pause.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/tab_selected_skin.png" sourcePath="edu/amrita/aview/core/entry/assets/images/tab_selected_skin.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/delete.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/delete.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_close_over16.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_close_over16.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/aview_classroom.jpg" sourcePath="edu/amrita/aview/core/entry/assets/images/aview_classroom.jpg"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/fmle/LogSession.dll" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/fmle/LogSession.dll"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/AttachCam.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/AttachCam.exe"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/components/thumbnails/assets/images/Prev.png" sourcePath="edu/amrita/aview/core/documentSharing/components/thumbnails/assets/images/Prev.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/msvcrtd.dll" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/msvcrtd.dll"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/youtube.png" sourcePath="edu/amrita/aview/core/entry/assets/images/youtube.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/feedback_clicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/feedback_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/ok.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/ok.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/Myprofile.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/Myprofile.png"/>
+    <resourceEntry destPath="assets/styles/skinClass.css" sourcePath="assets/styles/skinClass.css"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/notif_interact.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/notif_interact.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/flash/loading.swf" sourcePath="edu/amrita/aview/core/whiteboard/assets/flash/loading.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_minimize_over16.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_minimize_over16.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/biometric_unclicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/biometric_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/background.jpg" sourcePath="edu/amrita/aview/core/shared/assets/images/background.jpg"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/windows_nofullscreen.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/windows_nofullscreen.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/alert/assets/images/alert_error.gif" sourcePath="edu/amrita/aview/core/shared/components/alert/assets/images/alert_error.gif"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/videowall_25_clicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/videowall_25_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/docUnselect.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/docUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/styles/ScrollStyle.css" sourcePath="edu/amrita/aview/core/documentSharing/assets/styles/ScrollStyle.css"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/tabBg.jpg" sourcePath="edu/amrita/aview/core/shared/assets/images/tabBg.jpg"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/restore.png" sourcePath="edu/amrita/aview/core/playback/assets/images/restore.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/Class_clicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/Class_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/full screen.png" sourcePath="edu/amrita/aview/core/playback/assets/images/full screen.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/horizontal.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/horizontal.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/dis_delete.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/dis_delete.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/videoWall_videoFade.png" sourcePath="edu/amrita/aview/core/video/assets/images/videoWall_videoFade.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/2DClicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/2DClicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/flash/loading.swf" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/flash/loading.swf"/>
+    <resourceEntry destPath="locale/tr_TR/myResource.properties" sourcePath="locale/tr_TR/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/student green(mobile).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/student green(mobile).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/desktopUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/desktopUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/Help.png" sourcePath="edu/amrita/aview/core/entry/assets/images/Help.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/refreshOver.png" sourcePath="edu/amrita/aview/core/entry/assets/images/refreshOver.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/flash/video_busyCur.swf" sourcePath="edu/amrita/aview/core/video/assets/flash/video_busyCur.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/AboutUs.png" sourcePath="edu/amrita/aview/core/entry/assets/images/AboutUs.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/library_unclicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/library_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/pen.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/pen.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/flash/playBackLoading.swf" sourcePath="edu/amrita/aview/core/playback/assets/flash/playBackLoading.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/PushUnmute.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/PushUnmute.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/MeetingSessionIcon.png" sourcePath="edu/amrita/aview/core/entry/assets/images/MeetingSessionIcon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/Refresh (32).png" sourcePath="edu/amrita/aview/core/video/assets/images/Refresh (32).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/setup_clicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/setup_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/selectionArrow.png" sourcePath="edu/amrita/aview/core/video/assets/images/selectionArrow.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/eraserSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/eraserSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_restore.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_restore.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/webcam.png" sourcePath="edu/amrita/aview/core/entry/assets/images/webcam.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/fulll-screen.png" sourcePath="edu/amrita/aview/core/video/assets/images/fulll-screen.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/initApp.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/initApp.exe"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/mic.png" sourcePath="edu/amrita/aview/core/video/assets/images/mic.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_grip.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_grip.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/quiz_unclicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/quiz_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/exitFull-Screen.png" sourcePath="edu/amrita/aview/core/video/assets/images/exitFull-Screen.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/msvcr100.dll" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/msvcr100.dll"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/noStreamIndicator.jpg" sourcePath="edu/amrita/aview/core/video/assets/images/noStreamIndicator.jpg"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/Course_unclicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/Course_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/perfer.png" sourcePath="edu/amrita/aview/core/entry/assets/images/perfer.png"/>
+    <resourceEntry destPath="assets/images/logo/aview_classroom_logo_16x16.png" sourcePath="assets/images/logo/aview_classroom_logo_16x16.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/stop.png" sourcePath="edu/amrita/aview/core/entry/assets/images/stop.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/removePointer.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/removePointer.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/online.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/online.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/video_wall_minimize.png" sourcePath="edu/amrita/aview/core/entry/assets/images/video_wall_minimize.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/line.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/line.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/windowSkin.png" sourcePath="edu/amrita/aview/core/entry/assets/images/windowSkin.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/META-INF/signatures.xml" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/META-INF/signatures.xml"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/play_paused.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/play_paused.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/showPointer.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/showPointer.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/dis_create.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/dis_create.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_volume (24X24).png" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_volume (24X24).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/MulitBitRateStreamer.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/MulitBitRateStreamer.exe"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/desktopStop.png" sourcePath="edu/amrita/aview/core/entry/assets/images/desktopStop.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/feedback_unclicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/feedback_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/browse icon 32x32.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/browse icon 32x32.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/resizeCursor.png" sourcePath="edu/amrita/aview/core/entry/assets/images/resizeCursor.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/META-INF/AIR/hash" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE/META-INF/AIR/hash"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/create.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/create.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/arr_rig.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/arr_rig.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/infoIcon.png" sourcePath="edu/amrita/aview/core/entry/assets/images/infoIcon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/videoList.png" sourcePath="edu/amrita/aview/core/entry/assets/images/videoList.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/quizResponse/assets/images/tick-icon.png" sourcePath="edu/amrita/aview/core/evaluation/quizResponse/assets/images/tick-icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/edit.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/edit.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/components/thumbnails/assets/images/next.png" sourcePath="edu/amrita/aview/core/documentSharing/components/thumbnails/assets/images/next.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/windows_nofullscreen.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/windows_nofullscreen.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/flash/loading5.swf" sourcePath="edu/amrita/aview/core/entry/assets/flash/loading5.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/docClicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/docClicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/Stop.png" sourcePath="edu/amrita/aview/core/playback/assets/images/Stop.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/handRaiseWaitingStatus.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/handRaiseWaitingStatus.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/front.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/front.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/volumeCntrl.png" sourcePath="edu/amrita/aview/core/playback/assets/images/volumeCntrl.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/MeetingDisabledIcon.png" sourcePath="edu/amrita/aview/core/entry/assets/images/MeetingDisabledIcon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/quizSelected.png" sourcePath="edu/amrita/aview/core/entry/assets/images/quizSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/course.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/course.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/dis_save.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/dis_save.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/speaker.png" sourcePath="edu/amrita/aview/core/video/assets/images/speaker.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/resize_handle.gif" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/resize_handle.gif"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/play_stopinactive.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/play_stopinactive.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/upArrow.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/upArrow.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/institute.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/institute.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/resizeCursorTLBR.gif" sourcePath="edu/amrita/aview/core/video/assets/images/resizeCursorTLBR.gif"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/cut_inactive.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/cut_inactive.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/DisabledMic.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/DisabledMic.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/3DClicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/3DClicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/Medium_close.png" sourcePath="edu/amrita/aview/core/shared/assets/images/Medium_close.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/setup_unclicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/setup_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/cBP03.JPG" sourcePath="edu/amrita/aview/core/video/assets/images/cBP03.JPG"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/video_wall_maximize.png" sourcePath="edu/amrita/aview/core/entry/assets/images/video_wall_maximize.png"/>
+    <resourceEntry destPath="locale/fr_FR/myResource.properties" sourcePath="locale/fr_FR/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/pollUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/pollUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher gray(web).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher gray(web).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/endMeeting_inactive.png" sourcePath="edu/amrita/aview/core/entry/assets/images/endMeeting_inactive.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/Institute_clicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/Institute_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/Lecture_clicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/Lecture_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/endMeeting_active.png" sourcePath="edu/amrita/aview/core/entry/assets/images/endMeeting_active.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_delete.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_delete.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/desktop sharing.png" sourcePath="edu/amrita/aview/core/entry/assets/images/desktop sharing.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/UserAccount_unclicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/UserAccount_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/eraserSmallSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/eraserSmallSelected.png"/>
+    <resourceEntry destPath="assets/styles/styles.css" sourcePath="assets/styles/styles.css"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/Medium_close_over.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/Medium_close_over.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/pretesting.png" sourcePath="edu/amrita/aview/core/shared/assets/images/pretesting.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/breakSession_Icon.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/breakSession_Icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/flash/cursor_5.swf" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/flash/cursor_5.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_info.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_info.png"/>
+    <resourceEntry destPath="locale/sv_SE/myResource.properties" sourcePath="locale/sv_SE/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/rectangle.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/rectangle.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/whiteboardUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/whiteboardUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/showarrow.png" sourcePath="edu/amrita/aview/core/video/assets/images/showarrow.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/mute.png" sourcePath="edu/amrita/aview/core/playback/assets/images/mute.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/class.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/class.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/videoUnselect.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/videoUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/hide-right.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/hide-right.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/lms/assets/images/Search.png" sourcePath="edu/amrita/aview/core/lms/assets/images/Search.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/student gray(mobile).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/student gray(mobile).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/play_active.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/play_active.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/cBP05.JPG" sourcePath="edu/amrita/aview/core/video/assets/images/cBP05.JPG"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/activeTab.jpg" sourcePath="edu/amrita/aview/core/shared/assets/images/activeTab.jpg"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_more.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_more.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/ScrollTrack_Skin.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/ScrollTrack_Skin.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/akr.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/akr.exe"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/updates.png" sourcePath="edu/amrita/aview/core/entry/assets/images/updates.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/offline.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/offline.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/collaborationMode.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/collaborationMode.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/framedyn.dll" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/framedyn.dll"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/pollSelected.png" sourcePath="edu/amrita/aview/core/entry/assets/images/pollSelected.png"/>
+    <resourceEntry destPath="locale/ja_JP/myResource.properties" sourcePath="locale/ja_JP/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/hidePanel.png" sourcePath="edu/amrita/aview/core/entry/assets/images/hidePanel.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/ClearEnabled.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/ClearEnabled.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/refresh.png" sourcePath="edu/amrita/aview/core/entry/assets/images/refresh.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/Stop Video (32).png" sourcePath="edu/amrita/aview/core/entry/assets/images/Stop Video (32).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/delete.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/delete.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/Start Video (32).png" sourcePath="edu/amrita/aview/core/video/assets/images/Start Video (32).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/Medium_close_over.png" sourcePath="edu/amrita/aview/core/shared/assets/images/Medium_close_over.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/cBP04.JPG" sourcePath="edu/amrita/aview/core/video/assets/images/cBP04.JPG"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/folder-new.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/folder-new.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/polling/assets/images/Refresh (32).png" sourcePath="edu/amrita/aview/core/evaluation/polling/assets/images/Refresh (32).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/META-INF/AIR/hash" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/InternalCodecMultipleBitrateSlaveEXE2/META-INF/AIR/hash"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/videowall_disabled.png" sourcePath="edu/amrita/aview/core/entry/assets/images/videowall_disabled.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/quiz/assets/images/tick-icon.png" sourcePath="edu/amrita/aview/core/evaluation/quiz/assets/images/tick-icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/button_bar_middle.png" sourcePath="edu/amrita/aview/core/entry/assets/images/button_bar_middle.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/Slides.png" sourcePath="edu/amrita/aview/core/playback/assets/images/Slides.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/questionBank/assets/images/delete_choice.png" sourcePath="edu/amrita/aview/core/evaluation/questionBank/assets/images/delete_choice.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/UserAccount_clicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/UserAccount_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/cancel.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/cancel.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/alert/assets/images/alert_info.gif" sourcePath="edu/amrita/aview/core/shared/components/alert/assets/images/alert_info.gif"/>
+    <resourceEntry destPath="assets/images/logo/aview_classroom_logo_32x32.png" sourcePath="assets/images/logo/aview_classroom_logo_32x32.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_stop (24X24).png" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/images/player_stop (24X24).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/arrowUp.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/arrowUp.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/showPanel.png" sourcePath="edu/amrita/aview/core/entry/assets/images/showPanel.png"/>
+    <resourceEntry destPath="NativeApps/Mac/bin/startup.xml" sourcePath="NativeApps/Mac/bin/startup.xml"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/images/insert_active.png" sourcePath="edu/amrita/aview/core/playback/editing/assets/images/insert_active.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/flash/loading.swf" sourcePath="edu/amrita/aview/core/documentSharing/assets/flash/loading.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/Class_unclicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/Class_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/cBP02.JPG" sourcePath="edu/amrita/aview/core/video/assets/images/cBP02.JPG"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/rotate1.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/rotate1.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/videoWall_videoNotReceive.png" sourcePath="edu/amrita/aview/core/video/assets/images/videoWall_videoNotReceive.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/captchaHelp.png" sourcePath="edu/amrita/aview/core/entry/assets/images/captchaHelp.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/assets/images/chat.png" sourcePath="edu/amrita/aview/core/playback/assets/images/chat.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disabledelete.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disabledelete.png"/>
+    <resourceEntry destPath="locale/ml_IN/myResource.properties" sourcePath="locale/ml_IN/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/styles/Editing.css" sourcePath="edu/amrita/aview/core/playback/editing/assets/styles/Editing.css"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/tab_over_skin.png" sourcePath="edu/amrita/aview/core/entry/assets/images/tab_over_skin.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/CancelProcess.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/CancelProcess.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/preview.jpg" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/preview.jpg"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disablefolder-new.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disablefolder-new.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/captchaHelp.png" sourcePath="edu/amrita/aview/core/shared/assets/images/captchaHelp.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/student green(web).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/student green(web).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/vidshareClicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/vidshareClicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/dis_cancel.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/dis_cancel.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/selectionArrow.png" sourcePath="edu/amrita/aview/core/shared/assets/images/selectionArrow.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/fmle/FMLECmd.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/fmle/FMLECmd.exe"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/pageNo.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/pageNo.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/questionBank/assets/images/add_choice.png" sourcePath="edu/amrita/aview/core/evaluation/questionBank/assets/images/add_choice.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/No Documents.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/No Documents.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/view-fullscreen1.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/view-fullscreen1.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/whiteboardClkd.png" sourcePath="edu/amrita/aview/core/entry/assets/images/whiteboardClkd.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/quizUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/quizUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/button_over_skin.png" sourcePath="edu/amrita/aview/core/entry/assets/images/button_over_skin.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/zoom_out.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/zoom_out.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/aview_classroom.png" sourcePath="edu/amrita/aview/core/entry/assets/images/aview_classroom.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/rel.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/rel.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/guest gray(web).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/guest gray(web).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/Pushmute.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/Pushmute.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/loading.swf" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/loading.swf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/webcamera.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/webcamera.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/rectangleSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/rectangleSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/button_bar_first.png" sourcePath="edu/amrita/aview/core/entry/assets/images/button_bar_first.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/3DUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/3DUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/classroom_unclicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/classroom_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/lecture_unclicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/lecture_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/ClearDisabled.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/ClearDisabled.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/lineSelected.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/lineSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/classroom_clicked.png" sourcePath="edu/amrita/aview/core/entry/assets/images/classroom_clicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher gray(mobile).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher gray(mobile).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/ClassRegistration_unclicked.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/ClassRegistration_unclicked.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/restoreDisabled.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/restoreDisabled.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/download.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/download.png"/>
+    <resourceEntry destPath="assets/fonts/MyriadWebPro-Bold.ttf" sourcePath="assets/fonts/MyriadWebPro-Bold.ttf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_edit.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_edit.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/presenter_disabled.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/presenter_disabled.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/fmle/libexpatw.dll" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/fmle/libexpatw.dll"/>
+    <resourceEntry destPath="edu/amrita/aview/core/gclm/assets/images/success-icon.png" sourcePath="edu/amrita/aview/core/gclm/assets/images/success-icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/fmle/mc_enc_avc.dll" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/fmle/mc_enc_avc.dll"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/captchaRefresh.png" sourcePath="edu/amrita/aview/core/shared/assets/images/captchaRefresh.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/button_bar_last.png" sourcePath="edu/amrita/aview/core/entry/assets/images/button_bar_last.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/PTT_status_mute.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/PTT_status_mute.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/library.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/library.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/editing/assets/Thumbs.db" sourcePath="edu/amrita/aview/core/playback/editing/assets/Thumbs.db"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/PTT_mute_icon.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/PTT_mute_icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/Classroom.png" sourcePath="edu/amrita/aview/core/entry/assets/images/Classroom.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher gray(desktop).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher gray(desktop).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/components/annotations/assets/images/eraser.png" sourcePath="edu/amrita/aview/core/documentSharing/components/annotations/assets/images/eraser.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/chatSelected.png" sourcePath="edu/amrita/aview/core/entry/assets/images/chatSelected.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/eraserMedium.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/eraserMedium.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/button_bar_first_over.png" sourcePath="edu/amrita/aview/core/entry/assets/images/button_bar_first_over.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/back.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/back.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/captchaRefresh.png" sourcePath="edu/amrita/aview/core/entry/assets/images/captchaRefresh.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/presenterControlRequestStatus.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/presenterControlRequestStatus.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/playback/oldPlayback/assets/images/view-fullscreen1.png" sourcePath="edu/amrita/aview/core/playback/oldPlayback/assets/images/view-fullscreen1.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/clock.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/clock.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/icon_pulldown.png" sourcePath="edu/amrita/aview/core/entry/assets/images/icon_pulldown.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/components/thumbnails/assets/images/down.png" sourcePath="edu/amrita/aview/core/documentSharing/components/thumbnails/assets/images/down.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/whiteboard/assets/images/circle.png" sourcePath="edu/amrita/aview/core/whiteboard/assets/images/circle.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/avc_titlebar_icon.png" sourcePath="edu/amrita/aview/core/entry/assets/images/avc_titlebar_icon.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/evaluation/quiz/assets/images/silver-bell.gif" sourcePath="edu/amrita/aview/core/evaluation/quiz/assets/images/silver-bell.gif"/>
+    <resourceEntry destPath="locale/en_US/myResource.properties" sourcePath="locale/en_US/myResource.properties"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/student green(desktop).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/student green(desktop).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_save.png" sourcePath="edu/amrita/aview/core/shared/components/messageBox/assets/images/ic_save.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/Settings.png" sourcePath="edu/amrita/aview/core/entry/assets/images/Settings.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/assets/images/error.png" sourcePath="edu/amrita/aview/core/shared/assets/images/error.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/My Video_disabled.png" sourcePath="edu/amrita/aview/core/entry/assets/images/My Video_disabled.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/file.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/file.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/components/thumbnails/assets/images/up.png" sourcePath="edu/amrita/aview/core/documentSharing/components/thumbnails/assets/images/up.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disabledownload.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disabledownload.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/cBPfront.png" sourcePath="edu/amrita/aview/core/video/assets/images/cBPfront.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disableupload.png" sourcePath="edu/amrita/aview/core/shared/components/fileManager/assets/images/disableupload.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/components/annotations/assets/images/highlighter.png" sourcePath="edu/amrita/aview/core/documentSharing/components/annotations/assets/images/highlighter.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/documentSharing/assets/images/arr_lef.png" sourcePath="edu/amrita/aview/core/documentSharing/assets/images/arr_lef.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher green(desktop).png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/Teacher green(desktop).png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/assets/images/pop-out.png" sourcePath="edu/amrita/aview/core/video/assets/images/pop-out.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/fonts/MyriadWebPro.ttf" sourcePath="edu/amrita/aview/core/entry/assets/fonts/MyriadWebPro.ttf"/>
+    <resourceEntry destPath="edu/amrita/aview/core/shared/components/userList/assets/images/addPeople.png" sourcePath="edu/amrita/aview/core/shared/components/userList/assets/images/addPeople.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/entry/assets/images/docUnselect.png" sourcePath="edu/amrita/aview/core/entry/assets/images/docUnselect.png"/>
+    <resourceEntry destPath="edu/amrita/aview/core/video/native/Windows/bin/thirdPartySoftwareDetails.exe" sourcePath="edu/amrita/aview/core/video/native/Windows/bin/thirdPartySoftwareDetails.exe"/>
+  </includeResources>
+  <namespaceManifests/>
+</flexLibProperties>

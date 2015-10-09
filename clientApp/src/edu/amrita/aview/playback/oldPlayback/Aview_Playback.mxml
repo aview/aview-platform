@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	TODO: Rename this file to AviewPlayback.mxml at later time.
+	/**
+	Authors: Anu P,Aravind BC, Chitra S Pai
+
+	The A-VIEW playback module replays recorded lectures by simulating actual class session conducted.
+	The A-VIEW modules namely Audio/Video, Document Sharing, Whiteboard, Text Chat
+	 are played back simultaneously in the same order in which they were recorded.
+	The AviewPlayback.mxml file contains the UI components for Playback.
+	The parent component is Window Component which holds various Canvas, HDividerBox, TabNavigator components
+-->
+<!--For Web: Changed Window to Canvas. Removed following properties which doesn't exist for web.
+layout="absolute" systemChrome="standard" type="normal" statusBarBackgroundColor="#2a5da4" windowResize="PlaybackWindowResizeHandler()"
+closing="playbackWindowCloseHandler()"-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   color="#000506"
+		   backgroundColor="#e0effb"
+		   xmlns:Print2Flash="edu.amrita.aview.playback.oldPlayback.Print2Flash.*"
+		   width="100%"
+		   height="100%"
+		   minWidth="1024"
+		   minHeight="666">
+
+	<!--The Playback.as file contains the business logic of Playback module-->
+	<mx:Script source="PlaybackCode.as"/>
+
+	<mx:Script source="PlaybackOldIcons.as"/>
+
+	<mx:Canvas height="100%"
+			   width="100%"
+			   id="playback"
+			   creationPolicy="all">
+
+		<mx:HDividedBox id="hbox"
+						x="1"
+						y="0"
+						width="100%"
+						height="100%"
+						liveDragging="false"
+						borderColor="#B7BABC"
+						creationPolicy="all"
+						visible="false">
+
+			<!-- To disable the livedragging set the minWidth & maxWidth to same width of the canvas-->
+
+			<mx:Canvas id="part1"
+					   width="40%"
+					   height="100%"
+					   minWidth="299"
+					   maxWidth="299"
+					   creationPolicy="all">
+				<mx:Canvas id="videoCan"
+						   width="100%"
+						   height="290"
+						   x="0"
+						   y="5"
+						   creationPolicy="all">
+					<mx:Panel width="100%"
+							  height="100%"
+							  layout="absolute"
+							  x="0"
+							  y="0"
+							  backgroundColor="#000000"
+							  title="Teacher Video"
+							  id="videoPanel"
+							  cornerRadius="2"
+							  headerHeight="28"
+							  doubleClickEnabled="true"
+							  doubleClick="viewInFullScreen()">
+						<mx:Canvas id="videoContainer"
+								   width="100%"
+								   height="100%"
+								   x="0"
+								   backgroundColor="#000000">
+							<mx:VideoDisplay id="videoDisplay"
+											 x="0"
+											 y="0"
+											 width="100%"
+											 height="87.5%"
+											 complete="{btnPlay.enabled=true;}"
+											 cuePointManagerClass="mx.controls.videoClasses.CuePointManager"/>
+							<mx:HBox id="videoControlBar"
+									 width="100%"
+									 x="0"
+									 y="{videoDisplay.y+videoDisplay.height+4}"
+									 horizontalAlign="center"
+									 verticalAlign="middle"
+									 horizontalGap="2">
+								<!--Issue #314 START -->
+								<!--The method seekVideo() which was invoked during mouseUp
+								is now invoked when thumbRelease event is happened-->
+								<mx:HSlider width="95"
+											id="seekBar"
+											liveDragging="true"
+											toolTip="Seek video"
+											mouseDown="stopUpdationOnMouseDown()"
+											thumbRelease="seekVideo()"
+											click="seekVideoOnClick()"
+											maximum="{videoDisplay.totalTime}"
+											minimum="0"
+											enabled="false"
+											showDataTip="false"
+											showTrackHighlight="true"/>
+								<!--Issue #314 END -->
+								<mx:Label id="lblVideoTime"
+										  text="Loading..."
+										  paddingLeft="0"
+										  width="80"
+										  color="#FFFFFF"/>
+								<mx:Spacer width="8"/>
+								<mx:Button id="btnPlay"
+										   icon="{PlayPause}"
+										   width="5"
+										   height="5"
+										   click="videoPlayAndPause()"
+										   enabled="false"
+										   toolTip="Play/Pause"/>
+								<mx:Spacer width="18"/>
+								<mx:Button id="btnStop"
+										   icon="@Embed('assets/images/player_stop (24X24).png')"
+										   width="5"
+										   height="5"
+										   click="videostop()"
+										   toolTip="Stop video"/>
+								<mx:Spacer width="20"/>
+								<mx:Button id="btnVolume"
+										   width="5"
+										   height="5"
+										   icon="{MuteOnOff}"
+										   label="Volume"
+										   click="mute()"
+										   mouseOver="{volumeController.visible=true;}"
+										   mouseOut="volumeMouseOut()"/>
+								<mx:Spacer width="5"/>
+							</mx:HBox>
+
+							<mx:VSlider id="volumeController"
+										x="{btnVolume.x-9}"
+										y="{videoControlBar.y-66}"
+										height="65"
+										visible="false"
+										change="change_volume()"
+										minimum="0"
+										maximum="100"
+										value="50"
+										showTrackHighlight="true"/>
+						</mx:Canvas>
+					</mx:Panel>
+				</mx:Canvas>
+
+				<mx:TabNavigator id="tn"
+								 backgroundColor="#FDFEFE"
+								 alpha="0.69"
+								 cornerRadius="8"
+								 borderStyle="none"
+								 borderColor="#C7C5C5"
+								 x="-4"
+								 y="{videoPanel.y+videoPanel.height+10}"
+								 color="#070808"
+								 fontSize="12"
+								 height="70%"
+								 width="{part1.width}"
+								 creationPolicy="all">
+					<mx:Canvas id="slide"
+							   height="{tn.height}"
+							   width="{tn.width}"
+							   label="Slides"
+							   color="#010202"
+							   fontWeight="bold"
+							   fontSize="12"
+							   borderColor="#FDFDFD"
+							   verticalScrollPolicy="auto"
+							   creationPolicy="all">
+						<mx:List id="list"
+								 labelField="Slide"
+								 x="0"
+								 y="0"
+								 width="{slide.width}"
+								 height="{slide.height}"
+								 contentBackgroundColor="#FFFFFF"
+								 borderStyle="none"
+								 dataProvider="{pptSlideNumberArray}"
+								 doubleClickEnabled="false"
+								 click="getSelectedPPTSlide()"/>
+					</mx:Canvas>
+					<mx:Canvas id="chat"
+							   width="{tn.width}"
+							   height="{tn.height}"
+							   fontSize="12"
+							   color="#030708"
+							   borderColor="#FFFFFF"
+							   borderStyle="none">
+						<mx:TextArea id="chatArea"
+									 visible="false"
+									 width="{chat.width}"
+									 height="{chat.height}"
+									 editable="false"
+									 borderStyle="none"
+									 text=""/>
+					</mx:Canvas>
+				</mx:TabNavigator>
+
+				<!--<mx:ButtonBar  id="btnbar"
+					x="0" y="0"
+					width="299" height="30">
+				</mx:ButtonBar>	-->
+				<!--<mx:Button id="fs"
+					x="1" y="0"
+					width="51" height="30"
+					toolTip="Fullscreen"
+					cornerRadius="0"
+					click="PlaybackWindowFullScreenHandler()"
+					icon="@Embed(source='assets/images/view-fullscreen1.png')"
+					fillAlphas="[1.0, 1.0, 1.0, 1.0]"/>
+
+				 Issue No: #429 -->
+				<!-- <mx:Button id="switchview"
+					toolTip="Switch View"
+					width="47" height="30"
+					icon="@Embed(source='assets/images/two_arrows_switch2-48.png')"
+					textRollOverColor="#f2f7fa"
+					cornerRadius="0"
+					fontSize="12"
+					click="switchUIView()"
+					x="52" y="0"
+					fillAlphas="[1.0, 1.0, 1.0, 1.0]"/>
+				End of Issue No: #429 	-->
+
+			</mx:Canvas>
+
+			<mx:Canvas id="part2"
+					   width="60%"
+					   height="100%"
+					   creationPolicy="all">
+
+				<mx:Canvas id="wrapcan"
+						   width="100%"
+						   height="100%"
+						   creationPolicy="all">
+
+					<mx:Canvas id="maskcan"
+							   width="100%"
+							   height="96%"
+							   backgroundColor="#ffffff"
+							   y="25"/>
+
+					<mx:TabNavigator id="tn1"
+									 x="0"
+									 color="#000405"
+									 fontSize="12"
+									 width="100%"
+									 height="100%"
+									 borderStyle="solid"
+									 creationPolicy="all">
+						<mx:Canvas id="doc"
+								   x="0"
+								   y="0"
+								   label="Document"
+								   height="100%"
+								   width="100%"
+								   visible="false">
+
+							<!-- /*Bug Fix #32 */	-->
+							<Print2Flash:Print2FlashDoc id="document"
+														horizontalCenter="0"
+														verticalCenter="0"
+														onLoaded="{document.getMaxScrollPosition(getDocumentMaxscroll);document.getNumberOfPages(getDocumentPageNumber);setDocumentContainerSize(tn1.width,tn1.height,50);}"/>
+							<!-- /*	Issue No:#603,#363 */	-->
+						</mx:Canvas>
+
+						<mx:Canvas x="0"
+								   y="0"
+								   id="can"
+								   mask="{maskcan}"
+								   label="Whiteboard"
+								   width="100%"
+								   height="100%"
+								   borderStyle="solid"/>
+					</mx:TabNavigator>
+				</mx:Canvas>
+			</mx:Canvas>
+		</mx:HDividedBox>
+	</mx:Canvas>
+
+</mx:Canvas>

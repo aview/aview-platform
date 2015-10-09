@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---RTCR: Avoid 'this' from description and use component name instead of 'this'. -->
+<!---
+
+File		: AviewPlayerComp.mxml
+Module		: PlayBack
+Developer(s): Haridas
+Reviewer(s)	: Remya T
+
+This is old desktop sahring play back coponent for Playback.This file not used in new MUI play back
+
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:s="library://ns.adobe.com/flex/spark" width="100%" height="100%" backgroundColor="#E0EFFB" resize="playerResizeHandler(event)">
+	<mx:Script source="AviewPlayerCompAs.as"/>
+	<!--RTCR: Whether the commented code is needed or not?-->
+	<!--<mx:Script source="DocPointerPlayer.as"/>
+	<mx:Script source="PttPlayer.as"/>	-->
+	<!--RTCR: Give description for all the components.Also avoid underscore in componnets id part and also follow the naming conventions-->
+	<mx:Canvas id="mainCan" x="0" y="0" width="100%" height="98%" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+
+		<mx:Canvas id="can_top" width="100%" height="92%" backgroundColor="#E0EFFB">
+
+			<mx:Canvas id="can_videos" x="0" y="0" width="30%" height="{can_top.height}" backgroundColor="#ffffff">
+
+				<mx:VBox id="vidCan" width="100%" height="100%" verticalAlign="top" verticalScrollPolicy="off">
+					<mx:Canvas id="presenter" width="100%" height="33%" chromeColor="#8AC4FF" resize="presenterResize()" verticalCenter="100">
+						<s:Label id="prstlbl" visible="false" x="100" y="100" text="Full Screen Mode is Activate"/>
+					</mx:Canvas>
+
+					<mx:Canvas id="viewer" width="100%" height="33%" chromeColor="#8AC4FF" resize="viewerResize()">
+						<s:Label id="viwrlbl" visible="false" x="100" y="100" text="Full Screen Mode is Activate"/>
+					</mx:Canvas>
+
+					<mx:Canvas id="chat" width="100%" height="33%" resize="chatResize()">
+						<s:Label id="chatlbl" visible="false" x="100" y="100" text="Full Screen Mode is Activate"/>
+					</mx:Canvas>
+
+				</mx:VBox>
+			</mx:Canvas>
+
+			<mx:Canvas id="can_panel" x="{can_videos.width}" y="0" width="100%" height="{can_top.height}">
+
+				<s:Panel id="cont" left="10" right="10" top="10" bottom="10" backgroundColor="#E0EFFB" title="{lectureTitle}">
+					<mx:HBox id="buttonContainer" chromeColor="#8AC4FF">
+						<s:Button id="pvdoBtn" width="130" height="40" label="PRESENTER" click="addPopupWndw(event)" enabled="false" icon="@Embed('../assets/images/video-file.png')" toolTip="Presenter Video"/>
+						<s:Button id="vvdoBtn" width="120" height="40" label="VIEWER" click="addPopupWndw(event)" enabled="false" icon="@Embed('../assets/images/video-file.png')" toolTip="Viewer Video"/>
+						<s:Button id="chatBtn" width="120" height="40" label="CHAT" click="addPopupWndw(event)" enabled="false" icon="@Embed('../assets/images/chat.png')" toolTip="Chat"/>
+						<s:Button id="slideBtn" width="120" height="40" label="SLIDES" click="addSlideWndw()" enabled="false" icon="@Embed('../assets/images/Slides.png')" toolTip="Slides"/>
+						<s:Button id="desktopBtn" width="120" height="40" label="DESKTOP" click="createDesktopPlayer()" enabled="false" focusEnabled="false" icon="@Embed('../assets/images/Slides.png')" toolTip="Slides"/>
+					</mx:HBox>
+					<mx:TabNavigator id="tn" y="{pvdoBtn.y+pvdoBtn.height}" width="100%" height="100%" borderStyle="solid" chromeColor="#8AC4FF" creationPolicy="all">
+						<mx:VBox id="documentTab" label="Document"/>
+
+						<mx:Canvas label="WhiteBoard" verticalScrollPolicy="off">
+
+							<mx:Canvas id="wbCan" width="100%" height="100%" creationComplete="createWbComp()" resize="onResizeWb(event)"/>
+
+							<s:Image id="pageNoImage" left="0" top="2" source="@Embed(source='../assets/images/pageNo.png')"/>
+							<mx:Text id="pageNo" left="0" top="0" text="Page No : "/>
+						</mx:Canvas>
+
+					</mx:TabNavigator>
+
+				</s:Panel>
+
+			</mx:Canvas>
+		</mx:Canvas>
+
+		<mx:Canvas id="can_bottom" bottom="0" width="100%" height="7%">
+
+			<mx:HBox id="seekBarContainer" x="0" width="100%" verticalScrollPolicy="off">
+				<mx:HSlider id="seekBar" width="98%" chromeColor="#e0effb" dataTipFormatFunction="seekBarValue" minimum="0"/>
+			</mx:HBox>
+			<!--<mx:Label id="centralTimeLabel" text="{timeVariable.toString()}"  y="10" />-->
+			<s:Label id="centralTimeLabel" y="{seekBar.y+seekBar.height+2}"/>
+			<s:Button id="playpauseButton" x="{(seekBar.width/2)-playpauseButton.width-10}" y="{seekBar.y+seekBar.height+2}" width="60" label="Pause" chromeColor="#E0EFFB" click="playPausePlayer()"/>
+			<s:Button id="stopButton" x="{(seekBar.width/2)+10}" y="{seekBar.y+seekBar.height+2}" width="60" label="Stop" chromeColor="#E0EFFB" click="stopPlayBack()"/>
+			<s:Button id="closeWndowButton" x="{stopButton.x+stopButton.width+20}" y="{seekBar.y+seekBar.height+2}" width="60" label="Cancel" chromeColor="#E0EFFB" click="closePlayback()"/>
+			<s:Label id="endTimeLabel" x="{seekBar.x+seekBar.width-endTimeLabel.width-3}" y="{seekBar.y+seekBar.height+2}"/>
+		</mx:Canvas>
+
+		<mx:SWFLoader id="playBackBufferingMessageComp" width="200" height="200" horizontalCenter="0" verticalCenter="0"/>
+
+	</mx:Canvas>
+
+</mx:Canvas>

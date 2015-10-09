@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: FaceRegistrationForm.mxml
+Module		: Biometric
+Developer(s): Jerald P
+Reviewer(s)	: Ramesh Guntha
+
+This component invoked when user select Biometric login.
+This component used for face registration.
+-->
+<!-- Comment for each section -->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:components="edu.amrita.aview.common.components.*"
+		  borderColor="#2A5EA4"
+		  move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+		  close="PopUpManager.removePopUp(this)"
+		  backgroundColor="#E0EFFB" initialize="init()"  title="Face Registration">
+	
+
+	<fx:Script source="FaceRegistrationFormHandler.as"/>
+
+	<fx:Declarations>
+	<mx:HTTPService id="httpFaceDetectorService" fault="faceFaultHandler(event)" method="POST"
+					result="faceResultHandler(event)" showBusyCursor="true" useProxy="false"/>
+	<mx:HTTPService id="httpImageDataService" fault="faultHandler(event)" method="POST"
+					result="resultHandler(event)" showBusyCursor="true" useProxy="false"/>
+	</fx:Declarations>
+	<mx:VBox id="mainBiometricCanvas" left="1" right="1" top="0" bottom="20" fontFamily="Arial"
+			 horizontalAlign="center" horizontalCenter="0" verticalAlign="middle">
+
+		<mx:Label width="100%" color="#0839C6" fontSize="15" fontWeight="bold" horizontalCenter="0"
+				  text="{resourceManager.getString('myResource','biometric.faceRegistForm')}"
+				  textAlign="center"/>
+
+		<mx:HBox x="0" y="3" height="520" fontSize="12" horizontalAlign="left" paddingLeft="0"
+				 textAlign="left" verticalAlign="middle">
+
+			<mx:Panel width="642" height="513" backgroundAlpha="1.0" backgroundColor="#e0effb"
+					  fontSize="12" layout="absolute"
+					  title="{resourceManager.getString('myResource','biometric.camInterface')}">
+				<mx:VideoDisplay id="faceImage" x="0" y="0" width="640" height="480"
+								 creationComplete="videoDisplaySetting();"/>
+			</mx:Panel>
+			<mx:Panel width="136" height="513" backgroundColor="#e0effb" fontSize="12"
+					  fontWeight="bold" layout="absolute"
+					  title="{resourceManager.getString('myResource','biometric.userFaces')}">
+				<mx:Image id="faceIcon0" x="27" y="23" width="60" height="70"/>
+				<mx:Image id="faceIcon1" x="27" y="117" width="60" height="70"/>
+				<mx:Image id="faceIcon2" x="27" y="212" width="60" height="70"/>
+				<mx:Image id="faceIcon3" x="27" y="305" width="60" height="70"/>
+				<mx:Image id="faceIcon4" x="27" y="398" width="60" height="70"/>
+				<components:MxImageButton id="deleteIcon0" x="88" y="77" width="16" height="16"
+										  buttonMode="true" chromeColor="#E0EFFB"
+										  click="faceDeleteConfirmation(deleteIcon0.id)"
+										  downSkin="mx.skins.halo.ButtonSkin"
+										  icon="{deleteFaceIcon}" mouseChildren="false"
+										  overSkin="mx.skins.halo.ButtonSkin"
+										  skin="mx.skins.halo.ButtonSkin" tabIndex="3"
+										  toolTip="{resourceManager.getString('myResource','biometric.delete')}"
+										  upSkin="mx.skins.halo.ButtonSkin" useHandCursor="true"/>
+				<components:MxImageButton id="deleteIcon1" x="88" y="171" width="16" height="16"
+										  buttonMode="true" chromeColor="#E0EFFB"
+										  click="faceDeleteConfirmation(deleteIcon1.id)"
+										  downSkin="mx.skins.halo.ButtonSkin"
+										  icon="{deleteFaceIcon}" mouseChildren="false"
+										  overSkin="mx.skins.halo.ButtonSkin"
+										  skin="mx.skins.halo.ButtonSkin" tabIndex="4"
+										  toolTip="{resourceManager.getString('myResource','biometric.delete')}"
+										  upSkin="mx.skins.halo.ButtonSkin" useHandCursor="true"/>
+				<components:MxImageButton id="deleteIcon2" x="88" y="266" width="16" height="16"
+										  buttonMode="true" chromeColor="#E0EFFB"
+										  click="faceDeleteConfirmation(deleteIcon2.id)"
+										  downSkin="mx.skins.halo.ButtonSkin"
+										  icon="{deleteFaceIcon}" mouseChildren="false"
+										  overSkin="mx.skins.halo.ButtonSkin"
+										  skin="mx.skins.halo.ButtonSkin" tabIndex="5"
+										  toolTip="{resourceManager.getString('myResource','biometric.delete')}"
+										  upSkin="mx.skins.halo.ButtonSkin" useHandCursor="true"/>
+				<components:MxImageButton id="deleteIcon3" x="88" y="359" width="16" height="16"
+										  buttonMode="true" chromeColor="#E0EFFB"
+										  click="faceDeleteConfirmation(deleteIcon3.id)"
+										  downSkin="mx.skins.halo.ButtonSkin"
+										  icon="{deleteFaceIcon}" mouseChildren="false"
+										  overSkin="mx.skins.halo.ButtonSkin"
+										  skin="mx.skins.halo.ButtonSkin" tabIndex="6"
+										  toolTip="{resourceManager.getString('myResource','biometric.delete')}"
+										  upSkin="mx.skins.halo.ButtonSkin" useHandCursor="true"/>
+				<components:MxImageButton id="deleteIcon4" x="88" y="452" width="16" height="16"
+										  buttonMode="true" chromeColor="#E0EFFB"
+										  click="faceDeleteConfirmation(deleteIcon4.id)"
+										  downSkin="mx.skins.halo.ButtonSkin"
+										  icon="{deleteFaceIcon}" mouseChildren="false"
+										  overSkin="mx.skins.halo.ButtonSkin"
+										  skin="mx.skins.halo.ButtonSkin" tabIndex="7"
+										  toolTip="{resourceManager.getString('myResource','biometric.delete')}"
+										  upSkin="mx.skins.halo.ButtonSkin" useHandCursor="true"/>
+			</mx:Panel>
+		</mx:HBox>
+
+		<mx:HBox x="0" y="3" height="30" fontSize="12" horizontalAlign="left" paddingLeft="10"
+				 textAlign="left" verticalAlign="middle">
+			<components:MxImageButton id="btnRegister" height="24"
+									  label="{resourceManager.getString('myResource','biometric.register')}"
+									  buttonMode="true" chromeColor="#E0EFFB"
+									  click="detectFacialFeatures(faceImage)" cornerRadius="3"
+									  fontWeight="bold" tabIndex="1" useHandCursor="true"/>
+			<components:MxImageButton id="btnSettings" width="28" height="24" buttonMode="true"
+									  chromeColor="#E0EFFB" click="videoDisplaySetting()"
+									  downSkin="mx.skins.halo.ButtonSkin" fontWeight="bold"
+									  icon="@Embed(source='assets/images/settings.png')"
+									  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+									  skin="mx.skins.halo.ButtonSkin" tabIndex="2"
+									  toolTip="{resourceManager.getString('myResource','biometric.camSettings')}"
+									  upSkin="mx.skins.halo.ButtonSkin" useHandCursor="true"/>
+		</mx:HBox>
+	</mx:VBox>
+	
+</s:TitleWindow>

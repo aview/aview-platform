@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: Administration.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	:
+
+This is the main page for the gclm. Based on the logged in user
+credentials the different components will be visible to the user for access.
+
+-->
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="100%"
+		   height="100%"
+		   creationComplete="creationCompleteHandler(event)"
+		   remove="callRemove()"
+		   xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<mx:Script source="AdministrationHandler.as"/>
+	<mx:Script source="GCLMIcons.as"/>
+	<mx:HBox left="1"
+			 top="1"
+			 horizontalGap="4">
+		<components:MxImageButton id="BtnInstitute"
+				   label="Institute"
+				   icon="{InstituteIcon}"
+				   toolTip="Institute"
+				   height="30"
+				   width="135"
+				   skin="{null}"
+				   upSkin="{null}"
+				   overSkin="mx.skins.halo.ButtonSkin"
+				   downSkin="mx.skins.halo.ButtonSkin"
+				   disabledSkin="mx.skins.halo.ButtonSkin"
+				   click="clickInstitute()"
+				   visible="{(ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE )}"
+				   includeInLayout="{ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE }"/>
+		<components:MxImageButton id="BtnCourse"
+				   label="Course"
+				   icon="{CourseIcon}"
+				   toolTip="Course"
+				   height="30"
+				   width="135"
+				   skin="{null}"
+				   upSkin="{null}"
+				   overSkin="mx.skins.halo.ButtonSkin"
+				   downSkin="mx.skins.halo.ButtonSkin"
+				   disabledSkin="mx.skins.halo.ButtonSkin"
+				   click="clickCourse()"/>
+		<components:MxImageButton id="BtnClass"
+				   label="Class"
+				   icon="{ClassIcon}"
+				   toolTip="Class"
+				   height="30"
+				   width="135"
+				   skin="{null}"
+				   upSkin="{null}"
+				   overSkin="mx.skins.halo.ButtonSkin"
+				   downSkin="mx.skins.halo.ButtonSkin"
+				   disabledSkin="mx.skins.halo.ButtonSkin"
+				   click="clickClass()"/>
+		<components:MxImageButton id="BtnLecture"
+				   label="Lecture"
+				   icon="{LectureIcon}"
+				   toolTip="Lecture"
+				   height="30"
+				   width="135"
+				   skin="{null}"
+				   upSkin="{null}"
+				   overSkin="mx.skins.halo.ButtonSkin"
+				   downSkin="mx.skins.halo.ButtonSkin"
+				   disabledSkin="mx.skins.halo.ButtonSkin"
+				   click="clickLecture()"/>
+		<components:MxImageButton id="BtnUserAccount"
+				   label="User Account"
+				   icon="{UserAccountIcon}"
+				   toolTip="User Account"
+				   height="30"
+				   width="135"
+				   skin="{null}"
+				   upSkin="{null}"
+				   overSkin="mx.skins.halo.ButtonSkin"
+				   downSkin="mx.skins.halo.ButtonSkin"
+				   disabledSkin="mx.skins.halo.ButtonSkin"
+				   click="clickUserAccount()"/>
+		<!-- Fix for Bug# 17113,17113-->
+		<components:MxImageButton label="Class Registration" 
+				   icon="{ClassRegistrationIcon}"
+				   toolTip="Class Registration"
+				   height="30"
+				   width="151"
+				   skin="{null}"
+				   upSkin="{null}"
+				   overSkin="mx.skins.halo.ButtonSkin"
+				   downSkin="mx.skins.halo.ButtonSkin"
+				   disabledSkin="mx.skins.halo.ButtonSkin"
+				   click="clickClassRegistration()"/>
+	</mx:HBox>
+	<mx:Canvas id="ParentComponent"
+			   top="40"
+			   bottom="0"
+			   width="100%"
+			   label="Course"
+			   borderStyle="solid"
+			   borderColor="#1AB1F7">
+	</mx:Canvas>
+</mx:Canvas>

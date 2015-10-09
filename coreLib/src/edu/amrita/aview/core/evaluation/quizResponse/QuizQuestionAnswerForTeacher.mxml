@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuizQuestionAnswerForTeacher.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Thirumalai murugan
+
+QuizQuestionAnswerForTeacher.mxml component is used to display question-answer in question level result
+-->
+<!--container to hold question answers given by teacher-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*"
+		 width="716" height="100%" color="#000000" creationComplete="creationCompleteHandler()"
+		 fontFamily="Arial">
+	
+	<fx:Declarations>
+		<!--to set id for RadioButtonGroup -->
+		<s:RadioButtonGroup id="ansRBG"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.evaluation.QuizContext;
+			import edu.amrita.aview.core.evaluation.vo.QuizQuestionMediaFileVO;
+			import edu.amrita.aview.core.evaluation.vo.QuizQuestionVO;
+			/**
+			 * Variable to hold instance of the QuizQuestionVO
+			 **/
+			[Bindable]
+			public var questionAns:QuizQuestionVO;
+			
+			[Bindable]
+			/**
+			 * Variable to hold media file path
+			 */
+			private var mediaFilePath : String = "";
+			
+			protected function creationCompleteHandler():void
+			{
+				if(questionAns.quizQuestionMediaFiles != null && questionAns.quizQuestionMediaFiles.length > 0)
+				{
+					var mediaFile:QuizQuestionMediaFileVO = questionAns.quizQuestionMediaFiles.getItemAt(0) as QuizQuestionMediaFileVO;
+					mediaFilePath = mediaFile.quizQuestionMediaFolderPath + mediaFile.quizQuestionMediaFileName;
+					if(mediaFile.quizQuestionMediaFileType == QuizContext.MEDIA_FILE_TYPE_IMAGE)
+					{
+						previewBox.visible = true;
+						previewBox.includeInLayout = true;
+						imageLoader.visible = true;
+						imageLoader.includeInLayout = true;
+						
+					}
+					else if(mediaFile.quizQuestionMediaFileType == QuizContext.MEDIA_FILE_TYPE_AUDIO 
+						|| mediaFile.quizQuestionMediaFileType == QuizContext.MEDIA_FILE_TYPE_VIDEO)
+					{
+						previewBox.visible = true;
+						previewBox.includeInLayout = true;
+						videoPlayer.visible = true;
+						videoPlayer.includeInLayout = true;
+						
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<!--Container to hold qusetion text and answer-->
+	<mx:HBox width="60%" minWidth="200" color="#000000">
+		<!--label to hold question-->
+		<!--Fix for Bug#16285,16106-->
+		<s:Label id="question" textAlign="left"
+				 width="300"
+				 text="{questionAns.questionText}"
+				 fontWeight="bold"/>
+		<!--label to  question mark -->
+		<s:Label text="{' [marks: ' + questionAns.marks + ']'}"
+				 fontWeight="bold"/>
+	</mx:HBox>
+	<!--spacer to set space-->
+	<mx:Spacer/>
+	<!--label to hold answer choice-->
+	<s:Label text="Answer Choice:"
+			 fontWeight="bold"
+			 color="#000000"/>
+	<!--datagroup to hold question answer choice-->
+	<!-- Fix for Bug #18886-->
+	<s:DataGroup dataProvider="{questionAns.quizAnswerChoices}"
+				 width="60%" textAlign="left"
+				 minWidth="200">
+		<s:itemRenderer>
+			<!--to hold components in datagrid-->
+			<fx:Component>
+				<s:ItemRenderer showsCaret="false">					
+					<fx:Script>
+						<![CDATA[
+							import edu.amrita.aview.core.entry.ClassroomContext;
+							import edu.amrita.aview.core.entry.Constants;
+							/**
+							 * Icon class for tick image
+							*/
+							[Embed(source="assets/images/tick-icon.png")]
+							private var iconClass:Class;
+						]]>
+					</fx:Script>
+					<!--container to hold image and label-->
+					<mx:HBox width="100%">
+						<!--image to hold tick icon-->
+						<s:Image id="tickImage"
+								 source="{iconClass}"
+								 visible="{data.fraction==1}"
+								 width="17"
+								 height="18"/>
+						<!--Text to hold user role-->
+                        <!--Fix for Bug #18947-->
+						<mx:Text width="90%" maxWidth="400" color="#000000" fontFamily="Arial"
+								 fontSize="15" selectable="false"
+								 text="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE ?('('+(String.fromCharCode(itemIndex +97))+')'+'  '+data.choiceText):''}"/>
+
+					</mx:HBox>
+				</s:ItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+	</s:DataGroup>
+	<s:BorderContainer id="previewBox" visible="false" includeInLayout="false" left="0" verticalCenter="0" horizontalCenter="0">
+		<s:VideoPlayer source="{mediaFilePath}" id="videoPlayer" autoPlay="true" maxHeight="200" maxWidth="300"  visible="false" includeInLayout="false"/>
+		<s:Image id="imageLoader" width="100%" height="100%" source="{mediaFilePath}" maxHeight="200" maxWidth="300" visible="false" includeInLayout="false"/>
+	</s:BorderContainer>
+</mx:VBox>

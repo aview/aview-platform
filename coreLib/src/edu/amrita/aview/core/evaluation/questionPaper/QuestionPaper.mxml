@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuestionPaper.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This is the base component for Question Paper .
+Various operations(create,edit,delete etc) on
+question paper are delegated through this component .
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:evaluation="edu.amrita.aview.core.evaluation.*"
+		   width="100%"
+		   height="100%"
+		   backgroundColor="#e0effb"
+		   focusColor="#A9F9A0"
+		   initialize="{initQP()}" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!--script to include handler-->
+	<mx:Script source="QuestionPaperUIHandler.as"/>	
+	<mx:HBox
+			 width="100%"
+			 height="100%"
+			 backgroundColor="#e0effb"
+			 borderColor="#ffffff">		
+		<mx:Canvas
+				   x="0"
+				   y="0"
+				   width="20%"
+				   height="100%"
+				   minWidth="180"
+				   maxWidth="180"
+				   backgroundColor="#e0effb">
+			<!-- For displaying question papers and respective questions -->
+			<mx:Tree id="qpTree"
+					 width="100%"
+					 dataProvider="{questionPaperACForTree}"
+					 dataTipFunction="showToolTip"
+					 doubleClickEnabled="true"
+					 focusEnabled="false"
+					 itemClick="qpTreeOnClick(event)"
+					 itemDoubleClick="qpTreeOnDoubleClick(event)"
+					 labelFunction="getLabelForTreeNode"
+					 showDataTips="true">		
+			</mx:Tree>
+			<!-- Not used 
+			itemEditBeginning="disableEditing(event);" -->	
+			<!-- Create Button-->
+			<components:ImageButton id="btnAdd" x="0" y="{qpTree.height+5}" width="60" label="Create"
+									chromeColor="#E0EFFB" click="{addQuestionPaper()}"
+									color="#000000" cornerRadius="3" fontFamily="Arial"/>
+			<!-- Edit Button-->
+			<components:ImageButton id="btnEdit" x="{btnAdd.width}" y="{qpTree.height+5}" width="60"
+									label="Edit" chromeColor="#E0EFFB" click="{editQuestionPaper()}"
+									color="#000000" cornerRadius="3" fontFamily="Arial"/>
+			<!-- Delete Button-->
+			<components:ImageButton id="btnDelete" x="{btnAdd.width+btnEdit.width}"
+									y="{qpTree.height+5}" width="60" label="Delete"
+									chromeColor="#E0EFFB" click="{onDeleteQP()}" color="#000000"
+									cornerRadius="3" fontFamily="Arial"/>
+		</mx:Canvas>
+
+		<!-- Holds the various components like question paper summary , question paper questions etc -->
+		<mx:Canvas id="canComponents"
+				   x="195"
+				   y="4"
+				   width="95%" horizontalScrollPolicy="off"
+				   backgroundColor="#e0effb"
+				   borderStyle="solid"
+				   >
+			<mx:Canvas width="100%"
+					   height="100%"
+					   horizontalScrollPolicy="off"
+					   verticalScrollPolicy="on"/>
+		</mx:Canvas>
+	</mx:HBox>
+</mx:Canvas>

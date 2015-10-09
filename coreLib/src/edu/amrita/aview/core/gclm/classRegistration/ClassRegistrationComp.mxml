@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+File		: ClassRegistrationComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	:
+
+This component displays the details of the registered users for a given AVIEW classe.
+
+Based on the logged in user credentials this component behaves as follows:
+Master Admin: Can view, approve, create, edit and delete of all class registrations across any institute
+
+Institute Administrators: Can view all the class registrations for the courses within their institutes.
+Create, Approval, Edit and Delete of registration is possible within their institute boundary
+
+During class registration, administrator decides the moderator for the class.
+
+Presenter and Viewer: Can view only those classes for which they have been registered.However they
+can register for a class which needs to be approved by administrator.
+-->
+<!-- Filter for class registration container -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="100%"
+		   height="100%"
+		   xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+		   xmlns:xt="library://ns.tink.ws/flex/mx" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	
+	<mx:Script source="ClassRegistrationCompUIHandler.as"/>
+	<!-- Container -->
+	<mx:VBox top="0"
+			 fontFamily="Arial"
+			 fontSize="12"
+			 width="100%"
+			 height="100%">
+		<!-- Label to show Filter for Class Registration -->
+		<!-- Fix for Bug #16963-->
+		<s:Label paddingTop="5"
+				 width="100%"
+				 textAlign="center"
+				 text="Filter for Class Registration"
+				 fontSize="15"
+				 fontWeight="bold"
+				 color="#0839C6"/>
+		<!-- Form group container -->
+		<mx:Canvas width="100%"
+				   height="100">
+			<!-- Register button -->
+			<!-- //NPCR: can change the chromecolor to a meaningful common name as its repeating in all components-->
+			<components:ImageButton id="btnCreate"
+					  left="10"
+					  bottom="35"
+					  width="100"
+					  height="22"
+					  label="Register"
+					  chromeColor="#E0EFFB"
+					  click="createClassRegistration()"
+					  cornerRadius="3"
+					  icon="{createIcon}"
+					  toolTip="Register"/>
+			<!-- Edit button -->
+			<components:ImageButton id="btnEditClassReg"
+					  left="120"
+					  bottom="35"
+					  width="100"
+					  height="22"
+					  label="Edit"
+					  chromeColor="#E0EFFB"
+					  click="editClassRegistration()"
+					  cornerRadius="3"
+					  icon="{updateIcon}"
+					  toolTip="Edit"/>
+			<!-- Delete Button -->
+			<components:ImageButton id="btnDelete"
+					  left="231"
+					  bottom="35"
+					  width="100"
+					  height="22"
+					  label="Delete"
+					  chromeColor="#E0EFFB"
+					  click="deleteClassRegistration()"
+					  cornerRadius="3"
+					  icon="{deleteIcon}"
+					  toolTip="Delete"/>
+			<!-- Approve Button -->
+			<components:ImageButton id="btnApproveClassReg"
+					  left="10"
+					  bottom="3"
+					  width="100"
+					  height="22"
+					  label="Approve"
+					  chromeColor="#E0EFFB"
+					  click="createClassRegistrationApproval()"
+					  cornerRadius="3"
+					  icon="{updateIcon}"
+					  toolTip="Approve"/>
+			<!-- Label to show username -->
+			<s:Label right="674"
+					 bottom="72.5"
+					 text="User Name : "
+					 id="lblUserName"/>
+			<!-- textinput to accepts user name -->
+			<s:TextInput id="txtInpUserName"
+						 right="545"
+						 bottom="70"
+						 width="130"
+						 height="25"
+						 restrict="{GCLMContext.allowedCharactersForName}"/>
+			<!-- Label to show first name -->
+			<mx:Label right="475"
+					  bottom="72.5"
+					  text="First Name :"
+					  id="lblUserFirstName"/>
+			<!-- text input to accepts user first name -->
+			<s:TextInput id="txtInpUserFirstName"
+						 right="345"
+						 bottom="70"
+						 width="130"
+						 height="25"
+						 restrict="0-9a-zA-Z_. -"/>
+			<!-- Label to show last name -->
+			<s:Label right="275"
+					 bottom="72.5"
+					 text="Last Name :"
+					 id="lblUserLastName"/>
+			<!-- text input to accepts user last name -->
+			<s:TextInput id="txtInpUserLastName"
+						 width="130"
+						 bottom="70"
+						 height="25"
+						 right="145"
+						 restrict="0-9a-zA-Z_. - "/>
+			<!-- Label to show moderator -->
+			<s:Label right="70"
+					 bottom="72.5"
+					 id="lblModerator"
+					 text="Moderator : "/>
+			<!-- Combobox for moderator-->
+			<mx:ComboBox right="10"
+						 bottom="70"
+						 width="60"
+						 height="25"
+						 id="cmbModerator"
+						 dataProvider="{moderatorArr}">
+			</mx:ComboBox>
+			<!-- Label to show class name -->
+			<s:Label bottom="37.5"
+					 right="210"
+					 text="Class Name : "/>
+			<!-- //NPCR : delete this sparkcontrols if its unsused -->
+			<!--<Sparkcontrols:AutoComplete width="200" bottom="35" right="10" height="25" id="cmbClassName" labelField="className"
+										dataProvider="{classesAC}"/>-->
+			<!-- Filter combo box for class name -->
+			<!--Fix for Bug#14951-->
+			<xt:FilterComboBox width="200"
+							   bottom="35"
+							   right="10"
+							   height="25"
+							   id="cmbClassName"
+							   labelField="className"
+							   change = "comboBoxChangeHandler(event)"
+							   dropdownFactory="{GCLMContext.dropdownFactory}"
+							   dataProvider="{classes}"
+							   selectSingleMatch="true"
+							   prompt=""
+							   removeFilterOnSelection="true"/>
+			<!-- Label to show course name -->
+			<s:Label bottom="37.5"
+					 right="490"
+					 text="Course Name : "/>
+			<!-- //NPCR : delete this sparkcontrols if its unsused -->
+			<!--<Sparkcontrols:AutoComplete width="200" bottom="35" right="290" height="25" id="cmbCourseName" labelField="courseName"
+										dataProvider="{coursesAC}"/>-->
+			<!-- Filter combo box for course name -->
+			<!--Fix for Bug#14951-->
+			<xt:FilterComboBox width="200"
+							   bottom="35"
+							   right="290"
+							   height="25"
+							   id="cmbCourseName"
+							   labelField="courseName"
+							   dataProvider="{courses}"
+							   selectSingleMatch="true"
+							   change = "comboBoxChangeHandler(event)"
+							   dropdownFactory="{GCLMContext.dropdownFactory}"
+							   prompt=""
+							   removeFilterOnSelection="true"/>
+			<!-- Label to show institute name -->
+			<s:Label bottom="5"
+					 right="590"
+					 text="Institute Name : "/>
+			<!-- //NPCR : delete this sparkcontrols if its unsused -->
+			<!--<Sparkcontrols:AutoComplete width="400" bottom="3" right="190" height="25" id="cmbInstituteName" labelField="instituteName"
+										dataProvider="{institutesAC}"/>-->
+			<!-- Filter combo box for institute name -->
+			<!--Fix for Bug#14951-->
+			<xt:FilterComboBox width="400"
+							   bottom="3"
+							   right="190"
+							   height="25"
+							   id="cmbInstituteName"
+							   labelField="instituteName"
+							   change = "comboBoxChangeHandler(event)"
+							   dropdownFactory="{GCLMContext.dropdownFactory}"
+							   dataProvider="{GCLMContext.allCourseOfferingInstitutesAC}"
+							   selectSingleMatch="true"
+							   prompt=""
+							   removeFilterOnSelection="true"/>
+			<!-- Search button -->
+			<components:ImageButton right="100"
+					  bottom="3"
+					  width="80"
+					  height="22"
+					  label="Search"
+					  chromeColor="#E0EFFB"
+					  click="searchClassRegistration()"
+					  cornerRadius="3"/>
+			<!-- Reset Button -->
+			<components:ImageButton right="10"
+					  bottom="3"
+					  width="80"
+					  height="22"
+					  label="Reset"
+					  chromeColor="#E0EFFB"
+					  click="clearFields()"
+					  cornerRadius="3"/>
+		</mx:Canvas>
+		<!-- Datagrid for class registration -->
+		<s:DataGrid id="dgClassRegistrations"
+					width="100%"
+					height="100%"
+					chromeColor="#E0EFFB"
+					dataProvider="{classRegistrationsAC}"
+					editable="true"
+					textAlign="left">
+			<s:columns>
+				<s:ArrayList>
+					<!-- Grid column for register id -->
+					<s:GridColumn headerText="Id"
+								  minWidth="30"
+								  dataField="classRegisterId"
+								  editable="false"/>
+					<!-- Grid column for class name -->
+					<s:GridColumn headerText="Class Name"
+								  minWidth="150"
+								  dataField="className"
+								  editable="false"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('className')}"/>
+					<!-- Grid column for course name -->
+					<s:GridColumn headerText="Course Name"
+								  minWidth="150"
+								  dataField="courseName"
+								  editable="false"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('courseName')}"/>
+					<!-- Grid column for institute name -->
+					<s:GridColumn headerText="Institute Name"
+								  minWidth="200"
+								  dataField="instituteName"
+								  editable="false"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+					<!-- Grid column for user name -->
+					<s:GridColumn headerText="User Name"
+								  minWidth="80"
+								  dataField="userName"
+								  editable="false"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('userName')}"/>
+					<!-- Grid column for first name -->
+					<s:GridColumn headerText="First Name"
+								  minWidth="100"
+								  dataField="firstName"
+								  editable="false"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('firstName')}"/>
+					<!-- Grid column for last name -->
+					<s:GridColumn headerText="Last Name"
+								  minWidth="80"
+								  dataField="lastName"
+								  editable="false"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('lastName')}"/>
+					<!--Fix for Bug#17591-->
+					<!-- Grid column for status -->
+					<s:GridColumn headerText="Status"
+								  minWidth="80" 
+								  dataField="statusName" 
+								  editable="false" 
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('statusName')}"/>
+					<!-- Grid column for moderator -->
+					<s:GridColumn headerText="Moderator"
+								  minWidth="40"
+								  dataField="isModerator"
+								  editable="false"
+								  headerRenderer="edu.amrita.aview.core.gclm.classRegistration.IGridHeaderItemRenderer"/>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+
+	</mx:VBox>
+</mx:Canvas>
+

@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: MobileVideoSetting.mxml
+Module		: Video
+Developer(s): Salil george, Ganesan A
+Reviewer(s)	: Sivaram SK
+
+MobileVideoSetting component is custom component to select video and audio drivers to publish video.
+-->
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="100%"
+		   creationComplete="init()"
+		   horizontalPosition="before"
+		   contentBackgroundColor="#071124"
+		   minWidth="350"
+		   xmlns:MobileComponents="edu.amrita.aview.core.shared.components.mobileComponents.*" 
+		   xmlns:dropDownList="views.components.customComboBox.dropDownList.*">
+	<fx:Script>
+		<![CDATA[
+			
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.collections.ArrayList;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
+			
+			import spark.events.IndexChangeEvent;
+			/**
+			 * Holds camera driver name
+			 */
+			[Bindable]
+			private var camList:ArrayList;
+			/**
+			 * Holds list of available bandwidth
+			 */
+			[Bindable]
+			public var bandWidthList:ArrayList=null;
+			/**
+			 * Set to true, if user selects auido only mode
+			 */
+			public var isAudioOnlyOptionSelected:Boolean=false;
+			/**
+			 * Holds video bandwidth
+			 */
+			public var bandWidthQuality:int=0;
+			/**
+			 * Holds values of saved setting details in xml format
+			 */
+			private var xmlData:XML;
+			/**
+			 * Holds previously selected video driver name
+			 */
+			private var videoDriverName:String="";
+			/**
+			 * Holds selected bandWidth index
+			 */
+			private var bandWidthSelectedIndex:int = 0;
+			/**
+			 * Used to set selected index of bandwidth combobox at first time
+			 */
+			private var isCreationCompleteCall:Boolean = false;
+			/**
+			 * To set index for bandwidth combobox
+			 */
+			private var isSettingsaved:Boolean = false;
+			/**
+			 * Holds selected video driver index
+			 */
+			public var camIndex:int = 0;
+			/**
+			 * Holds selected video driver name
+			 */
+			private var selectedDriverName:String = "Front Camera";
+			
+			
+
+			/**
+			 * @public
+			 *
+			 * The function for listing the audio and video drivers connected to the device in spinner list.
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function init():void
+			{
+				var camNames:Object=Camera.names;
+				if(camNames.length == 1)
+				{
+					camIndex = 0;
+					selectedDriverName = "Front Camera";
+					toggleCamera.enabled = false;
+					toggleCamera.selected = true;
+				}
+				else if(camNames.length == 2)
+				{
+					selectedDriverName = "Front Camera";
+					camIndex = 1;
+					toggleCamera.selected = true;
+					toggleCamera.enabled = true;
+				}
+				
+				try
+				{
+					rbgAudioOption.selectedValue=ClassroomContext.STREAMING_OPTION;
+					streamingOptionChange();
+					if (FlexGlobals.topLevelApplication.mainApp.selectedPublishingBWKbps == "")
+					{
+						if (ClassroomContext.userVO.role == Constants.TEACHER_TYPE || ClassroomContext.userVO.role == Constants.ADMIN_TYPE || ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE)
+						{
+							if (ClassroomContext.aviewClass.isMultiBitrate != "Y")
+							{
+								FlexGlobals.topLevelApplication.mainApp.selectedPublishingBWKbps=ClassroomContext.aviewClass.minPublishingBandwidthKbps;
+							}
+						}
+					}
+					if (FlexGlobals.topLevelApplication.mainApp.selectedPublishingBWKbps != "")
+					{
+						for (var k:int=0; k < bandWidthList.length; k++)
+						{
+							if (bandWidthList.source[k].index == ClassroomContext.aviewClass.minPublishingBandwidthKbps)
+							{
+								comboBandwidthList.selectedIndex=k;
+								break;
+							}
+						}
+					}
+					else
+					{
+						comboBandwidthList.selectedIndex=1;
+					}
+
+					if (ClassroomContext.userVO.role == Constants.TEACHER_TYPE || ClassroomContext.userVO.role == Constants.ADMIN_TYPE || ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE)
+					{
+						if (ClassroomContext.isModerator)
+						{
+							trace("init ClassroomContext.isModerator");
+							if (FlexGlobals.topLevelApplication.mainApp.savedLectureName == "")
+							{
+								FlexGlobals.topLevelApplication.mainApp.savedLectureName=ClassroomContext.lecture.lectureName;
+							}
+						}
+						if (ClassroomContext.aviewClass.isMultiBitrate == "Y")
+						{
+							lblVideoQuality.visible=false;
+							comboBandwidthList.visible=false;
+							lblVideoQuality.includeInLayout=false;
+							comboBandwidthList.includeInLayout=false;
+						}
+					}
+					prePopulateSettings();
+				}
+				catch (e:Error)
+				{
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To check for streaming type
+			 * Select video and audio driver
+			 * Publish the video to server
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function startVideo():void
+			{
+				if (isAudioOnlyOptionSelected)
+				{
+					ClassroomContext.isAudioOnlyMode=true;
+					ClassroomContext.STREAMING_OPTION=rbAudioOnly.label.toString();
+				}
+				else
+				{
+					ClassroomContext.isAudioOnlyMode=false;
+					ClassroomContext.STREAMING_OPTION=rbAudioVideo.label.toString()
+				}
+				if (!isAudioOnlyOptionSelected)
+				{
+					FlexGlobals.topLevelApplication.mainApp.videoDeviceDrive=selectedDriverName;
+					FlexGlobals.topLevelApplication.mainApp.videoDeviceIndex = camIndex;
+				}
+				FlexGlobals.topLevelApplication.mainApp.selectedPublishingBWKbps=comboBandwidthList.selectedItem.index.toString();
+				if (ClassroomContext.userVO.role == Constants.STUDENT_TYPE)
+				{
+					trace("STUDENT_TYPE");
+					if (comboBandwidthList.selectedItem == null)
+					{
+						comboBandwidthList.selectedIndex=1;
+					}
+					else
+					{
+						ClassroomContext.publisherVideoQuality=comboBandwidthList.selectedItem.index;
+					}
+					if (ClassroomContext.aviewClass.isMultiBitrate == "Y")
+					{
+						ClassroomContext.subscriber_bandwidthQualityIndex=bandWidthQuality;
+						if (ClassroomContext.subscriber_bandwidthQualityIndex != ClassroomContext.subscriber_prev_bandwidthQualityIndex)
+						{
+							FlexGlobals.topLevelApplication.mainApp.selection_change();
+						}
+					}
+				}
+				else if (ClassroomContext.userVO.role == Constants.TEACHER_TYPE && ClassroomContext.aviewClass.isMultiBitrate != "Y")
+				{
+					ClassroomContext.publisherVideoQuality=comboBandwidthList.selectedItem.index;
+				}
+				if (ClassroomContext.publisherVideoQuality != -1)
+				{
+					FlexGlobals.topLevelApplication.mainApp.setPublishingBandwidth();
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To enable/disable streaming option, based on the user streaming type selection
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function streamingOptionChange():void
+			{
+				if (rbgAudioOption.selection == rbAudioOnly)
+				{
+					isAudioOnlyOptionSelected=true;
+					cameraGroup.includeInLayout = false;
+					cameraGroup.visible = false;
+					bandwidthGroup.includeInLayout = false;
+					bandwidthGroup.visible = false;
+				}
+				else
+				{
+					isAudioOnlyOptionSelected=false;
+					cameraGroup.includeInLayout = true;
+					cameraGroup.visible = true;
+					bandwidthGroup.includeInLayout = true;
+					bandwidthGroup.visible = true;
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tooltip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function videoSettingsTooltipHandler(event:MouseEvent):void
+			{
+				var videoSettingsTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				videoSettingsTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			/**
+			 * @protected
+			 *
+			 * Creation complete handler of comboBandwidthList
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function bandwidthCreationCompleteHandler(event:FlexEvent):void
+			{
+				isCreationCompleteCall = true;
+				comboBandwidthList.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+			}
+			/**
+			 * @protected
+			 *
+			 * To set selected index of comboBandwidthList at first time
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function bandwidthClickHandler(event:MouseEvent):void
+			{
+				if(isCreationCompleteCall)
+				{
+					comboBandwidthList.selectedIndex = 0;
+					isCreationCompleteCall = false;
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To save setting details
+			 *
+			 * @param event of null
+			 * @return void
+			 */
+			private function saveSettingsToFile():void
+			{
+				startVideo();
+				try
+				{
+					var settingsData:String="<user>" +
+						"\n<username>"+FlexGlobals.topLevelApplication.mainApp.prepareLogin.userName+"</username>" +
+						"\n<password>"+FlexGlobals.topLevelApplication.mainApp.prepareLogin.password+"</password>" + 
+						"\n<videoDriver>" +selectedDriverName +"</videoDriver>" +
+						"\n<bandwidth>" + comboBandwidthList.selectedItem.index.toString()+ "</bandwidth>\n";
+					settingsData+="</user>";
+					
+					var settingDetailsFile:File=new File(FlexGlobals.topLevelApplication.userDetailsFilePath);
+					var fileStream:FileStream=new FileStream();
+					fileStream.addEventListener(Event.CLOSE, completeHandler);
+					fileStream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+					fileStream.openAsync(settingDetailsFile, FileMode.WRITE);
+					fileStream.writeUTFBytes(settingsData);
+					fileStream.close();
+					this.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+					this.close();
+				}
+				catch (error:Error)
+				{
+					trace(error.toString());
+				}
+			}
+			/**
+			 * @private
+			 *
+			 *  File close event
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function completeHandler(event:Event):void
+			{
+				trace("completeHandler"+ event.toString());
+			}
+			/**
+			 * @private
+			 *
+			 * IOError Event
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function errorHandler(event:Event):void
+			{
+				trace("errorHandler"+ event.toString());
+			}
+			/**
+			 * @public
+			 *
+			 * To start HTTPService to load setting details
+			 *
+			 * @param event of null
+			 * @return void
+			 */
+			public function prePopulateSettings():void
+			{
+				videoDriverName="";
+				try
+				{
+					FlexGlobals.topLevelApplication.userDetailsHttpService=new HTTPService();
+					FlexGlobals.topLevelApplication.userDetailsHttpService.addEventListener(ResultEvent.RESULT, loadSettingsHandler);
+					FlexGlobals.topLevelApplication.userDetailsHttpService.addEventListener(FaultEvent.FAULT, faultHandler);
+					FlexGlobals.topLevelApplication.userDetailsHttpService.url=FlexGlobals.topLevelApplication.userDetailsFilePath;
+					FlexGlobals.topLevelApplication.userDetailsHttpService.resultFormat="e4x"
+					FlexGlobals.topLevelApplication.userDetailsHttpService.send();
+					
+				}
+				catch (error:Error)
+				{
+					trace(error.toString());
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * Result handler of driverHttpService to get values from saved file
+			 *
+			 * @param event of ResultEvent
+			 * @return void
+			 */
+			private function loadSettingsHandler(event:ResultEvent):void
+			{
+				xmlData=event.result as XML;
+				videoDriverName=xmlData.videoDriver.toString();
+				if (videoDriverName != "")
+				{
+					FlexGlobals.topLevelApplication.mainApp.videoDeviceDrive=videoDriverName;
+					FlexGlobals.topLevelApplication.mainApp.videoDeviceIndex = camIndex;
+				}
+				if(videoDriverName == "Front Camera")
+				{
+					toggleCamera.selected = true;
+				}
+				else if(videoDriverName == "Back Camera")
+				{
+					toggleCamera.selected = false;
+				}
+				else
+				{
+					searchingPreviousChosenDriver();
+				}
+				var isSavedBandwidthAvailable:Boolean=false;
+				for (var i:int=0; i < bandWidthList.length; i++)
+				{
+					if (bandWidthList.source[i].index == xmlData.bandwidth.toString())
+					{
+						isSettingsaved = true;
+						isSavedBandwidthAvailable=true;
+						bandWidthSelectedIndex = i;
+						FlexGlobals.topLevelApplication.mainApp.selectedPublishingBWKbps=bandWidthList.source[i].index;
+						comboBandwidthList.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+						break;
+					}
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * Fault handler of driverHttpService to set default value
+			 *
+			 * @param event of FaultEvent
+			 * @return void
+			 */
+			private function faultHandler(event:FaultEvent):void
+			{
+				searchingPreviousChosenDriver();
+			}
+			/**
+			 * @private
+			 *
+			 * To set default value of video driver and bandwidth
+			 *
+			 * @param event of null
+			 * @return void
+			 */
+			private function searchingPreviousChosenDriver():void
+			{
+				if (FlexGlobals.topLevelApplication.mainApp.videoDeviceDrive != "")
+				{
+					if(FlexGlobals.topLevelApplication.mainApp.videoDeviceDrive == "Front Camera")
+					{
+						toggleCamera.selected = true;
+					}
+					else if(videoDriverName == "Back Camera")
+					{
+						toggleCamera.selected = false;
+					}
+				}
+				if (FlexGlobals.topLevelApplication.mainApp.selectedPublishingBWKbps != "")
+				{
+					for (var j:int=0; j < bandWidthList.length; j++)
+					{
+						if (FlexGlobals.topLevelApplication.mainApp.selectedPublishingBWKbps == bandWidthList.source[j].index)
+						{
+							isSettingsaved = true;
+							bandWidthSelectedIndex = j;
+							comboBandwidthList.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+							break;
+						}
+					}
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To modify the index of comboBandwidthList
+			 *
+			 * @param event of IndexChangeEvent
+			 * @return void
+			 */
+			protected function bandwidthChangeHandler(event:IndexChangeEvent):void
+			{
+				if(isSettingsaved)
+				{
+					isSettingsaved = false;
+					setTimeout(setIndexForBandwidth,100);
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To set selected index of comboBandwidthList
+			 *
+			 * @param event of null
+			 * @return void
+			 */
+			private function setIndexForBandwidth():void
+			{
+				comboBandwidthList.selectedIndex = bandWidthSelectedIndex;
+				FlexGlobals.topLevelApplication.mainApp.selectedPublishingBWKbps = comboBandwidthList.selectedItem.index;
+			}
+			/**
+			 * @private
+			 *
+			 * To change video option
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function videoOptionChangeHandler(event:Event):void
+			{
+				var camNames:Object = Camera.names;
+				if(camNames.length == 1)
+				{
+					camIndex = 0;
+					selectedDriverName = "Front Camera";
+					toggleCamera.selected = true;
+					toggleCamera.enabled = false;
+				}
+				else if(camNames.length == 2)
+				{
+					if(toggleCamera.selected)
+					{
+						selectedDriverName = "Front Camera";
+						camIndex = 1;
+					}
+					else
+					{
+						selectedDriverName = "Back Camera";
+						camIndex = 0;
+					}
+					toggleCamera.enabled = true;
+				} 
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="rbgAudioOption"
+							change="streamingOptionChange()"/>
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout gap="10"
+						  verticalAlign="middle"
+						  paddingLeft="5"
+						  paddingBottom="5"/>
+	</s:layout>
+	<s:HGroup horizontalAlign="center" 
+			  verticalAlign="middle" 
+			  width="100%"
+			  height="10%"
+			  paddingTop="10">
+		<!--Title for video settings window-->
+		<s:HGroup horizontalAlign="center" 
+				  verticalAlign="middle" 
+				  width="100%"
+				  height="100%">
+			
+			<s:Label text="My Settings"
+					 color="0xFFFFFF"
+					 fontWeight="bold"/>
+		</s:HGroup>
+	</s:HGroup>
+	<MobileComponents:HorizontalStroke width="100%" height="1"/>
+	<s:VGroup id="streamingOptionGroup"
+			  gap="2"
+			  width="100%"
+			  verticalAlign="middle">
+		<!--Streaming option label -->
+		<s:HGroup horizontalAlign="center" 
+				  verticalAlign="middle" 
+				  width="100%"
+				  height="10%">
+			<s:Label fontSize="14"
+					 fontWeight="bold"
+					 textAlign="left"
+					 text="Streaming Option"
+					 verticalAlign="middle"
+					 color="#FFFFFF"
+					 width="50%"/>
+			<!--Streaming option selection buttons -->
+			<s:VGroup verticalAlign="middle"
+					  gap="2"
+					  width="48%">
+				<s:RadioButton id="rbAudioOnly"
+							   fontSize="12"
+							   fontWeight="bold"
+							   groupName="rbgAudioOption"
+							   label="Audio only"
+							   color="#FFFFFF"/>
+				<s:RadioButton id="rbAudioVideo"
+							   fontSize="12"
+							   fontWeight="bold"
+							   groupName="rbgAudioOption"
+							   label="Audio and Video"
+							   color="#FFFFFF"/>
+			</s:VGroup>
+		</s:HGroup>
+	</s:VGroup>
+	
+	<s:HGroup width="100%"
+			  gap="0"
+			  verticalAlign="middle"
+			  id="cameraGroup">
+		<!--Select camera label -->
+		<s:Label id="lblSelectCamera"
+				 text="Camera"
+				 fontWeight="bold"
+				 color="#FFFFFF"
+				 fontSize="14"
+				 width="50%"/>
+		<!--Camera selection component -->
+		<s:ToggleSwitch id="toggleCamera" 
+						width="48%"
+						change="videoOptionChangeHandler(event)"
+						skinClass="views.skins.CameraSettingSkin"
+						fontSize="12"/>
+	</s:HGroup>
+	
+	<s:HGroup width="100%"
+			  gap="0"
+			  verticalAlign="middle"
+			  id="bandwidthGroup">
+		<!--Select video quality label -->
+		<s:Label id="lblVideoQuality"
+				 text="Video Bandwidth"
+				 fontWeight="bold"
+				 color="#FFFFFF"
+				 fontSize="14"
+				 width="50%"/>
+		<!--Bandwidth selection list -->
+		<dropDownList:DropDownList id="comboBandwidthList" 
+								   dataProvider="{bandWidthList}"
+								   labelField="value"
+								   fontSize="12"
+								   width="48%"
+								   popUpWidth="400"
+								   verticalScrollPolicy="auto"
+								   requestedRowCount="3"
+								   creationComplete="bandwidthCreationCompleteHandler(event)"
+								   click="bandwidthClickHandler(event)"
+								   change="bandwidthChangeHandler(event)"/>
+	</s:HGroup>
+	<!--Save button to save selected parameters -->
+	<s:HGroup width="100%"
+			  horizontalAlign="center">
+		<s:Button height="40"
+				  id="btnSave"
+				  width="40%"
+				  fontSize="14"
+				  label="Save"
+				  color="#FFFFFF"
+				  click="saveSettingsToFile()"
+				  chromeColor="#071124"
+				  toolTip="Save Selected Devices"
+				  rollOver="videoSettingsTooltipHandler(event)"
+				  mouseDown="videoSettingsTooltipHandler(event)"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+	</s:HGroup>
+</s:Callout>

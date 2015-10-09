@@ -1,0 +1,31 @@
+scenes : {
+  Scene : {
+    class : Scene
+    sources : {
+      Software Capture : {
+        render : 1
+        class : DesktopImageSource
+        data : {
+          captureType : 0
+          monitor : 0
+          innerWindow : 1
+          regionCapture : 0
+          captureMouse : 1
+          captureLayered : 0
+          captureX : 0
+          captureY : 0
+          captureCX : 1440
+          captureCY : 900
+          useColorKey : 0
+          keyColor : -1
+          keySimilarity : 10
+          keyBlend : 0
+          opacity : 100
+          gamma : 100
+        }
+        cx : 1440
+        cy : 900
+      }
+    }
+  }
+}

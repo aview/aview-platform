@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: UserSettings.mxml
+Module		: preference settings
+Developer(s): Sivaram S.K
+Reviewer(s)	:
+
+userlist sorting and multi user interaction
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="415"
+		  height="470"
+		  paddingBottom="5"
+		  paddingLeft="5"
+		  paddingRight="5"
+		  paddingTop="35"
+		  gap="15"
+		  xmlns:toggleSwitch="edu.amrita.aview.common.components.toggleSwitch.*">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+
+	<s:HGroup id="UserlistTitleGrp"
+			  width="100%"
+			  height="68"
+			  verticalAlign="top">
+		<s:VGroup width="293">
+			<s:Label fontSize="14"
+					 fontWeight="bold"
+					 text="Userlist Grouping and prioritizing"/>
+			<s:Label width="360"
+					 height="45"
+					 color="#868686"
+					 text="Enabling this feature will prioritize the Userlist based on Moderator, Presenter and Viewer as well as Handraise/Presenter request."/>
+		</s:VGroup>
+
+		<toggleSwitch:ToggleSwitch id="chkBoxUserSorting"
+								   width="50"
+								   height="10"
+								   left="5"
+								   deselectedLabel="Off"
+								   selected="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.userLstSortFlag}"
+								   selectedLabel="On"
+								   styleName="toggleSwitch"/>
+	</s:HGroup>
+
+	<mx:HRule width="100%"
+			  height="1" visible="true"
+			  chromeColor="#CAD5DB"/>
+	<s:HGroup width="100%"  visible="true"
+			  height="47"
+			  id="UserInterGrp"
+			  verticalAlign="top">
+		<s:VGroup width="293">
+			<s:Label fontSize="14"
+					 fontWeight="bold"
+					 text="Multiple User Interaction"/>
+			<s:Label width="360"
+					 height="26"
+					 color="#868686"
+					 text="Allows more than two users to interact during the live session."
+					 verticalAlign="middle"/>
+		</s:VGroup>
+
+		<toggleSwitch:ToggleSwitch id="chkBoxMultiUserInteraction"
+								   width="50"
+								   height="10"
+								   deselectedLabel="Off"
+								   selectedLabel="On"
+								   selected="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isMUISelected}"
+								   styleName="toggleSwitch"/>
+	</s:HGroup>
+	<mx:HRule width="100%"
+			  height="1" visible="{ClassroomContext.isModerator}"
+			  chromeColor="#CAD5DB"/>
+	<s:HGroup width="100%"
+			  height="47" visible="{ClassroomContext.isModerator}"
+			  id="peopleCountContainer"
+			  verticalAlign="top">
+		<s:VGroup width="293" enabled="{ClassroomContext.aviewClass.enablePeopleCount=='Yes'?true:false}">
+			<s:Label fontSize="14"
+					 fontWeight="bold"
+					 text="People Count"/>
+			<s:Label width="360"
+					 height="26"
+					 color="#868686"
+					 text="Enabling this feature will allow you to view the people count.&#xd;To see the interaction count in the userlist turn off this setting"
+					 verticalAlign="middle"/>
+		</s:VGroup>
+
+		<toggleSwitch:ToggleSwitch id="chkBoxPeopleCount"
+								   width="50"
+								   height="10" enabled="{ClassroomContext.aviewClass.enablePeopleCount=='Yes'?true:false}"
+								   deselectedLabel="Off"
+								   selectedLabel="On"
+								   styleName="toggleSwitch"/>
+	</s:HGroup>
+
+
+</s:VGroup>

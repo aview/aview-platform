@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: PTTBox.mxml
+Module		: Common
+Developer(s): Ravi Sankar 
+Reviewer(s)	: Veena Gopal K.V
+
+-->
+<!-- VGCR:- Add comments for each section
+-->
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 horizontalAlign="left"
+		 creationPolicy="all"
+		 visible="false"
+		 includeInLayout="false"
+		 xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+		]]>
+	</fx:Script>
+
+
+	<fx:Script source="Icons.as">
+
+	</fx:Script>
+	<fx:Script source="PTTBoxHandler.as"/>
+	<s:Button icon="{disabledMicIcon}"
+			  width="30"
+			  height="30"
+			  id="btnFreeTalk"
+			  mouseChildren="false"
+			  visible="{btnFreeTalkVisible}"
+			  includeInLayout="{btnFreeTalkVisible}"
+			  enabled="false"
+			  cornerRadius="5"
+			  toolTip="{Constants.FREETALK}"/>
+	<!--Fix for Bug#18497-->
+	<s:Button icon="{pushToTalkMute_Icon}"
+			  width="30"
+			  height="30"
+			  id="btnTalk"
+			  cornerRadius="5"
+			  click="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.actionButtons.talkMute(ClassroomContext.currentPresenterName)}"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  mouseChildren="false"
+			  visible="{btnTalkVisible}"
+			  includeInLayout="{btnTalkVisible}"
+			  enabled="{btnTalkVisible}"
+			  toolTip="Enable your audio for interaction"/>
+	<!--Fix for Bug#18497-->
+	<components:ImageButton imageSkin="{pushToTalkUnmute_Icon}"
+							 width="30"
+							 height="30"
+							 id="btnMute"
+							 click="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.actionButtons.talkMute(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.getFirstAcceptedViewerAdmin())}"
+							 useHandCursor="true"
+							 buttonMode="true"
+							 cornerRadius="5"
+							 mouseChildren="false"
+							 visible="{btnMuteVisible}"
+							 includeInLayout="{btnMuteVisible}"
+							 enabled="{btnMuteVisible}"
+							 skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+							 imageSkinDisabled="@Embed(source='assets/images/DisabledMic.png')"
+							 toolTip="Disable your audio">
+
+	</components:ImageButton>
+	<!--Fix for Bug#18497-->
+	<s:CheckBox label="PTT"
+				fontSize="9"
+				fontWeight="normal"
+				id="chkboxPushToTalk"
+				toolTip="Push To Talk"
+				change="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.actionButtons.pushToTalk(chkboxPushToTalk.selected)}"
+				selected="{pttCheckBoxState}"/>
+</mx:VBox>

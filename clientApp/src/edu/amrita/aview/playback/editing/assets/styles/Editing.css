@@ -1,0 +1,92 @@
+/* CSS file */
+
+.normalVideoBlock
+{
+	background-color:#FFD4AA;
+	border-color:#FFFFFF;
+}
+
+.highlightVideoBlock
+{
+	background-color:#FFD47F;
+	border-color:#FFFFFF;
+}
+
+.noVideoBlock
+{
+	background-color:#FFFFFF;
+	corner-radius:5;
+	text-align:center;
+	color:#FFAAAA;
+}
+
+.ribbon
+{
+	vertical-align:middle;
+	background-color:#808080;
+}
+
+.ribbonTitle
+{
+	font-size:11;
+	text-align:center;
+	letter-spacing:2;
+	background-color:#2A5DA4;
+	color:#FFFFFF;
+	font-weight:bold;
+	corner-radius:3;
+}
+
+.normalSlideBlockEven
+{
+	background-color:#FFFF7F;
+	border-color:#996B32;
+}
+
+.normalSlideBlockOdd
+{
+	background-color:#D4FFAA;
+	border-color:#000000;
+}
+
+.highlightSlideBlockEven
+{
+	background-color:#FFD455;
+	border-color:#000000;
+}
+
+.highlightSlideBlockOdd
+{
+	background-color:#7FFF7F;
+	border-color:#000000;
+}
+
+.HSliderStyle
+{
+	trackSkin          			: ClassReference('edu.amrita.aview.playback.editing.skins.SliderTrackSkin');   
+	thumbSkin          			: ClassReference('edu.amrita.aview.playback.editing.skins.SliderThumbSkin');
+	padding-left       			: 10;
+}
+
+.SliderThumbSkin
+{
+	background-gradient-colors	:#FF0000, #A0A0A0;
+	background-alpha   				:0.1;
+}
+
+.ButtonStyle
+{
+	themeColor :  #0055EA;
+	fillAlphas : 1.0, 1.0, 1.0, 1.0;
+	fillColors : #E0EFFB, #A7D4F6, #E0EFFB, #287DBF;
+	borderColor : #0055EA;
+	cornerRadius : 4;
+}
+
+.NotificationLabelStyle
+{
+	font-family : Arial;
+	font-size : 11;
+	color : #7A0303;
+	font-weight : bold;
+}

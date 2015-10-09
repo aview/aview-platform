@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: InputBox.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Narayanasamy S, Sivaram SK
+
+UI component to create category and subcategory in question bank.
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						xmlns:s="library://ns.adobe.com/flex/spark"
+						xmlns:mx="library://ns.adobe.com/flex/mx"
+						xmlns:components="edu.amrita.aview.core.shared.components.*"
+						width="445"
+						height="210"
+						backgroundColor="#e0effb"
+						color="#FFFFFF"
+						dropShadowVisible="false"
+						creationComplete="onCreationComplete()"
+						enabled="true"
+						focusColor="#A9F9A0"
+						fontFamily="Arial"
+						fontSize="15"
+						fontWeight="normal"
+						title="Create Category"
+						textAlign="center"
+						defaultButton="{btnSave}">
+	<!--Bug fix : Bug #9532
+	* Specify defaultButton -->
+	<!-- Script to include handler -->
+	<fx:Script source="InputBoxUIHandler.as"/>
+
+	<mx:VBox left="5"
+			 right="5"
+			 top="5"
+			 bottom="5"
+			 borderColor="#A3D7FF"
+			 borderStyle="solid"
+			 chromeColor="#CCCCCC"
+			 paddingTop="20">
+		<mx:HBox x="0"
+				 y="20"
+				 width="100%"
+				 height="58"
+				 horizontalAlign="left"
+				 verticalAlign="middle">
+			<mx:Spacer width="25"/>
+			<s:Label left="10"
+					 top="10"
+					 color="#ED3814"
+					 fontFamily="Times New Roman"
+					 fontSize="13"
+					 fontWeight="bold"
+					 text="*"/>
+			<!--Label to show category name-->
+			<s:Label id="labelMessage" left="15" top="10" color="#000000" fontFamily="Arial"
+					 fontSize="12" fontWeight="normal" text="Category Name  :"/>
+			<!--Text for question bank name-->
+			<s:TextInput id="txtQBName" right="20" top="10" width="219" height="30" color="#000000"
+						 maxChars="{QuizContext.TEXT_LENGTH}"
+						 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"
+						 textAlign="left"/>
+		</mx:HBox>
+		<mx:HBox x="0"
+				 y="86"
+				 width="100%"
+				 height="45"
+				 horizontalAlign="center"
+				 verticalAlign="middle"
+				 chromeColor="#CCCCCC">
+			<!--Ok button-->
+			<components:ImageButton id="btnSave" x="134" width="62" label="Save"
+									chromeColor="#E0EFFB" click="saveButtonClickHandler(event)"
+									color="#000000" cornerRadius="3" fontFamily="Arial"
+									fontSize="12" fontWeight="normal"/>
+			<mx:Spacer width="25"/>
+			<!--Cancel button-->
+			<components:ImageButton id="btnCancel" width="62" label="Cancel" chromeColor="#E0EFFB"
+									click="closeInputBoxWindow()" color="#000000" cornerRadius="3"
+									fontFamily="Arial" fontSize="12" fontWeight="normal"/>
+		</mx:HBox>
+	</mx:VBox>
+</components:InsidePanel>

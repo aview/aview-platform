@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: DeleteConfirmationForm.mxml
+Module		: Biometric
+Developer(s): Jerald P
+Reviewer(s)	: Ramesh Guntha
+
+This component invoked when user select Biometric login.
+This is used for delete the biometric user image.
+-->
+<!-- VGCR:- Comment for each section -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="300"
+		   height="158"
+		   initialize="init()"
+		   xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="edu.amrita.aview.common.components.*">
+	<mx:Script source="DeleteConfirmationFormHandler.as"/>
+
+	<mx:HTTPService id="httpFaceRemoveService"
+					showBusyCursor="true"
+					useProxy="false"
+					method="POST"
+					result="deleteResultHandler(event)"
+					fault="deleteFaultHandler(event)"/>
+	<mx:Panel x="0"
+			  y="0"
+			  width="282"
+			  height="134"
+			  backgroundColor="#e0effb"
+			  borderColor="#1AB1F7"
+			  borderStyle="solid"
+			  borderVisible="true"
+			  chromeColor="#97CAFA"
+			  color="#000000"
+			  title="{resourceManager.getString('myResource','biometric.confirmFaceDelete')}"
+			  layout="absolute">
+		<mx:Image id="faceImage"
+				  x="18"
+				  y="16"
+				  width="60"
+				  height="70"/>
+		<mx:Label x="95"
+				  y="25"
+				  color="#000000"
+				  fontFamily="Arial"
+				  fontSize="12"
+				  text="{resourceManager.getString('myResource','biometric.ruSureWantedToDel')}"/>
+		<components:MxImageButton id="btnYes"
+				   x="102"
+				   y="60"
+				   label="{resourceManager.getString('myResource','biometric.yes')}"
+				   chromeColor="#CCCCCC"
+				   click="deleteFace()"
+				   color="#000000"
+				   fontWeight="bold"
+				   tabIndex="0"/>
+		<components:MxImageButton id="btnNo"
+				   x="180"
+				   y="60"
+				   label="{resourceManager.getString('myResource','biometric.no')}"
+				   chromeColor="#CCCCCC"
+				   click="PopUpManager.removePopUp(this)"
+				   color="#000000"
+				   fontWeight="bold"/>
+	</mx:Panel>
+
+</mx:Canvas>

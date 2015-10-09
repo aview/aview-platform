@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuickNotePopOutComponent.mxml
+Module		: Quicknote
+Developer(s): Ajith Kumar R,Sivaram
+Reviewer(s)	: Remya T
+
+QuickNotePopOutComponent is the custom component used for holding quicknote for popout purpose.
+-->
+<!-- Main window Container for popout-->
+<mx:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   minWidth="900"
+		   minHeight="700"
+		   width="600"
+		   height="500"
+		   backgroundColor="#99D0FF"
+		   borderColor="#696969"
+		   chromeColor="#97CAFA"
+		   creationComplete="init()"
+		   resize="resizeHandler()"
+		   title="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.quickNote.title}"
+		   statusBarBackgroundColor="#2a5da4"
+		   status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+		   statusTextStyleName="quicknotecolor">
+	<!-- Included script file -->
+	<fx:Script source="QuickNotePopOutComponentHandler.as"/>
+</mx:Window>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: LiveMobileQuizResultUI.mxml
+Module		: Quiz
+Developer(s): Jeevanantham N
+Reviewer(s)	: Sivaram SK 
+
+LiveMobileQuizResultUI component is main component to view quiz result and answer sheet.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 currentState="studentResult"
+		 creationComplete="initializeStudentResultWindow()">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.evaluation.quizResponse.StudentMobileAnswerSheet;
+			import edu.amrita.aview.core.evaluation.quizResponse.StudentMobileViewQuizResponse;
+			import edu.amrita.aview.core.evaluation.vo.QuizVO;
+			
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			/**
+			 * Instance of quiz object to get user id
+			 */
+			[Bindable]
+			public var quizVO:QuizVO=new QuizVO;
+			/**
+			 * Holds quiz result name
+			 */
+			[Bindable]
+			public var quizResultTitle:String="";
+			/**
+			 * Instance of StudentMobileAnswerSheet
+			 */
+			[Bindable]
+			public var studentAnswerSheet:StudentMobileAnswerSheet = new StudentMobileAnswerSheet();;
+			/**
+			 * Instance of StudentMobileViewQuizResponse
+			 */
+			[Bindable]
+			public var resultView:StudentMobileViewQuizResponse = new StudentMobileViewQuizResponse();
+
+			/**
+			 * @private
+			 *
+			 * To close the result component
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function closeResultWindow():void
+			{
+				PopUpManager.removePopUp(this);
+				if(FlexGlobals.topLevelApplication.chatToolBox!= null && FlexGlobals.topLevelApplication.chatToolBox.chatMessageInput && FlexGlobals.topLevelApplication.chatToolBox.chatMessageInput.visible== false){
+					FlexGlobals.topLevelApplication.chatToolBox.chatMessageInput.visible = true;
+				}
+				if(FlexGlobals.topLevelApplication.questComponent!= null && FlexGlobals.topLevelApplication.questComponent.questionInput && FlexGlobals.topLevelApplication.questComponent.questionInput.visible == false){
+					FlexGlobals.topLevelApplication.questComponent.questionInput.visible = true;
+				}
+			}
+
+			/**
+			 * @private
+			 *
+			 * To intialize quiz result component
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function initializeStudentResultWindow():void
+			{
+				resultView.percentHeight=95;
+				resultGroup.removeAllElements();
+				resultView.quizVO=quizVO;
+				resultView.quizName=quizResultTitle;
+				resultGroup.addElement(resultView);
+			}
+
+			/**
+			 * @protected
+			 *
+			 * To view answer sheet of quiz
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function viewAnswer(event:MouseEvent):void
+			{
+				this.currentState="viewAnswerSheet";
+				studentAnswerSheet.quizIdForStudentAns=quizVO.quizId;
+				studentAnswerSheet.quizVO=quizVO;
+				studentAnswerSheet.quizVO.userName=resultView.studentName;
+				resultGroup.removeAllElements();
+				resultGroup.addElement(studentAnswerSheet);
+			}
+
+			/**
+			 * @protected
+			 *
+			 * To load view result component
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function viewResultHandler(event:MouseEvent):void
+			{
+				this.currentState="studentResult";
+				initializeStudentResultWindow();
+			}
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="studentResult"/>
+		<s:State name="viewAnswerSheet"/>
+	</s:states>
+	<s:Rect width="100%"
+			height="100%">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+	</s:Rect>
+	<s:VGroup width="100%"
+			  height="100%"
+			  paddingBottom="5"
+			  paddingTop="5"
+			  paddingLeft="5"
+			  paddingRight="5"
+			  includeIn="studentResult,viewAnswerSheet"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+
+		<s:HGroup width="100%"
+				  height="5%"
+				  paddingLeft="5"
+				  paddingRight="5"
+				  verticalAlign="middle"
+				  horizontalAlign="center">
+			<!--Quiz title-->
+			<s:HGroup horizontalAlign="center"
+					  verticalAlign="middle"
+					  width="90%"
+					  height="10%">
+				<s:Label id="lblTitle"
+						 fontWeight="bold"
+						 color="0xFFFFFF"
+						 text="{'Quiz Result : '+quizResultTitle}"
+						 fontSize="20"/>
+			</s:HGroup>
+			<!--Close image-->
+			<s:Image id="imgCloseQuizResult"
+					 right="0"
+					 source="@Embed(source='assets/images/mobile_close_icon.png')"
+					 click="closeResultWindow();"/>
+		</s:HGroup>
+		<s:Line width="100%">
+			<s:stroke>
+				<s:SolidColorStroke color="0x5b5b5b"
+									weight="2"/>
+			</s:stroke>
+		</s:Line>
+		<s:VGroup width="100%"
+				  height="80%"
+				  id="resultGroup"
+				  includeIn="studentResult,viewAnswerSheet">
+
+		</s:VGroup>
+		<!--Container to add quiz result and answer sheet-->
+		<s:VGroup width="100%"
+				  height="15%"
+				  chromeColor="#CCCCCC"
+				  horizontalAlign="center"
+				  verticalAlign="middle"
+				  paddingBottom="0">
+			<s:Line width="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="0x5b5b5b"
+										weight="2"/>
+				</s:stroke>
+			</s:Line>
+			<s:HGroup>
+				<s:Button id="btnViewAnswer"
+						  label="View Answer Sheet"
+						  click="viewAnswer(event)"
+						  includeIn="studentResult"
+						  enabled="false"/>
+				<s:Button id="btnViewResult"
+						  label="Back To Result"
+						  click="viewResultHandler(event)"
+						  includeIn="viewAnswerSheet"
+						  enabled="false"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:VGroup>
+</s:Group>

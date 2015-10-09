@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: MobileFolderCreation.mxml
+Module		: FileManager
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh
+
+This component is used to create folder in remote location to uplaod the files.
+
+-->
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   width="300"
+						   height="150"
+						   moveForSoftKeyboard="false"
+						   resizeForSoftKeyboard="false"
+						   mouseDownOutside="this.close()" 
+						   xmlns:mobileComponents="edu.amrita.aview.core.shared.components.mobileComponents.*">
+	<fx:Declarations>
+
+	</fx:Declarations>
+	
+	<fx:Script source="FolderCreationAS.as"/>
+	
+	<fx:Metadata>
+			[Event(name="onFolderCreationSuccess",type="components.filemanagement.asfiles.FolderCreationSuccess")]
+			[Event(name="onCloseFileComponentEvent", type="components.filemanagement.asfiles.CloseFileComponentEvent")]
+	</fx:Metadata>
+	
+	<s:Rect width="100%"
+			height="100%"
+			x="0"
+			y="0">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xFFFFFF"/>
+		</s:stroke>
+	</s:Rect>
+	<s:VGroup height="100%"
+			  width="100%"
+			  horizontalAlign="center"
+			  verticalAlign="middle">
+		<!--Information label to create new folder-->
+		<s:Label text="Enter the name for new folder"
+				 color="0xFFFFFF"
+				 fontWeight="bold"/>
+		<mobileComponents:HorizontalStroke width="100%"/>
+		<!--Text input to enter new folder name-->
+		<s:TextInput id="fName"
+					 y="7"
+					 left="5"
+					 right="5"
+					 maxChars="30"
+					 width="80%"
+					 editable="true"
+					 focusEnabled="true"
+					 needsSoftKeyboard="true"
+					 skinClass="spark.skins.spark.TextInputSkin"
+					 text="New Folder">
+		</s:TextInput>
+		<!--Control buttons to create new folder/close component-->
+		<s:HGroup horizontalCenter="0">
+			
+			<s:Button label="OK"
+					  width="75"
+					  click="{createFolder()}"/>
+			
+			<s:Button label="Cancel"
+					  width="75"
+					  click="{folderCancel()}"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:SkinnablePopUpContainer>

@@ -1,0 +1,10 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+s|SkinnableComponent
+{
+	skin-class: ClassReference("edu.amrita.aview.core.shared.skins.CustomWindowSkin");
+	statusColor: #2a5da4;
+}
+

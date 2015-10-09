@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: WhiteBoardView.mxml
+Module		: WhiteBoard
+Developer(s): Salil George, Ganesan A, Jeevanantham N
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+WhiteBoardView is wrapper component to load whiteboard container and whiteboard control buttons.
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:views="views.*"
+		width="100%"
+		height="100%"
+		backgroundAlpha="1"
+		backgroundColor="#071124"
+		creationComplete="initwb()"
+		title="WhiteBoardView">
+	<fx:Script>
+		<![CDATA[
+			
+			import edu.amrita.aview.core.entry.Constants;
+			import mx.core.FlexGlobals;
+
+			/**
+			 * @private
+			 *
+			 * To add whiteboard component
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function initwb():void
+			{
+				if(FlexGlobals.topLevelApplication.screenTypes == Constants.SCREENTYPE_INDIVIDUAL){
+					whiteBoardToolSet.enabled = true;
+					whiteBoardToolSet.visible = true;
+					whiteBoardToolSet.includeInLayout = true;
+				}
+				else{
+					whiteBoardToolSet.enabled = false;
+					whiteBoardToolSet.visible = false;
+					whiteBoardToolSet.includeInLayout = false;
+				}
+				whiteboardViewContainer.addElement(FlexGlobals.topLevelApplication.wbComp);
+				whiteBoardToolSet.addElement(FlexGlobals.topLevelApplication.whiteBoardTools);
+			}
+		]]>
+	</fx:Script>
+	<s:HGroup width="100%"
+			  height="100%"
+			  gap="-1">
+		<!--Container to display whiteboard page-->
+		<s:Group width="100%"
+				 height="100%"
+				 id="whiteboardViewContainer">
+			<s:Rect width="100%"
+					height="100%">
+				<s:fill>
+					<s:SolidColor color="#FFFFFF"/>
+				</s:fill>
+			</s:Rect>
+		</s:Group>
+		
+		<!--Container to display whiteboard control buttons-->
+		<s:Group id="whiteBoardToolSet"
+				 width="10%"
+				 height="100%">
+			<s:Rect width="100%"
+					height="100%">
+				<s:fill>
+					<s:SolidColor color="#071124"/>
+				</s:fill>
+			</s:Rect>
+		</s:Group>
+	</s:HGroup>
+</s:View>

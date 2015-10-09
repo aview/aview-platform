@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: SharingMode.mxml
+Module		: DesktopSharing
+Developer(s): Ajith Kumar R, Remya T
+Reviewer(s)	: Meena S
+
+This file is the custom component for choosing sharing mode (Desktop/Application).
+
+-->
+<!-- Main BorderContainer -->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="100%"
+				   height="100%"
+				   creationComplete="init()"
+				   borderColor="#2a5ea4"
+				   borderVisible="true"
+				   backgroundColor="#FFFFFF"
+				   horizontalCenter="0"
+				   verticalCenter="0">
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center"
+						  verticalAlign="middle"
+						  paddingTop="10"
+						  paddingBottom="5"
+						  paddingLeft="2"
+						  paddingRight="2"/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:RadioButtonGroup id="rbgSelectedSharingMode" 
+							itemClick="handleSharingMode(event);"/>
+	</fx:Declarations>
+	<fx:Script source="SharingModeHandler.as"/>
+		
+	<s:VGroup id="vgContainer"
+			  horizontalCenter="0"
+			  horizontalAlign="center"
+			  verticalAlign="middle"
+			  height="100%"
+			  top="30"
+			  gap="10">
+		<s:VGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Label id="lblShare"
+						 fontSize="14"
+						 fontWeight="bold"
+						 text="Sharing Mode:" left="20"/>
+				
+					<s:Spacer width="161"/>
+					<s:RadioButton group="{rbgSelectedSharingMode}" 
+								   id="rbScreenArea" 
+								   label="Screen Area" 
+								   selected="true"
+								   value="0"/>
+				    <s:Spacer width="5"/>
+					<s:RadioButton group="{rbgSelectedSharingMode}"
+								   id="rbApplication" 
+								   label="Application" 
+								   value="1"/>
+
+			</s:HGroup>
+			<s:Label width="450" 
+					 color="#868686"
+					 paddingLeft="20"
+					 paddingTop="15"
+					 id="lblSharingDescription"
+					 lineHeight="120%"
+					 text="This mode will share the entire desktop screen with all."/>
+		</s:VGroup>
+		<s:HGroup id="hgOptionsContainer"
+				  verticalAlign="middle" 
+				  visible="false" 
+				  includeInLayout="false"
+				  horizontalCenter="0"
+				  verticalCenter="0">
+
+		</s:HGroup>	
+		<!--Fix for issue #5219 -->
+		<s:Label color="#F70101"
+				 text="Note : Use Ctrl/Command to select multiple applications"
+				 id="lblNote"
+				 visible="false"
+				 includeInLayout="false"
+				 horizontalCenter="0"
+				 verticalCenter="0"/>
+		<mx:HRule width="100%"
+				  height="1"
+				  chromeColor="#CAD5DB" top="0"/>
+		<s:HGroup id="hgDesktopSharingSettings" height="80"/>
+		<mx:HRule width="100%"
+				  height="1"
+				  chromeColor="#CAD5DB"/>
+		<s:HGroup
+				horizontalAlign="center"
+				verticalAlign="middle"
+				paddingTop="10">
+			<s:Button label="Start Desktop Sharing"
+					  height="25"
+					  chromeColor="#E0EFFB"
+					  id="btnStartSharing"
+					  keyDown="okButtonKeyBoardStrokeHandler(event)"
+					  click="callStartSharing()"
+					  cornerRadius="3"
+					  toolTip="Start sharing"/>
+			<s:Spacer width="5"/>
+			<s:Button label="Stop Desktop Sharing"
+					  height="25"
+					  chromeColor="#E0EFFB"
+					  id="btnStopSharing"
+					  click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.stopDesktopSharing()"
+					  cornerRadius="3"
+					  enabled="false"
+					  toolTip="Stop sharing"/>
+		</s:HGroup>
+	</s:VGroup>
+
+</s:BorderContainer>

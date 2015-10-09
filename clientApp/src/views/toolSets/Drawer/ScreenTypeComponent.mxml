@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="rgbScreenOption"/>
+	</fx:Declarations>
+	<s:HGroup verticalAlign="middle"
+			  gap="2"
+			  width="50%"
+			  verticalCenter="0"
+			  paddingBottom="10">
+		
+		<s:Label text="Screen Type"
+				 textAlign="left"
+				 fontSize="14"
+				 minWidth="{(FlexGlobals.topLevelApplication.sliderDrawer.width/2.5)}"
+				 verticalAlign="middle"
+				 verticalCenter="0"
+				 fontWeight="bold"
+				 height="45"/>
+		
+		<s:VGroup verticalAlign="middle"
+				  gap="2">
+			<s:RadioButton id="rbAllInOne"
+						   fontSize="12"
+						   fontWeight="bold"
+						   selected="true"
+						   groupName="rgbScreenOption"
+						   label="{Constants.SCREENTYPE_ALLINONE}"/>
+			<s:RadioButton id="rbVTabbedView"
+						   fontSize="12"
+						   fontWeight="bold"
+						   groupName="rgbScreenOption"
+						   label="{Constants.SCREENTYPE_INDIVIDUAL}"/>
+		</s:VGroup>
+		<!--Individual-->
+	</s:HGroup>
+</s:VGroup>

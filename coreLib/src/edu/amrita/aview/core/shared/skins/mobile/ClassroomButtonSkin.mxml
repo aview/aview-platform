@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ClassroomButtonSkin.mxml
+Module		: Home
+Developer(s): Meena S
+Reviewer(s)	: Pradeesh
+
+ClassroomButtonSkin skin component is used to set text color for classroom button.
+-->
+<s:SparkButtonSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+				   minWidth="21"
+				   minHeight="21"
+				   alpha.disabled="0.5">
+
+	<fx:Metadata>
+		<![CDATA[ 
+		[HostComponent("spark.components.Button")]
+		]]>
+	</fx:Metadata>
+
+	<!-- states -->
+	<s:states>
+		<s:State name="up"/>
+		<s:State name="over"/>
+		<s:State name="down"/>
+		<s:State name="disabled"/>
+	</s:states>
+
+	<s:Rect width="100%"
+			height="100%"
+			radiusX="5"
+			radiusY="5">
+		<!--Button border color-->
+		<s:stroke>
+			<s:SolidColorStroke color="#FFFFFF"
+								weight="2"
+								alpha="0.1"/>
+		</s:stroke>
+		<!--Button color-->
+		<s:fill>
+			<s:SolidColor id="bgAlpha"
+						  color.up="#FFFFFF"
+						  color.over="#36383B"
+						  alpha.up="0.1"
+						  alpha.over="0.1"
+						  alpha.down="0.1"/>
+		</s:fill>
+	</s:Rect>
+	<!--Button label-->
+	<s:Label id="labelDisplay"
+			 textAlign="center"
+			 maxDisplayedLines="1"
+			 horizontalCenter="0"
+			 verticalCenter="1"
+			 verticalAlign="middle"
+			 left="10"
+			 right="10"
+			 top="2"
+			 bottom="2">
+	</s:Label>
+
+</s:SparkButtonSkin>

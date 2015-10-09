@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+  VPCR: Add file description 
+-->
+
+<!---
+
+File		: SparkCheckBoxGridItemRenderer.mxml
+Module		: common
+Developer(s): Sivaram SK
+Reviewer(s)	: Vishnupreethi K
+
+-->
+<!--
+ItemRenderer for SparkCheckBoxDataGrid component.
+-->
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" 
+					clipAndEnableScrolling="true"
+					
+					buttonMode="true"
+					mouseChildren="false"
+					useHandCursor="true"><!--mouseDown="mouseDownHandler(event)"
+					mouseUp="mouseUpHandler(event)"-->
+	
+	<fx:Script>
+		<![CDATA[
+		override public function prepare(hasBeenRecycled:Boolean):void
+		{
+		//lblData.text = data[column.dataField]
+		}
+		
+		override public function set selected(value:Boolean):void
+		{
+		super.selected = check.selected = value;
+		if(check.selected)
+		{
+		grid.addSelectedIndex(rowIndex);
+		}
+		else
+		{
+		grid.removeSelectedIndex(rowIndex);
+		}
+		}
+		
+		protected function mouseUpHandler(event:MouseEvent):void
+		{
+			/* if (!event.shiftKey)
+			{
+				//fake all mouse interactions as if it had the Ctrl key is active (true)
+				event.ctrlKey = true;
+			} */
+		}
+		
+		protected function mouseDownHandler(event:MouseEvent):void
+		{
+			/* if (!event.shiftKey)
+			{
+				//fake all mouse interactions as if it had the Ctrl key is active (true)
+				event.ctrlKey = true;
+			} */
+		}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="selected"/>
+	</s:states>
+	
+	<s:CheckBox
+		id="check"
+		selected.normal="false"
+		selected.selected="true"
+		horizontalCenter="0"
+		verticalCenter="0"
+		/>
+</s:GridItemRenderer>

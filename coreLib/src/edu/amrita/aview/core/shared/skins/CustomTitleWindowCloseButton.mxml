@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+ADOBE SYSTEMS INCORPORATED
+Copyright 2008 Adobe Systems Incorporated
+All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file
+in accordance with the terms of the license agreement accompanying it.
+
+-->
+
+<!--- The default skin class for the close button of the Spark TitleWindow component.
+
+@see spark.skins.spark.TitleWindowSkin
+@see spark.components.TitleWindow
+
+@langversion 3.0
+@playerversion Flash 10
+@playerversion AIR 1.5
+@productversion Flex 4
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+			 alpha.disabled="0.5">
+
+	<!-- host component -->
+	<fx:Metadata>
+		<![CDATA[ 
+		/** 
+		* @copy spark.skins.spark.ApplicationSkin#hostComponent
+		*/
+		[HostComponent("spark.components.Button")]
+		]]>
+	</fx:Metadata>
+
+	<fx:Script fb:purpose="styling">
+		/* Define the skin elements that should not be colorized.
+		For closeButton, the graphics are colorized but the x is not. */
+		static private const exclusions:Array=["xSymbol"];
+		
+		/**
+		 * @private
+		 */
+		override public function get colorizeExclusions():Array
+		{
+			return exclusions;
+		}
+		
+		/* Define the symbol fill items that should be colored by the "symbolColor" style.
+		static private const symbols:Array = ["xFill1", "xFill2"];
+		*/
+		/**
+		 * @private
+		
+		override public function get symbolItems():Array {return symbols};*/
+	</fx:Script>
+
+	<s:states>
+		<s:State name="up"/>
+		<s:State name="over"/>
+		<s:State name="down"/>
+		<s:State name="disabled"/>
+	</s:states>
+
+	<!--- Define the drop shadow for the close button. -->
+
+
+	<!--- Define the border and fill. -->
+
+
+	<!--- Define the inner shadow. -->
+
+
+	<!--- Defines the appearance of the x in the close button. -->
+	<s:Group id="xSymbol">
+		<s:Image source="@Embed('../assets/images/Medium_close.png')"/>
+	</s:Group>
+</s:SparkSkin>

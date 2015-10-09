@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuizWindow.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to setup the display of Quiz component in live classroom
+-->
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
+		   close="closeQuizWindow()"
+		   layout="absolute"
+		   statusBarBackgroundColor="#2a5da4"
+		   systemChrome="standard"
+		   type="normal"
+		   status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+		   height="652"
+		   minWidth="920"
+		   minHeight="680"
+		   backgroundColor="#e0effb"
+		   resize="resizeWindow()"
+		   verticalScrollPolicy="off">
+
+	<mx:Script source="QuizWindowUIHandler.as"/>
+	<!-- Main canvas -->
+	<mx:Canvas left="39"
+			   top="20"
+			   width="98%"
+			   borderVisible="true">
+		<!-- Hbox canvas for quiz -->
+		<mx:HBox id="hBoxQuizCanvas"
+				 x="0"
+				 top="0"
+				 width="98%"
+				 borderVisible="true"
+				 horizontalScrollPolicy="off"
+				 verticalScrollPolicy="off">
+
+		</mx:HBox>
+	</mx:Canvas>
+</mx:Window>

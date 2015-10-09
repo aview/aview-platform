@@ -1,0 +1,18 @@
+<tool>
+	<data>Please use the link to check your upload and download internet connection speed(bandwidth) during the live classroom session.</data>
+	<Link>/speedtest/</Link>
+</tool>
+
+<bandwidth>
+	<String>Kbps</String>
+	<String>Mbps</String>
+</bandwidth>
+
+<module>
+	<String>Whiteboard</String>
+	<String>Video/Audio</String>
+	<String>Document Sharing</String>
+	<String>User Interface</String>
+	<String>Desktop Sharing</String>
+	<String>Chat</String>
+</module>

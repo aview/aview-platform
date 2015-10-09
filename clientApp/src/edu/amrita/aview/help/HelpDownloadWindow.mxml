@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: HelpDownloadWindow.mxml
+Module			: Help
+Developer(s)	: Vijayakumar.R
+Reviewer(s)		: Vinod
+This UI is used for downloading the Help file from the server.
+
+-->
+
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="302"
+			   height="126"
+			   close="close()"
+			   title="Help"
+			   backgroundColor="#e0effb"
+			   borderColor="#2A5EA4"
+			   color="#FFFFFF"
+			   cornerRadius="6"
+			   defaultButton="{btnView}">
+	<!--Script to include handler -->
+	<fx:Script source="HelpDownloadWindowHandler.as"/>
+
+	<s:VGroup width="100%"
+			  height="100%"
+			  paddingBottom="10"
+			  paddingTop="10"
+			  paddingLeft="10"
+			  paddingRight="10"
+			  gap="10"
+			  horizontalAlign="center"
+			  verticalAlign="top">
+		<s:HGroup width="100%"
+				  verticalAlign="middle">
+			<!-- Progress bar-->
+			<mx:ProgressBar id="progBar"
+							width="100%"
+							label=""
+							chromeColor="#E0EFFB"
+							color="#136FB5"
+							labelPlacement="center"
+							mode="manual"/>
+			<!-- Cancel Button -->
+			<s:Button click="close()"
+					  label="Cancel"
+					  color="#000000"
+					  visible="false"
+					  includeInLayout="false"/>
+		</s:HGroup>
+		<!-- Warning message -->
+		<s:Label id="warningMsg"
+				 width="100%"
+				 color="#000000"
+				 visible="false"
+				 text="To view the help file, you may need PDF viewer."/>
+		<!-- view pdf button -->
+		<s:Button id="btnView"
+				  click="openDocument(event)"
+				  visible="false"
+				  color="#000000"
+				  label="View PDF"
+				  cornerRadius="3"
+				  chromeColor="#E0EFFB"/>
+	</s:VGroup>
+</s:TitleWindow>

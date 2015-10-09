@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: SubcategoryView.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Narayanasamy S, Sivaram SK
+
+This component displays detail about a specific question bank subcategory.
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:as="edu.amrita.aview.core.evaluation.components.Extended.*"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*"
+		   width="100%"
+		   height="100%"
+		   initialize="{initSubcategoryView()}"
+		   focusColor="#A9F9A0"
+		   xmlns:checkBox="edu.amrita.aview.core.shared.components.checkBox.*">
+	
+	<!-- Script to include handler -->
+	<mx:Script source="SubcategoryViewUIHandler.as"/>
+
+	<mx:Canvas width="100%"
+			   height="95%">
+		<!--label to show category name-->
+		<s:Label id="labelId" color="#000000" fontFamily="Arial" fontSize="15" fontWeight="bold"
+				 paddingLeft="10" paddingTop="5"
+				 text="{'SubCategory Name: '+subcategoryName}(Total {questions.length} questions) "/>
+
+		<mx:HBox id="hboxForFilter"
+				 y="{labelId.x+35}"
+				 paddingLeft="10">
+			<s:Label color="#000000" fontFamily="Arial" fontSize="15" fontWeight="bold"
+					 text="Filter:"/>
+			<!--Fix for Bug #11005-->
+			<components:WatermarkedTextbox id="txtSearch"
+										   click="{txtSearch.setFocus()}"
+										   change="{refreshHandler()}"
+										   focusIn="{searchFocusInHandler()}"
+										   focusOut="{searchFocusOutHandler()}"
+										   textAlign="center"
+										   watermark="Search"/>
+			<!--Combobox to show levels-->
+			<s:ComboBox id="cbLevels" change="{refreshHandler()}" chromeColor="#E0EFFB"
+						color="#000000" dataProvider="{levels}" fontFamily="Arial"
+						labelField="qbDifficultyLevelName" prompt="Difficulty Level"
+						textAlign="center"/>
+			<!--Combobox to show types-->
+			<s:ComboBox id="cbTypes" change="{refreshHandler()}" chromeColor="#E0EFFB"
+						color="#000000" dataProvider="{questionTypes}" fontFamily="Arial"
+						labelField="qbQuestionTypeName" prompt="Question Type" textAlign="center"/>
+		</mx:HBox>
+		<mx:HBox id="hBoxCheckBoxId"
+				 y="{labelId.x+35}"
+				 right="10"
+				 paddingLeft="10">
+			<s:Label right="10"
+					 fontSize="15"
+					 fontWeight="bold"
+					 color="#000000"
+					 text="Show Answers"/>
+			<!--CheckBox to show answers-->
+			<s:CheckBox id="chkShowAnswers" right="10"
+						change="{dataGridForQuestions.invalidateList()}" chromeColor="#E0EFFB"
+						color="#000000" fontFamily="Arial"/>
+		</mx:HBox>
+		<!--Fix for Bug #16092-->
+		<checkBox:CheckBoxDataGrid id="dataGridForQuestions" y="{hboxForFilter.y+30}" width="100%"
+								   height="88%" allowMultipleSelection="true" chromeColor="#E0EFFB"
+								   color="#000000" dataProvider="{questions}" fontFamily="Arial"
+								   fontSize="12" itemClick="dgItemClickHandler(event)"
+								   textAlign="left" variableRowHeight="true" wordWrap="true">
+			<checkBox:columns>
+				<checkBox:CheckBoxHeaderColumn width="30"
+											   click="{toggleSelection()}"
+											   editable="false"
+											   headerRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxHeaderRenderer"
+											   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxRenderer"
+											   id="check"/>
+				<mx:DataGridColumn minWidth="500" fontWeight="bold"
+								   headerText="Question"
+								   labelFunction="getSerialNumber"
+								   wordWrap="true"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('questionText')}"/>
+				<mx:DataGridColumn minWidth="45"
+								   headerText="Difficulty"
+								   labelFunction="getDifficultyLevel" fontWeight="bold"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('qbDifficultyLevelName')}"/>
+				<mx:DataGridColumn minWidth="20"
+								   headerText="Type" fontWeight="bold"
+								   labelFunction="getQuestionType"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('qbQuestionTypeName')}"/>
+				<mx:DataGridColumn minWidth="20" fontWeight="bold"
+								   dataField="marks"
+								   headerText="Marks"/>
+			</checkBox:columns>
+		</checkBox:CheckBoxDataGrid>
+	</mx:Canvas>
+	<mx:HBox id="hboxForButtons"
+			 y="{dataGridForQuestions.height+70}"
+			 width="100%"
+			 height="5%"
+			 horizontalAlign="center"
+			 verticalAlign="middle">
+		<!--Button to create question-->
+		<components:ImageButton width="150" label="Create Question" chromeColor="#E0EFFB"
+								click="{onCreateQuestion()}" color="#000000" cornerRadius="3"
+								fontFamily="Arial" fontSize="12"/>
+		<!--Button to edit question-->
+		<!--Fix for Bug#16116-->
+		<components:ImageButton id="btnEdit" width="150" label="Edit Question" chromeColor="#E0EFFB"
+								click="{editQuestion()}" color="#000000" cornerRadius="3"
+								fontFamily="Arial" fontSize="12"/>
+		<!--Button to delete question-->
+		<!--Fix for Bug#16116-->
+		<components:ImageButton id="btnDelete" width="150" label="Delete Question(s)"
+								chromeColor="#E0EFFB" click="{deleteQuestionbankQuestion()}"
+								color="#000000" cornerRadius="3" fontFamily="Arial" fontSize="12"/>
+	</mx:HBox>
+</mx:Canvas>

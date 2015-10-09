@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:components="edu.amrita.aview.core.shared.components.*"
+			   xmlns:video="edu.amrita.aview.core.video.*"
+			   width="188" height="184" backgroundColor="#000000" borderColor="#2A5EA4"
+			   close="titleWindow_close(event)" color="#FFFFFF" cornerRadius="6"
+			   creationComplete="displayLocalVideo()"
+			   fontFamily="Calibri" fontSize="12"
+			   move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+			   remove="closeFullScreen()"
+			   skinClass="edu.amrita.aview.core.video.assets.skins.CustomTitleWindowSkin"
+			   title="My Video" toolTip="Double Click to Fullscreen">
+	<fx:Declarations>
+		<s:Resize id="showVideo" duration="300" heightFrom="52" heightTo="184" target="{this}"/>
+		<s:Resize id="hideVideo" duration="300" heightFrom="184" heightTo="52" target="{this}"/>
+		
+		<s:Rotate id="rotateHideIcon" angleFrom="0" angleTo="180" duration="100"
+				  target="{btnShowHide}"/>
+		<s:Rotate id="rotateShowIcon" angleFrom="180" angleTo="0" duration="100"
+				  target="{btnShowHide}"/>
+	</fx:Declarations>
+	<fx:Script source="LocalVideoHandler.as"/>
+	<!--Fix for issue #17741-->
+	<s:BorderContainer width="100%" height="30" id="buttonContainer"
+					   backgroundImage="@Embed('/edu/amrita/aview/core/video/assets/images/myvideobg.jpg')"
+					   backgroundImageFillMode="repeat" borderVisible="false" borderWeight="0">
+		<s:layout>
+			<s:HorizontalLayout gap="0" horizontalAlign="center" paddingBottom="1" paddingLeft="3"
+								paddingRight="3" paddingTop="1" verticalAlign="middle"/>
+		</s:layout>
+		<components:ImageButton id="btnAudioStatus"  visible="{ClassroomContext.aviewClass.videoCodec == 'VP6' || FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE||ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								width="24" height="25" buttonMode="true" cornerRadius="5"
+								imageSkin="{audioStatus}"
+								includeInLayout="{ClassroomContext.aviewClass.videoCodec == 'VP6' || FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE || ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								mouseChildren="false"
+								skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+								toolTip="{audioStatusTooltip}" useHandCursor="true" click="muteTheAudio()" />
+		<s:Image smooth="true" smoothingQuality="high"
+				 source="@Embed('/edu/amrita/aview/core/video/assets/images/seperator.png')"/>
+		<components:ImageButton id="btnVideoStatus" visible="{ClassroomContext.aviewClass.videoCodec == 'VP6' || FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE || ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								width="30" height="25" buttonMode="true" cornerRadius="5"
+								imageSkin="{videoStatus}"
+								includeInLayout="{ClassroomContext.aviewClass.videoCodec == 'VP6' || FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE || ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								mouseChildren="false"
+								skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+								toolTip="{videoStatusTooltip}" useHandCursor="true" click="hideTheVideo()" />
+	<!--	<s:Image visible="{btnVideoStatus.visible}"
+				 smooth="true" smoothingQuality="high"
+				 source="@Embed('/edu/amrita/aview/core/video/assets/images/seperator.png')"/>
+		<components:ImageButton id="btnVideoAudioStatus" visible="{ClassroomContext.aviewClass.videoCodec == 'VP6' || ClassroomContext.aviewClass.isMultiBitrate == 'Y'?true:false}"
+								width="30" height="25" buttonMode="true" cornerRadius="5"
+								imageSkin="{audioVideoStatus}"
+								includeInLayout="{ClassroomContext.aviewClass.videoCodec == 'VP6' || ClassroomContext.aviewClass.isMultiBitrate == 'Y'?true:false}"
+								mouseChildren="false"
+								skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+								toolTip="{audioVideoStatusTooltip}" useHandCursor="true" click="stopLocalAudioVideo()"/>
+		<s:Image smooth="true" smoothingQuality="high" visible="{btnVideoAudioStatus.visible}" 
+				 source="@Embed('/edu/amrita/aview/core/video/assets/images/seperator.png')"/>-->
+		<s:Spacer width="100%"/>
+		<s:Image smooth="true" smoothingQuality="high"
+				 source="@Embed('/edu/amrita/aview/core/video/assets/images/seperator.png')"/>
+		<!--Fix for issue #17741-->
+		<components:ImageButton width="29" height="25" buttonMode="true" cornerRadius="5" id="btnAudioVideoSettings"
+								imageSkin="@Embed(source='/edu/amrita/aview/core/video/assets/images/audioVideoSettings.jpg')"
+								mouseChildren="false"
+								skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+								toolTip="Audio/Video Settings" useHandCursor="true" click="setLocalAudioVideoSettings()"/>
+		
+	</s:BorderContainer>
+	<!--Fix for issue #16779-->
+	<mx:Canvas visible="{this.height==184?true:false}" x="0" y="30" width="100%" height="124" id="canVideo"
+			   backgroundColor="#000000">
+		<s:VideoDisplay id="localVideoDisplay" x="0" y="0" width="100%" height="100%"  doubleClick="localVideoFullScreen()"
+						doubleClickEnabled="true"/>
+		<s:Label id="objLabelAudioNotification" visible="false" color="#f11515" fontFamily="Verdana"
+				 fontSize="10" fontWeight="bold" horizontalCenter="0" text="Audio Only Mode"
+				 verticalCenter="0"/>
+		<s:Label id="LabelAudioHide" visible="false" color="#f11515" fontFamily="Verdana"
+				 fontSize="10" fontWeight="bold" horizontalCenter="0" verticalCenter="10"/>
+		<!--Fix for issue #16779-->
+		<video:StreamSignalDisplay id="displayStreamStrength" right="5" bottom="3" toolTip="Audio Signal"/>
+		<mx:Canvas  x="0" y="0" width="100%" height="100%" id="canVideoHide"
+					backgroundColor="#000000" visible="false">
+			<s:Label id="LabelAudioVideoHide" visible="false" color="#f11515" fontFamily="Verdana"
+					 fontSize="10" fontWeight="bold" horizontalCenter="0" verticalCenter="10"/>
+		</mx:Canvas>
+	</mx:Canvas>
+	<!---->
+	<mx:ProgressBar id="localPrgBarAudioSignal" left="0" bottom="0" width="100%" height="6" label=" "
+					chromeColor="#33AA00" labelPlacement="center" maximum="100" mode="manual"
+					trackSkin="edu.amrita.aview.core.video.CustomProgressbarSkin"/>
+	<s:Image id="btnShowHide" bottom="{this.height==52?0:6}" buttonMode="true"
+			 click="showHideVideo(event)" horizontalCenter="0" toolTip="Show/Hide My Video"
+			 source="@Embed('/edu/amrita/aview/core/video/assets/images/videoShowHide.png')"
+			 useHandCursor="true"/>
+	<s:Image right="19" top="-21" buttonMode="true" click="localVideoFullScreen()" smooth="true"
+			 smoothingQuality="high"
+			 source="@Embed('edu/amrita/aview/core/video/assets/images/myVideoPopout.png')"
+			 toolTip="Pop out" useHandCursor="true" id="btnPopoout"/>
+	<s:Image x="167" y="-21" source="@Embed('/edu/amrita/aview/core/video/assets/images/myvideo-seperator.png')"/>
+	<s:Image id="btnClose" right="5" top="-15" buttonMode="true" click="titleWindow_close(this)"
+			 smooth="true" smoothingQuality="high"
+			 source="@Embed('edu/amrita/aview/core/video/assets/images/video_close_icon.png')"
+			 toolTip="Close" useHandCursor="true"/>
+	<!--Fix for issue #17572-->
+</s:TitleWindow>

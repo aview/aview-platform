@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<devicelist>
+<device name="iBall Face2Face Webcam C12.0" type="Webcam"/>
+<device name="ManyCam Virtual Webcam" type="Webcam"/>
+<device name="Logitech HD Pro Webcam C920" type="HDWebcam"/>
+<device name="Logitech Webcam Pro 9000" type="Webcam"/>
+<device name="USB Video Device" type="Webcam"/>
+<device name="USB 2861 Device" type="EasyCap"/>
+<device name="USB2.0 Camera" type="Webcam"/>
+<device name="Integrated Webcam" type="Webcam"/>
+<device name="AVerMedia U3 Video Capture" type="Blackmagic"/>
+<device name="AVerMedia USB Polaris Analog Capture" type="EasyCap"/>
+<device name="Blackmagic WDM Capture" type="Blackmagic"/>
+<device name="USB2.0 Grabber" type="EasyCap"/>
+<device name="Conexant Polaris - Video Capture Device" type="EasyCap"/>
+<device name="OEM Device" type="EasyCap"/>
+<device name="AVerMedia BDA Analog Capture Secondary" type="Blackmagic"/>
+<device name="AVerMedia BDA Analog Capture" type="Blackmagic"/>
+<device name="Osprey-230 Video Device 1" type="Blackmagic"/>
+<device name="SMI Grabber Device" type="EasyCap"/>
+<device name="USB PC Camera" type="Webcam"/>
+<device name="Conexant Polaris Video Capture" type="EasyCap"/>
+</devicelist>

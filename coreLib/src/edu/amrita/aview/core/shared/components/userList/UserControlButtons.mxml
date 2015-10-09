@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: UserControlButtons.mxml
+Module		: Classroom
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+This component contains ser action control buttons. This is used to,
+
+	1. Start interaction
+	2. Release interavtion
+	3. Make presenter
+	4. Release presenter
+	5. Mute/unmute video
+	6. Send private chat
+	7. Handraise
+-->
+
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  width="100%"
+		  gap="-1"
+		  height="100%">
+	<fx:Script source="CRActionButtonsHandler.as"/>
+	<fx:Script source = "Icons.as" />
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			/**
+			 * @private
+			 *
+			 * To change the label color of push to talk callout button
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			private function btnPTTColorChangeHandler(event:FlexEvent):void
+			{
+				if(togglePushToTalk.selected == true)
+				{
+					PTT.setStyle('color',"#0cd023");
+				}
+				else
+				{
+					PTT.setStyle('color',"#FFFFFF");
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tooltip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function userModuleTooltipHandler(event:MouseEvent):void
+			{
+				var userModuleTooltip:MobileToolTip = MobileToolTip.open(event.target.toolTip.toString(),event.currentTarget as DisplayObject);
+				userModuleTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			
+		]]>
+	</fx:Script>
+	<!--Cancel Interaction Button-->
+	<s:Button id="btn_disaccept"
+			  width="100%"
+			  height="50" 
+			  icon="{AcceptingIcon}"
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="Accept Viewer"
+			  enabled="false" 
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!-- Accept Button-->
+	<s:Button id="btn_accept"
+			  width="100%"
+			  height="50" 
+			  icon="{AcceptingIcon}"
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="Start Viewer Interaction"
+			  enabled="false" 
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!--Release Button-->
+	<s:Button id="btn_release"
+			  width="100%"
+			  height="50" 
+			  icon="{ReleaseIcon}"
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="Release Viewer"
+			  enabled="false"
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!--Hand raise Button-->
+	<s:Button id="btn_handraise"
+			  width="100%"
+			  height="50" 
+			  icon="{HandraiseIcon}"
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true" 
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="Request interaction with Presenter" 
+			  enabled="false"
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!--Hand raise release Button-->
+	<s:Button id="btn_handrelease" 
+			  width="100%"
+			  height="50" 
+			  icon="{ReleaseIcon}" 
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true" 
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="Stop interaction with Presenter" 
+			  enabled="false" 
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!--Make presenter Button-->
+	<s:Button id="presenterButton" 
+			  width="100%"
+			  height="50" 
+			  icon="{make_presenter}"
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="Make Presenter" 
+			  enabled="false" 
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!--Release presenter Button-->
+	<s:Button id="takeControlButton" 
+			  width="100%"
+			  height="50" 
+			  icon="{take_presenter_ctrl}"
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="Take Control" 
+			  enabled="false" 
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!--Presenter request Button-->
+	<s:Button id="prsntrRequestButton"
+			  width="100%"
+			  height="50" 
+			  icon="{make_presenter}"
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="Make me PRESENTER"  
+			  enabled="false" 
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!--Release presenter requset Button-->
+	<s:Button id="releasePrsntrRequestButton" 
+			  width="100%"
+			  height="50" 
+			  icon="{take_presenter_ctrl}"										   
+			  visible="false"
+			  includeInLayout="false"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  mouseChildren="false"
+			  toolTip="{Constants.PRESENTER_CNCL}"
+			  enabled="false"
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	
+	<!--Push to talk Buttons-->
+	<s:VGroup id = "pttBtnsGroup" 
+			  width="100%"
+			  verticalAlign="bottom" 
+			  horizontalAlign="center"
+			  visible="false" 
+			  includeInLayout="false"
+			  gap="-1">
+		<s:Button icon="{disabledMicIcon}"
+				  width="100%"
+				  height="50" 
+				  id="btnFreeTalk"
+				  mouseChildren="false"
+				  visible="true"
+				  includeInLayout="true" 
+				  enabled="false"
+				  toolTip="{Constants.FREETALK}"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  rollOver="userModuleTooltipHandler(event)"
+				  mouseDown="userModuleTooltipHandler(event)"/>
+		<s:Button icon="{pushToTalkMute_Icon}"
+				  width="100%"
+				  height="50" 
+				  id="btnTalk"
+				  click="{talkMute(ClassroomContext.currentPresenterName)}"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  visible="false"
+				  includeInLayout="false" 
+				  toolTip="You are on Mute now"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  rollOver="userModuleTooltipHandler(event)"
+				  mouseDown="userModuleTooltipHandler(event)"/>
+		<s:Button icon="{pushToTalkUnmute_Icon}"
+				  width="100%"
+				  height="50" 
+				  id="btnMute"
+				  click="{talkMute(classRoomComp.viewerStreamName.slice(0,classRoomComp.viewerStreamName.lastIndexOf('_')))}"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  visible="false" 
+				  includeInLayout="false" 
+				  toolTip="You are on Talk now"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  rollOver="userModuleTooltipHandler(event)"
+				  mouseDown="userModuleTooltipHandler(event)"/>
+		
+		<!--Push to talk toggle switch button-->
+		<s:Group width="100%" 
+				 height="50">
+			<s:CalloutButton id="PTT"
+							 width="100%" 
+							 height="100%"
+							 label="PTT"
+							 fontWeight="bold"
+							 color="0xFFFFFF"
+							 creationComplete="btnPTTColorChangeHandler(event)"
+							 skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							 toolTip="Push To Talk"
+							 rollOver="userModuleTooltipHandler(event)"
+							 mouseDown="userModuleTooltipHandler(event)">
+				<s:calloutContent>
+					<s:ToggleSwitch id="togglePushToTalk"
+									selected="{pttCheckBoxState}"
+									width="100%"
+									height="100%"
+									left="5"
+									right="5"
+									horizontalCenter="0"
+									fontWeight="bold"/> 
+				</s:calloutContent>
+			</s:CalloutButton>
+		</s:Group>
+	</s:VGroup>
+	<!--Break session Button-->
+	<s:Button icon="{breakSession_icon}"
+			  width="100%" 
+			  height="50"
+			  id="breakSessionButton"
+			  click="{onClickBreakSession(event)}"															
+			  useHandCursor="true"
+			  buttonMode="true" 
+			  mouseChildren="false"
+			  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+			  visible = "false" 
+			  includeInLayout = "false" 
+			  enabled="{breakSessionButtonEnabledState}"
+			  toolTip="Break current session"
+			  rollOver="userModuleTooltipHandler(event)"
+			  mouseDown="userModuleTooltipHandler(event)"/>
+	<!--Private chat Button-->
+	<s:VGroup width="100%" 
+			  height="50"
+			  bottom="0"
+			  verticalAlign="bottom">
+		<s:Button id="btnPrivateChat"
+				  icon="@Embed('assets/images/private_chat_24x24.png')"
+				  width="100%"
+				  height="100%"
+				  iconPlacement="left"
+				  includeInLayout="false"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  toolTip="Send Private Chat"
+				  rollOver="userModuleTooltipHandler(event)"
+				  mouseDown="userModuleTooltipHandler(event)"
+				  click="lstUsers.privateChatForMobile()"/>
+	</s:VGroup>
+</s:VGroup>

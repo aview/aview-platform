@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: LiveQuestionPaperPreview.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used in live classroom for previewing a selected question paper
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:questionPaper="edu.amrita.aview.core.evaluation.questionPaper.*"
+		  horizontalAlign="center" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!-- Script to include handler -->
+	<fx:Script source="LiveQuestionPaperPreviewUIHandler.as"/>
+	<!-- Used to display the question paper preview component -->
+	<!-- Fix for Bug #19650-->
+	<s:Group width="100%"
+			 height="100%">
+		<questionPaper:QuestionPaperPreview id="previewBox"
+											width="100%"
+											height="100%"/>
+	</s:Group>
+
+	<s:HGroup gap="10"
+			  horizontalAlign="center">
+		<!-- Send Button-->
+		<components:ImageButton id="btnSend" width="100" label="Start Quiz" chromeColor="#E0EFFB"
+								click="{sendLiveQuiz()}" focusEnabled="true" fontFamily="Arial"
+								fontSize="12"/>
+		<!-- Result Button-->
+		<components:ImageButton id="btnQuizResult" width="100" label="View Result"
+								chromeColor="#E0EFFB" click="{showLiveQuizResult()}"
+								focusEnabled="true" fontFamily="Arial" fontSize="12"/>
+	</s:HGroup>
+	<s:Spacer height="5"/>
+</s:VGroup>

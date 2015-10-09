@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 verticalCenter="0"
+		 horizontalCenter="0"
+		 click="FlexGlobals.topLevelApplication.mainApp.lstUsers.callMenuFunctions(event)"
+		 mouseDownOutside="skinnablecontainer1_mouseDownOutsideHandler(event)"
+		 minHeight="45">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			protected function skinnablecontainer1_mouseDownOutsideHandler(event:FlexMouseEvent):void
+			{
+				this.close();
+			}
+			public function handleMenuPosition(target:DisplayObject):void
+			{
+				// Scale the list itself
+				target.scaleX=this.scaleX;
+				target.scaleY=this.scaleY;
+				 
+				// Scale the offsets
+				var xOffset:int=10 * this.scaleX;
+				var yOffset:int=10 * this.scaleY;
+				
+				// Set the default positioning 
+				this.x=parent.mouseX + xOffset;
+				this.y=parent.mouseY + yOffset;
+				
+				// Set the adjusted height and width
+				var targetHeight:Number=this.height * this.scaleX;
+				var targetWidth:Number=this.width * this.scaleY;
+				
+				var rightEdge:int=this.x + targetWidth + xOffset;
+				var appWidth:int=parent.width;
+				var bottomEdge:int=this.y + targetHeight + yOffset;
+				var appHeight:int=parent.height;
+				this.move(x, y);
+				// If list width is more
+				if (rightEdge > appWidth)
+				{
+					var x:Number=parent.mouseX - xOffset - targetWidth;
+					var y:Number=parent.mouseY + yOffset;
+					this.move(x, y);
+				}
+				// If list height is more
+				if (bottomEdge > appHeight)
+				{
+					this.move(x + xOffset, y - yOffset - targetHeight);
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:List id="lstMenu"
+			visible="true"
+			includeInLayout="true"
+			width="100%"
+			height="100%"
+			alternatingItemColors="[#edf1f7,#FFFFFF]"
+			color="#000000"
+			fontSize="12"
+			selectionColor="#b3b3b3"
+			dataProvider="{FlexGlobals.topLevelApplication.mainApp.lstUsers.valuesArray}"
+			itemRenderer="edu.amrita.aview.core.shared.components.userList.SelectedViewerItemRenderer"
+			verticalScrollPolicy="off"
+			horizontalScrollPolicy="off"/>
+</s:SkinnablePopUpContainer>

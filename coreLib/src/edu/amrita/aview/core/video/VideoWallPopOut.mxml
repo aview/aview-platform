@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  minWidth="920"
+		  minHeight="680"
+		  creationComplete="init()"
+		  close="window1_closeHandler(event)"
+		  skinClass="edu.amrita.aview.core.shared.skins.CustomWindowSkin"
+		  status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+		  title="{'Video-wall (A-VIEW - '+ClassroomContext.aviewClass.className+')'}"
+		  windowActivate="videoWallMWwindowActivateHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="VideoWallPopOutHandler.as"/>
+	<mx:Canvas id="vidWall"
+			   x="0"
+			   y="0"
+			   width="100%"
+			   height="100%"/>
+</s:Window>

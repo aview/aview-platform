@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: FileManager.mxml
+Module			: Common
+Developer(s)	: Haridasan
+Reviewer(s)	    : Veena Gopal K.V
+The Filemanger component is a custom component for managing the file operations. 
+This component will take over all the file operation like deletion,upload, etc.
+This Component fired some  custom events for file managing
+-->
+<!-- Main panel for filemanager-->
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:fileManager="edu.amrita.aview.common.components.fileManager.*"
+		 xmlns:asfiles="edu.amrita.aview.common.components.fileManager.asfiles.*"
+		 visible="true"
+		 backgroundAlpha="1.0"
+		 backgroundColor="#E0EFFB"
+		 creationComplete="onInitilize()"
+		 creationPolicy="all"
+		 textAlign="center"
+		 title="{resourceManager.getString('myResource','filemanagercomp.paneltitle')}" xmlns:components="edu.amrita.aview.common.components.*">
+	<!-- Declaration tag for tree list data providersr-->
+	<fx:Declarations>
+		<fx:XMLList id="treeXmlListDp"/>
+		<fx:XMLList id="centralRepXMLList"/>
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="onUploadCompleted", type="edu.amrita.aview.common.components.fileManager.events.UploadCompletedEvent")]
+		[Event(name="onDownloadRequest", type="edu.amrita.aview.common.components.fileManager.events.DownloadRequestedEvent")]
+		[Event(name="onCloseFileComponentEvent", type="edu.amrita.aview.common.components.fileManager.events.CloseFileComponentEvent")]
+	</fx:Metadata>
+	<fx:Script source="FileManagerAS.as"/>
+
+	<mx:HBox id="treeContainer"
+			 horizontalGap="5"
+			 paddingLeft="5"
+			 paddingRight="5"
+			 paddingBottom="5"
+			 paddingTop="5">
+
+		<mx:Canvas id="personalArea"
+				   width="306"
+				   height="370">
+			<mx:VBox verticalGap="5"
+					 height="100%"
+					 width="100%"
+					 horizontalAlign="center">
+
+
+				<fileManager:XMLLoadedTree id="fileList"
+										   width="100%"
+										   height="90%"
+										   color="#000000"
+										   fontSize="11"
+										   change="treeChanged(event)"
+										   click="selection(event);"
+										   leading="4"
+										   dropEnabled="true"
+										   dataProvider="{treeXmlListDp}"
+										   doubleClickEnabled="true"
+										   dragEnabled="true"
+										   editable="false"
+										   horizontalScrollPolicy="off"
+										   verticalScrollPolicy="auto"
+										   itemRenderer="edu.amrita.aview.common.components.fileManager.TreeCustomDesign.TreeCustomItemRenderer"
+										   keyUp="keyboaredEventHandeler(event)"
+										   itemDoubleClick="expandOrLoad(event)"
+										   labelField="@label"
+										   textAlign="left"
+										   variableRowHeight="true"
+										   verticalAlign="top"
+										   wordWrap="true" 
+										   showRoot="false"/>
+
+
+				<mx:HBox id="fileManagerButtonBox"
+						 y="{fileList.y+fileList.height}"
+						 height="10%"
+						 horizontalCenter="0"
+						 horizontalGap="12">
+					<components:ImageButton id="uploadBtn"
+							  height="30"
+							  width="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  icon="@Embed(source='assets/images/upload.png')"
+							  click="showUpload()"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.uploadtooltip')}"/>
+
+					<!--TEACHER_OPEN_FILE_FOLDER-->
+
+					<components:ImageButton click="requestDownload()"
+							  id="downloadBtn"
+							  height="30"
+							  width="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  enabled="false"
+							  icon="@Embed(source='assets/images/disabledownload.png')"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.downloadopentooltip')}"/>
+					<!--Button for deleting a selected file or folder by invoking deleteFile()-->
+
+					<!--TEACHER_CREATE_NEW_REMOTE_FOLDER-->
+
+					<components:ImageButton id="createBtn"
+							  height="30"
+							  width="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  click="openFolderCreation('Personal')"
+							  icon="@Embed(source='assets/images/folder-new.png')"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.addnewfoldertooltip')}"/>
+					<components:ImageButton click="deleteFile('Personal')"
+							  id="deleteBtn"
+							  height="30"
+							  width="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  enabled="true"
+							  icon="@Embed(source='assets/images/delete.png')"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.filemanagercomp.deletetooltip')}"/>
+					<!--mx:LinkButton visible="false" id="cancelInPersonal" width="60" label="Cancel" click="closeFileList(event)"/-->
+				</mx:HBox>
+			</mx:VBox>
+		</mx:Canvas>
+		<mx:Canvas id="cpyCan"
+				   width="68"
+				   height="333"
+				   textAlign="center">
+			<components:ImageButton width="33"
+					  height="34"
+					  click="moveByBtn()"
+					  horizontalCenter="0"
+					  icon="{copydoc}"
+					  toolTip="{resourceManager.getString('myResource','filemanagercomp.sharefiletooltip')}"
+					  verticalCenter="0"/>
+		</mx:Canvas>
+		<mx:Canvas id="commonArea"
+				   width="306"
+				   height="370">
+			<mx:VBox verticalGap="5"
+					 height="100%"
+					 width="100%"
+					 horizontalAlign="center">
+				<fileManager:XMLLoadedTree id="commonTree"
+										   width="100%"
+										   height="90%"
+										   color="#000000"
+										   fontSize="11"
+										   click="selectionInCommon(event);"
+										   change="changeHandler(event)"
+										   dataProvider="{centralRepXMLList}"
+										   doubleClickEnabled="false"
+										   dragEnabled="false"
+										   dropEnabled="true"
+										   editable="false"
+										   horizontalScrollPolicy="off"
+										   itemDoubleClick="expandOrLoad(event)"
+										   keyUp="keyboaredEventHandeler(event)"
+										   labelField="@label"
+										   textAlign="left"
+										   variableRowHeight="true"
+										   verticalAlign="top"
+										   wordWrap="true"
+										   showRoot="false"
+										   iconFunction="tree_iconFunc"/>
+
+				<!--The Preview component shows the preview of the file selected (can be TileList thumbnail)-->
+				<!--<pr:Preview width="20%"/>-->
+				<mx:HBox id="commonFileManagerButtonBox"
+						 y="{commonTree.y+commonTree.height}"
+						 height="10%"
+						 horizontalCenter="0"
+						 horizontalGap="15">
+
+					<components:ImageButton id="commonUploadBtn"
+							  width="30"
+							  height="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  click="showUpload()"
+							  icon="@Embed(source='assets/images/disableupload.png')"
+							  enabled="false"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.nopermissionuploadtooltip')}"/>
+					<components:ImageButton click="requestDownload()"
+							  width="30"
+							  height="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  id="commonDownloadBtn"
+							  enabled="false"
+							  icon="@Embed(source='assets/images/disabledownload.png')"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.nopermissiondownloadloadtooltip')}"/>
+					<components:ImageButton id="commonCreateBtn"
+							  width="30"
+							  height="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  click="openFolderCreation('Common')"
+							  icon="@Embed(source='assets/images/disablefolder-new.png')"
+							  enabled="false"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.nopermissionaddremotetooltip')}"/>
+					<components:ImageButton click="deleteFile('Common')"
+							  width="30"
+							  height="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  id="commonDeleteBtn"
+							  enabled="false"
+							  icon="@Embed(source='assets/images/disabledelete.png')"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.nopermissiondeleteremotetooltip')}"/>
+					<components:ImageButton click="downloadToLocalDisc()"
+							  width="30"
+							  height="30"
+							  cornerRadius="5"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  id="downloadDiscBtn"
+							  enabled="false"
+							  icon="@Embed(source='assets/images/disabledownloadTopc.png')"
+							  toolTip="{resourceManager.getString('myResource','filemanagercomp.nopermissionlocaldisktooltip')}"/>
+
+					<!--mx:LinkButton  visible="false" width="60"  id="cancelInCommon" label="Cancel" click="closeFileList(event)"/-->
+				</mx:HBox>
+			</mx:VBox>
+
+		</mx:Canvas>
+	</mx:HBox>
+
+	<!--TEACHER_UPLOAD_NEW_DOC-->
+
+	<!--Button for loading the uploading panel by invoking showUpload() function-->
+
+	<!--TEACHER_DELETE_FILE_FOLDER-->
+	<!--Button for creating a new folder by invoking the function createFolder()-->
+	<!--Button for closing the file list panel by invoking closeFileList() function-->
+	<!--TEACHER_CLOSE_FILE_FOLDER_LIST-->
+
+
+
+</s:Panel>

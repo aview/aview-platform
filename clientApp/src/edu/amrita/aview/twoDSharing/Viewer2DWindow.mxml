@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: Viewer2DWindow.mxml
+Module		: 2DViewer
+Developer(s): Manjith CM, Deepu Diwakar, Jayakrishnan R
+Reviewer(s)	: Pradeesh
+
+* Viewer2DWindow.mxml component used for 2Dviewer pop-out in desktop version.
+
+-->
+
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:twoDSharing="edu.amrita.aview.twoDSharing.*"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   backgroundColor="#e0effb"
+		   creationComplete="CompleteHandler(event)"
+		   minWidth="920"
+		   minHeight="680"
+		   preinitialize="{ContextManager.viewer2DWin=this}"
+		   systemChrome="standard"
+		   type="normal"
+		   statusBarBackgroundColor="#2a5da4"
+		   windowActivate="MultiActive()"
+		   windowDeactivate="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.multipleWindowDeactivateHandler(event)"
+		   close="closeHandler(event)"
+		   status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+		   statusTextStyleName="statusFontColor">
+	
+	<mx:Script>
+		<![CDATA[
+			// AKCR: please move CDATA to its own ActionScript file
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import context.ContextManager;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			
+			/**
+			 * For Log API
+			 */
+			private var log:ILogger=Log.getLogger("aview.edu.amrita.aview.twodsharing.Viewer2DComp");
+			
+			
+			/**
+			 *
+			 * @public
+			 * This  function is called when the window is activated.
+			 * Should reset the enter frame to avoid the application stuck issue.
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			
+			// AKCR: please create a variable to contain FlexGlobals.topLevelApplication.mainApp.mainContainerComp. This will make the code more
+			// AKCR: readable.
+			public function MultiActive():void
+			{
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp)
+				{
+					if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp)
+					{
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.multipleWindowActivateHandler("2dMW");
+						if (ContextManager.playBack)
+						{
+							ContextManager.playBack.resetEnterFrame();
+						}
+					}
+					else
+					{
+						//close() method does not support in web application.
+						applicationType::desktop
+						{
+							this.close();
+						}
+					}
+				}
+				else
+				{
+					//close() method does not support in web application.
+					applicationType::desktop
+					{
+				
+						this.close();
+					}
+				}
+			}
+			
+			/**
+			 *
+			 * @protected
+			 * This will set the popout is true
+			 * This  function is used to assign this as parent
+			 * So that all the popup are created on top this.
+			 *
+			 * @param event of type FlexEvent.
+			 * @return void.
+			 *
+			 ***/
+			protected function CompleteHandler(event:FlexEvent):void
+			{
+				//title method does not support in web application.
+				applicationType::desktop
+				{
+				
+						this.title="2D Viewer (A-VIEW - " + ClassroomContext.aviewClass.className + ")";
+				}
+				//PNCR: use this.isPopOut instead of complete path
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DComp.isPopOut=true;
+				if (Log.isInfo()) log.info("Entered function Viewer2DWindow.creation Completehandler");
+				ContextManager.popParent=ContextManager.viewer2DWin;
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This will execute when the window is closed
+			 * If it is poout then stays with current movie status.
+			 * If it is single window it will pause th movie.
+			 * Reset icons to unclicked state.
+			 * Close the window.
+			 *
+			 * @param event of type Event.
+			 * @return void.
+			 *
+			 ***/
+			public function closeHandler(event:Event):void
+			{
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp)
+				{
+					if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp)
+					{
+						//closed method does not support in web application.
+						applicationType::desktop
+						{
+							if (!this.closed)
+							{
+								FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DComp.popOut2DWindow();
+							}
+							else
+							{
+								FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DComp.isPopOut=true;
+								FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DComp.popOut2DWindow();
+							}
+						}
+						if (Log.isInfo()) log.info("Entered function Viewer2DWindow.closeHandler");
+						if (ContextManager.userrole == "PRESENTER" && ContextManager.swfloaded)
+						{
+							var obj:Object=new Object();
+							obj.action=ContextManager.currMovieStaus;
+							obj.zoomDrag="false";
+							obj.currentFrame=ContextManager.playBack.currMovie.currentFrame;
+							ContextManager.viewer2DComp.updateGlobalNum("currFrame", obj.currentFrame);
+							ContextManager.viewer2DComp.sendData(obj);
+						}
+						ContextManager.listVisibile=false;
+						if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp)
+						{
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.ViewerIcon2D=FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.Viewer2D_unclicked;
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModulle=99;
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DMWActive=false;
+						}
+					}
+					else
+					{
+						//close() method does not support in web application.
+						applicationType::desktop
+						{							
+							this.close();
+						}
+					}
+				}
+				else
+				{
+					//close() method does not support in web application.
+					applicationType::desktop
+					{
+					
+						this.close();
+						
+					}
+				}
+			}
+		]]>
+	</mx:Script>
+	<s:BorderContainer id="footText"
+					   borderAlpha="0"
+					   bottom="0"
+					   backgroundColor="#e0effb"
+					   height="23"
+					   width="100%">
+		<s:Line width="{this.width}"
+				top="0">
+			<s:stroke>
+				<s:SolidColorStroke color="#666666"
+									weight="2"/>
+			</s:stroke>
+		</s:Line>
+	</s:BorderContainer>
+</mx:Window>

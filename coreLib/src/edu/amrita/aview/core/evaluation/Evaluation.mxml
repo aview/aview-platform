@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: Evaluation.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+
+This is the parent component for all quiz activities like question bank , question paper and quiz
+It delegates the control to the specific component as per the users choice
+
+-->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 focusColor="#A9F9A0" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<mx:Script source="EvaluationUIHandler.as"/>
+	<!-- Main hbox container -->
+	<mx:HBox id="hBoxParent"
+			 x="0"
+			 y="0"
+			 width="100%"
+			 height="40"
+			 backgroundColor="#e0effb"
+			 horizontalAlign="center"
+			 verticalAlign="middle"
+			 includeInLayout="true">
+		<!-- Button for question bank  -->
+		<components:ImageButton id="btnQuestionBank"
+								visible="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE}"
+								left="156" width="180" label="Question Bank" chromeColor="#E0EFFB"
+								click="showQuestionBank();" cornerRadius="3" fontWeight="bold"/>
+		<mx:Spacer width="25"/>
+		
+		<!-- Button for question paper -->
+		<components:ImageButton id="btnQuestionPaper"
+								visible="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE}"
+								width="180" label="Question Paper" chromeColor="#E0EFFB"
+								click="showQuestionPaper()" cornerRadius="3" fontWeight="bold"
+								horizontalCenter="0"/>
+		<mx:Spacer width="25"/>
+		
+		<!-- Button for quiz -->
+		<!-- Fix for Bug#15898 -->
+		<components:ImageButton id="btnQuiz" right="169" width="180" label="Quiz Result"
+								chromeColor="#E0EFFB" click="showQuiz()" cornerRadius="3"
+								fontWeight="bold"/>
+		<mx:Spacer width="25"/>
+		
+		<!-- Button for polling result -->
+		<!-- Fix for Bug#18000 -->
+		<components:ImageButton id="btnPollingResult" right="169" width="180" label="Polling Result"
+								chromeColor="#E0EFFB" click="showPollingQuizToStudent()"
+								cornerRadius="3"/>
+		<mx:Spacer width="25"/>
+		
+		<!-- Button for today quiz -->
+		<components:ImageButton id="btnTodayQuiz" right="169" width="180" label="TodayQuiz"
+								chromeColor="#E0EFFB" click="showAvailableQuiz()" cornerRadius="3"/>
+
+	</mx:HBox>
+
+	<!-- Main canvas contaner to hold the content -->
+	<mx:Canvas id="canEvaluationComponent"
+			   x="0"
+			   y="{hBoxParent.y+hBoxParent.height}"
+			   width="100%"
+			   height="100%"
+			   backgroundColor="#e0effb"
+			   borderAlpha="0.98"
+			   borderColor="#5C5C5C"
+			   borderStyle="solid"/>
+
+</mx:VBox>

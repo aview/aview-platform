@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+  1.Authors      : Jayahari, Sreelekshmy S, Sreevidhya R S
+  2.Description  : This a custom component for displaying teacher's video in full screen.
+  3.Dependencies : PlaybackCode.as, Aview_playback.mxml
+
+-->
+<!--For Web: Changed Window to Canvas. Removed following properties which doesn't exist for web.
+type="{NativeWindowType.LIGHTWEIGHT}" systemChrome="none" showTitleBar="false" showStatusBar="false"
+title="Full Screen Video" close="normalScreen()" alwaysInFront="false"-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   borderColor="#000000"
+		   creationComplete="init()"
+		   mouseMove="Mouse.show()"
+		   width="100%"
+		   height="100%">
+
+	<mx:Canvas id="videoFullScreenLoader"
+			   width="100%"
+			   height="100%"
+			   doubleClickEnabled="true"
+			   doubleClick="normalScreen()"/>
+
+	<mx:Script source="Playback_Video_fullscreenHandler.as"/>
+</mx:Canvas>

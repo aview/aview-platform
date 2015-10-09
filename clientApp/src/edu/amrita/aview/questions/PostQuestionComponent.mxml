@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: PostQuestionComponent.mxml
+Module		: Question
+Developer(s): Jeevanantham N
+Reviewer(s)	: 
+
+This layout provides a text input field for typing the question and button to post the question
+
+-->
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						   xmlns:s="library://ns.adobe.com/flex/spark" 
+						   width="100%" 
+						   height="100%"
+						   mouseDownOutside="this.close()">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			/**
+			 * @protected
+			 * 
+			 * To post question
+			 * 
+			 * @return void
+			 */
+			protected function postQuestionButtonClickHandler(event:MouseEvent):void{
+				if(txtQuestionInput.text != ""){
+					FlexGlobals.topLevelApplication.questComponent.questionInput.text = txtQuestionInput.text;
+					FlexGlobals.topLevelApplication.questComponent.postQuestion();
+					this.close();
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Script source="QuestionIcons.as"/>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group width="100%" 
+			 height="100%"
+			 includeInLayout="true">
+		<s:Rect width="100%" 
+				height="100%"
+				top="0"
+				bottom="0"
+				left="0"
+				right="0">
+			<s:fill>
+				<s:SolidColor color="0X071124"/>
+			</s:fill>
+			<s:filters>
+				<s:GlowFilter alpha="0.3" 
+							  blurX="0" 
+							  blurY="40" 
+							  color="0xFFFFFF" 
+							  inner="true"
+							  strength="1"/>
+			</s:filters>
+			<s:stroke>
+				<s:LinearGradientStroke weight="5" rotation="270"> 
+					<s:GradientEntry color="0x696969"/>
+					<s:GradientEntry color="0xB3B3B3"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+		</s:Rect>
+		<s:VGroup width="100%"
+				  height="100%"
+				  verticalAlign="middle"
+				  horizontalAlign="center"
+				  paddingBottom="10"
+				  paddingLeft="10"
+				  paddingRight="10"
+				  paddingTop="10">
+			<s:Label text="Post question"
+					 color="0xFFFFFF"
+					 fontWeight="bold"/>
+			<s:Line width="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="0xFFFFFF" weight="1" alpha="1.0"/>
+				</s:stroke>
+			</s:Line>
+			<s:HGroup width="100%"
+					  gap="3"
+					  height="100%"
+					  horizontalAlign="center"
+					  verticalAlign="bottom"
+					  paddingTop="10"
+					  paddingBottom="10"
+					  paddingLeft="10"
+					  paddingRight="10">
+				<!-- Text input field to facilitate typing the question to be posted -->
+				<s:TextInput id="txtQuestionInput"
+							 width="85%"
+							 height="100%"
+							 enabled="{FlexGlobals.topLevelApplication.isQuestionEnable}"
+							 color="#090A0A"/>
+				
+				<!-- Button to post the question entered in the text input field. Button available only for Viewer Role -->
+				<s:Button id="btnPostQuestion"
+						  width="15%"
+						  height="100%"
+						  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"
+						  icon="{post_icon}"
+						  useHandCursor="true"
+						  buttonMode="true"
+						  color="#040404"
+						  enabled="{FlexGlobals.topLevelApplication.isQuestionEnable}"
+						  click="postQuestionButtonClickHandler(event)"
+						  fontFamily="Georgia"
+						  fontSize="10"
+						  fontWeight="bold"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:Group>
+</s:SkinnablePopUpContainer>

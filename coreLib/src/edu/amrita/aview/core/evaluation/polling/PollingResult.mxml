@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: PollingResult.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Sinu Rachel John
+
+PollingResult.mxml is a custom component, contains all the UI related code for polling result.
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						xmlns:s="library://ns.adobe.com/flex/spark"
+						xmlns:components="edu.amrita.aview.core.shared.components.*"
+						xmlns:mx="library://ns.adobe.com/flex/mx"
+						width="700"
+						height="700"
+						title="Polling Result"
+						xmlns:questionPaper="edu.amrita.aview.core.evaluation.questionPaper.*"
+						focusColor="#A9F9A0"
+						backgroundColor="#e0effb"
+						
+						fontFamily="Arial"
+						fontSize="15"
+						
+						color="#FFFFFF"
+						dropShadowVisible="false"
+						textAlign="center"
+						creationComplete="creationCompleteHandler()"
+>
+
+	<fx:Script source="PollingResultUIHandler.as"/>
+	<mx:VBox left="5" right="5" top="5" bottom="5" width="100%" height="90%" borderColor="#A3D7FF"
+			 borderStyle="solid" chromeColor="#CCCCCC" color="#000000" horizontalAlign="center"
+			 verticalAlign="middle">
+		<!-- Fix for Bug #11041 -->
+		<s:Group width="100%"
+				 height="100%">
+			<!--Button used for refresh the polling result-->
+			<components:ImageButton label="Refresh"
+					  right="25"
+					  top="15"
+					  toolTip="Refresh the results"
+					  click="refreshClickHandler(event)"
+					  icon="@Embed('assets/images/Refresh (32).png')"
+					  height="30"
+					  width="32"/>
+		</s:Group>
+		<!--Datagroup contains polling questions and answers-->
+		<s:DataGroup itemRenderer="edu.amrita.aview.core.evaluation.polling.PollingQuestionAnswer"
+					 height="90%"
+					 id="dgPollingQuestionAnswer">
+		</s:DataGroup>
+
+		<mx:VBox width="100%"
+				 height="10%"
+				 chromeColor="#CCCCCC"
+				 horizontalAlign="center"
+				 horizontalCenter="0"
+				 verticalCenter="0"
+				 verticalAlign="bottom"
+				 paddingBottom="2">
+			<mx:HRule width="100%"/>
+			<!--Button used for close the polling result-->
+			<components:ImageButton id="btnClose" label="Close" chromeColor="#E0EFFB"
+									click="closePollingResultWindow()" color="#000000"
+									cornerRadius="3"/>
+		</mx:VBox>
+	</mx:VBox>
+</components:InsidePanel>

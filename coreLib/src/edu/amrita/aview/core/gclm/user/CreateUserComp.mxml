@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CreateUserComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	:
+
+
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+						 xmlns:xt="library://ns.tink.ws/flex/mx"
+						 width="800"
+						 height="440"
+						 backgroundColor="#e0effb"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+>
+	<fx:Declarations>
+
+		<mx:EmailValidator id="emailValidator"
+						   source="{txtInpEmail}"
+						   property="text"
+						   invalidCharError="Your e-mail address contains invalid characters."
+						   invalidDomainError="The domain in your e-mail address is incorrectly formatted."
+						   invalidIPDomainError="The IP domain in your e-mail address is incorrectly formatted."
+						   invalidPeriodsInDomainError="The domain in your e-mail address has consecutive periods."
+						   missingAtSignError="An at sign is missing in your e-mail address."
+						   missingPeriodInDomainError="The domain in your e-mail address is missing a period."
+						   missingUsernameError="The username in your e-mail address is missing."
+						   tooManyAtSignsError="Your e-mail address contains too many at sign characters."
+						   valid="emailValidationHandler(event)"
+						   invalid="emailValidationHandler(event)"/>
+	</fx:Declarations>
+	<!-- Script to include handler -->
+	<fx:Script source="CreateUserCompUIHandler.as"/>
+	<mx:Canvas left="5"
+			   right="5"
+			   top="5"
+			   bottom="5"
+			   borderColor="#A3D7FF"
+			   borderStyle="solid"
+			   borderVisible="true"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="20"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show username-->
+		<s:Label left="20"
+				 top="20"
+				 text="User Name : "/>
+		<!--Text to enter username-->
+		<s:TextInput id="txtInpUserName"
+					 left="120"
+					 top="15"
+					 width="160"
+					 maxChars="99"
+					 restrict="{GCLMContext.allowedCharactersForName}"/>
+		<!-- Label to show * -->
+		<s:Label left="320"
+				 top="20"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show Password-->
+		<s:Label left="330"
+				 top="20"
+				 text="Password : "/>
+		<!--Text to enter Password-->
+		<s:TextInput id="txtInpPassword"
+					 left="445"
+					 top="15"
+					 width="160"
+					 displayAsPassword="true"
+					 maxChars="49"
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+		<!-- Label to show * -->
+		<s:Label left="320"
+				 top="60"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show ConfirmPassword-->
+		<s:Label left="330"
+				 top="60"
+				 text="Confirm Password : "/>
+		<!--Text to enter ConfirmPassword-->
+		<s:TextInput id="txtInpConfirmPassword"
+					 left="445"
+					 top="55"
+					 width="160"
+					 displayAsPassword="true"
+					 maxChars="49"
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="60"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show First Name -->
+		<s:Label left="20"
+				 top="60"
+				 text="First Name : "/>
+		<!--Text to enter First Name -->
+		<s:TextInput id="txtInpFirstName"
+					 left="120"
+					 top="55"
+					 maxChars="99"
+					 width="160"
+					 restrict="0-9a-zA-Z_ "
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="100"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show Last Name -->
+		<s:Label left="20"
+				 top="100"
+				 text="Last Name : "/>
+		<!--Text to enter LastName -->
+		<s:TextInput id="txtInpLastName"
+					 left="120"
+					 top="95"
+					 maxChars="99"
+					 width="160"
+					 restrict="0-9a-zA-Z_ "
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+		<!-- Label to show * -->
+		<s:Label left="320"
+				 top="100"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show Mobile Number -->
+		<s:Label left="330"
+				 top="100"
+				 text="Mobile Number : "/>
+		<!--Text to enter MobileNumber -->
+		<s:TextInput id="txtInpMobileNumber"
+					 left="445"
+					 top="95"
+					 width="160"
+					 maxChars="10"
+					 restrict="0-9"
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="140"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show Email -->
+		<s:Label left="20"
+				 top="140"
+				 text="Email : "/>
+		<!--Text to enter Email -->
+		<s:TextInput id="txtInpEmail"
+					 left="120"
+					 top="135"
+					 maxChars="299"
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+		<!-- Label to show * -->
+		<s:Label left="320"
+				 top="140"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show Institute Name -->
+		<s:Label left="330"
+				 top="140"
+				 text="Institute Name : "/>
+		<!--<Sparkcontrols:AutoComplete id="cmbInstituteName" left="445" top="135" width="400" focusOut="setInstituteName()"
+									dataProvider="{AdminContext.allInstitutesAC}" labelField="instituteName"/>-->
+		<xt:FilterComboBox id="edtCmbInstituteName"
+						   left="445"
+						   top="135"
+						   width="300"
+						   dataProvider="{GCLMContext.allInstitutesAC}"
+						   labelField="instituteName"
+						   dropdownFactory="{GCLMContext.dropdownFactory}"
+						   prompt=""
+						   selectSingleMatch="true"
+						   removeFilterOnSelection="true"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="180"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show User Address-->
+		<s:Label left="20"
+				 top="180"
+				 text="User Address"/>
+		<!--Text to enter UserAddress-->
+		<s:TextArea id="txtAreaUserAddress"
+					left="120"
+					top="175"
+					width="160"
+					height="63"
+					restrict=" A-z0-9-,./\\"
+					maxChars="450"/>
+		<!-- Label to show * -->
+		<s:Label left="320"
+				 top="180"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show City-->
+		<s:Label left="330"
+				 top="180"
+				 text="City : "/>
+		<!--Text to enter City-->
+		<s:TextInput id="txtInpCity"
+					 left="445"
+					 top="175"
+					 width="160"
+					 maxChars="99"
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+		<!-- Label to show * -->
+		<s:Label left="320"
+				 top="220"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show Pincode-->
+		<s:Label left="330"
+				 top="220"
+				 text="Pincode : "/>
+		<!--Text to enter ZipCode-->
+		<s:TextInput id="txtInpZipCode"
+					 left="445"
+					 top="215"
+					 width="160"
+					 restrict="0-9"
+					 maxChars="6"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="256"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="296"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<components:StateDistrictDropDown id="stateDistrict"
+										   left="20"
+										   top="251"
+										   width="260"
+										   cmbHeight="25"
+										   cmbwidth="160"
+										   districtsAC="{GCLMContext.districtsAC}"/>
+		<!-- Label to show * -->
+		<s:Label left="320"
+				 top="256"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!--Label to show User Role-->
+		<s:Label left="330"
+				 top="256"
+				 text="User Role : "/>
+		<!--Combobox to select userroles-->
+		<mx:ComboBox id="cmbUserRole"
+					 left="445"
+					 top="252"
+					 height="25"
+					 dataProvider="{userRoles}"/>
+		<!--Save button-->
+		<components:ImageButton id="btnSaveUser"
+				  bottom="20"
+				  width="80"
+				  label="Save"
+				  chromeColor="#E0EFFB"
+				  click="saveUser()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="-60"/>
+		<!--CancelUser button-->
+		<components:ImageButton id="btnCancelUser"
+				  bottom="20"
+				  width="80"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="closeCreateUserComp()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="60"/>
+		<!--Label to show InstituteName-->
+		<s:Label id="lblInstituteName"
+				 visible="false"
+				 left="445"
+				 top="140"/>
+	</mx:Canvas>
+	<!-- Icon to close create user component -->
+	<components:WindowCloseImage right="5"
+			 top="-25"
+			 id="imgClose"
+			 click="closeCreateUserComp()"/>
+</components:InsidePanel>

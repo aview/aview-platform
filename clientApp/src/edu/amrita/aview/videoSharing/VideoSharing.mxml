@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  ©  2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+* 
+* File			: VideoSharing.mxml
+* Module		: videoSharing
+* Developer(s)	: Livin M.MIRANDA,Soumya.M.D.
+* Reviewer(s)	: Sivaram SK, Meena S
+* 
+* 
+-->
+<!-- 
+     The user interface for video sharing. Includes the controls for player, video slider
+
+-->
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:administration="modules.administration.*"
+		   width="99%"
+		   height="100%"
+		   creationComplete="setUIcontrols()"
+		   horizontalScrollPolicy="off"
+		   resize="repositionPlayerControlButtons()"
+		   verticalScrollPolicy="off">
+
+	<mx:Script source="VideoSharingConnectionScript.as"/>
+	<mx:Script source="VideoUpload.as"/>
+	<mx:Script source="VideoSharingScript.as"/>
+
+
+	<!-- main container VBOX-->
+	<mx:VBox id="vBoxVideoPlayerMainContainer"
+			 width="100%"
+			 height="100%"
+			 backgroundColor="#ffffff"
+			 horizontalScrollPolicy="off"
+			 verticalScrollPolicy="off">
+		<mx:HBox width="100%"
+				 backgroundColor="#99D0FF"
+				 borderStyle="solid"
+				 borderVisible="true"
+				 cornerRadius="4"
+				 horizontalAlign="center"
+				 horizontalGap="3"
+				 verticalAlign="middle">
+			<!-- displays the library button and addressbar for presenter-->
+			<mx:HBox id="hBoxPresenterControlContainer"
+					 width="100%"
+					 horizontalGap="3"
+					 verticalAlign="middle">
+				<!--Library browse button -->
+				<mx:Button id="btnBrowse"
+						   x="4"
+						   width="101"
+						   height="30"
+						   label="My Videos"
+						   click="showFileList()"
+						   cornerRadius="4"
+						   icon="@Embed(source='assets/images/My-Documents-icon.png')"
+						   labelPlacement="right"
+						   paddingLeft="5"/>
+				<s:BorderContainer width="100%"
+								   height="25"
+								   borderColor="#5e809c"
+								   borderWeight="0"
+								   cornerRadius="5">
+					<s:layout>
+						<s:ConstraintLayout/>
+					</s:layout>
+					<s:mxmlContentFactory>
+						<!-- Textbox for the youtube video addressbar-->
+						<s:TextInput id="txtYoutubeURL"
+									 left="2"
+									 right="{btnYoutubeURL.width-Number(btnYoutubeURL.right)}"
+									 top="2"
+									 bottom="2"
+									 borderVisible="false"
+									 change="ontxtUrlChange()"
+									 click="urlTextControlClickHandler(event)"
+									 color="#949494"
+									 contentBackgroundColor="#FFFFFF"
+									 focusOut="urlTextControlFocusOutHandler(event)"
+									 fontStyle="italic"
+									 keyDown="urlTextControlkeyDownHandler(event)"
+									 mouseDown="urlTextControlClickHandler(event)"
+									 skinClass="edu.amrita.aview.videoSharing.skins.CustomTextInputSkin"
+									 text="Paste YouTube URL here and hit enter key"/>
+						<!-- Go button-->
+						<s:Image id="btnYoutubeURL"
+								 right="1"
+								 top="1"
+								 bottom="1"
+								 buttonMode="true"
+								 click="preloadYoutubeVideo(txtYoutubeURL.text);labelFileName.text='';"
+								 smooth="true"
+								 smoothingQuality="high"
+								 source="@Embed('assets/images/go.png')"
+								 useHandCursor="true"/>
+					</s:mxmlContentFactory>
+					<!--<s:text width="100%" height="43" enabled="true" keyUp="textarea_keyUpHandler(event)"/>-->
+				</s:BorderContainer>
+			</mx:HBox>
+
+			<mx:Button id="btnPopOut"
+					   visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+					   includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+					   width="35"
+					   height="30"
+					   click="popOutVideoWindow()"
+					   toolTip="Popout"/>
+
+		</mx:HBox>
+		<mx:VBox width="100%"
+				 height="100%"
+				 horizontalAlign="center"
+				 verticalAlign="top"
+				 verticalGap="-1">
+			<!--Text for displaying the name of currently loaded video-->
+			<mx:Label id="labelFileName"					  
+					  height="21"
+					  visible="true"
+					  maxWidth="250"
+					  enabled="true"
+					  fontFamily="Arial"
+					  fontSize="11"
+					  fontWeight="bold"
+					  text=""
+					  toolTip="{labelFileName.text}"/>
+            <!--container for video player. Both library video player
+			or youtube player gets added to this VBox-->
+			<mx:VBox id="vBoxVideoPlayer"
+					 width="90%"
+					 height="75%"
+					 backgroundColor="#1B1B1B">
+
+			</mx:VBox>
+ 		   <!-- displays the slider controls for seekbar-->
+			<mx:HBox id="hBoxSeekbar"
+					 y="{hBoxPlayerControl.y-32}"
+					 width="90%"
+					 height="32"
+					 backgroundColor="#333333"
+					 paddingTop="3">
+				<!--label to display the seek position -->
+				<mx:Label id="labelPosition"
+						  color="#FFFFFF"/>
+				<!-- slider for seekbar-->
+				<mx:HSlider id="hSliderSeekbar"
+							width="100%"
+							allowTrackClick="true"
+							click="handleSliderClick(event)"
+							dataTipFormatFunction="getFormattedPlayTime"
+							dataTipPlacement="top"
+							liveDragging="true"
+							maximum="{videoDuration}"
+							minimum="0"
+							showDataTip="true"
+							showTrackHighlight="true"
+							tickInterval="50"/>
+                 <!-- label that displays the video length-->
+				<mx:Label id="lengthLabel"
+						  color="#FFFFFF"/>
+			</mx:HBox>
+            <!--  video play/pause control buttons' container-->
+			<mx:HBox id="hBoxPlayerControl"
+					 y="{hBoxSeekbar.y+hBoxSeekbar.height}"
+					 width="90%"
+					 height="25"
+					 backgroundColor="#333333"
+					 horizontalAlign="center"
+					 paddingRight="5"
+					 verticalAlign="middle">
+				<!--<mx:Label  id="lblPresenterstatus"
+						   width="40%" color="#FFFFFF"/>-->
+				<mx:Spacer id="btnSpacer"
+						   width="40%"/>
+				
+				<!-- video stop button-->
+				<mx:Button id="btnStop"
+						   x="{((hSliderSeekbar.x+hSliderSeekbar.width)/2)-20}"
+						   width="16"
+						   height="16"
+						   click="onClickStop()"
+						   icon="@Embed(source='assets/images/stop16.png')"
+						   toolTip="{Constants.VIDEO_STATE_STOP}"/>
+				<!-- video play/pause button-->
+				<mx:Button id="btnPlay"
+						   x="{btnStop.x+btnStop.width+2}"
+						   width="24"
+						   height="24"
+						   click="togglePlay(btnPlay.selected)"
+						   icon="@Embed(source='assets/images/play.png')"
+						   toggle="true"
+						   toolTip="{Constants.VIDEO_STATE_PLAY }"/>
+				<!-- TODO: repeatButton should be a check box. Not a button -->
+				<mx:Button id="btnRepeat"
+						   x="{btnPlay.x+btnPlay.width+2}"
+						   width="16"
+						   height="16"
+						   click="toggleRepeat()"
+						   icon="@Embed(source='assets/images/repeat16.png')"
+						   selected="{autoRepeat}"
+						   toggle="true"
+						   toolTip="Turn repeat on"/>
+
+				<mx:Spacer width="20%"/>
+                <!--audio mute button-->
+				<mx:Button id="btnMuteVolume"
+						   width="16"
+						   height="16"
+						   click="toggleSound(true)"
+						   icon="@Embed(source='assets/images/sound16.png')"
+						   toggle="true"/>
+				<!--volume adjusting slider-->
+				<mx:HSlider id="hSliderVolumeBar"
+							width="80"
+							change="toggleState()"
+							dataTipPrecision="0"
+							liveDragging="true"
+							maximum="100"
+							minimum="0"
+							value="75"/>
+				<mx:Button id="btnRefresh"
+						   width="16"
+						   height="16"
+						   click="refreshVideo()"
+						   icon="@Embed('assets/images/refresh.png')"
+						   toggle="true" visible="false"/>
+				
+			</mx:HBox>
+			<mx:VBox y="{vBoxVideoPlayerMainContainer.height-40}"
+					 paddingTop="3">
+				
+				<!-- displays the label for video status information for all users -->
+				<mx:Label id="labelVideoStatusInfo"
+						  visible="{hBoxPresenterControlContainer.visible}"
+						  color="#010101"/>
+			</mx:VBox>
+		</mx:VBox>
+	</mx:VBox>
+
+</mx:Canvas>

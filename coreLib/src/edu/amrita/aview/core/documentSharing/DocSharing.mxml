@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+1. Author: Akhil P R, Deepak Kumar, Vivek Vijayan, Anu P, Saju S
+2. Description: This component is invoked when user logins in multiple mode. This component is acting as an outer layer of
+document sharing window in multiple mode.
+
+-->
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  systemChrome="standard"
+		  type="normal"
+		  creationComplete="init()"
+		  windowActivate="documentMWwindowActivateHandler(event)"
+		  windowDeactivate="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.multipleWindowDeactivateHandler(event)"
+		  close="close_doc()"
+		  minWidth="920"
+		  minHeight="680"
+		  backgroundColor="#e0effb"
+		  skinClass="edu.amrita.aview.core.shared.skins.CustomWindowSkin"
+		  status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}">
+
+	<fx:Script source="DocSharingHandler.as"/>
+	<s:BorderContainer id="doc"
+					   x="0"
+					   y="0"
+					   width="100%"
+					   height="100%"
+					   resize="onResize()"
+					   top="0"
+					   
+					   borderStyle="solid">
+	</s:BorderContainer>
+</s:Window>

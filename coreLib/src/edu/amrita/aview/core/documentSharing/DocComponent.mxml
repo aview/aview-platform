@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+1. Authors: Akhil P R, Deepak Kumar, Vivek Vijayan, Anu P, Aravind B C, Saju S,Haridasn P C
+2. Description: Document sharing application is used to upload various types of documents into the A-VIEW system
+and share the uploaded documents among various users. There are two types of users for this application
+namely Teacher & Student .The teacher has the rights to upload documents and share it among various students
+to achieve collaborative learning. On the other hand a student can only view a document that is being shared by the teacher.
+Teacher can load a document to the container and also navigate through the document and rotate it and it gets reflected at the student side.
+Teacher can also create folders on the file list.
+This component is the main Document sharing component and it contins the code of almost all the functionalities of document sharing like uploading files,
+creating remote folders, openig a remote file, navigation through document, rotating document, refreshing the file list
+-->
+<!--The outer canvas for the DocComponent-->
+<s:BorderContainer xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:flex="edu.amrita.aview.core.documentSharing.ispring.flex.*"
+				   xmlns:annotations="edu.amrita.aview.core.documentSharing.components.annotations.*"
+				   xmlns:documentSharing="edu.amrita.aview.core.documentSharing.*"
+				   xmlns:thumbnails="edu.amrita.aview.core.documentSharing.components.thumbnails.*"
+				   xmlns:components="edu.amrita.aview.core.shared.components.*"
+				   xmlns:toggleSwitch="edu.amrita.aview.core.shared.components.toggleSwitch.*"
+				   width="604" backgroundColor="#FFFFFF" borderStyle="solid" borderVisible="false"
+				   creationPolicy="all" horizontalCenter="0" verticalCenter="0" creationComplete="init()">
+	<!--nativeDragEnter="dragEnterHandler(event)" nativeDragDrop="dragDropHandler(event)"-->
+	<fx:Style source="assets/styles/ScrollStyle.css"/>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.AVCEnvironment;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.login.boilerplate.Strings;
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Script source="DocumentHandler.as"/>
+	<fx:Declarations>
+		<s:HTTPService id="deleteService" fault="faultHandler(event)"
+					   result="deleteOriginalFileResult(event)"/>
+		<s:Resize id="VThumbInsreaseWidthEffect" duration="400" hideFocusRing="true"
+				  targets="{new Array(thumbNailVerticalBox,Hlist)}" widthFrom="1" widthTo="130"/>
+		<s:Resize id="VThumbdecreaseWidthEffect" duration="500" hideFocusRing="true"
+				  targets="{new Array(thumbNailVerticalBox,Hlist)}" widthFrom="130" widthTo="1"/>
+		<s:Resize id="HThumbInsreaseWidthEffect" duration="400" heightFrom="8" heightTo="100"
+				  hideFocusRing="true" targets="{new Array(thumbNailHorizontalBox,vList)}"/>
+		<s:Resize id="HThumbdecreaseWidthEffect" duration="500" heightFrom="100" heightTo="8"
+				  hideFocusRing="true" targets="{new Array(thumbNailHorizontalBox,vList)}"/>
+		<s:Rotate id="rotate" angleFrom="0" angleTo="180" duration="10" target="{showhideButton}"/>
+		<s:Rotate id="rotate1" angleFrom="180" angleTo="0" duration="10" target="{showhideButton}"/>
+		
+	</fx:Declarations>
+	<!--width="800" height="600" xmlns:ispring="ispring.flex.*"-->
+	<!--viewstack for container-->
+	<!--Issue #122
+	Set creationPolicy property of the view stack to 'all' to load all sub children
+	while selecting a child of the view stack
+	Update: removed the creationPolicy property since 'fileLoad' canvas is not a child of 'containerStack'-->
+	<s:BorderContainer width="100%" height="31" backgroundColor="#E1F0FB" borderVisible="false">
+		<s:layout>
+			<s:HorizontalLayout paddingBottom="3" paddingLeft="5" paddingRight="5" paddingTop="2"
+								verticalAlign="middle"/>
+		</s:layout>
+		<s:HGroup width="100%" height="100%" gap="4" horizontalAlign="center" verticalAlign="middle">
+			<s:Label id="fileNameTeacher" visible="{controlStack.selectedIndex=0}" maxWidth="280"
+					 color="#545556" enabled="true" fontFamily="Calibri" fontSize="13"
+					 fontWeight="bold" includeInLayout="{controlStack.selectedIndex=0}"
+					 maxDisplayedLines="1" text="{currentFileName}" toolTip="{remoteFileName}"/>
+			<!--Text for displaying the name of currently loaded document-->
+			<s:Label id="fileNameStudent" visible="{controlStack.selectedIndex=1}" maxWidth="280"
+					 color="#545556" enabled="true" fontFamily="Calibri" fontSize="13"
+					 fontWeight="bold" includeInLayout="{controlStack.selectedIndex=1}"
+					 maxDisplayedLines="1" text="{currentFileName}" toolTip="{remoteFileName}"
+					 verticalAlign="middle"/>
+			<s:Spacer width="100%" height="10"/>
+			<s:SWFLoader id="uploadProgress" autoLoad="false" scaleContent="false" toolTip="Upload is in progress"
+						 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/flash/upload.swf')" enabled="true"/>
+			<!--<mx:ProgressBar id="ProgressBar1" height="12" fontSize="9" labelPlacement="center"/>-->
+			<mx:VRule x="12" y="0" width="1" height="100%" chromeColor="#B8CEDF"/>
+			<s:Image buttonMode="true" click="getPreviousPage()" smooth="true" id="prevBtn"
+					 smoothingQuality="high"
+					 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/titlePrevious.png')"
+					 useHandCursor="true" toolTip="Previous Page"/>
+			<s:TextInput id="entPage" width="33" height="22" color="#030303" enter="enterPage()"
+						 fontSize="11" fontWeight="normal" maxChars="4"
+						 restrict="0-9" 
+						 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"
+						 text="{currentPage.toString()}" textAlign="center"
+						 toolTip="{resourceManager.getString('myResource','doccomp.enterpagenumtool')}"/>
+			<!--label to display the total page number of the currently loaded document-->
+			<s:Label id="totPag" color="#030303" fontSize="11" fontWeight="normal"
+					 text="{'/'+totalPages.toString()}" textAlign="left" verticalAlign="bottom"/>
+			<s:Image buttonMode="true" click="getNextPage()" smooth="true" smoothingQuality="high" id="nextBtn"
+					 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/titleNext.png')"
+					 useHandCursor="true" toolTip="Next Page"/>
+			<mx:VRule width="1" height="100%" chromeColor="#B8CEDF"/>
+			
+			<s:Label id="permissionMsg" visible="{controlStack.selectedIndex==0?true:false}"
+					 right="0" color="#760606" enabled="true" fontFamily="Calibri" fontSize="11"
+					 fontWeight="normal"
+					 includeInLayout="{controlStack.selectedIndex==0?true:false}"
+					 text="{permissionStatus}" textAlign="left" toolTip="{permissionStatus}"/>
+			<toggleSwitch:ToggleSwitch id="chkBoxPermission" visible="{controlStack.selectedIndex==0?true:false}"
+									   includeInLayout="{controlStack.selectedIndex==0?true:false}"
+									   width="65" height="5" change="downloadPermission()"
+									   deselectedLabel="Deny" selected="false" selectedLabel="Allow"
+									   styleName="toggleSwitch" toolTip="Allow/Deny download permission" />
+			<!--For Web: Fix for issue #8866: Made label invisible at creation time-->
+			<s:Label id="permissionMsgStudent" visible="{controlStack.selectedIndex==1?true:false}"
+					 color="#760606" enabled="true" fontFamily="Calibri" fontSize="11"
+					 includeInLayout="{controlStack.selectedIndex==1?true:false}"
+					 text="{permissionStatus}" textAlign="left"/>
+			<s:Spacer width="1%" height="10"/>
+			<mx:VRule visible="{(permissionMsg.text!=''||permissionMsgStudent.text!='')?true:false}"
+					  width="1" height="100%" chromeColor="#B8CEDF" />
+			
+			<components:ImageButton width="27" height="23" buttonMode="true"
+									id="btnImgDownload"
+									click="downloadDocumentToLocal(remoteFileNameDown, remoteFilePathDown);"
+									icon="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/download.png')"
+									toolTip="Download this document" useHandCursor="true"/>
+			<components:ImageButton width="27" height="23" buttonMode="true"
+									id="btnImgUnload"
+									click='MessageBox.show("Are you sure you want to Unload the Document?", "Confirmation ",MessageBox.MB_YESNO,null,unloadConfirmation);'
+									icon="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/unloadDoc.png')"
+									toolTip="Unload this document" useHandCursor="true"/>
+			
+		</s:HGroup>
+		
+		<components:ImageButton id="popOutBtn"
+								visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+								width="27" height="23" buttonMode="true" click="popOutDocWindow()"
+								cornerRadius="2"
+								includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+								toolTip="Popout" useHandCursor="true"/>
+	</s:BorderContainer>
+	<s:BorderContainer id="docCont" y="32" left="50" right="50" height="90%" borderColor="#A2A2A2"
+					   borderVisible="false" horizontalCenter="0" verticalCenter="0">
+		
+		
+		<mx:ViewStack id="containerStack" visible="true" x="{thumbNailVerticalBox.width+10}" width="100%"
+					  height="{docCont.height-(thumbNailHorizontalBox.height+10)}" borderColor="#A2A2A2" borderVisible="false" borderStyle="solid"
+					  click="hideContextMenuList()" creationPolicy="all"
+					  rightClick="false">
+			<s:NavigatorContent id="iSpringCanvas" width="100%" height="100%" backgroundAlpha="1.0"
+								backgroundColor="#FFFFFF" horizontalCenter="0"
+								resize="onResizeispring()" verticalCenter="0">
+				<s:BorderContainer width="{iSpringWidth}" height="{iSpringHeight}" borderVisible="true"
+								   borderColor="#A2A2A2" borderStyle="solid" horizontalCenter="0"
+								   verticalCenter="0">
+					<flex:PresentationContainer id="iSpringContainer" width="97%" height="97%" horizontalCenter="0" verticalCenter="0"/>
+				</s:BorderContainer>
+			</s:NavigatorContent>
+			<s:NavigatorContent id="p2fCanvas" width="100%" height="100%" backgroundAlpha="1.0"
+								horizontalCenter="0" resize="onDocResize()" verticalCenter="0">
+				<!--HBox to identifying the resizing of the container-->
+				<!--RESIZE_WINDOW-->
+				<s:BorderContainer width="{p2fWidth}" height="{p2fHeight+2}" borderColor="#A2A2A2"  verticalCenter="0" horizontalCenter="0">
+				<s:Scroller id="docScroller"  width="{p2fWidth}" height="{p2fHeight}"
+							horizontalCenter="0" measuredSizeIncludesScrollBars="true"
+							useHandCursor="true" verticalCenter="0">
+					<s:Group id="docCanvas" top="0"  width="100%" height="100%"
+							 clipAndEnableScrolling="true">
+						
+						<s:layout>
+							<s:HorizontalLayout paddingBottom="0" paddingLeft="0" paddingRight="0"
+												paddingTop="0"/>
+						</s:layout>
+						
+							
+						
+						<s:SWFLoader id="p2fContainer" horizontalAlign="center" bottom="1"
+									 maintainAspectRatio="true" verticalAlign="middle"/>
+					
+					</s:Group>
+				</s:Scroller>
+				</s:BorderContainer>
+			</s:NavigatorContent>
+			<s:NavigatorContent id="fileLoad" visible="false" width="100%" height="100%">
+				<!--SWFLoader for displaying the waiting icon-->
+				<s:SWFLoader id="loadIcon" width="40" height="30" autoLoad="true"
+							 horizontalCenter="-150" scaleContent="true"
+							 source="@Embed(source='assets/flash/loading.swf')" verticalCenter="0"/>
+				<!--Label for displaying the file loading status-->
+				<s:Label id="loadingLabel" x="{loadIcon.x+loadIcon.width}" fontSize="13"
+						 verticalCenter="0"/>
+			</s:NavigatorContent>
+			
+			<mx:Canvas id="disableCanvas" visible="false" width="100%" height="100%"
+								includeInLayout="false">
+				<s:Label id="disableLabel" visible="false" fontSize="30" horizontalCenter="0"
+						 includeInLayout="false" text="{Constants.MODULE_DISABLE_MSG}"
+						 verticalCenter="-30"/>
+			</mx:Canvas>
+			
+		</mx:ViewStack>
+		<s:HGroup id="thumbNailVerticalBox" x="0"  width="1" height="{docCont.height}"
+				  verticalAlign="middle">
+			<thumbnails:ThumList id="Hlist" visible="{thumbNailVerticalBox.width==1?false:true}" width="1" height="{docCont.height}"
+								 isVerticalThumbShow="true"
+								 OnSlideClickEvent="OnSlideClickEventHandler(event)"
+								 scrolledIndex="{currentPage-1}"
+								 thumbNailDataProvider="{thumbnailDataCollection}"/>
+			<s:Button id="vHideBtn" width="10" height="90" click="vHideBtn_clickHandler(event)"
+					  icon="{unhideThumbLeft}" toolTip="Vertical Thumbnail" visible="false" />
+		</s:HGroup>
+		<s:VGroup id="thumbNailHorizontalBox" x="0" bottom="25" width="{docCont.width}" height="8"
+				  horizontalAlign="center">
+			<s:Button id="hHidebtn" width="100" height="10" click="hHidebtn_clickHandler(event)"
+					  visible="false"
+					  icon="{thumbDown}" toolTip="Horizontal Thumbnail"/>
+			<thumbnails:ThumList id="vList" visible="{thumbNailHorizontalBox.height==8?false:true}"
+								 x="0" width="{docCont.width}" height="95%"
+								 isHorizontalThumbShow="true"
+								 OnSlideClickEvent="OnSlideClickEventHandler(event)"
+								 scrolledIndex="{currentPage-1}"
+								 thumbNailDataProvider="{thumbnailDataCollection}"/>
+		</s:VGroup>
+		<!--<s:BorderContainer id="informationTab" width="{infoBarWidth}" height="29"
+						   borderVisible="false">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+			<mx:HBox width="100%" horizontalCenter="0" horizontalAlign="right" top="20" paddingTop="2">
+			<mx:Label id="fileNameTeacher" maxWidth="{fileNameWidth}" height="100%"
+			color="#2E232D" enabled="true" fontFamily="Arial" fontSize="11"
+			fontWeight="bold" text="{currentFileName}" toolTip="{remoteFileName}"
+			visible="{controlStack.selectedIndex=0}" />
+			
+			<s:Label id="fileNameStudent" height="30" maxWidth="250" enabled="true"
+			fontFamily="Arial" fontSize="12" fontWeight="bold" text="{currentFileName}"
+			toolTip="{remoteFileName}" visible="{controlStack.selectedIndex=1}"/>
+			</mx:HBox>-->
+			<!-- <mx:HBox id="annotationBox" width="100%" height="100%" horizontalAlign="center"
+			includeInLayout="false">
+			<annotations:AnnotationComp id="annotation" width="153"
+			height="80%" horizontalCenter="0"
+			layoutDirection="rtl"/>
+			</mx:HBox>-->
+			<!-- <mx:HBox width="100%" horizontalAlign="center">
+			<mx:Label id="permissionMsg" right="0" top="20" width="20%" height="80%"
+			enabled="true" fontFamily="Arial" fontSize="11" fontWeight="normal"
+			layoutDirection="rtl" text="{permissionStatus}" textAlign="right"
+			toolTip="{permissionStatus}" verticalCenter="0" />
+			
+			<s:Label id="permissionMsgStudent" right="0" top="20" height="30" maxWidth="250" enabled="true"
+			fontFamily="Arial" fontSize="12" fontWeight="bold" text="{permissionStatus}"
+			textAlign="right" verticalCenter="0" layoutDirection="rtl"
+			visible="{AVCEnvironment.runTime==AVCEnvironment.DESKTOP}"
+			includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.DESKTOP}" />
+			</mx:HBox>
+		</s:BorderContainer>-->
+		
+	</s:BorderContainer>
+	<components:ImageButton id="previousBtn" visible="false" left="2" width="45" height="45"
+							alpha="0.1" buttonMode="true" click="getPreviousPage()"
+							cornerRadius="20" fontSize="11" fontWeight="bold"
+							imageSkin="@Embed(source='edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
+							imageSkinDisabled="@Embed('edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
+							mouseChildren="false" mouseOut="{previousBtn.alpha=0.1}"
+							mouseOver="{previousBtn.alpha=1.0}"
+							skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+							toolTip="{resourceManager.getString('myResource','doccomp.previoustool')}"
+							useHandCursor="true" verticalCenter="0"/>
+	<!--<components:ImageButton id="previousBtn" visible="true" width="45" height="45"
+	chromeColor="#FFFFFF" click="getPreviousPage()"
+	imageSkin="@Embed('edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
+	skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+	toolTip="{resourceManager.getString('myResource','doccomp.previoustool')}"
+	/>-->
+	
+	<!--<components:ImageButton id="next" visible="true" x="560"  width="45" height="45"
+	click="getNextPage()"
+	imageSkin="@Embed('edu/amrita/aview/core/documentSharing/assets/images/next.png')"
+	toolTip="{resourceManager.getString('myResource','doccomp.nextpagetool')}"
+	verticalCenter="0" right="0" skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"/>-->
+	
+	<components:ImageButton id="next" visible="false" right="2" width="45" height="45" alpha="0.1"
+							buttonMode="true" click="getNextPage()" cornerRadius="20" fontSize="11"
+							fontWeight="bold"
+							imageSkin="@Embed(source='edu/amrita/aview/core/documentSharing/assets/images/next.png')"
+							imageSkinDisabled="@Embed('edu/amrita/aview/core/documentSharing/assets/images/next.png')"
+							mouseChildren="false" mouseOut="{next.alpha=0.1}"
+							mouseOver="{next.enabled==true?alpha=1.0:alpha=0.1}"
+							skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+							toolTip="{resourceManager.getString('myResource','doccomp.nextpagetool')}"
+							useHandCursor="true" verticalCenter="0"/>
+	<s:BorderContainer id="toolBarPanel" x="2" y="30" width="53" backgroundColor="#ebeaea"
+					   borderColor="#337bb7" borderVisible="true" cornerRadius="5">
+		<s:Image id="docTitleBar" buttonMode="true" mouseDown="handleDown(event)"
+				 mouseUp="handleUp(event)"
+				 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/tab.png')"
+				 useHandCursor="true"/>
+		<s:Image id="toolBar" visible="false" left="1" right="1" top="15" buttonMode="true"
+				 click="showhide();"
+				 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/toolbaricon.png')"
+				 useHandCursor="true"/>
+		<!--Viewstack contains two types of menu bars teacher menu bar and student menu bar -->
+		<mx:ViewStack id="controlStack" left="1" top="16" bottom="5" width="49" creationPolicy="all"
+					  enabled="{ClassroomContext.IS_DOCUMENT_SHARING_ENABLED}" verticalCenter="5">
+			<!--menu bar of teacher-->
+			<mx:VBox id="teacherAppbar" borderColor="#ff0030" color="#ebeaea"
+					 horizontalAlign="center" horizontalScrollPolicy="off" verticalAlign="top"
+					 verticalGap="2" verticalScrollPolicy="off">
+				<components:ImageButton width="45" height="42" buttonMode="true"
+										click="showFileList()"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/library_new.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="{resourceManager.getString('myResource','doccomp.documentlibrarytool')}"
+										useHandCursor="true"/>
+				<!--by clicking this button container sets the previous page of the currently loaded document by invoking getPreviousPage()-->
+				<!--TEACHER_NAVIGATION_PREV-->
+				<!---<s:Image  id="previousBtn"  width="36" height="30"
+				click="getPreviousPage()"
+				source="@Embed(source='assets/images/arr_lef.png')"
+				toolTip="{resourceManager.getString('myResource','doccomp.previoustool')}" useHandCursor="true" buttonMode="true" visible="false"/> -->
+				<!--Text input to enter the page number-->
+				<!--TEACHER_NAVIGATION_GOTO-->
+				<!--by clicking this button container sets the next page of the currently loaded document by invoking getNextPage()-->
+				<!--TEACHER_NAVIGATION_NEXT-->
+				<!---	<s:Image  id="next" click="getNextPage()"
+				source="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/arr_rig.png')"
+				toolTip="{resourceManager.getString('myResource','doccomp.nextpagetool')}" useHandCursor="true" buttonMode="true" visible="false"/> -->
+				<!--toolTip="{resourceManager.getString('myResource','doccomp.zoomintool')}"
+				toolTip="{resourceManager.getString('myResource','doccomp.zoomouttool')}"-->
+				<components:ImageButton id="zoomInBtn" width="45" height="29" buttonMode="true"
+										click="zoomIn()"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/zoom_in_new.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Zoom In" useHandCursor="true"/>
+				<components:ImageButton id="initialZoomBtn" width="45" height="29" buttonMode="true"
+										click="normalZoom()"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/zoom_normal_new.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="{resourceManager.getString('myResource','doccomp.actualtool')}"
+										useHandCursor="true"/>
+				<components:ImageButton id="zoomOutBtn" width="45" height="29" buttonMode="true"
+										click="zoomOut()"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/zoom_out_new.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Zoom Out" useHandCursor="true"/>
+				<components:ImageButton id="rotateBtn" width="45" height="29" buttonMode="true"
+										click="rotateNew()"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/rotate1_new.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="{resourceManager.getString('myResource','doccomp.rotatetooltip')}"
+										useHandCursor="true"/>
+				<components:ImageButton id="EnableMousePointer" width="45" height="29"
+										buttonMode="true" click="teacherMouseShare(event)"
+										imageSkin="{mousePointerShare}"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Mouse Point Share(Ctrl+P)" useHandCursor="true"/>
+				
+				
+				<!--button for refreshing the file list by invoking refreshFileList() function -->
+				<!--TEACHER_REFRESH-->
+				<!--Issue #198 START-->
+				<!--Put an id to the refresh button on the teacher side-->
+				<s:Image id="teacherRefreshBtn" useHandCursor="true" buttonMode="true" enabled="false"
+				click="refreshDocument()" 								 
+				source="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/refresh_new.png')"
+				toolTip="{resourceManager.getString('myResource','doccomp.refreshtool')}"/>
+				
+				<!--For Web: Made full screen button invisible-->
+				<!--<components:ImageButton id="popOutBtn" width="45" height="30" click="popOutDocWindow()"
+				toolTip="Popout" cornerRadius="2"
+				visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+				includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"/>-->
+				<s:Image source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/annotate_title.png')"/>
+				<components:ImageButton id="highlightTool" width="45" height="29" buttonMode="true"
+										click="annottool('Highlight')"
+										imageSkin="{annotate_markerDefault}"
+										imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/annotate_markerActive.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Highlight" useHandCursor="true"/>
+				<components:ImageButton id="penTool" width="45" height="29" buttonMode="true"
+										click="annottool('Pen')" imageSkin="{pencilDefault}"
+										imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/annotate_pencilActive.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Free hand drawing" useHandCursor="true"/>
+				<components:ImageButton id="eraserTool" width="45" height="29" buttonMode="true"
+										click="annotationStart('Eraser')"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/annotate_eraser.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Clear all annotation drawings" useHandCursor="true"/>
+			</mx:VBox>
+			
+			<!--student menu bar-->
+			<mx:VBox id="studentAppbar" borderColor="#ff0030" horizontalAlign="center"
+					 horizontalScrollPolicy="off" verticalAlign="top" verticalGap="2"
+					 verticalScrollPolicy="off">
+				<!--refreshing the connection on the student side by invoking refreshConnection()-->
+				<!--STUDENT_REFRESH-->
+				<!--For Guest Login: Disable Library button for Guest user -->
+				<s:Image id="ViewerDocument" buttonMode="true" click="showFileList()"
+						 source="@Embed('edu/amrita/aview/core/documentSharing/assets/images/library_new.png')"
+						 toolTip="{resourceManager.getString('myResource','doccomp.librarytool')}"
+						 useHandCursor="true"
+						 visible="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}"
+						 includeInLayout="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}"/>
+				<s:Image id="studentRefreshBtn" buttonMode="true" enabled="false" click="refreshDocument()"
+				source="@Embed('edu/amrita/aview/core/documentSharing/assets/images/refresh_new.png')"
+				toolTip="{resourceManager.getString('myResource','doccomp.refreshtool')}"
+				useHandCursor="true"/>
+				<!-- Issue #119 -->
+				<!-- The visibility of the label with content Page Number is set to false, by default -->
+				<!--<s:Label id="lblPageSt" visible="true"  color="#030303"
+				fontSize="11" fontWeight="bold" width="23" height="22"
+				text="{resourceManager.getString('myResource','doccomp.pagenumtext')}"
+				verticalAlign="middle"/> -->
+				<!--label to display the page number of the currently loaded document-->
+				<!--<s:Label id="viewerCurrentPageLabel" visible="true" 
+				color="#030303" fontSize="11" fontWeight="bold" text="{String(currentPage)}"
+				verticalAlign="middle" width="23" height="22"/>-->
+				<!--For Web: Made full screen button invisible
+				<s:Button id="popOutBtn_student"  click="popOutDocWindow()" width="45" height="30"
+				toolTip="Pop-out"/>-->
+				
+			</mx:VBox>
+		</mx:ViewStack>
+		<s:BorderContainer id="thumbnailMenuContainer" visible="false" right="-126" top="215"
+						   width="128" backgroundColor="#ECEFF0" borderColor="#96A0A9">
+			<s:layout>
+				<s:VerticalLayout gap="0"/>
+			</s:layout>
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="noThumbNail" buttonMode="true"
+						 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/noThumbnailMenu.png')"
+						 toolTip="Hide Slide" useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14" text="Hide Slide"
+						 verticalAlign="bottom"/>
+			</s:BorderContainer>
+			
+			<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="vThumbNail" buttonMode="true"
+						 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/vThumbnailMenu.png')"
+						 toolTip="Vertical View" useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14" text="Vertical View"
+						 verticalAlign="middle"/>
+			</s:BorderContainer>
+			
+			<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+			<s:BorderContainer width="100%" height="29" backgroundColor="#ECEFF0"
+							   borderVisible="false">
+				<s:layout>
+					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
+				</s:layout>
+				<s:Image id="hThumbNail" buttonMode="true"
+						 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/hThumbnailMenu.png')"
+						 toolTip="Horizontal View" useHandCursor="true"/>
+				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14" text="Horizontal View"
+						 verticalAlign="middle"/>
+			</s:BorderContainer>
+			
+		</s:BorderContainer>
+		<s:Image id="showhideButton" right="2" top="1" buttonMode="true" click="showhide();"
+				 source="@Embed(source='edu/amrita/aview/core/documentSharing/assets/images/docshowhideup.png')"
+				 useHandCursor="true" toolTip="Hide toolbar"/>
+	</s:BorderContainer>
+</s:BorderContainer>

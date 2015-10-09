@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: DocumentView.mxml
+Module		: Document Sharing
+Developer(s): Salil George, Ganesan A, Jeevanantham N
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+DocumentView component is a wrapper component to load document container and document control buttons.
+
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="DocumentView"
+		backgroundColor="#071124"
+		creationComplete="initDoc()"
+		xmlns:toolSets="views.toolSets.*">
+	<fx:Script>
+		<![CDATA[
+			
+			import edu.amrita.aview.common.components.messageBox.MessageBox;
+			import edu.amrita.aview.common.components.messageBox.events.MessageBoxEvent;
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.core.FlexGlobals;
+			/**
+			 * Variable for checking whether animated file info messagebox is displayed
+			 */
+			public var isAnimatedFileInfoDisplayed:Boolean = false;
+			/**
+			 * @private
+			 *
+			 * To add document components
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function initDoc():void
+			{
+				if(FlexGlobals.topLevelApplication.screenTypes == Constants.SCREENTYPE_INDIVIDUAL){
+					documentTool.enabled = true;
+					documentTool.visible = true;
+					documentTool.includeInLayout = true;
+				}else{
+					documentTool.enabled = false;
+					documentTool.visible = false;
+					documentTool.includeInLayout = false;
+				}
+				docContainer.addElement(FlexGlobals.topLevelApplication.docComp);
+				documentTool.addElement(FlexGlobals.topLevelApplication.docTool);
+				
+			}
+			/**
+			 * @public
+			 *
+			 * To check for animated files
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function checkAnimatedFile():void
+			{
+				if (FlexGlobals.topLevelApplication.docComp.animatedFile == true)
+				{
+					MessageBox.show("Animated file is not supported in HandHeld Devices", "INFO", MessageBox.MB_OK, this.parent as Sprite, animatedFileInfoCloseHandler, null, MessageBox.IC_INFO);
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To set 'isAnimatedFileInfoDisplayed' as true , when user clicks OK on animated file info messagebox
+			 *
+			 * @param event of MessageBoxEvent
+			 * @return void
+			 */
+			private function animatedFileInfoCloseHandler(event:MessageBoxEvent):void
+			{
+				if(event.type==MessageBoxEvent.MESSAGEBOX_OK)
+				{
+					isAnimatedFileInfoDisplayed = true;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:HGroup width="100%"
+			  height="100%"
+			  gap="0">
+		<!--Container to display file-->
+		<s:Group width="100%"
+				 height="100%"
+				 id="docContainer">
+			<s:Rect width="100%"
+					height="100%">
+				<s:fill>
+					<s:SolidColor color="#FFFFFF"/>
+				</s:fill>
+			</s:Rect>
+		</s:Group>
+		<!--Container to display document action buttons-->
+		<s:Group width="10%"
+				 height="100%"
+				 id="documentTool"/>
+	</s:HGroup>
+</s:View>

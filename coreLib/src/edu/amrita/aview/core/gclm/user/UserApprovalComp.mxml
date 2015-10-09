@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: UserApprovalComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	:
+
+
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+						 xmlns:xt="library://ns.tink.ws/flex/mx"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 width="900"
+						 height="498"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 fontFamily="Arial"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 title="Users Approval"
+>
+
+	<!-- Script to include handler -->
+	<fx:Script source="UserApprovalCompUIHandler.as"/>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+
+	</fx:Declarations>
+
+	<mx:Canvas x="5"
+			   y="4"
+			   width="99%"
+			   height="98%"
+			   borderColor="#A3D7FF"
+			   borderStyle="solid"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- Label to show the Institute -->
+		<s:Label left="10"
+				 top="24.5"
+				 text="Institute :"/>
+		<!--<Sparkcontrols:AutoComplete id="cmbInstitutes" right="428" top="20" width="400" height="25"
+									dataProvider="{institutesAC}" labelField="instituteName"/>-->
+		<xt:FilterComboBox id="edtCmbInstitutes"
+						   right="428"
+						   top="20"
+						   width="400"
+						   height="25"
+						   prompt=""
+						   dataProvider="{GCLMContext.allInstitutesAC}"
+						   labelField="instituteName"
+						   dropdownFactory="{GCLMContext.dropdownFactory}"
+						   selectSingleMatch="true"
+						   removeFilterOnSelection="true"/>
+		<!-- Label to show the User Name -->
+		<mx:Label right="350"
+				  top="22.5"
+				  width="67"
+				  text="User Name : "/>
+		<!--<components:AutoCompleteModified x="367" y="10" width="188" height="29" id="cmbUsers"/>-->
+		<!-- Text to enter User Name -->
+		<s:TextInput id="txtInpUserName"
+					 right="200"
+					 top="20"
+					 width="150"
+					 height="25"/>
+		<!-- Search button -->
+		<components:ImageButton right="100"
+				  top="20"
+				  width="80"
+				  height="25"
+				  label="Search"
+				  chromeColor="#E0EFFB"
+				  click="searchPendingApprovals();"
+				  color="#000000"
+				  cornerRadius="3"/>
+		<!-- Reset button -->
+		<components:ImageButton right="10"
+				  top="20"
+				  width="80"
+				  height="25"
+				  label="Reset"
+				  chromeColor="#E0EFFB"
+				  click="resetData();"
+				  color="#000000"
+				  cornerRadius="3"/>
+
+		<!--	#3809	-->
+		<!--checkbox to SelectAllPendingUsers-->
+		<s:CheckBox id="cbSelectAllPendingUsers"
+					right="10"
+					top="64"
+					width="80"
+					label="Select All"
+					click="toggleAllPendingUsersSelection()"/>
+		<!--	#3809	-->
+
+		<mx:DataGrid left="10"
+					 right="10"
+					 top="90"
+					 bottom="50"
+					 click="togglecbSelectAllPendingUsers()"
+					 dataProvider="{pendingUsersAC}">
+			<mx:columns>
+				<mx:DataGridColumn dataField="userId"
+								   headerText="User Id"
+								   width="80"/>
+				<mx:DataGridColumn dataField="userName"
+								   headerText="User Name"
+								   width="120"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('userName')}"/>
+				<mx:DataGridColumn dataField="email"
+								   headerText="Email"
+								   width="300"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('email')}"/>
+				<mx:DataGridColumn dataField="mobileNumber"
+								   headerText="Phone"
+								   width="150"/>
+				<mx:DataGridColumn dataField="instituteName"
+								   headerText="Institute Name"
+								   width="304"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+				<mx:DataGridColumn dataField="parentInstituteName"
+								   headerText="Parent Institute Name"
+								   width="304"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('parentInstituteName')}"/>
+				<mx:DataGridColumn id="cbSelectUser"
+								   dataField="status"
+								   headerText="Select"
+								   width="80"
+								   editable="true"
+								   editorDataField="selected"
+								   rendererIsEditor="true"
+								   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxItemRenderer"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<!-- Approve button -->
+		<components:ImageButton bottom="10"
+				  width="80"
+				  height="25"
+				  label="Approve"
+				  chromeColor="#E0EFFB"
+				  click="saveUserApprovals()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="-60"/>
+		<!-- Cancel button -->
+		<components:ImageButton bottom="10"
+				  width="80"
+				  height="25"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="closeUserApprovalComp();"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="60"/>
+		<!--	#3809
+				<mx:CheckBox id="cbSelectAllPendingUsers" right="10" top="64" width="80" label="Select All"
+							 click="toggleAllPendingUsersSelection()"/>
+				#3809	-->
+	</mx:Canvas>
+	<!-- Icon to close User Approval component -->
+	<components:WindowCloseImage right="5"
+			 top="-25"
+			 id="imgClose"
+			 click="closeUserApprovalComp()"/>
+
+</components:InsidePanel>

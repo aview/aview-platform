@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="400" height="92" backgroundColor="#EBEBEE" borderColor="#969696"
+				   cornerRadius="5" creationComplete="startTimer()" dropShadowVisible="true">
+	<s:layout>
+		<s:HorizontalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"
+							verticalAlign="middle"/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="NotificationHandler.as"/>
+	<s:Image source="{this.notificationImages}"/>
+	<s:Image height="100%"
+			 source="@Embed('edu/amrita/aview/core/shared/components/notifcations/assets/images/seperator.png')"/>
+	<s:VGroup width="100%" height="100%" horizontalAlign="left" paddingLeft="10"
+			  verticalAlign="middle">
+		<s:Label width="100%" color="#2E2E2E" fontFamily="Calibri" fontSize="14" fontWeight="normal"
+				 text="{this.message}"/>
+		<s:Button y="32" height="27" label="OK"
+				  click="PopUpManager.removePopUp(this);notificationTimer.stop();" color="#FFFFFF"
+				  cornerRadius="3" fontWeight="bold"
+				  skinClass="edu.amrita.aview.core.login.boilerplate.assets.skin.CustomButtonSkin"/>
+	</s:VGroup>
+	
+</s:BorderContainer>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuizSummary.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component displays summary of quizzes
+-->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:components="edu.amrita.aview.core.shared.components.*"
+		 creationPolicy="all"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 creationComplete="creationCompleteHandler()"
+>
+
+	<mx:Script source="QuizSummaryUIHandler.as"/>
+	<!--Date formatter-->
+	<mx:DateFormatter id="dateFormatter"
+					  formatString="DD MMM YYYY"/>
+	<mx:DateFormatter id="dateFormatter1"
+					  formatString="DD/MM/YYYY"/>
+	<!-- Hbox for search with name -->
+	<mx:HBox id="hBoxSearch"
+			 width="100%"
+			 paddingLeft="10"
+			 paddingTop="10"
+			 horizontalAlign="center"
+			 verticalAlign="middle">
+		<s:Label fontWeight="bold"
+				 text="Filter:"
+				 fontSize="15"
+				 color="#000000"/>
+		<!--Fix for Bug #11005-->
+		<components:WatermarkedTextbox id="txtQuizNameSearch" x="413" width="170"
+									   change="{searchHandler()}" color="#000000"
+									   focusIn="{focusInHandlerForQuiz(event)}"
+									   focusOut="{focusOutHandlerForQuiz()}" fontFamily="Arial"
+									   textAlign="center" watermark="Search by quiz name"/>
+		<components:WatermarkedTextbox id="txtClassNameSearch" width="168" change="{searchHandler()}"
+									   color="#000000" focusIn="{focusInHandlerForQuiz(event)}"
+									   focusOut="{focusOutHandlerForQuiz()}" fontFamily="Arial"
+									   textAlign="center" watermark="Search by class name"/>
+		<components:WatermarkedTextbox id="txtQPNameSearch" width="168" change="{searchHandler()}"
+									   color="#000000" focusIn="{focusInHandlerForQuiz(event)}"
+									   focusOut="{focusOutHandlerForQuiz()}" fontFamily="Arial"
+									   textAlign="center" watermark="Search by question paper"/>
+	</mx:HBox>
+	<!-- Hbox for search with date -->
+	<mx:HBox width="100%"
+			 paddingLeft="10"
+			 paddingTop="10"
+			 horizontalAlign="center"
+			 verticalAlign="middle">
+		<s:Label text="Start Date :"
+				 fontSize="15"
+				 color="#000000"
+				 fontWeight="bold"/>
+		<!--Fix for Bug #18899:Start-->
+		<components:DateFieldWithKeyDownHandler id="dateTimeOpen" x="427" width="156"
+												change="{setEndDateRange()}" chromeColor="#E0EFFB"
+												color="#000000" focusIn="{dateTimeOpen.open()}"
+												fontFamily="Arial" formatString="DD/MM/YYYY"
+												textAlign="center"/>
+		<!--Fix for Bug #18899:End-->
+		<s:Label text="End Date :"
+				 fontSize="15"
+				 color="#000000"
+				 fontWeight="bold"/>
+		<!--Fix for Bug #18899:Start-->
+		<components:DateFieldWithKeyDownHandler id="dateTimeClose" x="484" width="156"
+												change="{setEndDateRange()}" chromeColor="#E0EFFB"
+												color="#000000" focusIn="{dateTimeClose.open()}"
+												fontFamily="Arial" formatString="DD/MM/YYYY"
+												textAlign="center"/>
+		<!--Fix for Bug #18899:End-->
+		<components:ImageButton label="Search"
+				  click="{quizzes.refresh()}"
+				  visible="false"
+				  includeInLayout="false"/>
+		<components:ImageButton label="Reset" chromeColor="#E0EFFB" click="{resetFields()}"
+								cornerRadius="3"/>
+	</mx:HBox>
+	<!-- Datatgrid to show quiz summary -->
+	<s:DataGrid id="dgQuizSummary" left="50" right="25" width="100%" height="90%"
+				chromeColor="#E0EFFB" dataProvider="{quizzes}" focusEnabled="false"
+				fontFamily="Arial" selectionMode="multipleRows" variableRowHeight="true">
+		<s:columns>
+			<s:ArrayList>
+				<!-- Grid column to show SL number -->
+				<!--Fix for Bug#14821, Bug#11215-->
+				<s:GridColumn width="45"
+							  headerText="S.No."
+							  dataField="displayIndex"/>
+				<!-- Grid column to show quiz name -->
+				<s:GridColumn minWidth="150"
+							  dataField="quizName"
+							  headerText="Quiz Name"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('quizName')}"/>
+				<!-- Grid column to show start date -->
+				<s:GridColumn minWidth="100"
+							  dataField="timeOpen"
+							  headerText="Start Date"
+							  labelFunction="formatTimeOpen"/>
+				<!-- Grid column to show end date -->
+				<s:GridColumn minWidth="100"
+							  dataField="timeClose"
+							  headerText="End Date"
+							  labelFunction="formatTimeClose"/>
+				<!-- Grid column to show class name -->
+				<s:GridColumn minWidth="100"
+							  dataField="className"
+							  headerText="Class"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('className')}"/>
+				<!-- Grid column to show question paper name -->
+				<s:GridColumn minWidth="150"
+							  dataField="questionPaperName"
+							  headerText="Question Paper Name"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('questionPaperName')}"/>
+				<!-- Grid column to show total marks -->
+				<s:GridColumn minWidth="45"
+							  headerText="Total Marks"
+							  dataField="totalMarks"/>
+				<!-- Grid column to show quiz status -->
+				<s:GridColumn minWidth="50"
+							  dataField="quizStatus"
+							  headerText="Status"
+							  showDataTips="true"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('quizStatus')}"/>
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+</mx:VBox>

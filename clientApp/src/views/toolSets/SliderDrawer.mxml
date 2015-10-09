@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 width="100%" 
+		 height="100%"
+		 xmlns:Drawer1="views.toolSets.Drawer.*"
+		 creationComplete="init(event)"
+		 xmlns:mobileComponents="edu.amrita.aview.core.shared.components.mobileComponents.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.components.messageBox.MessageBox;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.graphics.SolidColorStroke;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.VideoDisplay;
+			import spark.filters.DropShadowFilter;
+			
+			[Bindable]
+			[Embed(source="/views/assets/play_25.png")]
+			public var playIcon:Class;
+			/**
+			 * Used to set stopVideo icon for Video start/stop button.
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/stop_25.png")]
+			public var stopVideoIcon:Class;
+			
+			[Bindable]
+			[Embed(source="/views/assets/CheckboxEnabled.png")]
+			public var followPresenterIcon:Class;
+			
+			[Bindable]
+			[Embed(source="/views/assets/CheckboxDisbled.png")]
+			public var unFollowPresenterIcon:Class;
+			
+			[Bindable]
+			public var followPrenterEnabledDisabledIcon:Class;
+			[Bindable]
+			public var isFollowPresenterSelected:Boolean = true;
+			
+			[Bindable]
+			public var videoStartStopIcon:Class;
+			
+			import views.toolSets.Drawer.ScreenTypeComponent;
+			private var localVideo:Video;
+			private var isSCreenTypeOpen:Boolean = false;
+			public var isAudioSettingOpen:Boolean = false;
+			private var isPerformanceSettingOpen:Boolean = false;
+			private var isAccountSettingOpen:Boolean = false;
+			private var isUserSettingOpen:Boolean = false;
+			private var isHelpSettingOpen:Boolean = false;
+			public var widthWatcher:ChangeWatcher=null;
+			private var constantWidth:Number;
+			
+			public function hideItem(obj:*):void{
+				if(isSCreenTypeOpen && obj != screenType){
+					screenType.visible = false;
+					screenType.includeInLayout  =false;
+					isSCreenTypeOpen = false;
+				}
+				if(isAudioSettingOpen && obj != audioSetting){
+					audioSetting.visible = false;
+					audioSetting.includeInLayout  =false;
+					isAudioSettingOpen = false;
+				}
+				if(isPerformanceSettingOpen && obj != performanceSetting){
+					performanceSetting.visible = false;
+					performanceSetting.includeInLayout  =false;
+					isPerformanceSettingOpen = false;
+				}
+				if(isAccountSettingOpen && obj != accountSetting){
+					accountSetting.visible = false;
+					accountSetting.includeInLayout  =false;
+					isAccountSettingOpen = false;
+				}
+				if(isHelpSettingOpen && obj != helpSetting){
+					helpSetting.visible = false;
+					helpSetting.includeInLayout  =false;
+					isHelpSettingOpen = false;
+				}
+			}
+			protected function screenTypeGrouclickHandler(event:MouseEvent):void
+			{
+				if(isSCreenTypeOpen){
+					screenType.visible = false;
+					screenType.includeInLayout  =false;
+					isSCreenTypeOpen = false;
+				}else{
+					screenType.visible = true;
+					screenType.includeInLayout  =true;
+					isSCreenTypeOpen = true;
+					hideItem(screenType);
+				}
+			}
+			
+			protected function audioVideoSettingGroupClickHandler(event:MouseEvent):void
+			{
+				if(isAudioSettingOpen){
+					audioSetting.visible = false;
+					audioSetting.includeInLayout  =false;
+					isAudioSettingOpen = false;
+				}else{
+					audioSetting.visible = true;
+					audioSetting.includeInLayout  =true;
+					isAudioSettingOpen = true;
+					hideItem(audioSetting);
+				}
+			}
+			
+			protected function performanceSettingGroupClickHandler(event:MouseEvent):void
+			{
+				if(isPerformanceSettingOpen){
+					performanceSetting.visible = false;
+					performanceSetting.includeInLayout  =false;
+					isPerformanceSettingOpen = false;
+				}else{
+					performanceSetting.visible = true;
+					performanceSetting.includeInLayout  =true;
+					isPerformanceSettingOpen = true;
+					hideItem(performanceSetting);
+				}
+			}
+			
+			protected function accountSettingGroupClickHandler(event:MouseEvent):void
+			{
+				if(isAccountSettingOpen){
+					accountSetting.visible = false;
+					accountSetting.includeInLayout  =false;
+					isAccountSettingOpen = false;
+				}else{
+					accountSetting.visible = true;
+					accountSetting.includeInLayout  =true;
+					isAccountSettingOpen = true;
+					hideItem(accountSetting);
+				}
+			}
+			protected function helpSettingGroupClickHandler(event:MouseEvent):void
+			{
+				if(isHelpSettingOpen){
+					helpSetting.visible = false;
+					helpSetting.includeInLayout  =false;
+					isHelpSettingOpen = false;
+				}else{
+					helpSetting.visible = true;
+					helpSetting.includeInLayout  =true;
+					isHelpSettingOpen = true;
+					sliderScroller.verticalScrollBar.value = (this.height);
+					hideItem(helpSetting);
+				}
+			}
+			public function startLocalVideo():void
+			{
+				if(FlexGlobals.topLevelApplication.isVideoPrefrenceON){
+					if(videoStartStopIcon==playIcon){
+						if(localVidDisplay!=null && localVideo!=null){
+							localVideo.clear();
+							/* if(localVidDisplay.contains(localVideo)){
+								localVidDisplay.removeChild(localVideo);
+							}*/
+						}
+						var camera:Camera= Camera.getCamera(audioSetting.camIndex.toString());
+						var width:Number = this.width/1.1;
+						var height:Number = width*(9/16);
+						localVideo=new Video(width, height);
+						localVideo.visible=true;
+						camera.setMode(500, 450, 15);
+						localVideo.attachCamera(camera);
+						
+						if(!localVidDisplay.contains(localVideo)){
+							localVidDisplay.addChild(localVideo);
+						}
+						localVidDisplay.visible=true;
+						
+						localVideo.width = width;
+						localVideo.height = height;
+						localVideo.x = vidBorder.x-18;
+						localVideo.y = vidBorder.y-20;
+						videoStartStopIcon=stopVideoIcon;
+						
+					}else{
+						stopLocalVideo();
+						videoStartStopIcon=playIcon;
+					}
+				}else{
+					stopLocalVideo();
+				}
+			}
+			public function stopLocalVideo():void{
+				if(localVidDisplay!=null && localVideo!=null){
+					localVideo.clear();
+					/* if(localVidDisplay.contains(localVideo)){
+						localVidDisplay.removeChild(localVideo);
+					}*/
+					videoStartStopIcon=playIcon;
+				}
+			}
+			protected function init(event:FlexEvent):void
+			{
+				constantWidth = this.width;
+				this.width = constantWidth;
+				
+				videoGroup.minHeight = (this.height/100)*37;
+				
+				var width:Number = this.width/1.1;
+				var height:Number = width*(9/16);
+				
+				vidBorder.width = width;
+				vidBorder.x = (FlexGlobals.topLevelApplication.slider.width - width)/2;//(this.width -width)/2;
+				vidBorder.y = 10;
+				
+				btnPlay.x = ((vidBorder.x+vidBorder.width) - btnPlay.width)/2;
+				btnPlay.y = (videoGroup.minHeight- btnPlay.height)/2;
+				vidBorder.height = height;
+				
+				if (widthWatcher == null)
+					widthWatcher=BindingUtils.bindSetter(setWidth, this, "width");
+				
+				videoStartStopIcon=playIcon;
+				if(FlexGlobals.topLevelApplication.loadinComponent != null && FlexGlobals.topLevelApplication.loadinComponent.isPopUp){
+					FlexGlobals.topLevelApplication.callLater(closePopUpLoading);
+				}
+				setTimeout(startLocalVideo,1000);
+				followPrenterEnabledDisabledIcon = followPresenterIcon;
+				checkFollowPresenter.enabled = false;
+			}
+			private function closePopUpLoading():void{
+				PopUpManager.removePopUp(FlexGlobals.topLevelApplication.loadinComponent);
+			}
+			public function setWidth(value:Number):void
+			{
+				//startLocalVideo();
+			}
+			
+			protected function audioVideoSettingGroupMouseOverHandler(event:MouseEvent):void
+			{
+				event.target.setStyle("color","0X66CCFF");
+			}
+			
+			protected function audioVideoSettingGroup_rollOutHandler(event:MouseEvent):void
+			{
+				event.target.setStyle("color","0X000000");
+			}
+			
+			protected function userSettingGroupClickHandler(event:MouseEvent):void
+			{
+				if(isUserSettingOpen){
+					userSetting.visible = false;
+					userSetting.includeInLayout  =false;
+					isUserSettingOpen = false;
+				}else{
+					userSetting.visible = true;
+					userSetting.includeInLayout  =true;
+					isUserSettingOpen = true;
+				}
+			}
+			protected function btnPlay_clickHandler(event:MouseEvent):void
+			{
+				startLocalVideo();
+			}
+			protected function videoMouseOverHandler(event:MouseEvent):void
+			{
+				btnPlay.visible = true;
+			}
+			
+			protected function videoMouseOutHandler(event:MouseEvent):void
+			{
+				btnPlay.visible = false;
+			}
+			protected function imageClickHandler(event:MouseEvent):void
+			{
+				MessageBox.show("If Follow Presenter is checked, your tabs will change automatically according to the Presenter's tabs.","INFO",MessageBox.MB_OK,parentApplication as Sprite,null,null,MessageBox.IC_INFO);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Group width="100%"
+			 height="100%"
+			 left="-4"
+			 id="titleContentBox">
+		<s:Rect width="100%"
+				height="100%">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF"/>
+			</s:fill>
+			<s:filters>
+				<s:DropShadowFilter inner="false" blurX="8" knockout="true" color="0x000000"/>
+			</s:filters>
+		</s:Rect>
+	</s:Group>
+	<s:Scroller width="99%"
+				height="100%"
+				id="sliderScroller"
+				horizontalScrollPolicy="off">
+			<s:VGroup width="100%"
+					  height="100%">
+				<s:VGroup width="100%"
+						 height="36%"
+						 id="videoGroup"
+						 color="0xFFFFFF"
+						 horizontalAlign="center"
+						 horizontalCenter="0"
+						 paddingTop="10"
+						 paddingLeft="10"
+						 paddingRight="10"
+						 paddingBottom="10">
+							<s:BorderContainer width="100%"
+									 height="100%"
+									 horizontalCenter="0"
+									 verticalCenter="0"
+									 id="vidBorder"
+									 backgroundColor="#000000"
+									 borderVisible="false"
+									 rollOver="videoMouseOverHandler(event)"
+									 rollOut="videoMouseOutHandler(event)">
+								
+										<s:VideoDisplay width="100%"
+														height="100%"
+														id="localVidDisplay"
+														horizontalCenter="0"
+														x="{vidBorder.x}"
+														y="{vidBorder.y}"/>
+										<s:Label id="lblUserName"
+												 color="0xFF0000"
+												 text="My video"
+												 textAlign="center"
+												 fontWeight="bold"
+												 top="{vidBorder.y}"
+												 left="{vidBorder.x}"/>
+										
+										<s:Button id="btnPlay"
+												  alpha=".5"
+												  icon="{videoStartStopIcon}"
+												  visible="false"
+												  includeInLayout="false"
+												  click="btnPlay_clickHandler(event)"/>
+							</s:BorderContainer>
+				</s:VGroup>
+				
+				<s:Group width="100%"
+						 height="63%">
+					<s:Rect width="100%"
+							height="100%">
+						<s:fill>
+							<s:SolidColor color="0xFFFFFF"/>
+						</s:fill>
+					</s:Rect>
+						<s:VGroup  verticalAlign="middle"
+								  horizontalAlign="left"
+								  paddingTop="2"
+								  paddingLeft="10"
+								  paddingRight="10"
+								  width="100%"
+								  height="100%">
+							
+							<mobileComponents:HorizontalStroke width="100%" height="2"/>
+							
+							<!--Exit session-->
+							<s:VGroup paddingLeft="10">
+								<s:SkinnableContainer id="ExitseesionGroup"
+													  backgroundColor="0XFFFFFF"
+													  rollOver="audioVideoSettingGroupMouseOverHandler(event)"
+													  rollOut="audioVideoSettingGroup_rollOutHandler(event)">
+									<s:layout>
+										<s:HorizontalLayout verticalAlign="middle"/>
+									</s:layout>
+									<s:Label text="Exit session"
+											 id="lblExisSession"
+											 textAlign="left"
+											 verticalAlign="middle"
+											 verticalCenter="0"
+											 fontWeight="bold"
+											 height="45"/>
+								</s:SkinnableContainer>
+							</s:VGroup>
+							<mobileComponents:HorizontalStroke width="100%" height="2"/>
+							<s:Label text="Setting"
+									 textAlign="left"
+									 verticalAlign="middle"
+									 verticalCenter="0"
+									 fontWeight="bold"
+									 height="45"
+									 paddingLeft="10"/>
+								<!--Screen Type-->
+								<s:VGroup paddingLeft="20">
+									<s:SkinnableContainer id="screenTypeGroup"
+											  click="screenTypeGrouclickHandler(event)"
+											  backgroundColor="0XFFFFFF"
+											  rollOver="audioVideoSettingGroupMouseOverHandler(event)"
+											  rollOut="audioVideoSettingGroup_rollOutHandler(event)">
+										<s:layout>
+											<s:HorizontalLayout verticalAlign="middle"/>
+										</s:layout>
+			
+										<s:Label text="Screen setting"
+												 textAlign="left"
+												 verticalAlign="middle"
+												 verticalCenter="0"
+												 height="45"/>
+									</s:SkinnableContainer>
+									<Drawer1:ScreenTypeComponent id="screenType"
+																 visible="false"
+																 includeInLayout="false"
+																 paddingLeft="35"/>
+								</s:VGroup>
+								<mobileComponents:HorizontalStroke width="100%" height="1"/>
+								<!--Audio-Video Setting-->
+								<s:VGroup paddingLeft="20"
+										  width="100%">
+									<s:SkinnableContainer id="audioVideoSettingGroup"
+											  click="audioVideoSettingGroupClickHandler(event)"
+											  backgroundColor="0XFFFFFF"
+											  rollOver="audioVideoSettingGroupMouseOverHandler(event)"
+											  rollOut="audioVideoSettingGroup_rollOutHandler(event)">
+										<s:layout>
+											<s:HorizontalLayout verticalAlign="middle"/>
+										</s:layout>
+		
+										<s:Label text="Audio-Video setting"
+												 textAlign="left"
+												 verticalAlign="middle"
+												 verticalCenter="0"
+												 height="45"/>
+									</s:SkinnableContainer>
+									<Drawer1:AudioVideoSettingComponent id="audioSetting"
+																		visible="false"
+																		includeInLayout="false"
+																		paddingLeft="35"
+																		width="100%"/>
+								</s:VGroup>
+							
+								<mobileComponents:HorizontalStroke width="100%" height="1"/>	
+								<!--Performance Setting-->
+								<s:VGroup paddingLeft="20"
+										  width="100%">
+									<s:SkinnableContainer id="performanceSettingGroup"
+											  click="performanceSettingGroupClickHandler(event)"
+											  backgroundColor="0XFFFFFF"
+											  rollOver="audioVideoSettingGroupMouseOverHandler(event)"
+											  rollOut="audioVideoSettingGroup_rollOutHandler(event)">
+										<s:layout>
+											<s:HorizontalLayout verticalAlign="middle"/>
+										</s:layout>
+										<s:Label text="Performance setting"
+												 textAlign="left"
+												 verticalAlign="middle"
+												 verticalCenter="0"
+												 height="45"/>
+									</s:SkinnableContainer>
+									<Drawer1:PerformanceSettingComponnet id="performanceSetting"
+																		 visible="false"
+																		 includeInLayout="false"
+																		 paddingLeft="35"
+																		 width="100%"/>
+								</s:VGroup>
+								<mobileComponents:HorizontalStroke width="100%" height="1"/>
+								<!--Account Setting-->
+								<s:VGroup paddingLeft="20"
+										  width="100%">
+									<s:SkinnableContainer id="accountSettingGroup"
+											  click="accountSettingGroupClickHandler(event)"
+											  backgroundColor="0XFFFFFF"
+											  rollOver="audioVideoSettingGroupMouseOverHandler(event)"
+											  rollOut="audioVideoSettingGroup_rollOutHandler(event)">
+										<s:layout>
+											<s:HorizontalLayout verticalAlign="middle"/>
+										</s:layout>
+										<s:Label text="Account setting"
+												 textAlign="left"
+												 verticalAlign="middle"
+												 verticalCenter="0"
+												 height="45"/>
+									</s:SkinnableContainer>
+									<Drawer1:AccountSettingComponent id="accountSetting"
+																	 visible="false"
+																	 includeInLayout="false"
+																	 paddingLeft="35"
+																	 width="100%"/>
+								</s:VGroup>
+							<mobileComponents:HorizontalStroke width="100%" 
+															   height="1"
+															   includeInLayout="{ClassroomContext.isModerator}"
+															   visible="{ClassroomContext.isModerator}"/>
+							<!--User Setting - MUI-->
+							<s:VGroup paddingLeft="10" 
+									  id="parentUserSettingGroup"
+									  includeInLayout="{ClassroomContext.isModerator}"
+									  visible="{ClassroomContext.isModerator}">
+								<s:SkinnableContainer id="userSettingGroup"
+													  click="userSettingGroupClickHandler(event)"
+													  backgroundColor="0XFFFFFF"
+													  rollOver="audioVideoSettingGroupMouseOverHandler(event)"
+													  rollOut="audioVideoSettingGroup_rollOutHandler(event)">
+									<s:layout>
+										<s:HorizontalLayout verticalAlign="middle"/>
+									</s:layout>
+									<s:Label text="User setting"
+											 textAlign="left"
+											 verticalAlign="middle"
+											 verticalCenter="0"
+											 fontWeight="bold"
+											 height="45"/>
+								</s:SkinnableContainer>
+								<Drawer1:UserSettingComponnet id="userSetting"
+															  visible="false"
+															  includeInLayout="false"
+															  paddingLeft="35"/>
+							</s:VGroup>
+							<mobileComponents:HorizontalStroke width="100%" height="2"/>
+							<!--Follow Presenter-->
+							<s:HGroup paddingLeft="10"
+									  minHeight="45"
+									  verticalAlign="middle"
+									  verticalCenter="0"
+									  includeInLayout="{!ClassroomContext.isModerator}"
+									  visible="{!ClassroomContext.isModerator}">
+								<s:Image id="checkFollowPresenter" 
+										 rollOver="audioVideoSettingGroupMouseOverHandler(event)"
+										 rollOut="audioVideoSettingGroup_rollOutHandler(event)"
+										 source="{followPrenterEnabledDisabledIcon}"/>
+								<s:Label text="Follow Presenter" />
+								<s:Image source="@Embed('/views/assets/document_info.png')" 
+										 click="imageClickHandler(event)"/>
+							</s:HGroup>
+							<mobileComponents:HorizontalStroke width="100%" height="2"/>
+							<!--Help-->
+							<s:VGroup paddingLeft="10"
+									  width="100%">
+								<s:SkinnableContainer id="helpSettingGroup"
+													  click="helpSettingGroupClickHandler(event)"
+													  backgroundColor="0XFFFFFF"
+													  rollOver="audioVideoSettingGroupMouseOverHandler(event)"
+													  rollOut="audioVideoSettingGroup_rollOutHandler(event)">
+									<s:layout>
+										<s:HorizontalLayout verticalAlign="middle"/>
+									</s:layout>
+									<s:Label text="Help"
+											 textAlign="left"
+											 verticalAlign="middle"
+											 verticalCenter="0"
+											 fontWeight="bold"
+											 height="45"/>
+								</s:SkinnableContainer>
+								<Drawer1:HelpComponent id="helpSetting"
+													   visible="false"
+													   includeInLayout="false"
+													   paddingLeft="35"
+													   width="100%"/>
+							</s:VGroup>
+						</s:VGroup>
+				</s:Group>
+			</s:VGroup>
+	</s:Scroller>
+</s:BorderContainer>

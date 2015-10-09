@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: Polling.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Sinu Rachel John
+
+Polling.mxml file contains all the UI related code for polling.
+-->
+
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:components="edu.amrita.aview.core.shared.components.*"
+				   xmlns:checkBox="edu.amrita.aview.core.shared.components.checkBox.*"
+				   backgroundColor="#e0effb"
+				   borderColor="#1AB1F7"
+				   borderStyle="solid"
+				   width="100%"
+				   height="100%"
+				   focusColor="#A9F9A0"
+				   horizontalCenter="50"
+				   verticalCenter="0" xmlns:checkBox1="edu.amrita.aview.core.shared.components.checkBox.*">
+<s:layout>
+	<s:VerticalLayout/>
+</s:layout>
+	
+	<fx:Script source="PollingUIHandler.as"/>
+	<!--<fx:Script source="PollingResultUIHandler.as"/>-->
+	<!--HBox contains Create,Edit and Delete buttons-->
+	<mx:HBox 
+			 horizontalAlign="center"
+			 verticalAlign="middle"
+			 width="100%"
+			 height="5%">
+		<!--Button used for create polling questions-->
+		<components:ImageButton id="btnCreateQuestion" label="Create Question" chromeColor="#E0EFFB"
+								click="createQuestionForPolling()" cornerRadius="3"
+								toolTip="Create Polling Question"/>
+		<!--Button used for edit polling questions-->
+		<components:ImageButton id="btnEditQuestion" label="Edit Question" chromeColor="#E0EFFB"
+								click="editQuestionPolling()" cornerRadius="3"
+								toolTip="Edit Polling Question"/>
+		<!--Button used for delete polling questions-->
+		<!--Fix for Bug #16834-->
+		<components:ImageButton id="btnDeleteQuestion" label="Delete Question" chromeColor="#E0EFFB"
+								click="deleteQuestionPolling()" cornerRadius="3"
+								toolTip="Delete Polling Question(s)"/>
+	</mx:HBox>
+	<!--Custom datagrid for display polling questions-->
+	<!--Fix for Bug#15498-->
+	<!--Fix for Bug#8865-->
+	<checkBox1:CheckBoxDataGrid id="dgForPollingQuestions" width="100%" height="87%"
+								allowMultipleSelection="true" chromeColor="#E0EFFB"
+								dataProvider="{pollingQuestions}" focusEnabled="false"
+								itemClick="dgItemClickHandler(event)" variableRowHeight="true"
+								wordWrap="true">
+		<checkBox:columns>
+			<checkBox1:CheckBoxHeaderColumn width="30"
+										   click="{toggleSelection()}"
+										   editable="false"
+										   headerRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxHeaderRenderer"
+										   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxRenderer"/>
+			<mx:DataGridColumn width="45"
+							   headerText="S.No."
+							   labelFunction="getSlNo"/>
+			<mx:DataGridColumn minWidth="150"
+							   dataField="questionText"
+							   headerText="Questions"
+							   wordWrap="true"
+							   sortCompareFunction="{AViewStringUtil.caselessSortForField('questionText')}"/>
+			<!--Fix for Bug #11738-->
+			<mx:DataGridColumn minWidth="150" 
+							   wordWrap="true"
+							   headerText="AnswerChoice"  
+							   itemRenderer="edu.amrita.aview.core.evaluation.polling.PollingAnswerChoiceItemRenderer"
+							   sortable="false"/>
+			<mx:DataGridColumn headerText="CreatedDate"
+							   labelFunction="formatCreatedDate"
+							   dataField="createdDate"/>
+		</checkBox:columns>
+	</checkBox1:CheckBoxDataGrid>
+	<!--HBox contains send and result buttons-->
+	<mx:HBox horizontalAlign="center"
+			 verticalAlign="middle"
+			 height="5%"
+			 width="100%">
+		<!--Button used for send polling questions-->
+		<components:ImageButton id="btnSendPolling" label="Start Polling" chromeColor="#E0EFFB"
+								click="startPolling()" cornerRadius="3" horizontalCenter="0"
+								toolTip="Start the Polling"/>
+		<!--Button used for view polling result-->
+		<components:ImageButton id="btnResult" label="View Result" chromeColor="#E0EFFB"
+								click="{showResult()}" cornerRadius="3" horizontalCenter="0"
+								toolTip="View Polling Result"/>
+	</mx:HBox>
+</s:BorderContainer>

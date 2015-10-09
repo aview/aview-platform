@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: PopUpDocumentThumbNail.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains the UI for popping up the document details. Pop up contains a image of document, document name
+and page number.Pop up happens on the mouse over of document block.
+
+-->
+<!-- Main Canvas -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="140" height="180" backgroundColor="#FFFFFF" horizontalScrollPolicy="off"
+		   verticalScrollPolicy="off">
+	<mx:VBox width="100%" height="100%" horizontalAlign="center" horizontalCenter="0" verticalGap="1">
+		<mx:Label id="lblDocumentName" height="20" fontSize="10"/>
+		<!-- Image for displaying the document image Screen shot -->
+		<mx:Image id="imgSlideThumb" maxWidth="140" maxHeight="140"/>
+		<!-- Label for displaying the document page number -->
+		<mx:Label id="lblPageNo" height="20" fontSize="10"/>
+	</mx:VBox>
+</mx:Canvas>

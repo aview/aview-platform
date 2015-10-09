@@ -1,0 +1,133 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+
+/*.sendbtnstyle
+{
+   backgroundImage : Embed('../views/assets/images/microphone48.png');
+   chromeColor: #3E3535;
+}
+.consolebtnstyle
+{
+	backgroundImage :  Embed('../views/assets/images/home.jpg');
+	chromeColor: #5F5A59;
+	
+}
+.usericonstyle
+{
+	backgroundImage :  Embed('../views/assets/images/fpo_large.jpg');
+	chromeColor: #5F5A59;
+	
+}
+.vidiconstyle
+{
+	backgroundImage :  Embed('../views/assets/images/VideoIndicator.png');
+	chromeColor: #5F5A59;
+	
+}
+.chaticonstyle
+{
+	backgroundImage :  Embed('../views/assets/images/Chat Icon.jpg');
+	chromeColor: #5F5A59;
+		
+}
+.vidicon
+{
+	backgroundImage :  Embed('../views/assets/images/microphone48.png');
+}
+.camicon
+{
+	backgroundImage :  Embed('../views/assets/images/Video-Camera-48.png');
+}
+.audicon
+{
+	backgroundImage :  Embed('../views/assets/images/audio_volume_low.png');
+}
+
+.Buttonstyle
+{
+	chromeColor:#373534; 
+	color:#ffffff;	
+	iconPlacement:top;
+	fontFamily:_serif;
+	fontSize:70;
+	backgroundImage :  Embed('../views/assets/images/1.png');
+	
+}
+.Buttonstyle1
+{
+	chromeColor:#373534; 
+	color:#ffffff;	
+	iconPlacement:top;
+	fontFamily:_serif;
+	fontSize:70;
+	backgroundImage :  Embed('../views/assets/images/3.png');
+	
+}
+.Buttonstyle2
+{
+	chromeColor:#373534; 
+	color:#ffffff;	
+	iconPlacement:top;
+	fontFamily:_serif;
+	
+	backgroundImage :  Embed('../views/assets/images/5.png');
+	
+}
+.Buttonstyle3
+{
+	chromeColor:#373534; 
+	color:#ffffff;	
+	iconPlacement:top;
+	fontFamily:_serif;
+	
+	backgroundImage :  Embed('../views/assets/images/2.png');
+	
+}
+.Buttonstyle4
+{
+	chromeColor:#373534; 
+	color:#ffffff;	
+	iconPlacement:top;
+	fontFamily:_serif;
+	
+	backgroundImage :  Embed('../views/assets/images/4.png');
+	
+}
+.Buttonstyle4
+{
+	chromeColor:#373534; 
+	color:#ffffff;	
+	iconPlacement:top;
+	fontFamily:_serif;	
+	backgroundImage :  Embed('../views/assets/images/6.png');
+	
+}*/
+
+.homebtnstyle
+{
+/*	backgroundImage 			:	Embed('views/assets/home_48.png');*/
+	backgroundAlpha				: 	0.0;
+	color						:	#FFFFFF;
+	iconPlacement				:	top;
+	
+}
+
+.groupstyle
+{
+/*	skinClass : ClassReference("skins.HTabMenuSkin");*/
+}
+global
+{
+	font-size: 18;
+}
+.customComboBox
+{
+	color      : #000000;
+	selectionColor:#70b2ee;
+	downColor:#a8c6ee;
+	borderColor:#000000;
+	borderWeight:10;
+	borderVisible:true;
+}
+
+

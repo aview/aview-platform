@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="itemrenderer1_creationCompleteHandler(event)"
+		 dataChange="itemrenderer1_dataChangeHandler(event)"
+		 paddingLeft="5"
+		 paddingRight="5"
+		 textAlign="center" width="100%"
+		 verticalAlign="middle"
+		 horizontalScrollPolicy="off"
+		 verticalScrollPolicy="off">
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.events.FlexEvent;
+
+			[Bindable]
+			[Embed(source="assets/images/offline.png")]
+			public var user_offline:Class;
+
+			[Bindable]
+			[Embed(source="assets/images/online.png")]
+			public var user_active:Class;
+
+			[Bindable]
+			[Embed(source="assets/images/busy.png")]
+			public var user_buzy:Class;
+			[Bindable]
+			public var iconStatus:Class=user_offline;
+
+			//---START--------------------
+			/** change user status */
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				changeUserStatus();
+
+			}
+
+			private function changeUserStatus():void
+			{
+				if (data == null || data.user.userStatus == null)
+				{
+					return;
+				}
+				if (data.user.userStatus == Constants.ONLINE)
+				{
+					iconStatus=user_active;
+				}
+				else if (data.user.userStatus == Constants.OFFLINE)
+				{
+					iconStatus=user_offline;
+				}
+				else if (data.user.userStatus == Constants.BUSY)
+				{
+					iconStatus=user_buzy;
+				}
+			}
+
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				changeUserStatus();
+			}
+			//---END--------------------
+		]]>
+	</fx:Script>
+	<mx:HBox horizontalAlign="left"
+			 verticalAlign="middle"
+			 height="100%">
+		<s:Image id="iconUserStatus"
+				 source="{iconStatus}"
+				 toolTip="{data.user.userStatus}"
+				 verticalAlign="middle"/>
+		<s:Label fontWeight="normal"
+				 text="{data.user.userDisplayName}"
+				 width="100%"
+				 maxDisplayedLines="1"
+				 toolTip="{data.user.userDisplayName}"
+				 verticalAlign="middle"/>
+	</mx:HBox>
+</mx:HBox>

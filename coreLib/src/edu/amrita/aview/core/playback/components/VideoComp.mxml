@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" showCloseButton="true" creationComplete="titlewindow1_creationCompleteHandler(event)"
+				borderVisible="false">
+	<mx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.playback.VideoPlayer;
+			
+			import mx.core.mx_internal;
+			import mx.events.FlexEvent;
+			public  var videoPlayer:VideoPlayer=new VideoPlayer()
+			private var previousWidth:Number = 0;
+			[Bindable]
+			private var resizeCount:Number = 0;
+			[Bindable]
+			private var vidWidth:Number=0;
+			[Bindable]
+			private var vidHeight:Number=0;
+			
+			//Playback Icons
+			[Bindable]
+			[Embed(source="/edu/amrita/aview/core/playback/assets/images/volumeCntrl.png")]
+			public var playBack_unclicked:Class;
+			[Bindable]
+			[Embed(source="/edu/amrita/aview/core/playback/assets/images/volumMute.png")]
+			public var playBack_clicked:Class;
+			[Bindable]
+			public var playBackIcon:Class=playBack_unclicked;
+			
+			[Embed(source='/edu/amrita/aview/core/playback/assets/flash/videoBuffering.swf')]
+			[Bindable]
+			private var pswfFile:Class;
+			
+			private function resolution():void
+			{
+				var tempWidth:Number;
+				
+				vidHeight=VideoContiner.height;
+				tempWidth=(vidHeight / 3) * 4;
+				if (tempWidth >= VideoContiner.width)
+				{
+					vidWidth=VideoContiner.width;
+					vidHeight=(vidWidth / 4) * 3;
+				}
+				else
+				{
+					vidWidth=tempWidth;
+				}  
+			}
+			public function onVidResize():void
+			{
+				resolution();
+				videoDisp.height=vidHeight
+				videoDisp.width=vidWidth;
+				addSpace.width=(VideoContiner.width/2)-(videoDisp.width/2);
+				muteButton.y=volumeBox.y+5;				
+			}
+			
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				mx_internal::closeButton.height=mx_internal::closeButton.width=18;
+				
+			}
+			public function showOrHideBuffering(flag:Boolean):void
+			{
+				if(!flag && videoBufferingMessageComp.source!=null)
+				{
+					videoBufferingMessageComp.unloadAndStop();
+				}
+				else if(flag && videoBufferingMessageComp.source==null)
+				{
+					videoBufferingMessageComp.load(pswfFile);
+				}
+					
+			}
+			
+		]]>
+	</mx:Script>	
+	<mx:VBox height="100%" width="100%" verticalAlign="middle">
+	<mx:Canvas x="0" y="0" width="100%" height="80%" top="10" id="VideoContiner" resize="onVidResize()" verticalScrollPolicy="off">		
+		<mx:VideoDisplay  id="videoDisp" horizontalCenter="0"/>	
+		<mx:Label id="lblVideoMode" text="Audio Only Mode" color="#ff0000" horizontalCenter="0" verticalCenter="0" visible="false"/>
+	</mx:Canvas>
+	<mx:HBox width="100%" paddingTop="5" id="volumeBox">		
+		<mx:Spacer id="addSpace" width="{(VideoContiner.width/2)-(videoDisp.width/2)}"/>
+		<mx:Button  y="{volumeBox.y+5}" toolTip="Mute" width="5" 
+				   height="5" id="muteButton" bottom="0" icon="{playBackIcon}"/>
+		<mx:HSlider height="5" width="70" toolTip="volume" chromeColor="#e0effb" id="volumeSeek" value="75" minimum="0" maximum="100" showTrackHighlight="true"/>				
+	</mx:HBox>
+	</mx:VBox>
+	<mx:SWFLoader horizontalCenter="0" verticalCenter="0" id="videoBufferingMessageComp">
+		
+	</mx:SWFLoader>
+	</mx:TitleWindow>

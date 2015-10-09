@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: EraserSizeCallout.mxml
+Module		: WhiteBoard
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+EraserSizeCallout component is used to erase the whiteboard drawings.
+
+-->
+
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   horizontalPosition="before"
+		   width="100%"
+		   height="100%">
+	<fx:Script>
+		<![CDATA[
+			
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			
+			import mx.core.FlexGlobals;
+
+			/**
+			 * @protected
+			 *
+			 * To show tool tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function eraserTooltipHandler(event:MouseEvent):void
+			{
+				var eraserTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				eraserTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle"
+						  paddingLeft="5"
+						  paddingBottom="5"
+						  paddingRight="5"
+						  paddingTop="10"/>
+	</s:layout>
+	<s:VGroup width="100%"
+			  height="100%"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+		<!-- Title for eraser component-->
+		<s:VGroup width="100%"
+				  height="20%"
+				  verticalAlign="middle"
+				  horizontalAlign="center">
+
+			<s:Label text="Eraser"
+					 fontWeight="bold"/>
+			<s:Line width="90%">
+				<s:stroke>
+					<s:SolidColorStroke color="0x000000"
+										weight="1"
+										alpha="0.4"/>
+				</s:stroke>
+			</s:Line>
+		</s:VGroup>
+		<!--Various types of eraser button-->
+		<s:HGroup width="100%"
+				  height="100%"
+				  verticalAlign="middle"
+				  horizontalAlign="center"
+				  gap="0">
+			
+			<s:Button id="btnEraserSmall"
+					  width="33%"
+					  height="100%"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  icon="@Embed('/edu/amrita/aview/core/whiteboard/assets/mobile/eraser_20_20.png')"
+					  click="FlexGlobals.topLevelApplication.wbComp.setEraserTool(event)"
+					  toolTip="Small Eraser"
+					  rollOver="eraserTooltipHandler(event)"
+					  mouseDown="eraserTooltipHandler(event)"/>
+			
+			<s:Button id="btnEraserMedium"
+					  width="33%"
+					  height="100%"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  icon="@Embed('/edu/amrita/aview/core/whiteboard/assets/mobile/eraser_25_25.png')"
+					  click="FlexGlobals.topLevelApplication.wbComp.setEraserTool(event)"
+					  toolTip="Medium Eraser"
+					  rollOver="eraserTooltipHandler(event)"
+					  mouseDown="eraserTooltipHandler(event)"/>
+			
+			<s:Button id="btnEraserLarge"
+					  width="33%"
+					  height="100%"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  icon="@Embed('/edu/amrita/aview/core/whiteboard/assets/mobile/eraser_30_30.png')"
+					  click="FlexGlobals.topLevelApplication.wbComp.setEraserTool(event)"
+					  toolTip="Big Eraser"
+					  rollOver="eraserTooltipHandler(event)"
+					  mouseDown="eraserTooltipHandler(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:Callout>

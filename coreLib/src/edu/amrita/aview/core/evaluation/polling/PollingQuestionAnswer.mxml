@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: PollingQuestionAnswer.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Sinu Rachel John
+
+PollingQuestionAnswer.mxml file contains UI  for displaying polling result.
+-->
+
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				autoDrawBackground="false"
+				dataChange="dataChangeHandler(event)">
+
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
+	
+	<fx:Script source="PollingQuestionAnswerUIHandler.as"/>
+	
+		<mx:VBox>
+			<!--Text to display questions-->
+			<mx:Text text="Question :"
+					 fontWeight="bold"
+					 fontSize="12"
+					 fontFamily="Arial"/>
+			<!--Text to display questions-->
+            <!--Fix for Bug #18741-->
+			<s:Label text="{'    Q: '+data.questionText}"
+					 width="450"
+					 textAlign="left"
+					 color="#000101"
+					 fontSize="12"
+					 fontFamily="Arial"
+					 maxDisplayedLines="2"
+					 toolTip="{data.questionText}"/>
+		</mx:VBox>
+		<!--Label to display answer choices-->
+		<!--<s:Label text="{data.choiceText}"
+				 top="0"/>-->
+		<!--Column chart to display polling result as a chart-->
+		<mx:ColumnChart id="ccBar"
+						columnWidthRatio="0.5"
+						showDataTips="true"
+						dataProvider="{chartDataProvider}"
+						fontSize="12"
+						fontFamily="Arial">
+			<!--Fix for Bug #9905-->
+			<mx:verticalAxisRenderers>
+				<mx:AxisRenderer verticalAxisTitleAlignment="vertical"
+								 axis="{laUserAxis}"/>
+			</mx:verticalAxisRenderers>
+			<mx:horizontalAxis>
+				<mx:CategoryAxis categoryField="choiceText"
+								 title="Answer Choices"/>
+			</mx:horizontalAxis>
+			<mx:verticalAxis>
+				<mx:LinearAxis interval="1"
+							   title="No. of Users"
+							   id="laUserAxis"/>
+			</mx:verticalAxis>
+			<mx:series>
+				<mx:ColumnSeries yField="percent"/>
+			</mx:series>
+		</mx:ColumnChart>
+		<!--Text to display the total number of user submitted the correct answer-->
+		<mx:TextArea editable="false"
+					 width="650"
+					 height="27"
+					 y="{ccBar.height + 10}"
+					 text="No. of Users Submitted the Polling : {data.correctCountForAnswerChoice}"/>
+
+</s:ItemRenderer>

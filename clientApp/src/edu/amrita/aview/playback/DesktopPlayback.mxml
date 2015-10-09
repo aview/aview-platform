@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---RTCR: Avoid 'this' from description and use component name instead of 'this'.Need more description -->
+<!---
+
+File		: DesktopPlayback.mxml
+Module		: PlayBack
+Developer(s): Haridas, Anu
+Reviewer(s)	: Remya T
+
+This file for to handling the Desktop Playback.
+-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" width="640" height="480" minWidth="400" minHeight="300">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			/**
+			* Reference for custom VideoPlayer for video play back
+			*/			
+			public var videoPlayer:VideoPlayer=new VideoPlayer();
+		]]>
+	</fx:Script>
+	<!--Main canvas -->
+	<mx:Canvas id="VideoContiner" x="10" y="10" width="95%" height="90%" backgroundColor="black" verticalScrollPolicy="off">
+		<!--Video Display -->
+		<mx:VideoDisplay id="videoDisp" width="100%" height="100%"/>
+	</mx:Canvas>
+</s:BorderContainer>

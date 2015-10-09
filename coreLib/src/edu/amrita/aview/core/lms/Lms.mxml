@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   width="100%"
+		   height="100%"
+		   fontFamily="Arial"
+		   fontWeight="normal"
+		   creationComplete="initApp()"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:lms="edu.amrita.aview.core.lms.*"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.util.AViewStringUtil;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:DateTimeFormatter id="sparkDateFormatter"
+							 dateTimePattern="d-MMM-yyyy"/>
+	</fx:Declarations>
+
+	<fx:Script source="LMSAs.as"/>
+	<s:Label top="5"
+			 width="100%"
+			 color="#0839C6"
+			 fontSize="15"
+			 fontWeight="bold"
+			 horizontalCenter="0"
+			 text="{resourceManager.getString('myResource','lmscomp.librarytitle')}"
+			 textAlign="center"/>
+
+
+	<s:VGroup id="mainLMSCanvas"
+			  left="10"
+			  right="10"
+			  top="40"
+			  bottom="45"
+			  fontFamily="Arial"
+			  fontSize="12"
+			  horizontalAlign="center"
+			  horizontalCenter="0">
+		<s:Label x="{recordedLecturesDataGrid.x}"
+				 y="24"
+				 width="100%"
+				 color="#0653B3"
+				 fontWeight="bold"
+				 fontSize="12"
+				 paddingBottom="0"
+				 paddingTop="0"
+				 text="{resourceManager.getString('myResource','lmscomp.librarysubtitle')}"
+				 textAlign="center"/>
+		<s:HGroup x="0"
+				  y="3"
+				  height="30"
+				  fontSize="12"
+				  horizontalAlign="left"
+				  paddingLeft="10"
+				  textAlign="left"
+				  verticalAlign="middle">
+			<s:Label id="lblClass"
+					 fontSize="12"
+					 fontWeight="normal"
+					 text="{resourceManager.getString('myResource','lmscomp.librarycourse')}"/>
+			<s:ComboBox id="cmbClass"
+						width="350"
+						height="25"
+						change="searchLecture()"
+						dataProvider="{registeredClasses}"
+						fontSize="12"
+						labelField="lmsDisplayName"
+						paddingBottom="2"
+						prompt="Select Class/Meeting room"
+						rollOverColor="#e0effb"
+						selectionColor="#99d0ff"
+						textAlign="left">
+				<s:itemRenderer>
+					<fx:Component>
+						<lms:LMSComboItemRender width="100%"/>
+					</fx:Component>
+				</s:itemRenderer>
+			</s:ComboBox>
+			<components:ImageButton id="btnLibRefresh"
+					  height="25"
+					  label="{resourceManager.getString('myResource','lmscomp.libraryrefresh')}"
+					  click="lib_Refresh()"
+					  enabled="false"/>
+			<components:ImageButton height="25"
+					  label="{resourceManager.getString('myResource','lmscomp.libraryadvance')}"
+					  click="getAdvancedSearchOption()"
+					  id="btnAdvancedSearch"/>
+			<s:Spacer width="1"/>
+		</s:HGroup>
+
+		<!--Issue No:531 is fixed-->
+		<!--SVRS-Issue no #202 align the datagrid consistently in all pages-->
+		<s:DataGrid horizontalCenter="0"
+					width="95%"
+					height="90%"
+					id="recordedLecturesDataGrid"
+					dataProvider="{recordedLectures}"
+					textAlign="left"
+					click="enablePlayVideo(event)"
+					doubleClick="playVideo(event)"
+					doubleClickEnabled="true">
+
+			<s:columns>
+				<s:ArrayList>
+					<s:GridColumn headerText="Lecture Topic"
+								  dataField="displayName"
+								  sortable="true"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('displayName')}"/>
+					<s:GridColumn headerText="Date"
+								  sortable="true"
+								  dataField="startDate"
+								  sortCompareFunction="date_sortCompareFunc" 
+								  labelFunction="formatDate"/>
+					<!--Fix for Bug#15121-->
+					<s:GridColumn headerText="Keywords"
+								  dataField="keywords"
+								  visible="true"
+								  sortable="true"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('keywords')}"/>
+					<s:GridColumn visible="false"
+								  dataField="recordedPresenterVideoUrl"/>
+					<s:GridColumn visible="false"
+								  dataField="recordedViewerVideoUrl"/>
+					<s:GridColumn visible="false"
+								  dataField="recordedVideoFilePath"/>
+					<s:GridColumn visible="false"
+								  dataField="recordedContentUrl"/>
+					<s:GridColumn visible="false"
+								  dataField="recordedContentFilePath"/>
+					<s:GridColumn visible="false"
+								  dataField="lectureId"/>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+	</s:VGroup>
+
+
+	<!--Fix for Bug#15476 :Start-->
+	<components:ImageButton id="btnplayVideo"
+			  height="25"
+			  label="{resourceManager.getString('myResource','lmscomp.libraryplayvideo')}"
+			  bottom="10"
+			  horizontalCenter="-60"
+			  click="playVideo(event)"
+			  color="#653141"
+			  enabled="{playBackActiveflag==0 &amp;&amp; editingActiveflag == 0}"
+			  fontSize="12"/>
+	<!--	<s:Button id="btnCut" label="{resourceManager.getString('myResource','lmscomp.libraryeditvideo')}" click="cutRecordedDetails()" enabled="false" color="#653141" height="25" id="btnCut"  bottom="10" horizontalCenter="-65"/>-->
+	<components:ImageButton id="btnDownload"
+			  label="Download"
+			  click="btnDownload_clickHandler(event)"
+			  enabled="true"
+			  color="#653141"
+			  height="25"
+			  bottom="10"
+			  horizontalCenter="50"
+			  fontSize="12" visible="false" includeInLayout="false"/>
+	<components:ImageButton id="btnCut" bottom="10" height="25" label="{resourceManager.getString('myResource','lmscomp.libraryeditvideo')}" 
+			   click="cutRecordedDetails()" color="#653141" cornerRadius="3" enabled="false"
+			   horizontalCenter="50"/>
+	<!--<components:ImageButton id="btnLocalPlayback"
+			  label="Play Local"
+			  click="playLocally()"
+			  enabled="false"
+			  color="#653141"
+			  height="25"
+			  bottom="10"
+			  horizontalCenter="65"
+			  fontSize="12"/>-->
+	<!--Fix for Bug#15476 : End-->
+</mx:Canvas>

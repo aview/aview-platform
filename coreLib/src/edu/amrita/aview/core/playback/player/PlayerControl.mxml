@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: PlayerControl.mxml
+Module		: PlayBack
+Developer(s): Haridas, Anu
+Reviewer(s)	: Remya T
+
+Custom control bar of playback module.This component will contain all control buttons
+for handling the playback events.
+
+-->
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" skinClass="edu.amrita.aview.core.playback.skins.CustomSkinnableContainerSkin">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<!-- Metadata of  custom events -->
+	<fx:Metadata>	
+		
+		[Event(name="OnSeekDrag",type="edu.amrita.aview.core.playback.player.MediaEvents.OnSeekDrag")]		
+	    [Event (name="OnSeekPress",type="edu.amrita.aview.core.playback.player.MediaEvents.OnSeekPress")]
+		[Event(name="OnSeekRelease", type="edu.amrita.aview.core.playback.player.MediaEvents.OnSeekRelease")]
+		[Event(name="OnSeekChange", type="edu.amrita.aview.core.playback.player.MediaEvents.OnSeekChange")]
+		[Event(name="onMediaControlerEvent", type="edu.amrita.aview.core.playback.player.MediaEvents.onMediaControlerEvent")]
+		[Event(name="OnVolumeChangedEvent", type="edu.amrita.aview.core.playback.player.MediaEvents.OnVolumeChangedEvent")]
+	</fx:Metadata>
+	<fx:Script source="PlayerControlHandler.as"/>
+	<!-- Align horizhontaly all controls -->
+	<s:HGroup top="5" width="100%" horizontalAlign="center" horizontalCenter="0" verticalAlign="middle" verticalCenter="0">
+		<!-- Play button-->		
+		<s:Button id="btnPlay" width="20" height="20" click="play_clickHandler(event)" icon="{pauseIcon}" skinClass="edu.amrita.aview.core.playback.skins.CustomButtonSkinClass"/>
+		<!-- Stop button-->		
+		<s:Button id="btnStop" width="20" height="20" click="stop_clickHandler(event)" icon="{stopIcon}" skinClass="edu.amrita.aview.core.playback.skins.CustomButtonSkinClass"/>
+		<!-- Seek bar-->
+		<s:HSlider id="seekbar" visible="true" width="50%" change="seekbar_changeHandler(event)" maximum="100" minimum="1" skinClass="edu.amrita.aview.core.playback.skins.Customseekbarskin" thumbDrag="seekbar_thumbDragHandler(event)" thumbPress="seekbar_thumbPressHandler(event)" thumbRelease="seekbar_thumbReleaseHandler(event)" value="{_seekBarValue}"/>
+		<!-- Time Label-->		
+		<s:Label id="lblCentralTimeLabel" y="{seekbar.y+seekbar.height+2}" includeInLayout="{_isSeekBar}" text="{_centeralTime}"/>
+		<!-- Mute Button-->		
+		<s:Button id="btnMute" width="20" click="mute_clickHandler(event)" icon="{volumeIcon}"/>
+		<!-- Volume Control-->
+		<s:HSlider id="volume" width="40" change="volume_changeHandler(event)" value="6"/>
+		<!-- Full screen Button-->		
+		<s:Button id="btnFullScrean" width="20" icon="{fscreenIcon}"/>
+	</s:HGroup>
+</s:SkinnableContainer>

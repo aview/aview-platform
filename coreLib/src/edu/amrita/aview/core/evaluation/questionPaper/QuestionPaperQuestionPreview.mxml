@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuestionPaperQuestionPreview.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to display the preview of
+questions used in question paper
+-->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*" width="100%" height="100%"
+		 creationComplete="onCreationComplete()" horizontalScrollPolicy="off">
+	<mx:Script source="QuestionPaperQuestionPreviewUIHandler.as"/>
+	<s:VGroup  width="100%">
+		<!-- Displays Question and its corresponding marks -->
+		<s:HGroup width="100%" paddingRight="2" verticalAlign="middle">
+			<!--Fix for Bug#14872-->
+			<mx:Text id="lblQuestion" width="100%" color="#000000" fontWeight="bold"
+					 text="{qno + ') ' + quesItem.questionText}" fontSize="12" fontFamily="Arial" />
+			<s:HGroup  horizontalAlign="right">
+				<s:Label color="#000000" fontFamily="Arial" fontSize="12"
+						 text="{' [marks: ' + quesItem.marks + ']'}"/>
+			</s:HGroup>
+		</s:HGroup>
+		
+		<s:Group id="previewBox" visible="false" includeInLayout="false" left="0">
+			<s:VideoPlayer id="videoLoader" autoPlay="true"  maxHeight="200" maxWidth="300"  visible="false" includeInLayout="false"
+						   mediaPlayerStateChange="videoLoader_mediaPlayerStateChangeHandler(event)" source="{mediaFilePath}"/>
+			
+			<s:Image id="imageLoader" width="100%" height="100%" source="{mediaFilePath}" maxHeight="200" maxWidth="300" visible="false" includeInLayout="false"/>
+		</s:Group>
+	</s:VGroup>
+	<!-- Displays the answers for the question -->
+	<mx:Repeater id="rpAnswers"
+				 dataProvider="{quesItem.qbAnswerChoices}">
+		<mx:HBox visible="{quesItem.qbQuestionTypeId!= getQuestionTypeId()}"
+				 includeInLayout="false">
+			<mx:RadioButton id="rdAnswer" chromeColor="#E0EFFB" click="setUserAnswer(event)"
+							color="#000101" enabled="false" fontFamily="Georgia" fontSize="12"
+							groupName="rb" paddingBottom="3" paddingTop="3"
+							selected="{showAnswers?rpAnswers.currentItem.fraction!=0?true:false:false}"/>
+			<!--Fix for Bug# 11466,19043-->
+			<mx:Text   color="#000000" fontFamily="Arial" width="100%" fontSize="12" minWidth="450" paddingBottom="3" paddingTop="3" 
+					 text="{'('+(String.fromCharCode(rpAnswers.currentIndex + QuizContext.ASCII_CODE)) +')  '+ rpAnswers.currentItem.choiceText}"/>
+		</mx:HBox>
+		<!-- Used to show the response to answers in Multiple Response Type question -->
+		<mx:HBox visible="{quesItem.qbQuestionTypeId== getQuestionTypeId()}">
+			<mx:CheckBox id="chkAnswer"
+						click="setUserAnswer(event)"
+						color="#000101"
+						paddingTop="3" 
+						paddingBottom="3"
+						fontFamily="Georgia"
+						fontSize="12"
+						selected="{showAnswers?rpAnswers.currentItem.fraction!=0?true:false:false}"
+						enabled="false"/>
+			<!--Fix for Bug# 11466,19043-->
+			<mx:Text   color="#000000" width="100%" fontSize="13" minWidth="450" paddingBottom="3" paddingTop="3" 
+					 text="{'('+(String.fromCharCode(rpAnswers.currentIndex + QuizContext.ASCII_CODE)) +')  '+ rpAnswers.currentItem.choiceText}"/>
+		</mx:HBox>
+	</mx:Repeater>
+	
+</mx:VBox>

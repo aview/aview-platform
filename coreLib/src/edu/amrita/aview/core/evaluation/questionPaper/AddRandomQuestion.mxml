@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: AddRandomQuestion.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to create 'Random' pattern type question paper question  
+or edit 'Specific' pattern type question paper question .
+'Random' means the questions are generated at runtime when a quiz is being conducted .
+While creating 'Random' question , the user selects either the category  ,subcategory , 
+difficulty level , question type , nos of random question .
+On basis of the nos. of random questions , randomly questions are selected from the criteria(category , sbcategory) .
+
+Specific' means an user can select questions based on category , subcategory , difficulty level and question type .
+These question paper questions are ready before the user starts a quiz .
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 width="400"
+						 height="300"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#FFFFFF"
+						 dropShadowVisible="false"
+						 focusColor="#A9F9A0"
+						 textAlign="left"
+						 fontFamily="Arial"
+						 initialize="initAddRandomQuestion(event)"						 
+						 title="Add Random Questions"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!--script to include handler-->
+	<fx:Script source="AddRandomQuestionUIHandler.as"/>
+	<!--Label to show category-->
+	<s:Label id="lblCategory"
+			 text="Category :"
+			 left="50"
+			 top="25"
+			 color="#000000"/>	
+	<!--Fix for Bug #11174-->
+	<!-- Category field is mandatory , hence use of red * -->
+	<s:Label left="105"
+			 top="25"
+			 width="12"
+			 height="18"
+			 color="#ED3814"
+			 fontFamily="Arial"
+			 fontSize="13"
+			 fontWeight="bold"
+			 text="*"/>
+
+	<!--ComboBox to show categories-->
+	<s:ComboBox id="cmbCategory"
+				chromeColor="#e0effb"
+				color="#000000"
+				left="160"
+				top="25"
+				width="120"
+				dataProvider="{categories}"
+				labelField="qbCategoryName"
+				change="changeHandler(event)"
+				prompt="Categories"/>
+	<!--Label to show sub category-->
+	<s:Label text="Subcategory :"
+			 left="50"
+			 top="60"
+			 color="#000000"/>	
+	<!--Fix for Bug #11174-->
+	<!-- Subcategory field is mandatory , hence use of red * -->
+	<s:Label left="125"
+			 top="60"
+			 width="12"
+			 height="18"
+			 color="#ED3814"
+			 fontFamily="Arial"
+			 fontSize="13"
+			 fontWeight="bold"
+			 text="*"/>
+	<!--Fix for Bug#15915-->
+	<!--ComboBox to show subcategories-->
+	<s:ComboBox id="cmbSubCategory"
+				chromeColor="#e0effb"
+				color="#000000"
+				left="160"
+				top="60"
+				width="120"
+				labelField="qbSubcategoryName"
+				prompt="Subcategories"/>
+	<!--Label to show difficulty level-->
+	<s:Label text="Difficulty Level :"
+			 left="50"
+			 top="90"
+			 color="#000000"/>
+	<!-- Combobox for difficulty level -->
+	<s:ComboBox id="cmbDifficultyLevel"
+				chromeColor="#e0effb"
+				color="#000000"
+				left="160"
+				top="90"
+				dataProvider="{ClassroomContext.quizDifficultyLevels}"
+				labelField="qbDifficultyLevelName"
+				prompt="Difficulty Levels"/>
+	<!--Label to show question type-->
+	<s:Label text="Question Type :"
+			 left="50"
+			 top="120"
+			 color="#000000"/>
+	<!--ComboBox to show question types-->
+	<s:ComboBox id="cmbQuestionType"
+				chromeColor="#e0effb"
+				color="#000000"
+				left="160"
+				top="120"
+				dataProvider="{ClassroomContext.quizQuestionTypes}"
+				labelField="qbQuestionTypeName"
+				prompt="Question Types"/>
+	<!--Label to show No of questions-->
+	<s:Label text="No of questions :"
+			 left="50"
+			 top="150"
+			 color="#000000" fontFamily="Arial"/>	
+	<!--Fix for Bug #11174-->
+	<!-- No.of questions field is mandatory , hence use of red * -->
+	<s:Label left="143"
+			 top="150"
+			 width="12"
+			 height="18"
+			 color="#ED3814"
+			 fontFamily="Arial"
+			 fontSize="13"
+			 fontWeight="bold"
+			 text="*"/>
+	<!--Fix for Bug#11177-->
+	<!-- TextInput for nos. of questions-->
+	<s:TextInput id="txtInpNumeric"
+				 color="#000000"
+				 left="160"
+				 top="150"
+				 maxChars="4"
+				 restrict="0-9"/>
+	<!-- Label to show marks-->
+	<s:Label text="Marks :"
+			 left="50"
+			 top="180"
+			 color="#000000"/>	
+	<!--Fix for Bug #11174-->
+	<!-- Marks field is mandatory , hence use of red * -->
+	<s:Label left="90"
+			 top="180"
+			 width="12"
+			 height="18"
+			 color="#ED3814"
+			 fontFamily="Arial"
+			 fontSize="13"
+			 fontWeight="bold"
+			 text="*"/>
+	<!-- TextInput for marks-->
+	<s:TextInput id="txtInpMarks"
+				 color="#000000"
+				 left="160"
+				 top="180"
+				 maxChars="3"
+				 restrict="0-9"/>
+
+	<s:HGroup top="220"
+			  left="120"
+			  right="250" chromeColor="#e0effb">
+
+		<!-- Save Button-->
+		<components:ImageButton id="btnSave" width="62" label="Save" chromeColor="#E0EFFB"
+								click="btnSaveClickHandler(event)" color="#000000" cornerRadius="3"
+								fontFamily="Arial" fontSize="12"/>
+		<!-- Cancel Button-->  
+		<components:ImageButton id="btnCancel" width="62" label="Cancel"
+								click="{closeAddRandomQuestion()}" fontFamily="Arial" fontSize="12" cornerRadius="3" color="#000000"/>
+	</s:HGroup>
+</components:InsidePanel>

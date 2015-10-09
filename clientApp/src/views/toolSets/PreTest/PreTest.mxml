@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: PreTest.mxml
+Module		: Pretest
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+PreTest component is used to check device hardware condition (Microphone,Camera and Speaker).
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 currentState="speaker"
+		 creationComplete="initPreTesting(event)">
+	<fx:Script source="PreTestHandler.as"/>
+	<s:states>
+		<s:State name="speaker"/>
+		<s:State name="microphone"/>
+		<s:State name="video"/>
+		<s:State name="result"/>
+	</s:states>
+
+	<s:Rect width="100%"
+			height="100%">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+	</s:Rect>
+
+	<!--Title for each test-->
+	<s:VGroup id="groupTitle"
+			  top="10"
+			  includeIn="microphone,result,speaker,video"
+			  verticalAlign="top"
+			  width="100%"
+			  height="10%">
+		<s:HGroup width="100%"
+				  height="10%"
+				  horizontalAlign="center"
+				  verticalAlign="middle">
+			<s:Label text.speaker="Step 1 of 4: Check Speaker"
+					 text.microphone="Step 2 of 4: Check Microphone"
+					 text.video="Step 3 of 4: Check Video"
+					 text.result="Step 4 of 4: Test Result"
+					 fontWeight="bold"
+					 color="0xFFFFFF"
+					 fontSize="20"/>
+		</s:HGroup>
+		<s:HGroup width="100%"
+				  height="10%"
+				  horizontalAlign="center"
+				  verticalAlign="middle">
+			<s:Line width="95%">
+				<s:stroke>
+					<s:SolidColorStroke color="0x5b5b5b"
+										weight="2"/>
+				</s:stroke>
+			</s:Line>
+		</s:HGroup>
+	</s:VGroup>
+
+
+	<!--Speaker component-->
+	<s:VGroup id="outerContainer"
+			  width="100%"
+			  height="100%"
+			  x="{groupTitle.x}"
+			  y="{groupTitle.y+groupTitle.height}"
+			  color="0xFFFFFF"
+			  fontSize="13"
+			  fontWeight="bold">
+		<s:VGroup id="groupSpeaker"
+				  width="100%"
+				  height="100%"
+				  includeIn="speaker"
+				  paddingLeft="10"
+				  paddingBottom="10"
+				  paddingTop="10">
+
+			<s:HGroup width="100%"
+					  height="20%"
+					  paddingTop="10">
+				<s:Label text="{PreTestConstants.SPEAKER_INSTRUCTION_MSG}"
+						 width="100%"
+						 height="100%"/>
+			</s:HGroup>
+			<s:HGroup width="100%"
+					  height="100%"
+					  verticalAlign="middle"
+					  horizontalAlign="center">
+
+				<s:Button id="btnPlayAudio"
+						  width="20%"
+						  height="15%"
+						  label="Play Audio"
+						  click="playAudio(event)"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+
+			</s:HGroup>
+		</s:VGroup>
+
+
+		<!--Microphone component-->
+		<s:VGroup id="groupMicrophone"
+				  width="100%"
+				  height="100%"
+				  includeIn="microphone"
+				  paddingLeft="10"
+				  paddingBottom="10"
+				  paddingTop="10">
+
+			<s:HGroup width="100%"
+					  height="8%"
+					  horizontalAlign="left"
+					  verticalAlign="middle">
+
+				<s:Label width="24%"
+						 text="Select an audio device:"/>
+
+				<s:SpinnerListContainer width="50%"
+										height="10%">
+					<s:SpinnerList id="audioDrivers"
+								   width="100%"
+								   textAlign="center"
+								   color="0x000000"
+								   dataProvider="{audioDeveice}">
+					</s:SpinnerList>
+				</s:SpinnerListContainer>
+
+			</s:HGroup>
+			<s:VGroup width="100%"
+					  height="45%"
+					  verticalAlign="top"
+					  horizontalAlign="center"
+					  paddingTop="10">
+				<s:Label text="{PreTestConstants.MICROPHONE_INSTRUCTION_MSG}"
+						 width="100%"
+						 height="50%"/>
+				<s:Label text="{PreTestConstants.MICROPHONE_INFO}"
+						 textAlign="center"
+						 fontStyle="italic"
+						 color="0x00F5FF"/>
+			</s:VGroup>
+			<s:HGroup width="100%"
+					  height="20%"
+					  horizontalAlign="left">
+				<s:Button id="btnRecordAudio"
+						  width="30%"
+						  height="70%"
+						  label="Record Audio"
+						  click="recordAudio(event)"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+				<s:Group id="micLevelCanvas"
+						 width="30%"
+						 height="40%"
+						 visible="false"/>
+			</s:HGroup>
+			<s:HGroup width="100%"
+					  height="20%">
+				<s:Button id="btnPlayRecAudio"
+						  width="30%"
+						  height="70%"
+						  label="Play Recording"
+						  click="playBackAudio(event)"
+						  enabled="false"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+			</s:HGroup>
+		</s:VGroup>
+
+		<!--Video component-->
+		<s:VGroup id="groupVideo"
+				  width="100%"
+				  height="100%"
+				  includeIn="video"
+				  creationComplete="videoDriverChangeHandler(event)"
+				  paddingLeft="10"
+				  paddingBottom="10"
+				  paddingTop="10">
+			<s:HGroup width="100%"
+					  height="10%"
+					  verticalAlign="middle">
+
+				<s:Label width="24%"
+						 text="Select a video device:"/>
+				<s:SpinnerListContainer width="50%"
+										height="10%">
+					<s:SpinnerList id="videoDrivers"
+								   width="100%"
+								   textAlign="center"
+								   color="0x000000"
+								   labelField="name"
+								   change="videoDriverChangeHandler(event)"
+								   dataProvider="{videoDeveice}">
+					</s:SpinnerList>
+				</s:SpinnerListContainer>
+			</s:HGroup>
+			<s:HGroup width="100%"
+					  height="15%"
+					  paddingTop="2">
+				<s:Label text="{PreTestConstants.VIDEO_INSTRUCTION_MSG}"
+						 width="100%"
+						 height="100%"/>
+			</s:HGroup>
+			<s:HGroup width="100%"
+					  height="70%"
+					  verticalAlign="middle"
+					  horizontalAlign="center">
+
+				<s:HGroup id="videoContainer"
+						  width="40%"
+						  height="100%"/>
+
+			</s:HGroup>
+		</s:VGroup>
+
+		<!--Result component-->
+		<s:VGroup id="groupResult"
+				  width="100%"
+				  height="100%"
+				  includeIn="result"
+				  paddingLeft="10"
+				  paddingBottom="10"
+				  paddingTop="10"
+				  horizontalAlign="center"
+				  verticalAlign="middle">
+			<s:HGroup width="50%">
+				<s:HGroup width="50%">
+					<s:Label id="lblSpaeker"
+							 text="Speaker Test  "/>
+				</s:HGroup>
+				<s:HGroup width="50%">
+					<s:Label id="lblSpaekerResult"/>
+				</s:HGroup>
+			</s:HGroup>
+			<s:HGroup width="50%">
+				<s:HGroup width="50%">
+					<s:Label id="lblMicroPhone"
+							 text="Microphone Test  "/>
+				</s:HGroup>
+				<s:HGroup width="50%">
+					<s:Label id="lblMicroPhoneResult"/>
+				</s:HGroup>
+			</s:HGroup>
+			<s:HGroup width="50%">
+				<s:HGroup width="50%">
+					<s:Label id="lblVideo"
+							 text="Video Test  "/>
+				</s:HGroup>
+				<s:HGroup width="50%">
+					<s:Label id="lblVideoResult"/>
+				</s:HGroup>
+			</s:HGroup>
+		</s:VGroup>
+
+		<!--Navigation Buttons-->
+
+		<s:VGroup id="groupControls"
+				  bottom="0"
+				  width="100%"
+				  height="12%"
+				  verticalAlign="bottom"
+				  paddingBottom="5"
+				  fontSize="13"
+				  color="0xFFFFFF">
+			<s:HGroup width="100%"
+					  height="100%"
+					  verticalAlign="middle"
+					  horizontalAlign="center">
+				<s:Button id="btnPrev"
+						  includeIn="microphone,video,result"
+						  width="20%"
+						  height="100%"
+						  label="Prev"
+						  click.microphone="currentState = 'speaker'"
+						  click.video="currentState = 'microphone'"
+						  click.result="currentState = 'video'"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+				<s:Button id="btnNext"
+						  includeIn="speaker,microphone,video"
+						  width="20%"
+						  height="100%"
+						  label="Next"
+						  click.speaker="currentState = 'microphone'"
+						  click.microphone="currentState = 'video'"
+						  click.video="currentState = 'result';goToResult()"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+				<s:Button id="btnFinish"
+						  includeIn="speaker,microphone,video,result"
+						  width="20%"
+						  label.result="Finish"
+						  height="100%"
+						  label="Close"
+						  click="btnFinishClickHandler(event)"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:VGroup>
+</s:Group>

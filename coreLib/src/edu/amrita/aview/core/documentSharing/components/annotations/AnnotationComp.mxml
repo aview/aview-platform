@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<!--
+	Author:Haridasan
+	This is the  component for Annotation  which is added to the Document sharing
+	-->
+	<fx:Script source="AnnotationCompHandler.as"/>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="onAnnotationToolSelected", type="edu.amrita.aview.core.documentSharing.components.annotations.AnnotationToolSelected")]
+	</fx:Metadata>
+	<s:HGroup x="0"
+			  y="0"
+			  width="100%"
+			  height="26"
+			  accentColor="#609896"
+			  contentBackgroundColor="#120202"
+			  fontStyle="normal"
+			  fontWeight="normal"
+			  textDecoration="none">
+		<s:Button id="pen"
+				  width="45"
+				  height="25"
+				  toolTip="Pen"
+				  click="pen_clickHandler(event)"
+				  enabled="true"
+				  icon="@Embed(source='assets/images/Pen_icon.png')"/>
+		<s:Button id="highlighter"
+				  width="45"
+				  height="25"
+				  toolTip="Highlighter"
+				  click="highlighter_clickHandler(event)"
+				  icon="@Embed(source='assets/images/highlighter.png')"/>
+		<s:Button id="eraser"
+				  width="45"
+				  height="25"
+				  toolTip="Clear All"
+				  click="eraser_clickHandler(event)"
+				  icon="@Embed(source='assets/images/eraser.png')"/>
+	</s:HGroup>
+</s:Group>

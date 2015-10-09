@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: StudentViewLiveQuiz.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to display quiz to student , consisting of questions and its answers
+-->
+<components1:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*"
+						 xmlns:questionPaper="edu.amrita.aview.core.evaluation.questionPaper.*"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 width="600"
+						 height="550"
+						 backgroundColor="#e0effb"
+						
+						 color="#FFFFFF"
+						 dropShadowVisible="false"
+						 focusColor="#A9F9A0"
+						 title="{titleForPnl}"
+						 xmlns:components1="edu.amrita.aview.core.shared.components.*">
+	<!-- Setting vertical layout to this component -->
+	<components:layout>
+		<s:VerticalLayout paddingTop="2"/>
+	</components:layout>
+
+	<fx:Script source="StudentViewLiveQuizUIHandler.as"/>
+
+	<fx:Declarations>
+		<!-- To animate an image -->
+		<s:Animate id="animateFader"
+				   duration="500"
+				   repeatBehavior="reverse"
+				   repeatCount="0"
+				   target="{imgbell}">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="1.0"
+								valueTo="0.0"/>
+		</s:Animate>
+	</fx:Declarations>
+	<!-- Main canvas container-->
+	<mx:Canvas id="mainCanvas" top="0" width="100%" height="90%" color="#000000">
+		<!-- Hgroup used in quiz -->
+		<!--Fix for Bug id 17579 start-->
+		<s:HGroup  y="{isPolling?0:3}"
+				   id="hGroupTop" 
+				   width="100%">
+			<!--Fix for Bug id 17579 end-->
+			<!-- Label to show Total Marks -->
+			<s:Label visible="{!isPolling}" color="#000000" fontFamily="Arial"
+					 fontSize="12" fontWeight="bold" includeInLayout="{!isPolling}"
+					 text="Total Marks :"/>
+			<!-- Label to show total marks -->
+			<s:Label id="lblTotalMarks"
+					 fontFamily="Arial"
+					 fontSize="12"
+					 fontWeight="bold" color="#000000"
+					 includeInLayout="{!isPolling}"
+					 visible="{!isPolling}"/>
+			<s:Spacer width="20"/>
+			<!-- Label to show Current Question/Total Questions -->
+			<s:Label fontFamily="Arial"
+					 fontSize="12"
+					 fontWeight="bold"
+					 color="#000000"
+					 text="Current Question/Total Questions :"
+					 includeInLayout="{!isPolling}"
+					 visible="{!isPolling}"/>
+			<!-- Label to show question count -->
+			<s:Label id="lblNextQuestionCount"
+					 fontFamily="Arial"
+					 fontSize="12"
+					 fontWeight="bold"
+					 color="#000000"
+					 includeInLayout="{!isPolling}"
+					 visible="{!isPolling}"/>
+			<!-- Image to show a bell ringing when quiz time is less than 1 minute -->
+			<s:Image id="imgbell"  
+					 includeInLayout="{!isPolling}" 
+					 visible="{!isPolling}"/>
+			<!--Fix for Bug id 17579 start-->
+			<!-- Label to show Count -->
+			<s:Label width="67" 
+					 color="Red" 
+					 fontFamily="Arial" 
+					 fontSize="12"
+					 paddingRight="5" 
+					 paddingTop="5" 
+					 includeInLayout="{isPolling}" 
+					 visible="{isPolling}"
+					 fontWeight="bold"
+					 text="Time left:"/>
+			<!-- Label to show count -->
+			<s:Label id="lblCounter" 
+					 width="113" 
+					 color="Green" 
+					 fontSize="12" 
+					 fontWeight="bold" 
+					 paddingRight="5" 
+					 paddingTop="5"
+					 fontFamily="Arial"/>
+			<!--Fix for Bug id 17579 end-->
+		</s:HGroup>
+		<s:HGroup y="{isPolling?3:(hGroupTop.y + hGroupTop.height + 10)}" width="100%" height="50%" id="previewBox" horizontalAlign="center" includeInLayout="false" visible="false">
+					   <s:VideoPlayer id="videoPlayer" width="60%" height="100%" visible="false" includeInLayout="false" complete="videoPlayerCompletePlaying()"/>
+					    
+					   <s:Image id="imageLoader" width="100%" height="100%" visible="false" includeInLayout="false" 
+								source="{myImage}"/>
+				   </s:HGroup>
+		<!-- Canvas to show question and answer -->
+		<mx:Canvas id="canAnswer"
+				   y="{previewBox.visible?(previewBox.y + previewBox.height + 10):(hGroupTop.y + hGroupTop.height + 10)}"
+				   borderAlpha="0.95"
+				   cornerRadius="0"
+				   horizontalScrollPolicy="off"
+				   width="100%"
+				   height="70%">
+			<!-- Hbox for questions -->
+			<mx:HBox id="hBoxAllQuestions"
+					 visible="false"
+					 top="0"
+					 width="90%"
+					 height="70%" 
+					 left="20" 
+					 horizontalGap="10">
+
+				<!-- Label for question number -->
+				<!--Fix for Bug#15482,Bug#15376-->
+				<s:Label id="lblQuestionNumber"
+						 fontWeight="bold"
+						 width="5%" verticalAlign="middle"
+						 height="10%"/>
+				<!-- Repeater to show all the question and answer -->
+				<mx:Repeater id="rep1"
+							 dataProvider="{questionAnsObj}"
+							 width="95%"
+							 height="99%">
+					<!-- QuizQuestionAnswer component to show question and answer -->
+					<quiz:QuizQuestionAnswer quizQuestion="{rep1.currentItem}"
+											 radioButtonClick="{radioButtonClickHandler(event)}"
+											 checkBoxClick="{handlerAnswerForMultipleResponse(event)}"
+											 isPolling="{isPolling}"/>
+
+
+				</mx:Repeater>
+			</mx:HBox>
+		</mx:Canvas>
+	</mx:Canvas>
+	
+	<s:VGroup height="10%"
+			  width="100%"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+		<mx:HRule width="100%"/>
+		<!-- HGroup for all buttons -->
+		<s:HGroup id="hGroupAllButtons"
+				  chromeColor="#CCCCCC">
+		<!-- Button for previous question -->
+			<components1:ImageButton id="btnPrevious" visible="{!isPolling}" width="70"
+									 label="Previous" chromeColor="#E0EFFB"
+									 click="{loadPrevQuestion(event)}" color="#000000"
+									 cornerRadius="3" enabled="{currentQuestionIndex==0?false:true}"
+									 fontSize="12" includeInLayout="{!isPolling}"/>
+		<!-- Button for next question -->
+			<components1:ImageButton id="btnNext" visible="{!isPolling}" width="70" label="Next"
+									 chromeColor="#E0EFFB" click="{loadNextQuestion(event)}"
+									 color="#000000" cornerRadius="3" fontSize="12"
+									 includeInLayout="{!isPolling}"/>
+<!--					  enabled="{currentIndex == totalQuestions-1?false:true}"-->
+		<!-- Button to submit quiz -->
+			<components1:ImageButton id="btnFinish" width="70" label="Submit" chromeColor="#E0EFFB"
+									 click="{conformationForSubmit(event)}" color="#000000"
+									 cornerRadius="3" fontSize="12"/>
+		</s:HGroup>
+	</s:VGroup>
+</components1:InsidePanel>

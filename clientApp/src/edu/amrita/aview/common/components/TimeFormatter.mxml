@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: TimeFormatter.mxml
+Module		: Common
+Developer(s): Sethu Subramanian N
+Reviewer(s)	: Monisha Mohanan,Veena Gopal K.V
+
+-->
+<!--MMCR:-Function description -->
+<mx:Label xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<mx:DateFormatter id="timeFormatter"
+						  formatString="LL:NN A"/>
+
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			public var fieldName:String="";
+			
+			/**
+			 * @public
+			 *
+			 * @param value type of Object
+			 * @return void
+			 */
+			override public function set data(value:Object):void
+			{
+				super.data=value;
+				if (value == null)
+				{
+					this.text="";
+					return;
+				}
+				
+				try
+				{
+					this.text=timeFormatter.format(value[fieldName]);
+				}
+				catch (e:Error)
+				{
+					this.text="";
+				}
+			}
+		]]>
+	</fx:Script>
+
+</mx:Label>

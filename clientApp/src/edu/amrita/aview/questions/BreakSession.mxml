@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: BreakSession.mxml
+Module		: Question
+Developer(s): Ravishankar
+Reviewer(s)	: Sinu
+
+The UI layout to facilitate scheduling a break from an ongoing classroom session.
+The UI items defined for the Break Session feature is:-
+	a)	A text input message from the initiater of the break.
+	b)	A text input of the duration of the break in minutes.
+	c)	A check box to indicate if posting and voting of Questions is disabled / enabled.
+	d)	A trigger point to initiate the break via a SEND button or to exit the break session pop up via a CANCEL button.
+The message from (a) and the break duration in minutes from (b) above is notified to all the session attendees.
+
+-->
+<components1:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:components="edu.amrita.aview.common.components.*"
+						 xmlns:autoComplete="edu.amrita.aview.common.components.autoComplete.*"
+						 xmlns:xt="library://ns.tink.ws/flex/mx"
+						 backgroundColor="#e0effb"
+						 borderColor="#2a5ea4"
+						 borderVisible="true"
+						 creationComplete="init(event)"
+						 dropShadowVisible="false"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 width="420"
+						 height="240"
+						 title="{Constants.BREAK_SESSION_POPUP_TITLE}"
+						 xmlns:components1="edu.amrita.aview.common.components.*">
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+
+	<!-- Script to include handler -->
+	<fx:Script source="BreakSessionAS.as"/>
+
+	<!-- Script to include style(s) -->
+	<fx:Script source="QuestionIcons.as"/>
+
+	<mx:Canvas left="5"
+			   right="5"
+			   top="5"
+			   bottom="5"
+			   cornerRadius="3"
+			   borderColor="#d2e7f7"
+			   borderVisible="false"
+			   borderStyle="solid"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+
+		<mx:VBox width="100%"
+				 height="100%"
+				 cornerRadius="5"
+				 backgroundColor="#e0effb"
+				 borderStyle="solid"
+				 borderVisible="false"
+				 y="0"
+				 x="0"
+				 verticalAlign="middle"
+				 verticalGap="9">
+			<mx:VBox width="100%"
+					 height="15%"
+					 paddingLeft="12">
+				<!-- Label to indicate the area where the UI message is to be input -->
+				<mx:Label fontSize="12"
+						  fontWeight="bold"
+						  text="{Constants.BREAK_CURRENT_SESSION_PROMPT}"
+						  paddingTop="5"/>
+				<!-- Prompt the UI message to be input -->
+				<mx:TextInput id="breakSessionMessageTextInput"
+							  width="92%"
+							  height="35"
+							  borderColor="#000000"
+							  maxChars="150"
+							  color="#090A0A"
+							  enter="initiateateSessionBreak()"
+							  paddingLeft="10"
+							  fontWeight="normal"
+							  focusIn="breakSessionMessageTextInput_focusInHandler(event)"
+							  focusOut="breakSessionMessageTextInput_focusOutHandler(event)"
+							  text="{Constants.BREAK_MESSAGE_INPUT_TEXT}"
+							  alpha="0.5"/>
+			</mx:VBox>
+			<mx:HBox>
+				<!-- Label to indicate the UI break duration to be input -->
+				<mx:Label paddingLeft="12"
+						  paddingTop="3"
+						  fontSize="12"
+						  fontWeight="bold"
+						  text="Break duration: "/>
+				<!-- UI break duration prompt in minutes to be input -->
+				<mx:TextInput id="breakSessionMinutesTextInput"
+							  toolTip="Break value in minutes"
+							  borderColor="#000000"
+							  color="#090A0A"
+							  maxChars="2"
+							  restrict="0-9"
+							  fontWeight="normal"
+							  focusIn="breakSessionMinutesTextInput_focusInHandler(event)"
+							  text="01"/>
+				<!-- Label to indicate the unit of break duration -->
+				<mx:Label paddingTop="3"
+						  fontSize="12"
+						  fontWeight="bold"
+						  text=" Minute(s)"/>
+			</mx:HBox>
+			<mx:HBox>
+				<!-- Checkbox to select enabling or disabling of posting and voting of Questions -->
+				<mx:CheckBox id="questionAnswerEnabledStateCheckBox"
+							 fontSize="9"
+							 fontWeight="normal"
+							 chromeColor="#e0effb"
+							 paddingLeft="12"
+							 paddingTop="9"
+							 toolTip="Enable / Disable Question Answer"
+							 selected="{questionAnswerEnabledState}"/>
+				<!-- Label to indicate what the checkbox is for -->
+				<mx:Label fontSize="12"
+						  fontWeight="bold"
+						  text="{Constants.QUESTIONANSWER_STATUS}"
+						  paddingTop="9"/>
+			</mx:HBox>
+			<mx:HBox width="100%"
+					 horizontalAlign="center"
+					 backgroundColor="#e0effb"
+					 borderColor="#1AB1F7"
+					 borderVisible="true">
+				<!-- Initiate action for the session break -->
+				<mx:Button id="sendButton"
+						   width="55"
+						   color="#040404"
+						   click="initiateateSessionBreak()"
+						   label="Send"
+						   fontSize="11"
+						   cornerRadius="3"
+						   chromeColor="#e0effb"
+						   enabled="{this.parentDocument.usersConnection.netConnection.connected}"
+						   toolTip="Send Break Message"/>
+				<!-- Cancel the session break action -->
+				<mx:Button id="btnCancel"
+						   width="55"
+						   color="#040404"
+						   cornerRadius="3"
+						   chromeColor="#e0effb"
+						   click="cancelSessionBreak()"
+						   label="Cancel"
+						   fontSize="11"
+						   enabled="{this.parentDocument.usersConnection.netConnection.connected}"
+						   toolTip="Cancel Session Break"/>
+			</mx:HBox>
+		</mx:VBox>
+
+	</mx:Canvas>
+</components1:InsidePanel>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StudentMobileAnswerSheet.mxml
+Module		: Quiz
+Developer(s): Jeevanantham N
+Reviewer(s)	: Sivaram SK 
+
+StudentMobileAnswerSheet component is used to view student answer sheet.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 initialize="initApp()">
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.evaluation.QuizContext;
+			import edu.amrita.aview.core.evaluation.helper.QuizQuestionResponseHelper;
+			import edu.amrita.aview.core.evaluation.vo.QuizResponseVO;
+			import edu.amrita.aview.core.evaluation.vo.QuizVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+
+			/**
+			 * Quiz id for student answer
+			 */
+			[Bindable]
+			public var quizIdForStudentAns:Number=0;
+			/**
+			 * Instance of quiz to get user name
+			 */
+			[Bindable]
+			public var quizVO:QuizVO;
+			/**
+			 * Instance of QuizResponseVO
+			 */
+			[Bindable]
+			private var quizResponseVO:QuizResponseVO;
+			/**
+			 * Holds quiz questions
+			 */
+			[Bindable]
+			public var questions:ArrayCollection;
+			/**
+			 * Instance of QuizQuestionResponseHelper to get answer sheet
+			 */
+			private var quizQuestionResponseHelper:QuizQuestionResponseHelper;
+
+			/**
+			 * @private
+			 *
+			 * To invoke QuizQuestionResponseHelper to get answer sheet
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function initApp():void
+			{
+				quizQuestionResponseHelper=new QuizQuestionResponseHelper();
+				FlexGlobals.topLevelApplication.mainApp.studentLiveQuizView.studentLiveQuizResultComp.btnViewResult.enabled = false;
+				quizQuestionResponseHelper.getStudentAnswerSheet(quizIdForStudentAns, quizVO.userName,getStudentAnswerSheetResultHandler);
+			}
+
+			/**
+			 * @public
+			 *
+			 * Result handler to get answer sheet
+			 *
+			 * @param event of ResultEvent
+			 * @return void
+			 */
+			public function getStudentAnswerSheetResultHandler(event:ResultEvent):void
+			{
+				var tempAnswerArray:ArrayCollection=new ArrayCollection();
+				var tmpQuestions:ArrayCollection=new ArrayCollection();
+				quizResponseVO=event.result.quizResponse;
+				tempAnswerArray=event.result.quizQuestions as ArrayCollection;
+				QuizContext.copyDataByQuizSequence(tmpQuestions, tempAnswerArray);
+				questions=tmpQuestions;
+				FlexGlobals.topLevelApplication.mainApp.studentLiveQuizView.studentLiveQuizResultComp.btnViewResult.enabled = true;
+			}
+
+		]]>
+	</fx:Script>
+	<s:VGroup color="0xFFFFFF"
+			  fontWeight="bold"
+			  width="100%"
+			  height="100%">
+		<!--Label for total marks and score-->
+		<s:HGroup width="100%"
+				  horizontalAlign="left"
+				  fontSize="12">
+			<s:Label text="Total Marks : {Math.round(quizVO.totalMarks*100)/100}"
+					 id="lblDate"
+					 paddingLeft="10"/>
+			<s:Spacer width="80%"/>
+			<s:Label text="Score : {Math.round(quizResponseVO.totalScore*100)/100}"
+					 id="lblMaxMarks"/>
+		</s:HGroup>
+		<!--Indication for correct and user answer-->
+		<s:VGroup width="100%"
+				  fontSize="12">
+			<s:HGroup width="100%"
+					  horizontalAlign="center"
+					  verticalAlign="middle"
+					  paddingLeft="10">
+				<s:Label text="Correct Answer :"/>
+				<s:Image id="imgCorrect"
+						 source="@Embed(source='assets/images/tick-icon.png')"
+						 width="17"
+						 height="16"/>
+				<s:Label text="User Answer :"/>
+				<s:Button width="14"
+						  height="15"
+						  chromeColor="#F88017"/>
+			</s:HGroup>
+			<s:Line width="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="0x5b5b5b"
+										weight="1"/>
+				</s:stroke>
+			</s:Line>
+		</s:VGroup>
+
+		<s:Spacer/>
+		<s:Group width="100%"
+				 height="100%">
+			<s:HGroup top="0"
+					  width="100%"
+					  height="100%"
+					  paddingRight="10"
+					  paddingLeft="10">
+				<s:Scroller width="100%"
+							height="100%">
+					<!--Answer container-->
+					<s:DataGroup id="answerSheetContainer"
+								 width="100%"
+								 height="100%"
+								 dataProvider="{questions}">
+						<s:layout>
+							<s:VerticalLayout/>
+						</s:layout>
+						<s:itemRenderer>
+							<fx:Component>
+								<s:ItemRenderer width="100%"
+												height="100%">
+									<s:Rect width="100%"
+											height="100%">
+										<s:fill>
+											<s:SolidColor color="0x071124"/>
+										</s:fill>
+									</s:Rect>
+									<s:VGroup width="100%"
+											  height="100%"
+											  color="0xFFFFFF"
+											  fontWeight="bold">
+										<!--Label for question and marks-->
+										<s:HGroup paddingTop="10"
+												  width="100%"
+												  height="10%">
+											<s:Label width="100%"
+													 id="lblQuestion"
+													 text="{(this.itemIndex+1).toString() + ') ' + data.questionText}"
+													 fontWeight="bold"/>
+											<s:Label text="{' [ marks: ' + data.marks + ']'}"/>
+										</s:HGroup>
+										<!--User choices-->
+										<s:DataGroup id="answerChoices"
+													 width="100%"
+													 height="100%"
+													 dataProvider="{data.quizAnswerChoices}">
+											<s:layout>
+												<s:VerticalLayout useVirtualLayout="true"/>
+											</s:layout>
+											<s:itemRenderer>
+												<fx:Component>
+													<s:ItemRenderer>
+														<fx:Script>
+															<![CDATA[
+																/**
+																 * Importing mx library
+																 */
+																import mx.events.FlexEvent;
+																/**
+																 * @protected
+																 *
+																 * To change the color of label based on the user answer 
+																 *
+																 * @param event of FlexEvent
+																 * @return void
+																 */
+																protected function checkForUserAnswerHandler(event:FlexEvent):void
+																{
+																	if (data.studentAnsFraction == 1)
+																	{
+																		lblUserAns.setStyle("color", "#F88017");
+																	}
+																	else
+																	{
+																		lblUserAns.setStyle("color", "#408CF3");
+																	}
+																}
+															]]>
+														</fx:Script>
+														<s:Rect width="100%"
+																height="100%">
+															<s:fill>
+																<s:SolidColor color="0x071124"/>
+															</s:fill>
+														</s:Rect>
+														<s:Spacer height="10"/>
+														<s:HGroup>
+															<s:Image id="imgUserSelection"
+																	 source="@Embed(source='assets/images/tick-icon.png')"
+																	 visible="{data.fraction!=0}"
+																	 width="17"
+																	 height="16"
+																	 verticalAlign="middle"
+																	 horizontalAlign="center"/>
+															<s:Label text="{'('+(String.fromCharCode(this.itemIndex+97)) +')  '+ data.choiceText}"
+																	 fontSize="12"
+																	 alpha=".8"
+																	 id="lblUserAns"
+																	 width="100%"
+																	 creationComplete="checkForUserAnswerHandler(event)"/>
+															<s:Spacer height="10"/>
+														</s:HGroup>
+													</s:ItemRenderer>
+												</fx:Component>
+											</s:itemRenderer>
+										</s:DataGroup>
+									</s:VGroup>
+								</s:ItemRenderer>
+							</fx:Component>
+						</s:itemRenderer>
+					</s:DataGroup>
+				</s:Scroller>
+			</s:HGroup>
+		</s:Group>
+
+	</s:VGroup>
+</s:Group>

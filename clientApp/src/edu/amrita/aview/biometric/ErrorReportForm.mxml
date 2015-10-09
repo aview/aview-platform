@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: ErrorReportForm.mxml
+Module		: Biometric
+Developer(s): Jerald P
+Reviewer(s)	: Ramesh Guntha
+
+This component invoked when user select Biometric login.
+This component used for error message handling.
+-->
+<!-- VGCR:-Comments for each section -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="300"
+		   height="158"
+		   initialize="init()"
+		   xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="edu.amrita.aview.common.components.*">
+
+	<mx:Script source="ErrorReportFormHandler.as"/>
+
+	<s:Animate id="fader"
+			   duration="500"
+			   repeatBehavior="reverse"
+			   repeatCount="0"
+			   target="{errorMessage}">
+		<s:SimpleMotionPath property="alpha"
+							valueFrom="1.0"
+							valueTo="0.0"/>
+	</s:Animate>
+
+	<mx:Panel id="errorReport"
+			  x="0"
+			  y="0"
+			  width="282"
+			  height="134"
+			  backgroundColor="#e0effb"
+			  borderColor="#1AB1F7"
+			  borderStyle="solid"
+			  borderVisible="true"
+			  chromeColor="#97CAFA"
+			  color="#000000"
+			  fontFamily="Arial"
+			  creationComplete="setTitleString()"
+			  layout="absolute">
+		<mx:Text id="errorMessage"
+				 x="5"
+				 y="5"
+				 width="100%"
+				 fontSize="12"
+				 fontWeight="bold"
+				 creationComplete="assignOutputString(); fader.play();"
+				 color="#FF0000"/>
+		<mx:Text id="guideLine"
+				 x="5"
+				 y="{errorMessage.y+23}"
+				 fontSize="12"
+				 htmlText="{htmlStr1}"
+				 color="#000000"
+				 buttonMode="true"
+				 useHandCursor="true"
+				 mouseChildren="false"/>
+		<!--<mx:Text x="{guideLine.width + 5}" y="{errorMessage.y+30}" fontSize="12" htmlText="{htmlStr2}" color="#000000"/>
+		<mx:Text x="5" y="{guideLine.y + 15}" fontSize="12" htmlText="{htmlStr3}" color="#000000"/>-->
+		<components:MxImageButton id="btnOk"
+				   x="105"
+				   y="72"
+				   label="{resourceManager.getString('myResource','biometric.ok')}"
+				   chromeColor="#CCCCCC"
+				   color="#000000"
+				   click="PopUpManager.removePopUp(this)"
+				   fontWeight="bold"/>
+	</mx:Panel>
+
+</mx:Canvas>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: MobileAnnotationTool.mxml
+Module		: Document sharing
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh
+
+MobileAnnotationTool component is custom component to,
+
+	1. Draw on the document
+	2. Erase the drawings
+-->
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="100%"
+		   height="100%">
+	<fx:Script>
+		<![CDATA[
+			
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+
+
+			/**
+			 * Used to set icon for pen button
+			 */
+			[Bindable]
+			[Embed(source="assets/images/Pen_icon.png")]
+			public var pen:Class;
+			/**
+			 * Used to set icon for highlighter button
+			 */
+			[Bindable]
+			[Embed(source="assets/images/highlighter.png")]
+			public var highLighter:Class;
+			/**
+			 * Used to set icon for eraser button
+			 */
+			[Bindable]
+			[Embed(source="assets/images/eraser.png")]
+			public var eraser:Class;
+
+			/**
+			 * @protected
+			 *
+			 * To dispatch event to draw on document using pen tool
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function penToolClickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AnnotationToolSelected("Pen"));
+			}
+
+			/**
+			 * @protected
+			 *
+			 * To dispatch event to draw on document using higjlighter tool
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function highlighterClickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AnnotationToolSelected("Highlight"));
+			}
+
+			/**
+			 * @protected
+			 *
+			 * To dispatch event to erase the highlighter/pen drawings from document
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function eraserClickHandler(event:MouseEvent):void
+			{
+				this.dispatchEvent(new AnnotationToolSelected("Eraser"));
+			}
+
+			/**
+			 * @protected
+			 *
+			 * To show tooltip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function annotationTooltipHandler(event:MouseEvent):void
+			{
+				var docTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				docTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Metadata>
+		[Event(name="onAnnotationToolSelected", type="components.AnnotationTool.AnnotationToolSelected")]
+	</fx:Metadata>
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle"
+						  paddingLeft="5"
+						  paddingBottom="5"
+						  paddingRight="5"
+						  paddingTop="10"/>
+	</s:layout>
+	<s:VGroup width="100%"
+			  height="100%"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+		<!--Title for MobileAnnotation tool-->
+		<s:VGroup width="100%"
+				  height="20%"
+				  verticalAlign="middle"
+				  horizontalAlign="center">
+
+			<s:Label text="Annotaion Tools"
+					 fontWeight="bold"/>
+			<s:Line width="90%">
+				<s:stroke>
+					<s:SolidColorStroke color="0x000000"
+										weight="1"
+										alpha="0.4"/>
+				</s:stroke>
+			</s:Line>
+		</s:VGroup>
+		<s:HGroup width="100%"
+				  height="100%"
+				  horizontalAlign="center"
+				  verticalAlign="middle"
+				  paddingLeft="5"
+				  paddingRight="5">
+			<!--Pen tool-->
+			<s:Button id="btnPen"
+					  width="100%"
+					  height="100%"
+					  toolTip="Pen"
+					  click="penToolClickHandler(event)"
+					  enabled="true"
+					  icon="{pen}"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  rollOver="annotationTooltipHandler(event)"
+					  mouseDown="annotationTooltipHandler(event)"/>
+			<!--Highlighter tool-->
+			<s:Button id="btnHighlighter"
+					  width="100%"
+					  height="100%"
+					  toolTip="Highlighter"
+					  click="highlighterClickHandler(event)"
+					  icon="{highLighter}"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  rollOver="annotationTooltipHandler(event)"
+					  mouseDown="annotationTooltipHandler(event)"/>
+			<!--Eraser tool-->
+			<s:Button id="btnEraser"
+					  width="100%"
+					  height="100%"
+					  toolTip="Clear All"
+					  click="eraserClickHandler(event)"
+					  icon="{eraser}"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  rollOver="annotationTooltipHandler(event)"
+					  mouseDown="annotationTooltipHandler(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:Callout>

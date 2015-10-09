@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File			: QuizResult.mxml
+Module			: Evaluation
+Developer(s)	: Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	    : Vinod Kumar P  
+
+This component is used to create , edit and delete a quiz
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="100%"
+		   height="100%"
+		   backgroundColor="#e0effb"
+		   focusColor="#A9F9A0"
+		   initialize="{initApp()}" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<mx:Script source="QuizResultUIHandler.as"/>
+	<!-- Main hbox container -->
+	<mx:HBox id="hBoxMain"
+			 width="100%"
+			 height="100%"
+			 backgroundColor="#e0effb"
+			 borderColor="#ffffff">
+		<!-- Canvas for tree -->
+		<mx:Canvas id="canvasForTree"
+				   width="20%"
+				   height="100%"
+				   minWidth="180"
+				   maxWidth="180">
+			<!-- Tree for quiz -->
+			<!--Fix for Bug#16956-->
+			<mx:Tree id="qzTree"
+					 width="100%"
+					 height="95%"
+					 itemClick="qzTreeOnClick(event)"
+					 dataProvider="{treeDataProvider}"
+					 itemDoubleClick="qzTreeOnDoubleClick(event)"
+					 doubleClickEnabled="true"
+					 labelFunction="getNodes"
+					 focusEnabled="false"
+					 dataTipFunction="showToolTip"
+					 showDataTips="true">
+				<mx:itemEditor>
+					<mx:Component>
+						<mx:VBox>
+							<!-- TextInput to accept new quiz name. -->
+							<s:TextInput id="txtInpNewQuizName"
+										 text="{data.quizName}"
+										 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+						</mx:VBox>
+					</mx:Component>
+				</mx:itemEditor>
+			</mx:Tree>
+			<!-- Button to add quiz. -->
+			<components:ImageButton id="btnAdd" x="0" y="{qzTree.height+5}" width="60" label="Create"
+									chromeColor="#E0EFFB" click="{createQuiz()}" color="#000000"
+									cornerRadius="3" enabled="false" fontFamily="Arial"/>
+			<!-- Button to edit quiz. -->
+			<components:ImageButton id="btnEdit" x="{btnAdd.width}" y="{qzTree.height+5}" width="60"
+									label="Edit" chromeColor="#E0EFFB" click="{editQuiz()}"
+									color="#000000" cornerRadius="3" enabled="false"
+									fontFamily="Arial"/>
+			<!-- Button to delete quiz. -->
+			<components:ImageButton id="btnDelete" x="{btnAdd.width+btnEdit.width}"
+									y="{qzTree.height+5}" width="60" label="Delete"
+									chromeColor="#E0EFFB" click="{deleteQuiz()}" color="#000000"
+									cornerRadius="3" fontFamily="Arial"/>
+
+		</mx:Canvas>
+
+		<!-- Canvas contaner to hold the content -->
+		<mx:Canvas id="canContent"
+				   width="100%"
+				   height="100%"
+				   backgroundColor="#e0effb"
+				   borderStyle="solid">
+			<mx:Canvas width="100%"
+					   height="100%"/>
+		</mx:Canvas>
+	</mx:HBox>
+</mx:Canvas>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File			: LiveQuizResult.mxml
+Module			: Evaluation
+Developer(s)	: Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)		: Vinod Kumar P
+
+This component is used to view result in live classroom
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						xmlns:s="library://ns.adobe.com/flex/spark"
+						xmlns:mx="library://ns.adobe.com/flex/mx"
+						xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*"
+						xmlns:components="edu.amrita.aview.core.shared.components.*"
+						width="850" height="700" backgroundColor="#e0effb" color="#0653B3"
+						currentState="listResult" dropShadowVisible="false" focusColor="#A9F9A0"
+						fontFamily="Arial" fontSize="15" textAlign="center"
+						color.listResult="#FFFFFF">
+
+	<fx:Script source="LiveQuizResultUIHandler.as"/>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace components "components.*";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace quiz "edu.amrita.aview.core.evaluation.quiz.*";
+		.headerStyleClass {
+			vertical-align:bottom;     
+		}
+	</fx:Style>
+	<fx:Declarations>
+		<!--Date formatter-->
+		<mx:DateFormatter id="dateFormatter"
+						  formatString="DD MMM YYYY HH:NN:SS"/>
+	</fx:Declarations>
+	<!-- States -->
+	<components:states>
+		<s:State name="viewResult"
+				 enterState="initializeResultWindow()"/>
+		<s:State name="listResult"/>
+		<s:State name="studentResult"
+				 enterState="initializeStudentResultWindow()"/>
+	</components:states>
+	<!-- Main vbox container -->
+	<mx:VBox width="100%"
+			 height="100%">
+		
+	<!-- Vbox container for result -->
+		<mx:VBox id="vBoxResult"
+				 width="100%"
+				 height="100%"
+				 includeIn="viewResult,studentResult">
+
+		</mx:VBox>
+	<!-- Vbox container to list result -->
+		<mx:VBox width="100%"
+				 height="100%"
+				 includeIn="listResult"
+				 horizontalAlign="center"
+				 verticalAlign="middle">
+
+			<!-- Customized data grid to show quiz list -->
+			<components:RowColorDataGrid id="dgQuiz" width="95%" height="98%" chromeColor="#DDDDDD"
+										 color="#000000" dataProvider="{quizzesArray}"
+										 doubleClick="quizzesGridDoubleClickHandler(event)"
+										 doubleClickEnabled="true" textAlign="left">
+				<components:columns>
+					<!-- Data grid column for quiz name -->
+					<mx:DataGridColumn headerText="Quiz Name"
+									   dataField="quizName"/>
+					<!-- Data grid column for quiz type -->
+					<mx:DataGridColumn headerText="Quiz Type"
+									   dataField="quizType"/>
+					<!-- Data grid column for start date -->
+					<mx:DataGridColumn headerText="Start Date &amp; Time"
+									   dataField="timeOpen"
+									   labelFunction="getDateLabel"/>
+				</components:columns>
+			</components:RowColorDataGrid>
+
+		</mx:VBox>
+
+		<mx:VBox width="100%"
+				 chromeColor="#CCCCCC"
+				 horizontalAlign="center"
+				 verticalAlign="middle"
+				 paddingBottom="5">
+			<mx:HRule width="100%"/>
+			<mx:HBox horizontalAlign="center"
+					 verticalAlign="middle">
+				<!-- Button to go back to view list of result -->
+				<components:ImageButton id="btnBack"
+						   label="Back"
+						   chromeColor="#E0EFFB" color="#000000"
+						   cornerRadius="3"
+						   click="backButtonClickHandler(event)"
+						   visible="false"/>
+				<!-- Button to close the window -->
+				<components:ImageButton id="btnClose" label="Close" click="{closeIt()}"
+										chromeColor="#E0EFFB" color="#000000"
+										cornerRadius="3"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:VBox>
+</components:InsidePanel>

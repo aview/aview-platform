@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: PrivateChat.mxml
+Module		: Chat
+Developer(s): Jeevanantham N
+Reviewer(s)	: 
+
+PrivateChat component is used to send private message(s) to user.
+
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   width="100%" height="100%" 
+			   minHeight="300" 
+			   minWidth="400"
+			   maxWidth="400"
+			   maxHeight="300"
+			   xmlns:mobileComponents="edu.amrita.aview.core.shared.components.mobileComponents.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			
+			import mx.core.FlexGlobals;
+			
+			import spark.events.PopUpEvent;
+			/**
+			 * Importing tooltip component
+			 */
+			
+			/**
+			 * To hold Boolean value true, if softkeyboard is open, else false
+			 */
+			public var isPrivateChatKeyBoardIsOpen:Boolean = false;
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function privateChatTooltipOpenHandler(event:MouseEvent):void
+			{
+				var pvtChatWindowTooltip:MobileToolTip = MobileToolTip.open(event.target.toolTip.toString(),event.currentTarget as DisplayObject);
+				pvtChatWindowTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			
+			protected function chatMessageInputSoftKeyboardActivateHandler(event:SoftKeyboardEvent):void
+			{
+				isPrivateChatKeyBoardIsOpen = true;
+			}
+			
+			protected function chatMessageInputSoftKeyboardDeactivateHandler(event:SoftKeyboardEvent):void
+			{
+				isPrivateChatKeyBoardIsOpen = false;
+			}
+		]]>
+	</fx:Script>
+	<fx:Script source="ChatViewHandler.as" />
+	<s:Rect width="100%" 
+			height="100%" 
+			x="0" 
+			y="0">
+		<s:fill>
+			<s:SolidColor color="0x071124" />
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xFFFFFF" />
+		</s:stroke>
+	</s:Rect>
+	<s:VGroup width="100%" 
+			  height="100%" 
+			  paddingLeft="5" 
+			  paddingRight="5"
+			  paddingTop="5">
+		
+		<!--Text Area to hold chat message(s)-->
+		<s:TextArea id="messageArea" 
+					x="0" y="0" 
+					width="100%" 
+					height="80%" 
+					editable="false"
+					text="{_chatModel.chatSessionVO.chatHistory}"
+					updateComplete="messageArea.appendText('');"
+					skinClass="spark.skins.mobile.TextAreaSkin"/>
+		
+		<!--Warning label-->
+<!--		<s:HGroup width="100%" height="5%">
+			<s:Label id="lblWarning" 
+					 text="User is no longer a presenter.You can't chat with this user." 
+					 visible="false" 
+					 color="0xFFFFFF"
+					 includeInLayout="false"/>
+		</s:HGroup>	-->
+		<s:HGroup width="100%" 
+				  height="15%" 
+				  paddingLeft="5" 
+				  paddingRight="5" 
+				  paddingBottom="5">
+			<!--Text input to enter chat message-->
+			<s:TextInput id="chatMessageInput"
+						 x="0" 
+						 y="{messageArea.height}" 
+						 width="85%"  
+						 needsSoftKeyboard="true" 
+						 text="@{chatMessage}"
+						 softKeyboardActivate="chatMessageInputSoftKeyboardActivateHandler(event)"
+						 softKeyboardDeactivate="chatMessageInputSoftKeyboardDeactivateHandler(event)"/>
+			<!--Send button to send chat message-->
+			<s:Button 
+					  width="15%"
+					  height="100%"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  toolTip="Send Private Message"
+					  rollOver="privateChatTooltipOpenHandler(event)"
+					  mouseDown="privateChatTooltipOpenHandler(event)"
+					  click="sendChatMessage()"
+					  icon="@Embed('assets/images/sendChat_msg.png')"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:Group>

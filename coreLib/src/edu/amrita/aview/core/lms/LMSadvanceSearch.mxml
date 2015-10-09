@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<components:InsidePanel  xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 width="500"
+		 height="350"
+		 backgroundColor="#E0EFFB"
+		 dropShadowVisible="false"
+		 fontSize="15"
+		 fontWeight="bold"
+		 textAlign="center"
+		 title="Advanced Search"
+		 borderVisible="true"
+		 xmlns:lms="edu.amrita.aview.core.lms.*" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!--Fix for Bug#15197 : Provide title string directly rather taking it from resource file-->
+	<!--<s:layout>
+		<s:HorizontalLayout verticalAlign="middle"
+							horizontalAlign="center"/>
+	</s:layout>
+	-->
+
+	<fx:Script source="LMSAdvancedSearchAs.as"/>
+	<mx:Canvas id="panel1" x="11" y="3" width="476" height="97%" borderColor="#E0EFFB"
+			   borderStyle="none" borderVisible="false" chromeColor="#E0EFFB" fontFamily="Arial"
+			   fontSize="12" fontWeight="normal" horizontalScrollPolicy="off" textAlign="left"
+			   verticalScrollPolicy="off">
+		<s:Label id="lblCourse"
+				 left="25"
+				 top="41"
+				 fontSize="12"
+				 text="{resourceManager.getString('myResource','lmscomp.advancecourse')}"/>
+		<s:Label left="18"
+				 top="40"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<s:ComboBox id="cmbClass"
+					x="149"
+					y="29"
+					width="321"
+					height="25"
+					change="{search.enabled=true}"
+					color="#2B6291"
+					fontSize="12"
+					fontWeight="normal"
+					labelField="lmsDisplayName"
+					paddingBottom="2"
+					prompt="Select Class/Meeting room"
+					rollOverColor="#e0effb"
+					selectedIndex="{classSelectedIndex}"
+					selectionColor="#99d0ff">
+			<s:itemRenderer>
+				<fx:Component>
+					<lms:LMSComboItemRender width="100%"/>
+				</fx:Component>
+			</s:itemRenderer>
+		</s:ComboBox>
+
+		<s:Label x="25"
+				 y="91"
+				 text="{resourceManager.getString('myResource','lmscomp.advancelecture')}"
+				 id="lblLectureTopic"
+				 fontSize="12"/>
+		<s:TextInput x="149"
+					 y="91"
+					 text="{topic}"
+					 id="txtTopic"
+					 width="140"
+					 contentBackgroundAlpha="1.0"
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+
+		<s:Label x="25"
+				 y="146"
+				 text="{resourceManager.getString('myResource','lmscomp.advancedate')}"
+				 id="lblDate"
+				 fontSize="12"
+				 width="60"
+				 />
+		<components:DateFieldWithKeyDownHandler id="datef" x="149" y="146" width="140"
+												click="checkForTooltip()" color="#2B6291"
+												contentBackgroundAlpha="1.0"
+												doubleClick="{datef.text=''}"
+												doubleClickEnabled="true" formatString="DD/MM/YYYY"
+												selectableRange="{{rangeEnd: new Date()}}"
+												text="{date}"/>
+
+		<s:Label text="{resourceManager.getString('myResource','lmscomp.advancekeyword')}"
+				 id="lblKeywords"
+				 fontSize="12"
+				 x="25"
+				 backgroundAlpha="0.0"
+				 y="196"/>
+		<s:TextInput width="140"
+					 text="{lectureKeyWord}"
+					 id="keyWord"
+					 x="149"
+					 y="196"
+					 contentBackgroundAlpha="1.0"
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"/>
+
+		<components:ImageButton id="search" bottom="33" width="80"
+								label="{resourceManager.getString('myResource','lmscomp.advancesearch')}"
+								cornerRadius="3" enabled="{cmbClass.selectedIndex &gt;= 0}"
+								horizontalCenter="-100"/>
+		<components:ImageButton id="cancel" bottom="33" width="80"
+								label="{resourceManager.getString('myResource','lmscomp.advancereset')}"
+								click="reset()" cornerRadius="3" horizontalCenter="0"/>
+		<components:ImageButton id="close" bottom="33" width="80"
+								label="{resourceManager.getString('myResource','lmscomp.advanceclose')}"
+								click="closeAdvanceSearch()" cornerRadius="3" horizontalCenter="100"/>
+	</mx:Canvas>
+	<components:WindowCloseImage right="6"
+								 top="-25"
+								 id="imgClose"
+								 click="closeAdvanceSearch()"/>
+</components:InsidePanel>

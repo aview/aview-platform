@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ChatMembersListItemRenderer.mxml
+Module		: chat
+Developer(s): NidhiSarasan,Soumya M.D
+Reviewer(s)	: Bri.Radha,Vishnupreethi K
+
+This is the item renderer for the  ChatMembersList in MyContacts.mxml.
+Display checkbox,username,instituteName and status icon.
+-->
+<!--Item renderer for contactUserList in MyContacts.mxml. -->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				creationComplete="changeUserStatus()"
+				dataChange="changeUserStatus()"
+				autoDrawBackground="true"
+				xmlns:layout="org.alivepdf.layout.*"
+				width="100%"
+				height="35">
+	<!-- Script to include handler -->
+	<fx:Script source="ChatMembersListItemRendererHandler.as"/>
+	<s:HGroup verticalAlign="middle">
+
+		<!--Image to show the status of user-->
+		<s:Image id="iconUserStatus"
+				 source="{iconStatus}">
+		</s:Image>
+		<!--Label to show the UserName of user-->
+		<s:Label text="{data.member.userDisplayName}"
+				 height="100%"
+				 verticalAlign="middle">
+		</s:Label>
+	</s:HGroup>
+</s:ItemRenderer>

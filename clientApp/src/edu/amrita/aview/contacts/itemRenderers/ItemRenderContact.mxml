@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%"
+		 paddingBottom.group="-1"
+		 verticalGap.group="0"
+		 creationComplete="roomItemRendererCreationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.common.components.autoComplete.CustomEvent;
+			import edu.amrita.aview.contacts.vo.GroupVO;
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+						
+			[Bindable]
+			[Embed(source="../assets/images/groupIcon.png")]
+			public var groupIcon:Class;
+			[Bindable]
+			[Embed(source="../assets/images/online.png")]
+			public var onlineIcon:Class;
+			[Bindable]
+			[Embed(source="../assets/images/offline.png")]
+			public var offlineIcon:Class;
+			[Bindable]
+			[Embed(source="../assets/images/busy.png")]
+			public var busyIcon:Class;
+			
+			public var selectedMembers:ArrayCollection;
+			
+			override public function set data(value:Object):void
+			{
+				super.data=value;
+				if (value != null)
+				{
+					if (data is GroupVO)
+					{
+						this.currentState='group';
+						detailImgPath.source=groupIcon;
+						if(data.isSelected)
+						{
+							chkSelection.selected=true;
+						}
+						else
+						{
+							chkSelection.selected = false;
+						}
+					}
+					else
+					{
+						this.currentState='contacts';
+						if(data.user.userStatus==Constants.ONLINE)
+							detailImgPath.source=onlineIcon;
+						else if	(data.user.userStatus==Constants.BUSY)
+							detailImgPath.source=busyIcon;
+						else 
+							detailImgPath.source=offlineIcon;
+						if(data.isSelected)
+						{
+							chkSelection.selected=true;
+						}
+						else
+						{
+							chkSelection.selected = false;
+						}
+					}
+				}
+			}
+			
+			private function expandTheRoom():void
+			{
+				if(data.isExpanded==false)
+				{
+					data.isExpanded=true;
+					dispatchEvent(new CustomEvent('expandRoom',data.isExpanded, true, false));
+				}
+				else
+				{
+					data.isExpanded=false;
+					dispatchEvent(new CustomEvent('colapseRoom',data.isExpanded, true, false));
+				}
+				
+				lblCount.setFocus();	
+				
+			}
+			private function removeSelection():void
+			{
+				dispatchEvent(new edu.amrita.aview.common.components.autoComplete.CustomEvent('toggleSelection',false,true,false));
+			}
+			private function addSelection():void
+			{
+				dispatchEvent(new CustomEvent('toggleSelection',true,true,false));
+			}
+			protected function chkSelection_changeHandler(event:Event):void
+			{
+				data.isSelected=chkSelection.selected;	
+				if (data is GroupVO)
+				{
+					if(data.isSelected )
+					{
+						addSelection();
+					}
+					else if(!data.isSelected)
+					{
+						removeSelection();
+					}
+				}
+				else
+				{
+					if(data.isSelected )
+					{
+						addSelection();
+					}
+					else if(!data.isSelected)
+					{
+						removeSelection();
+					}					
+				}
+				
+			}
+			
+			protected function roomItemRendererCreationCompleteHandler(event:FlexEvent):void
+			{
+				changeUserStatus();
+			}
+			private function changeUserStatus():void
+			{
+				if(data==null)
+				{
+					return;
+				}
+				if(data.isSelected)
+				{
+					chkSelection.selected=true;
+				}
+				else
+				{
+					if(chkSelection && chkSelection.selected)
+					{
+						chkSelection.selected=false;
+					}
+				}
+			}
+
+		]]>
+	</fx:Script>
+
+	<mx:states>
+		<mx:State name="group"/>
+		<mx:State name="contacts"/>
+	</mx:states>
+	<mx:HBox width="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off"
+			 paddingBottom.contacts="5"
+			 paddingLeft.contacts="40"
+			 paddingRight.contacts="5"
+			 paddingTop.contacts="5"
+			 verticalAlign.contacts="middle"
+			 paddingBottom.group="5"
+			 paddingLeft.group="20"
+			 paddingRight.group="5"
+			 paddingTop.group="5"
+			 verticalAlign.group="middle">
+		<mx:CheckBox id="chkSelection" change="chkSelection_changeHandler(event)" enabled="{(data.isSelectable==true)}"/>
+		<mx:Image id="detailImgPath" click.group="expandTheRoom()"/>
+		<s:Label id="lbltextExpand" text="{data.contactName}" maxDisplayedLines="1" width="100%"
+				  color="#575e63" click.group="expandTheRoom();" doubleClickEnabled="false" fontWeight="{(data.isExisting==false)?'normal':'bold'}"
+				  />
+		<mx:Label id="lblCount" includeIn="group"
+				  color="#575e63"
+				  text="{'('+data.memberCount+')'}"/>
+	</mx:HBox>
+	<mx:HRule includeIn="group"
+			  width="100%"
+			  height="1"
+			  chromeColor="#B8C4CC"/>
+</mx:VBox>

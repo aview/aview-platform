@@ -1,0 +1,1141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: Viewer2DComponent.mxml
+Module		: 2DViewer
+Developer(s): Manjith CM, Deepu Diwakar, Jayakrishnan R
+Reviewer(s)	: Pradeesh
+
+* Viewer2DComponent.mxml is the main 2D component adding to the main application,
+* 2D library is added in this comonent.
+* Its also used to handle shared object connection and sync handler.
+
+-->
+
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:lms="*"
+				   xmlns:twoDSharing="edu.amrita.aview.twoDSharing.*"
+				   cornerRadius="3"
+				   creationComplete="intCreation(event)"
+				   enabled="{ClassroomContext.IS_2D_ENABLED}"
+				   height="100%"
+				   mouseDown="componentMouseDownHandler(event)"
+				   preinitialize="{ContextManager.viewer2DComp=this}"
+				   width="100%">
+	<fx:Metadata>
+		[Event(type="edu.amrita.aview.twoDSharing.V2DEvent",name="moduleclose")]
+	</fx:Metadata>
+
+	<fx:Script source="FileHandler2D.as"/>
+
+	<fx:Script>
+		<![CDATA[
+			import com.amrita.edu.collaboration.CollaborationObject;
+			
+			import context.ContextManager;
+			
+			import edu.amrita.aview.audit.AuditConstants;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.audit.AuditContext;
+			
+			import mx.controls.Label;
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.utils.URLUtil;
+			
+			/**Platform specific imports*/
+			applicationType::desktop
+			{
+				import edu.amrita.aview.twoDSharing.Viewer2DWindow;
+			}
+			// AKCR: please use the single line format for comments whereever applicable
+			/**
+			 * Variable used for log
+			 */
+			private var log:ILogger=Log.getLogger("aview.edu.amrita.aview.twodsharing.Viewer2DComp");
+			/**
+			 * variable used for storing movie history
+			 */
+			private var MovieHistory:XML;
+			/**
+			 * String variable to store last downloaded path
+			 */
+			private var LastDownloadPath:String="";
+			/**
+			 * String variable to store last local path
+			 */
+			private var LastLocalPath:String;
+			/**
+			 * Variable used for storing downloaded details
+			 */
+			private var downDetails:Object=new Object;
+			/**
+			 * String variable used to store new movie name
+			 */
+			private var newMovieName:String;
+			/**
+			 * String variable used to store new download path
+			 */
+			private var newDownloadPath:String;
+			/**
+			 * String variable to store local path
+			 */
+			private var LocalPath:String;
+			/**
+			 * Variable to store sync object details
+			 */
+			private var syncObj:Object;
+			/**
+			 *
+			 */
+			private var obj:Object;
+			/**
+			 * Flag variable to store whether 2D window is popped out or not
+			 */
+			
+			public var isPopOut:Boolean=false;
+			/**
+			 * Pop-out icons class
+			 */
+			[Bindable]
+			[Embed(source="assets/images/view-fullscreen1.png")]
+			public var popoutIcon:Class;
+			[Bindable]
+			[Embed(source="assets/images/windows_nofullscreen.png")]
+			public var popinIcon:Class;
+			
+			/**
+			 * Label used for display message.
+			 */
+			private var messageLabel:Label=new Label();
+			
+			/**
+			 * Shared object  variables
+			 */
+			public var playBackUpdator:CollaborationObject=null;
+			public var globalUpdator:CollaborationObject=null;
+			public var globalData:CollaborationObject=null;
+			
+			/**
+			 * For storing the playback values
+			 */
+			public var globalVal:Object=new Object();
+			/**
+			 * Flag will set when the content server changed or not
+			 */
+			public var contentServerChanged:Boolean
+			/**
+			 * For checking the network reconnection occur
+			 */
+			public var reconnected:Boolean;
+			/**
+			 * For setting the current frame to the shared object
+			 */
+			public var globalFrame:int;
+			/**
+			 * For sharing the playback values
+			 */
+			public var globalStore:Object=new Object;
+			/**
+			 * Flag for new user login
+			 */
+			public var newUser:Boolean;
+			
+			// AKCR: please create a local variable for "FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp" to avoid 
+			// AKCR: duplication in code
+			// AKCR: Important : "FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp" is referenced about 64 times 
+			// AKCR: in this file. Please assign it to a local variable to create less duplication of code
+			
+			applicationType::web{
+				/**
+				 * Variable to restrict 2D functionality when content server and hosting server are different.
+				 */
+				private var restrict2D:Boolean;
+				/**
+				 * Time out id for restrict 2D module
+				 */
+				private var restrict2DTimeoutID:uint;
+			}
+			
+			applicationType::desktop{
+				/**
+				 * Pop-out window instance for desktop version
+				 */
+				public var popWindow:Viewer2DWindow;
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is set the width and height of playback.
+			 * It will update whenever the 2D container size resizes.
+			 * This values are used to re size the playback window.
+			 *
+			 * @param wWidth of type int
+			 * @param wHeight of type int
+			 * @return void.
+			 *
+			 ***/
+			public function setV2DWindowSize(wWidth:int, wHeight:int):void{
+				ContextManager.playbackWidth=wWidth;
+				ContextManager.playbackHeight=wHeight;
+				if (Log.isInfo()) log.info("Entered function Viewer2DComponent.setV2DWindowSize");
+			}
+			
+			/**
+			 *
+			 * @protected
+			 * This  function is used update the user preference to 2D .
+			 * Added resize and module close event to the component
+			 * Connecting to shared object and sync by calling CrHandler() of 2D library.
+			 *
+			 * @param event of type FlexEvent.
+			 * @return void.
+			 *
+			 ***/
+			protected function intCreation(event:FlexEvent):void
+			{
+				if (!ClassroomContext.IS_2D_ENABLED){
+					messageLabel.text=Constants.MODULE_DISABLE_MSG;
+					this.addElement(messageLabel);
+					messageLabel.percentWidth=100;
+					messageLabel.height=50;
+					messageLabel.setStyle("textAlign", "center");
+					messageLabel.setStyle("fontSize", "30");
+					messageLabel.horizontalCenter=0;
+					messageLabel.verticalCenter=0;
+				}
+				if (Log.isInfo()) log.info("Entered function Viewer2DComponent.inCreation");
+				//Alerts and popups are added to popParent so we dont care about(pop out or single window ) 
+				ContextManager.popParent=ContextManager.viewer2DComp;
+				
+				presenterViewer2D=ClassroomContext.currentPresenterName;
+				serverIPForWamp=ClassroomContext.CONTENT_VIEWER2D;
+				ContextManager.userrole=FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole;
+				ContextManager.fmsViewer2D=ClassroomContext.FMS_USER;
+				ContextManager.viewer2DModule.controllHandler();
+				ContextManager.viewer2DModule.popOutBtn.setStyle("icon", popoutIcon);
+				//Fix for issue #17078
+				applicationType::desktop{
+					ContextManager.platform ="desktop";
+				}
+				applicationType::web{
+					ContextManager.platform ="web";
+				}
+				applicationType::mobile{
+					ContextManager.platform ="mobile";
+				}
+				
+				addEventListener(ResizeEvent.RESIZE, viewer2DResizeHandler);
+				addEventListener("moduleclose", closeModule);
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is used to sync clients active tab to 2D
+			 * It will called when the presenter click anywhere on 2D window.
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			public function synTabChange():void	{
+				//PNCR: use constant for presenter
+				if (ContextManager.userrole == 'PRESENTER')	{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModule_so.setValue("ran", Math.random());
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModule_so.setValue("val", 3);
+				}
+				if (Log.isInfo()) log.info("Entered function Viewer2DComponent.synTabChange");
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is called when the file download complete .
+			 * It will call function in playBack to load the file.
+			 *
+			 * @param localpath of type String
+			 * @param filename of type String
+			 * @param downloadpath of type String
+			 * @return void.
+			 *
+			 ***/
+			// AKCR completed spelling in the function name
+			public function downloadCompleated(localpath:String, filename:String, downloadpath:String):void{
+				LocalPath=localpath;
+				ContextManager.LastDownLoadPath=downloadpath;
+				ContextManager.movieName=filename;
+				
+				//Since there is no File property for web application. So changed the logic to make it works.
+				applicationType::web{
+					if (LocalPath != null && downloadpath != null && newMovieName != ""){
+						if (Log.isInfo()) log.info("Entered function Viewer2DComponent.downloadCompleated:Download success and calling file to load");
+						ContextManager.playBack.onPlay(LocalPath);
+					}
+					else{
+						if (Log.isInfo())log.info("Entered function Viewer2DComponent.downloadCompleated:Download file missing");
+						// AKCR: for string comparisions use toUpperCase() or uppercase() which ever is applicable to the API
+						if (ContextManager.userrole == "PRESENTER")
+							MessageBox.show("DownLoaded file is missing", "File is missing", MessageBox.MB_OK, ContextManager.popParent, null, null, MessageBox.IC_INFO);
+					}
+				}
+				applicationType::desktop{
+					if (File.applicationDirectory.resolvePath(LocalPath).exists && newMovieName != ""){
+						if (Log.isInfo()) log.info("Entered function Viewer2DComponent.downloadCompleated:Download success and calling file to load");
+						ContextManager.playBack.onPlay(LocalPath);
+					}
+					else{
+						if (Log.isInfo()) log.info("Entered function Viewer2DComponent.downloadCompleated:Download file missing");
+						// AKCR: for string comparisions use toUpperCase() or uppercase() which ever is applicable to the API
+						if (ContextManager.userrole == "PRESENTER")
+							MessageBox.show("DownLoaded file is missing", "File is missing", MessageBox.MB_OK, ContextManager.popParent, null, null, MessageBox.IC_INFO);
+					}
+				}
+			}
+			
+			/**
+			 *
+			 * @protected
+			 * This function is called when application is close /logout/exit cassroom/duplicate login etc .
+			 * Presenter will call unload method to clear all the viewers.
+			 * Viewers will unload and reset file.
+			 *
+			 * @param event of type V2DEvent as null .
+			 * @return void.
+			 *
+			 ***/
+			protected function closeModule(event:V2DEvent=null):void{
+				//PNCR: use constant for PRESENTER
+				// AKCR: the condition "ContextManager.fmsService != null" appears twice in the code. Can it 
+				// AKCR: be refactored to the below commented code, perhaps?
+// AKCR: 				if (ContextManager.fmsService != null){
+// AKCR: 					if (ContextManager.userrole == 'PRESENTER')
+// AKCR: 						ContextManager.fmsService.unloadAndClearServer();
+// AKCR: 					ContextManager.fmsService.unloadFile(true);
+// AKCR: 					reconnected=false;					
+// AKCR: 				}
+// AKCR: 				ContextManager.CONTENT_USER="";
+				
+				if (ContextManager.userrole == 'PRESENTER' && ContextManager.fmsService != null)
+					ContextManager.fmsService.unloadAndClearServer();
+				if (ContextManager.fmsService != null){
+					ContextManager.fmsService.unloadFile(true);
+					reconnected=false;
+				}
+				ContextManager.CONTENT_USER="";
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is used resize the module whenever resize event happends .
+			 * It will adjust the playback height with respect to window(single/popout) .
+			 * If swf is loaded then it will resize the movie and window
+			 *
+			 * @param event of type ResizeEvent as null .
+			 * @return void.
+			 *
+			 ***/
+			public function viewer2DResizeHandler(event:ResizeEvent=null):void{
+				
+				ContextManager.playbackWidth=this.width - 10 as int;	
+				if (isPopOut) ContextManager.playbackHeight=this.height - 25 as int;
+				else ContextManager.playbackHeight=this.height - 5 as int;
+				if (ContextManager.swfloaded) ContextManager.playBack.resizeMovie();
+				if (fileManagerForViewer2D && isPopOut) PopUpManager.centerPopUp(fileManagerForViewer2D);
+				if (Log.isInfo()) log.info("Entered function Viewer2DComponent.viewer2DResizeHandler");
+				//Fix for issue #8032
+				applicationType::web{
+					if (fileManagerForViewer2D)
+						//Fix for issue #11469  and #11474
+						fileManagerForViewer2D.move((FlexGlobals.topLevelApplication.width - fileManagerForViewer2D.personalArea.width) / 2, (FlexGlobals.topLevelApplication.height - fileManagerForViewer2D.personalArea.height) / 2);
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is called from users to update the 2D netconnection .
+			 * This will update the content server and used to identify the server failover.
+			 * It also used to connect to collaboration object if it is not connected(rare case)
+			 *
+			 * @return void.
+			 *
+			 ***/
+			public function set2DSharedObjects():void{
+				if (Log.isInfo()) log.info("Entered function Viewer2DComponent.set2DCollaborationObjects.setting netconnection");
+				
+				if (ContextManager.CONTENT_USER == "")
+					ContextManager.CONTENT_USER=ClassroomContext.CONTENT_VIEWER2D;
+				//Fix for issue #9145.
+				applicationType::web{
+					restrict2DTimeoutID=setTimeout(set2DComponentAccess, 300);
+				}
+				if (ContextManager.CONTENT_USER != ClassroomContext.CONTENT_VIEWER2D){
+					if (ContextManager.fmsService != null) ContextManager.fmsService.contentServerChanged=true;
+					ContextManager.CONTENT_USER=ClassroomContext.CONTENT_VIEWER2D;
+				}
+				// AKCR: please use toLower() for the below string comparision
+				if (ContextManager.setSharedObject == "false"){
+					if (Log.isInfo()) log.info("Entered function Viewer2DComponent.set2DCollaborationObjects.re connecting to shared object");
+					if (ContextManager.fmsService != null) setSo();
+
+				}
+			}
+			
+			/**
+			 *
+			 * @private
+			 * This function to solve timing issue for Guest users
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			//Fix for issue #9080 and #9081.
+			private function set2DComponentAccess():void
+			{
+				applicationType::web{
+					if (restrict2DTimeoutID) clearTimeout(restrict2DTimeoutID);
+					//These logic is moved from set2DSharedObjects() function to solve timing issue for Guest users
+					if (ClassroomContext.CONTENT_VIEWER2D != URLUtil.getServerName(FlexGlobals.topLevelApplication.loaderInfo.url)) restrict2D=true;
+					else restrict2D=false;
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * Invoked after user login
+			 *
+			 * This  function is used to connect all the 2D shared objects.
+			 * Added sync handler for all the shared objects.
+			 * This function should called when initializing,logout or exit classroom,
+			 * network change and server failover etc.
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			public function setSo():void
+			{
+				if (Log.isInfo()) log.info("Entered function fMSRunner.SetSo");
+				try	{
+					globalData=ClassroomContext.collaborationService.connectCollaborationObject("globalData");
+					globalData.setOnSync(GlobalDataSync);
+					
+					
+					//----PlayBack Fms control---------------[user intraction]
+					playBackUpdator=ClassroomContext.collaborationService.connectCollaborationObject("playBackUpdator");
+					playBackUpdator.setOnSync(playBackSyn);
+					
+					
+					//----GloabalUpdator Fms Control----------[interval sync with out intraction]
+					
+					globalUpdator=ClassroomContext.collaborationService.connectCollaborationObject("globalUpdator");
+					globalUpdator.setOnSync(GlobalUpdateSync);
+					
+					ContextManager.setSharedObject="true";
+					
+					if(ContextManager.netconn)
+					{
+						ContextManager.netconn.addEventListener(NetStatusEvent.NET_STATUS, Net_Connect);
+						
+						if (Log.isInfo()) log.info("Entered function fMSRunner.SetSo.successfully connected to shared object");
+					}
+				}
+				catch (error:Error)
+				{
+					ContextManager.setSharedObject="false";
+					//RGCR: Commenting this. Causing infinite loop. do not uncomment it
+				// setSo();
+					if(Log.isError()) log.error("Entered function fMSRunner.SetSo Error:"+ error.getStackTrace());
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  sync handler will invoke when the globalData property set in server .
+			 * If the content server changed then it will unload the file from all the clients.
+			 * If reconnected then it will load file to the client either with the server values
+			 * or with the local value(if the serer values are cleared).
+			 * else it will sync and download the file to the normal user or late user.
+			 *
+			 * @param event of type object.
+			 * @return void.
+			 *
+			 ***/
+			public function GlobalDataSync(event:Object):void{
+				if (globalData.syncEventCount == 0){
+					if (Log.isInfo()) log.info("New user connected and updating the globalStore values and sync client ");
+					syncClient();
+					return;
+				}
+				
+				globalVal=globalData.getData()["globalValues"] as Object;
+				
+				if (contentServerChanged){
+					ContextManager.fmsService.unloadAndClearServer();
+					return;
+				}
+				if (reconnected){
+					if (globalVal.LastDownLoadPath != null){
+						// AKCR: please use toUpperCase()
+						if (ContextManager.userrole == "PRESENTER" && newUser)
+							ContextManager.fmsService.unloadAndClearServer();
+						else{
+							if (Log.isInfo()) log.info("User regaining netconnection and setting global values ");
+							setGlobalValues();
+							ContextManager.fmsService.startDownload(globalVal.LastDownLoadPath);
+						}
+					}
+					else if (ContextManager.LastDownLoadPath != null){
+						if (Log.isInfo()) log.info("User regaining netconnection and setting local values");
+						ContextManager.playerScript.setLocalValues();
+						ContextManager.fmsService.startDownload(ContextManager.LastDownLoadPath)
+					}
+				}
+				else{
+					setGlobalValues();
+					
+					if (globalVal && globalVal.LastDownLoadPath != null && !globalVal.swfLoaded){
+						if (Log.isInfo()) log.info("User sync  with latest values");
+						ContextManager.fmsService.startDownload(globalVal.LastDownLoadPath);
+					}
+					else if (ContextManager.LastDownLoadPath == null && globalVal && globalVal.swfLoaded){
+						if (ContextManager.userrole == "PRESENTER" && newUser)
+							ContextManager.fmsService.unloadAndClearServer();
+						else{
+							if (Log.isInfo())log.info("Late coming user connected and sync  with latest values ");
+							ContextManager.fmsService.startDownload(globalVal.LastDownLoadPath);
+						}
+					}
+				}
+				newUser=false;
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  sync handler will invoke when the playBackUpdator property set in server .
+			 * Used for collaborate tools,the event data object have the details of tools
+			 * and this parameters to collaborate the client.
+			 *
+			 * @param event of type object.
+			 * @return void.
+			 *
+			 ***/
+			public function playBackSyn(event:Object):void{
+				if (reconnected || contentServerChanged){
+					return;
+				}
+				ContextManager.fmsService.playBackData=playBackUpdator.getData()["playBackValues"] as Object;
+				// AKCR: please combine the below 2 if statements.
+				if (ContextManager.fmsService.playBackData != null){
+					if (ContextManager.fmsService.playBackData.action != null && ContextManager.swfloaded)
+						ContextManager.playerScript.setData(ContextManager.fmsService.playBackData);
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  sync handler will invoke when the globalUpdator property set in server .
+			 * Used to sync client file with presenter in regular interval.
+			 *
+			 * @param event of type object.
+			 * @return void.
+			 *
+			 ***/
+			public function GlobalUpdateSync(event:Object):void	{
+				if (reconnected || contentServerChanged){
+					reconnected=false;
+					contentServerChanged=false;
+					return;
+				}
+				if (ContextManager.swfloaded && ContextManager.syncFrame){
+					globalFrame=globalUpdator.getData()["globalframe"];
+					if (Math.abs(globalFrame - ContextManager.currframe) > 5)
+						ContextManager.playBack.currMovie.gotoAndPlay(globalUpdator.getData()["globalframe"]);
+				}
+			}
+			
+			/**
+			 *
+			 * @protected
+			 * This  function is used to reset local varibles and values with global values.
+			 *
+			 * @return void.
+			 *
+			 ***/
+			protected function setGlobalValues():void{
+				if (globalVal && globalVal.globalMovieHistory != null) ContextManager.movieHistory=globalVal.globalMovieHistory;
+				if (globalVal && globalVal.globalBreakPoints != null) ContextManager.breakPointArray=globalVal.globalBreakPoints;
+				else ContextManager.breakPointArray=new Array;
+				if (globalVal){
+					ContextManager.playBack.currFrame=globalVal.currFrame;
+					ContextManager.playBack.movieStatus=globalVal.movieStatus;
+					ContextManager.ps.breakBooln=globalVal.breakBooln;
+					ContextManager.ps.endFrame=globalVal.endFrame;
+					
+					// Zoom and Drag
+					ContextManager.playerScript.movieZ=globalVal.mymovieZ;
+					ContextManager.playerScript.movieX=globalVal.mymovieX;
+					ContextManager.playerScript.movieY=globalVal.mymovieY;
+					ContextManager.playerScript.sliderValue=globalVal.slidervalue;
+					ContextManager.playBack.resizeMode=globalVal.resizeMode;
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  is net status event handler .
+			 * Used to identify the net connection change and close.
+			 *
+			 * @param event of type NetStatusEvent.
+			 * @return void.
+			 *
+			 ***/
+			public function Net_Connect(event:NetStatusEvent):void{
+				// AKCR: can we use toUpper here to flip onto the correct case?
+				switch (event.info.code){
+					case "NetConnection.Connect.Success":
+						if (Log.isInfo()) log.info("Entered function fMSRunner.NetConnection.Connect.Success");
+						break;
+					case "NetConnection.Connect.Closed":
+						if (Log.isInfo()) log.info("Entered function fMSRunner.netconnection lost or fms closed");
+						ContextManager.fmsService.connectionLost();
+						break;
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is used by the presenter to set the global values if
+			 * the server is cleared or restarted.
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			public function updateSharedObjectValues():void	{
+				updateGlobalArray("globalMovieHistory", ContextManager.movieHistory);
+				updateGlobalArray("globalBreakPoints", ContextManager.breakPointArray);
+				updateGlobalBoolean("swfLoaded", ContextManager.swfloaded);
+				updateGlobal("movieStatus", ContextManager.playBack.movieStatus);
+				updateGlobalNum("mymovieZ", -(ContextManager.iconBar.zoomSlider.value));
+				updateGlobalNum("mymovieY", ContextManager.playBack.parentMovie.y);
+				updateGlobalNum("mymovieX", ContextManager.playBack.parentMovie.x);
+				updateGlobalNum("slidervalue", ContextManager.iconBar.zoomSlider.value);
+				updateGlobal("breakBooln", ContextManager.ps.breakBooln);
+				updateGlobalNum("endFrame", ContextManager.ps.endFrame);
+				updateGlobal("LastDownLoadPath", ContextManager.LastDownLoadPath);
+				updateGlobalNum("currFrame", ContextManager.currframe);
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is used to set values for the global store variables
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			public function setGlobalStore():void{
+				globalStore.swfLoaded=false;
+				globalStore.globalMovieHistory=null;
+				globalStore.globalBreakPoints=null;
+				globalStore.endFrame=0;
+				globalStore.breakBooln="false";
+				globalStore.currFrame=1;
+				globalStore.movieStatus="Pause";
+				globalStore.mymovieY=0;
+				globalStore.mymovieX=0;
+				globalStore.mymovieZ=0
+				globalStore.slidervalue=0;
+				globalStore.resizeMode="Full Size";
+				globalStore.LastDownLoadPath=null;
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This function is used for Play back sync (Play, Pause etc)
+			 *
+			 * @param obj of type Object.
+			 * @return void.
+			 *
+			 ***/
+			public function sendData(obj:Object):void{
+				if (playBackUpdator){
+					playBackUpdator.lock() 
+					playBackUpdator.setValue("playBackValues", obj);
+					playBackUpdator.unlock();
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This function is used for update globalStore values by presenter ,it has no sync
+			 *
+			 * @param property of type String.
+			 * @param value of type String.
+			 * @return void.
+			 *
+			 ***/
+			public function updateGlobal(property:String, value:String):void{
+				globalStore[property]=value;
+			}
+			
+			/**
+			 *
+			 * @public
+			 *
+			 *
+			 * @param property of type String.
+			 * @param value of type String.
+			 * @return void.
+			 *
+			 ***/
+			public function updateGlobalArray(property:String, value:Array):void{
+				globalStore[property]=value;
+			}
+			
+			/**
+			 *
+			 * @public
+			 *
+			 * @param property of type String.
+			 * @param value of type String.
+			 * @return void.
+			 *
+			 ***/
+			public function updateGlobalBoolean(property:String, value:Boolean):void{
+				globalStore[property]=value;
+			}
+			
+			/**
+			 *
+			 * @public
+			 *
+			 *
+			 * @param property of type String.
+			 * @param value of type String.
+			 * @return void.
+			 *
+			 ***/
+			public function updateGlobalNum(property:String, value:Number):void{
+				globalStore[property]=value;
+			}
+			
+			/**
+			 *
+			 * @public
+			 *
+			 * @param x of type Number
+			 * @param y of type Number
+			 * @param z of type Number
+			 * @return void.
+			 *
+			 ***/
+			public function updateGlobalmovieXYZ(x:Number, y:Number, z:Number):void{
+			
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This function is used for Sync clients with globalStore values
+			 * and downloading file for late user,from loaded movie list
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			public function syncClient():void{
+				globalData.setValue("globalValues", globalStore);
+			}
+			
+			/**
+			 *
+			 * @public
+			 *
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			public function clearServer2D():void{
+				setGlobalStore();
+				if(globalData)
+					globalData.setValue("globalValues", globalStore);
+			}
+			
+			/**
+			 *
+			 * @public
+			 * Function used for download new file from file manager
+			 *
+			 * @param remoteFilePathof type String
+			 * @return void.
+			 *
+			 ***/
+			public function downloadNewFile(remoteFilePath:String):void
+			{
+				if(Log.isDebug()) log.debug("downloadNewFile: " + remoteFilePath);
+				//----------set for new movie------------------------------------------------------------------------
+				if(globalData)
+				{
+				globalStore.swfLoaded=false;
+				globalStore.currFrame=1;
+				globalStore.movieStatus="Pause";
+				globalStore.mymovieY=0;
+				globalStore.mymovieX=0;
+				globalStore.mymovieZ=0;
+				globalStore.slidervalue=0;
+				globalStore.endFrame=0;
+				globalStore.breakBooln="false";
+				globalStore.resizeMode="Full Size";
+				globalStore.globalBreakPoints=null;
+				globalStore.LastDownLoadPath=remoteFilePath;
+				globalData.setValue("globalValues", globalStore);
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 *
+			 *
+			 * @param currFrame of type String
+			 * @return void.
+			 *
+			 ***/
+			public function frameUpdator(currFrame:String):void	{
+				globalStore.currFrame=currFrame;
+				globalUpdator.lock()
+				globalUpdator.setValue("globalframe", currFrame);
+				globalUpdator.unlock();
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is used by all the clients to download the file.
+			 * If the module is disabled it will not download.
+			 *
+			 * @param DownloadPath of type String.
+			 * @return void.
+			 *
+			 ***/
+			public function ClientDownload(DownloadPath:String):void{
+				if (!ClassroomContext.IS_2D_ENABLED){
+					ContextManager.fmsService.progress.visible=false;
+					return;
+				}
+				if (Log.isInfo()) log.info("Entered function Viewer2DComponent.ClientDownload");
+				loadFileToCache(DownloadPath);
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is used to update the control(presenter/viewer/moderator).
+			 * All the popups,alerts and file manager are closed.
+			 * All the clients will sync with new presenter values.
+			 *
+			 * @param isPresenter of type Boolean.
+			 * @return void.
+			 *
+			 ***/
+			public function updateControl(isPresenter:Boolean):void	{
+				if (Log.isInfo()) log.info("Entered function Viewer2DComponent.updateControl");
+				// PNCR: use constant
+				ContextManager.userrole=(isPresenter ? 'PRESENTER' : 'VIEWER');
+				presenterViewer2D=ClassroomContext.currentPresenterName;
+				// PNCR: since viewer2DMWActive is 2D-flag arg it should be define inside 2D module 
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DMWActive || isPopOut)
+					onCloseViewer2DComponentEvent();
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModulle=99;
+				ContextManager.listVisibile=false
+				PopUpManager.removePopUp(ContextManager.alert as IFlexDisplayObject);
+				if (ContextManager.userrole == "PRESENTER" && ContextManager.swfloaded){
+					syncObj=new Object();
+					syncObj.action="hand";
+					syncObj.x=ContextManager.playBack.parentMovie.x;
+					syncObj.y=ContextManager.playBack.parentMovie.y;
+					syncObj.zoomValue=ContextManager.iconBar.zoomSlider.value
+					sendData(syncObj);
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * This  function is called from users if dulicate login happened .
+			 * This will close the module.
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			//PNCR: function name lowerCamelCase
+			public function DuplicateLogin():void
+			{
+				if (Log.isInfo()) log.info("Entered function Viewer2DComponent.DuplicateLogin");
+				closeModule();
+			}
+			
+			/**
+			 *
+			 * @protected
+			 *
+			 *
+			 * @param event of type MouseEvent.
+			 * @return void.
+			 *
+			 ***/
+			protected function componentMouseDownHandler(event:MouseEvent):void
+			{
+				if (ContextManager.loadedMovieList.listActive == false)
+				{
+					ContextManager.loadedMovieList.loadedListClose.play()
+				}
+			}
+			
+			/**
+			 * @public
+			 * This  function is used pop-out or pop-in 2D   .
+			 * If pop-out this component will removed from viewer2DBox
+			 * and added to viewer2D Window and vice versa.
+			 *
+			 *
+			 * @return void.
+			 *
+			 ***/
+			applicationType::desktop{
+				public function popOut2DWindow():void{
+					if (!isPopOut){
+						// AKCR: Please split each condition inside the if into multiple lines
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.setStyle("backgroundColor", "#E0EFFB");
+						if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.contains((this)))
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.removeChild(this);
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setMessageForFullScreenForMXMLComponents(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox, Constants.FULLSCREEN_MSG);
+						popWindow=new Viewer2DWindow();
+						popWindow.addChild(this);
+						popWindow.open(true);
+						popWindow.maximize();
+						isPopOut=true;
+						ContextManager.viewer2DModule.popOutBtn.setStyle("icon", popinIcon);
+						ContextManager.viewer2DModule.popOutBtn.toolTip="Pop-in";
+						popOut2DEventLog();
+					}
+					else{
+						if (popWindow){
+							popWindow.close();
+						}
+						if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl){
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.unSetMessageForFullScreenForMXMLComponents(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox);
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.addChild(this);
+							ContextManager.popParent=this;
+							ContextManager.playBack.resetEnterFrame();
+							ContextManager.viewer2DModule.popOutBtn.setStyle("icon", popoutIcon);
+							ContextManager.viewer2DModule.popOutBtn.toolTip="Pop-out";
+						}
+						isPopOut=false;
+						popIn2DEventLog();
+					}
+				}
+			}
+			/**
+			 *
+			 * @private
+			 * Audits the "PopIn2D" action, when the user Pops in/closes the 2D tab
+			 *
+			 * @return void
+			 *
+			 */
+			private function popIn2DEventLog():void
+			{
+				AuditContext.userAction.createAction(AuditConstants.popIn2D, null, null, null);
+			}
+			
+			/**
+			 *
+			 * @private
+			 * Audits the "PopOut2D" action, when the user Pops out the 2D tab
+			 *
+			 * @return void
+			 *
+			 */
+			private function popOut2DEventLog():void
+			{
+				AuditContext.userAction.createAction(AuditConstants.popOut2D, null, null, null);
+			}
+			
+			//=============2d component implimentation===============
+			//PNCR: function description
+			//PNCR: the similar function might be needed for all other modules. If so please create a common function with argument.
+			public function click_Conso_2DViewer():void{
+				/* if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.videoWallLayout != Constants.SIMPLE_LAYOUT) 
+				{ */
+				
+				if((FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModule_so && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModule_so.getData()["val"] == 6 && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModulle == 6) || FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isQuizPollingMod  )
+				{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.onChangeModule();
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isQuizPollingMod = false;
+				}  
+				
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.btnShowViewersWall.enabled=true;
+				//}
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.Conso_3DViewer.enabled=true;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.Conso_2DViewer.enabled=false;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.Conso_Whiteboard.enabled=true;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.Conso_LiveQuiz.enabled=true;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.evaluationFlag=false;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.Conso_Doc.enabled=true;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.Conso_PollingQuiz.enabled=true;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.pollingFlag=false;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.Conso_vidsharing.enabled=true;
+				applicationType::DesktopWeb{
+					//Enabled desktop sharing button
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.btnDesktopSharing.enabled=true;
+				}
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.tab2.selectedIndex=3;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.addRemoveDocComp("remove");
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.docComp && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.docComp.contextMenuList)
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.docComp.hideContextMenuList();
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DLoaded && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp.viewer3DSWC)
+				{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.initviewer3D_flag=0;
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp.viewer3DSWC.removeComponent();
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DLoaded=false;
+				}
+				if (isPopOut){
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setMessageForFullScreenForMXMLComponents(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox, Constants.FULLSCREEN_MSG);
+					applicationType::desktop{
+						if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isUnInterruptedDesktopsharingON())
+							popWindow.activate();
+					}
+					return;
+				}
+				else{
+					applicationType::desktop{
+						if (!FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isUnInterruptedDesktopsharingON())
+							FlexGlobals.topLevelApplication.activate();
+					}
+				}
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModulle=3;
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectModuleByUser){
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setActiveWindowInSO(3);
+				}
+				FlexGlobals.topLevelApplication.mainApp.stage.frameRate=24;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.resizeFunction();
+				if (ContextManager.fmsService.netStatusmsg2D){
+					ContextManager.fmsService.setSo();
+					ContextManager.fmsService.netStatusmsg2D=false;
+				}
+			}
+			
+			/**
+			 * @public
+			 * The function is used to add the 2DViewer component.
+			 *
+			 *
+			 *
+			 * @return void
+			 */
+			public function init_viewer2D():void{
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.addChild(this);
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DLoaded=true;
+			}
+			/**
+			 * @public
+			 * The function is button handler for 2DViewer mulple window.
+			 *
+			 * @return void
+			 */
+			
+			public function viewer2DMWHandler():void{
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModulle=3;
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectModuleByUser)
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setActiveWindowInSO(3);
+			}
+			/**
+			 * @public
+			 * 
+			 *
+			 * @return void
+			 */
+			
+			public function removeViewer2DComponent():void {
+				
+				if(FlexGlobals.topLevelApplication.mainApp && FlexGlobals.topLevelApplication.mainApp.mainContainerComp && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp)
+				{
+					// Remve Viewer 2D Multiple window
+					applicationType::desktop {
+						//PNCR: multiple window currently not using.
+						if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DMWActive) {
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DMWActive=false
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DMW.close()
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DMW.removeChild(this);
+							FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DMW=null;
+						}
+						// Remve Viewer 2D Popout window 
+						if (isPopOut) {
+							popWindow.close()
+							popWindow.removeChild(this);
+							popWindow=null
+							isPopOut=false;
+						}
+					}
+					// Remove Viewer 2D Component from single window
+					if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl) {
+						applicationType::web {
+							// Added this logic to avoid null object reference issue
+							if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox && FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.contains(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DComp)) {
+								FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.removeChild(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DComp)
+							}
+						}
+						applicationType::desktop {
+							if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.contains(this)) {
+								FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewer2DBox.removeChild(this)
+							}
+						}
+						//PNCR: please check whether this line only is requeired to close component. Because in, 3D component is closed only with this single line. Example in function closeClassroomSession()
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DLoaded=false
+					}
+				}
+			}
+
+		]]>
+	</fx:Script>
+
+	<!--2Dviewer swc-->
+	<lms:Viewer2D id="object2Dviewer"
+				  getdata="listRemoteFiles()"/>
+	<twoDSharing:UploadHelper id="uploadHelper2D"/>
+</s:BorderContainer>

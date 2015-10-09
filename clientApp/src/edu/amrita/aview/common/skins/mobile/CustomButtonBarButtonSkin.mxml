@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin name="CustomButtonBarButtonSkin"
+			 xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark"
+			 minWidth="21" 
+			 alpha.disabledStates="0.5"
+			 rotation="0"
+			 creationComplete="init(event)"
+			 updateComplete="sparkskin1_updateCompleteHandler(event)">
+	<!-- states -->
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over" stateGroups="overStates" />
+		<s:State name="down" stateGroups="downStates" />
+		<s:State name="disabled" stateGroups="disabledStates" />
+		<s:State name="upAndSelected" stateGroups="selectedStates, selectedUpStates" />
+		<s:State name="overAndSelected" stateGroups="overStates, selectedStates" />
+		<s:State name="downAndSelected" stateGroups="downStates, selectedStates" />
+		<s:State name="disabledAndSelected" stateGroups="selectedUpStates, disabledStates, selectedStates" />
+	</s:states>
+	
+	<!-- host component -->
+	<fx:Metadata>
+		<![CDATA[ 
+		[HostComponent("spark.components.ButtonBarButton")]
+		]]>
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			protected function gr_creationComplete(evt:FlexEvent):void {
+				var dataObj:Object = hostComponent.data;
+//				img.source = dataObj.icon;
+				lbl.text = dataObj.label;
+				hostComponent.toolTip = dataObj.label;
+				this.width = (FlexGlobals.topLevelApplication.height/6);
+				this.height = hostComponent.height;
+			}
+			static private const exclusions:Array = ["labelDisplay"];
+			
+			/** 
+			 * @private
+			 */     
+			override public function get colorizeExclusions():Array {return exclusions;}
+			
+			/**
+			 * @private
+			 */
+			override protected function initializationComplete():void
+			{
+				useChromeColor = true;
+				super.initializationComplete();
+			}
+			
+			/**
+			 * @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaleHeight:Number):void
+			{
+				var cr:Number = getStyle("cornerRadius");
+				
+				if (cornerRadius != cr)
+				{
+					cornerRadius = cr;
+					shadow.radiusX = cornerRadius;
+					fill.radiusX = cornerRadius;
+					lowlight.radiusX = cornerRadius;
+					highlightStroke.radiusX = cornerRadius;
+					border.radiusX = cornerRadius;
+				}
+				if (hldownstroke1)
+				{
+					hldownstroke1.radiusX = cornerRadius;
+				}
+				if (hldownstroke2)
+				{
+					hldownstroke2.radiusX = cornerRadius;
+				}
+				
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+			
+			private var cornerRadius:Number = 2;
+			
+			protected function init(event:FlexEvent):void
+			{
+				
+				try {
+					if (hostComponent.data.hasOwnProperty("enabled")) {
+						hostComponent.enabled = hostComponent.data.enabled;
+					}
+				} catch (error:*) {
+					// ignore
+				}
+			}
+			protected function sparkskin1_updateCompleteHandler(event:FlexEvent):void
+			{
+				try {
+					if (hostComponent.data.hasOwnProperty("enabled")) {
+						hostComponent.enabled = hostComponent.data.enabled;
+					}
+				} catch (error:*) {
+					// ignore
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Group left="0" right="-1" top="-1" bottom="-2">
+		
+		<!-- layer 1: shadow -->
+		<!--- @private -->
+		<s:Rect id="shadow" left="0" right="0" top="0" bottom="0" width="69" height="40">
+		</s:Rect>
+		
+		<!-- layer 2: fill -->
+		<!--- @private -->
+		<s:Rect id="fill" left="2" right="1" top="2" bottom="0">
+			<s:fill>
+				<s:SolidColor color="#C5DEE8" 
+							  alpha="1" 
+							  alpha.overAndSelected="1"
+							  color.selectedStates="#FFFFFF"/>
+			</s:fill>
+		</s:Rect>
+		
+		<!-- layer 3: fill lowlight -->
+		<!--- 
+		@private
+		-->
+		<s:Rect id="lowlight" left="2" right="1" top="2" bottom="2">
+		</s:Rect>
+		
+		<!-- layer 5: highlight stroke (all states except down) -->
+		<!--- @private -->
+		<s:Rect id="highlightStroke" left="2" right="1" top="2" bottom="2"
+				excludeFrom="downStates">
+		</s:Rect>
+		
+		<!-- layer 6: highlight stroke (down state only) -->
+		<!--- @private -->
+		<s:Rect id="hldownstroke1" left="2" right="1" top="2" bottom="2" topLeftRadiusX="2"  bottomLeftRadiusX="2"
+				includeIn="downStates, selectedUpStates, overAndSelected">
+		</s:Rect>
+		<!--- @private -->
+		<s:Rect id="hldownstroke2" left="3" right="2" top="3" bottom="3" topLeftRadiusX="2"  bottomLeftRadiusX="2"
+				includeIn="downStates, selectedUpStates, overAndSelected">
+		</s:Rect>
+		
+		<!-- layer 7: border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
+		<!--- @private -->
+		<s:Rect id="border" left="1" right="0" top="1" bottom="1">
+		</s:Rect>
+		
+	</s:Group>
+	<s:HGroup verticalCenter="0" horizontalCenter="0" gap="10" paddingLeft="10" paddingRight="20">
+		
+		<!-- layer 8: icon -->
+		<s:Graphic id="gr"
+				   creationComplete="gr_creationComplete(event);"
+				   horizontalCenter="0" verticalCenter="0">
+			<s:BitmapImage id="img" />
+		</s:Graphic>
+		
+		
+		<!-- layer 9: text -->
+		<!---  @copy spark.components.supportClasses.ButtonBase#labelDisplay -->
+		<s:Label id="lbl"
+				 textAlign="center"
+				 fontSize="14"
+				 verticalAlign="middle"
+				 maxDisplayedLines="1"
+				 horizontalCenter="0" verticalCenter="0" paddingTop="4"
+				 rotation="360">
+		</s:Label>
+		
+	</s:HGroup>
+	
+</s:SparkSkin>

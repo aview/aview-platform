@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" creationComplete="init()"
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" borderVisible="true" 
+		   borderStyle="solid" borderColor="#ffffff" width="100%" height="100%" 
+		   backgroundColor="#ffffff" creationPolicy="all" 
+		   resize="canvas1_resizeHandler(event)" implements="edu.amrita.aview.core.video.IVideoWallLayout">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:Resize id="expand" widthFrom="10" widthTo="84" duration="200" target="{btnControls}"/>
+		<s:Resize id="colapse" widthFrom="84" widthTo="10" duration="200" target="{btnControls}"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.AVCEnvironment;
+			import edu.amrita.aview.core.entry.ClassRoomSgl;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.audit.AuditContext;
+			
+			import mx.containers.TitleWindow;
+			import mx.core.FlexGlobals;
+			import mx.core.IVisualElementContainer;
+			import mx.core.UIComponent;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			applicationType::desktop{
+				import mx.core.Window;
+			}
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.events.ResizeEvent;
+			import mx.managers.DragManager;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			[Embed(source="assets/images/showarrow.png")]
+			public var showIcon:Class;
+			[Bindable]
+			[Embed(source="assets/images/hidearrow.png")]
+			public var hideIcon:Class;
+			
+			[Bindable]
+			[Embed(source="assets/images/fulll-screen.png")]
+			public var fullScreenIcon:Class;
+			
+			[Bindable]
+			[Embed(source="assets/images/pop-out.png")]
+			public var popoutIcon:Class;
+			
+			[Bindable]
+			public var resizeFactor:uint=15;
+			/* [Bindable]
+			[Embed(source="/docicons/view-fullscreen1.png")]
+			private var popoutIcon1:Class; */
+			[Bindable]
+			[Embed(source="assets/images/pop-in.png")]
+			public var popinIcon:Class;	
+			/* [Bindable]
+			[Embed(source="/docicons/full-Screen.png")]
+			private var fullScreenIcon1:Class; */
+			[Bindable]
+			[Embed(source="assets/images/exitFull-Screen.png")]
+			public var exitFullScreenIcon:Class;	
+			//default resizefactor for video tile in video wall befaore resizing
+			public const DEFULT_RESIZE_FACTOR:uint = 9;
+			
+			private var i:uint=0;
+			
+			private var oldResizeFactor:uint=0;
+			
+			public var isTileResized:Boolean = false;
+			private var btnContainer:ButtonContainer;
+			
+			// Interface implementation
+			private var parentComponent:UIComponent;
+			public function setFullScreenVideo():Boolean
+			{
+				
+					if (!systemManager.getTopLevelRoot())
+						return false;
+					var screenBounds:Rectangle = getScreenBounds();
+					fullScreen = true;
+					beforeFullScreenInfo = {parent: this.parent,
+						x: this.x,
+						y: this.y,
+						explicitWidth: this.explicitWidth,
+						explicitHeight: this.explicitHeight,
+						percentWidth: this.percentWidth,
+						percentHeight: this.percentHeight,
+						isPopUp: this.isPopUp};
+					
+					if (!isPopUp)
+					{
+						if (parent is IVisualElementContainer)
+						{
+							var ivec:IVisualElementContainer = IVisualElementContainer(parent);
+							beforeFullScreenInfo.childIndex = ivec.getElementIndex(this);
+							ivec.removeElement(this);
+						}
+						else
+						{
+							beforeFullScreenInfo.childIndex = parent.getChildIndex(this);
+							parent.removeChild(this);
+						}
+						PopUpManager.addPopUp(this, FlexGlobals.topLevelApplication as DisplayObject, false, null, moduleFactory);
+					}
+					
+					
+					
+					setLayoutBoundsSize(screenBounds.width, screenBounds.height, true);
+					
+					this.explicitWidth = width;
+					this.explicitHeight = height;
+					
+					setLayoutBoundsPosition(0, 0, true);
+					this.validateNow();
+					systemManager.stage.addEventListener(FullScreenEvent.FULL_SCREEN, fullScreenEventHandler);
+					systemManager.stage.displayState = StageDisplayState.FULL_SCREEN;
+					
+				
+				return true;
+			}
+			
+			//Fix for issue #17990
+			applicationType::web{
+				public function resizeBaseContainer():void{
+					
+				}
+			}
+			
+			public function closeFullScreenVideo():Boolean
+			{
+				/* applicationType::desktop{
+					popOutBtn.visible=true;
+					popOutBtn.includeInLayout=true;
+					btnControls.width=84;
+				}
+				applicationType::web{
+					popOutBtn.visible=false;
+					popOutBtn.includeInLayout=false;
+					btnControls.width=62;
+				} */
+				systemManager.stage.displayState = StageDisplayState.NORMAL;
+				return true;
+			}
+			//parent can be either regular container or popout container
+			public function initializeComponent(parent:UIComponent, controlBar:ButtonContainer):void
+			{
+				parentComponent = parent;
+				btnContainer = controlBar;
+				parentComponent.addChild(this);
+				this.addElement(btnContainer);
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.tab2.selectedIndex=6;
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setActiveWindowInSO(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.tab2.selectedIndex);
+				if(ClassroomContext.userVO.role!=Constants.MONITOR_TYPE)
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.tabButttonChange();
+			}
+			applicationType::desktop{
+				public function initializePopOutComponent(parent:UIComponent, controlBar:ButtonContainer, popOutComponent:VideoWallPopOut):void
+				{
+					parentComponent = parent;
+					btnContainer = controlBar;
+					this.addElement(btnContainer);
+					popOutComponent.setLayout(this);
+				}
+				//parent can be either regular container or popout container
+				public function setPopOutLayout(newParent:VideoWallPopOut):void
+				{
+					parentComponent.removeChild(this);
+					newParent.setLayout(this);
+				}
+			}
+			
+			public function setParentLayout():void
+			{
+				parentComponent.addChild(this);
+				this.removeElement(btnContainer);
+				this.addElement(btnContainer);
+				
+			}
+			public function removeVideoDisplay (userName:String):void
+			{
+				var removedTile:VideoStreamDisplay=removeVideoTile(userName+Constants.VIEWER_APPEND_NAME);
+				
+			}
+			public function addPresenterDisplay (presenterDisplay:VideoStreamDisplay):void
+			{ 
+				if(ClassroomContext.userVO.role == Constants.MONITOR_TYPE)
+					return;
+				if(ClassroomContext.currentPresenterName==ClassroomContext.userVO.userName)
+				{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.changePTTButtonStatus(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher,ClassroomContext.currentPresenterName);
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.startPresentersStream();
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher.videoConnection = getPresenterVideoStreamDisplay().videoConnection;
+				}
+				this.mainTile.addChildAt(presenterDisplay,0);
+				presenterDisplay.resizable = true;
+				presenterDisplay.addEventListener(VideoTileEvent.RESIZED,onVideoTileResized);
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher.id = FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.getPresenterStreamName();
+				//Fix for issue #20186,3#20187 and #20188
+				applicationType::web{
+					if(presenterDisplay.isVideoPaused){
+						presenterDisplay.labelVideoToggleNotification.visible =true;
+					}
+					else{
+						presenterDisplay.labelVideoToggleNotification.visible =false;
+					}
+				}
+						
+			}
+			public function addViewerDisplay(viewerStreamDisplay:VideoStreamDisplay):void
+			{
+				mainTile.addChild(viewerStreamDisplay);
+				viewerStreamDisplay.resizable = true;
+				viewerStreamDisplay.addEventListener(VideoTileEvent.RESIZED,onVideoTileResized);
+				resizeVideoStreamDisplay();
+			}
+			public function closeLayout(bool:Boolean):void
+			{
+				if(!FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp)
+					return;
+				removePresenterDisplay();
+				for (var i:int=0; i < FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedViewerDisplays.length; i++)
+				{
+					removeViewerDisplay(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedViewerDisplays[i]);
+				}
+				this.removeElement(btnContainer);
+				if(fullScreen)
+					closeFullScreenVideo();
+			}
+			
+			public function getPresenterVideoStreamDisplay():VideoStreamDisplay
+			{
+				return FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher;
+			}
+			
+			public function getViewerVideoStreamDisplay(viewerDisplay:VideoStreamDisplay):VideoStreamDisplay
+			{
+				//viewerDisplay.percentWidth=90;
+				return viewerDisplay;
+			}
+			
+			public function resizeVideoStreamDisplay():void
+			{
+				resizeAllVideosinVideoWall(resizeFactor);
+			}
+			
+			public function onVideoTileResized(event:VideoTileEvent):void
+			{
+				isTileResized = true;
+				resizeAllVideosinVideoWall(event.resizeFactor);
+			}
+			
+			public function removePresenterDisplay():void
+			{
+				var presenterDisplay:VideoStreamDisplay =  FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher;
+				if(presenterDisplay.isFullScreenPresent && ClassroomContext.userVO.userName == ClassroomContext.currentPresenterName)
+				{
+					presenterDisplay.isVideoReset = false;
+					applicationType::desktop{
+						presenterDisplay.videoFullScreenComp.removeEventListener(Event.CLOSE, presenterDisplay.fullscreenClose);
+					}
+					presenterDisplay.closeFullScreen();
+					presenterDisplay.isFullScreenPresent = false;
+				}
+				if(presenterDisplay.hasEventListener(VideoTileEvent.RESIZED))
+					presenterDisplay.removeEventListener(VideoTileEvent.RESIZED,onVideoTileResized);
+				if(ClassroomContext.userVO.role != Constants.MONITOR_TYPE)
+					this.mainTile.removeChild(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher);
+			}
+			
+			public function removeViewerDisplay(videoDisplay:VideoStreamDisplay):void
+			{
+				removeVideoTile(videoDisplay.id);
+				if(videoDisplay.hasEventListener(VideoTileEvent.RESIZED))
+					videoDisplay.removeEventListener(VideoTileEvent.RESIZED,onVideoTileResized);
+			}
+			
+			public function changeMainVideoInVideoWall(userName:String, streamName:String):void
+			{
+				
+			}
+			
+			public function removeOldPresenterFromBigScreenInVideoWall(oldPresenter:String, newPresenter:String):void
+			{
+			}
+			
+			public function getMainDisplay():VideoStreamDisplay
+			{
+				return null;
+			}
+			/////////////////////////////
+			
+			private function init():void
+			{ 
+				btnFullScreen.toolTip = "Full screen";
+				btnFullScreen.setStyle("icon",fullScreenIcon);
+				applicationType::desktop{
+					if(videoWallWindow == null)
+						popOutBtn.setStyle("icon",popoutIcon);
+				}
+				onVideoTileResize();
+				applicationType::web{
+					btnControls.width = 62;
+					colapse.widthFrom = 62;
+					expand.widthTo = 62;
+				}
+			}
+			
+			private function popOutBtnVisble(isVisible:Boolean):void
+			{
+				if(isVisible)
+				{
+					popOutBtn.alpha=1;					
+				}
+				else
+				{ 
+					popOutBtn.alpha=0;
+				} 
+			}
+			
+			private function closeBtnVisble(isVisible:Boolean):void
+			{
+				if(isVisible)
+				{
+					//btnFullScreen1.alpha=1;					
+				}
+				else
+				{ 
+					//btnFullScreen1.alpha=0;
+				} 
+			}
+			
+			public function popOutButtonVisibility():void
+			{
+				applicationType::desktop{
+					videoWallWindow.isMeetingLayout = true
+				}
+				isPopOut=true;	
+				btnFullScreen.visible=false;
+				btnFullScreen.includeInLayout=false;
+				btnClose.visible=false;	
+				btnClose.includeInLayout=false;	
+				btnShow.visible=false;	
+				btnShow.includeInLayout=false;	
+				btnControls.width=28;
+				popOutBtn.setStyle("icon",popinIcon);
+				popOutBtn.toolTip="Pop-In";
+			}
+			
+			private function fullScreenBtnVisble(isVisible:Boolean):void
+			{
+				if(isVisible)
+				{
+					btnFullScreen.alpha=1;
+				}
+				else
+				{ 
+					btnFullScreen.alpha=0;
+				}
+			}
+			
+			protected function canvas1_resizeHandler(event:ResizeEvent):void
+			{
+				if(!isTileResized)
+				{
+					if(this.mainTile.numChildren>0)
+					{
+						var mainTileHeight:Number=this.height-this.selectedViewerTile.height;
+						var factor1:int=Math.floor(mainTileHeight/9);
+						var factor2:int=Math.floor(this.width/16);
+						if(factor1<factor2)
+						{
+							(mainTile.getChildAt(0) as VideoStreamDisplay).resizeFactorTitleWindow=factor1;
+						}
+						else
+						{
+							(mainTile.getChildAt(0) as VideoStreamDisplay).resizeFactorTitleWindow=factor2;
+						}
+					}
+					if(selectedViewerTile.width>0)
+						onVideoTileResize(); 
+				}
+				
+			}
+			
+			public function resizeAllVideosinVideoWall(resizeFactor:uint,isTileResize:Boolean=false):void
+			{
+				if(!isTileResize)
+				{
+					oldResizeFactor=0;
+				}
+				this.resizeFactor=resizeFactor;
+				for (var index:int=0;index<mainTile.numChildren;index++)
+				{		
+					if(mainTile.getChildAt(index) is VideoStreamDisplay)
+					{
+						var currentTile:VideoStreamDisplay=mainTile.getChildAt(index) as VideoStreamDisplay;
+						currentTile.resizeFactorTitleWindow=resizeFactor;
+						currentTile.resizeFactor=resizeFactor;
+						currentTile.width = currentTile.resizeFactorTitleWindow * 16;
+						currentTile.height = currentTile.resizeFactorTitleWindow * 9;
+					}
+				}
+				
+			}
+			 public function onVideoTileResize():void
+			{
+				var factor:Number=Math.floor(this.selectedViewerTile.height/9);
+				var maxWidth:Number=this.width-10;
+				if(factor>0 && maxWidth>0)
+				{
+					if((factor*this.selectedViewerTile.numChildren*16)>(maxWidth))
+					{
+						factor=Math.floor(maxWidth/(this.selectedViewerTile.numChildren*16));
+					}
+					resizeAllVideosinVideoWall(factor,false);
+				}
+			}
+
+			protected function hslider1_changeHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				//resizeFactor=resizeFactorSlider.value;
+			}
+			
+			
+			protected function tileList_dragDropHandler(event:DragEvent):void
+			{
+				// TODO Auto-generated method stub
+				var selectedViewerArray:Array=HBox(event.currentTarget).getChildren();
+				if(selectedViewerArray.length>1)
+				{
+					var i:int=0;
+					for(i=0;i<selectedViewerArray.length;i++)
+					{
+						if(selectedViewerArray[i].id==(TitleWindow(event.dragInitiator).id))
+						{
+							break;
+						}
+					}
+					//selectedViewerTile.removeChildAt(i);
+						
+						
+					var j:int=0;
+					for(j=0;j<selectedViewerArray.length;j++)
+					{
+						if(((HBox(event.currentTarget).mouseX)>selectedViewerArray[j].x && (HBox(event.currentTarget).mouseX)<(selectedViewerArray[j].x+selectedViewerArray[j].width)) && (HBox(event.currentTarget).mouseY)>selectedViewerArray[j].y && (HBox(event.currentTarget).mouseY)<(selectedViewerArray[j].y+selectedViewerArray[j].height))
+						{
+							break;
+						}
+					}
+					
+					if(j<selectedViewerArray.length)
+					{
+						selectedViewerTile.removeChildAt(i);
+						selectedViewerTile.addChildAt(selectedViewerArray[i],j);
+					}
+				}
+			}
+			
+			protected function tileList_dragEnterHandler(event:DragEvent):void
+			{
+				// TODO Auto-generated method stub
+				//Alert.show("dragEnter");
+				if (event.dragSource.hasFormat("selectedViewerComp"))
+				{
+					DragManager.acceptDragDrop(HBox(event.currentTarget));
+				}
+			}
+			
+			protected function tileList_dragOverHandler(event:DragEvent):void
+			{
+				// TODO Auto-generated method stub
+				//Alert.show("dragOver");
+			}
+			
+			protected function tileList_dragExitHandler(event:DragEvent):void
+			{
+				// TODO Auto-generated method stub
+				//Alert.show("dragExit");
+			}
+			
+			private function videoPTTChange():void
+			{
+				
+			}
+		
+			public function addVideoTile(tile:VideoStreamDisplay,resizable:Boolean=false):void
+			{				
+				if(selectedViewerTile.numChildren>0)
+				{					
+					tile.resizeFactor=this.resizeFactor;
+				}
+				else
+				{
+					tile.resizeFactor=tile.RESIZE_FACTOR_SW;
+				}				
+				selectedViewerTile.addChild(tile);
+				tile.resizable=resizable;
+				onVideoTileResize();
+				tile.resizeFactorTitleWindow = this.resizeFactor;
+				
+				
+			}
+			public function getvideoTileAt(index:int):VideoStreamDisplay
+			{
+				return selectedViewerTile.getChildAt(index) as VideoStreamDisplay;
+			}
+			
+
+		
+			public var isPopOutClosed:Boolean = false;
+			public var isPopOut:Boolean=false ;
+			applicationType::desktop{
+				public var videoWallWindow:VideoWallPopOut;
+			}
+			
+			
+			private function onResizeTile(event:ResizeEvent):void
+			{
+				var maxResizeFactor:uint=0;
+				if(selectedViewerTile.height>selectedViewerTile.width)
+				{
+					maxResizeFactor=(selectedViewerTile.width)/16;
+				}
+				else
+				{
+					maxResizeFactor=(selectedViewerTile.height)/9;
+				}
+				if(selectedViewerTile.numChildren>0)
+				{
+					var firstTile:VideoStreamDisplay=selectedViewerTile.getChildAt(0) as VideoStreamDisplay;
+					if(firstTile.resizeFactorTitleWindow>maxResizeFactor)
+					{
+                        oldResizeFactor=firstTile.resizeFactorTitleWindow;
+						resizeAllVideosinVideoWall(maxResizeFactor,true);
+			
+					}
+					else if(firstTile.resizeFactorTitleWindow<maxResizeFactor && oldResizeFactor>0)
+					{
+						if(oldResizeFactor<=maxResizeFactor)
+						resizeAllVideosinVideoWall(oldResizeFactor,true);
+						oldResizeFactor=0;
+					}
+				}
+								
+			}
+			/* public function removeVideoTile(userName:String):VideoStreamDisplay
+			{
+				var removedTile:VideoStreamDisplay=null;
+				for(i=0;i<selectedViewerTile.numChildren;i++)
+				{				
+					var currentTile:VideoStreamDisplay=selectedViewerTile.getChildAt(i) as VideoStreamDisplay;
+					if(currentTile.userName==userName)
+					{						
+						removedTile=selectedViewerTile.removeChildAt(i) as VideoStreamDisplay;
+						onVideoTileResize();
+						break;
+					}
+					
+				} 
+				if(selectedViewerTile.numChildren==0)
+				{
+					resizeFactor=DEFULT_RESIZE_FACTOR;
+					oldResizeFactor=0;
+				}
+				return removedTile; 
+			}*/
+			
+			
+			public function getMainVideoDisplay():VideoStreamDisplay
+			{
+				if(mainTile.numChildren>0)
+				{
+					return  mainTile.getChildAt(0)as VideoStreamDisplay;
+				}
+				return null;
+			}
+			
+			public var fullScreen:Boolean = false;
+			[Bindable]
+			private var fullScreenStatus:Boolean = false;
+			private var beforeFullScreenInfo:Object;
+			private var origvideox:Number = 0;
+			private var origvideoy:Number = 0;
+			private var origvideowidth:Number = 0;
+			private var origvideoheight:Number = 0;
+			
+			[Bindable]
+			private var orgWidth:int=0;
+			[Bindable]
+			private var orgHeight:int=0;
+			private static var _screenClass:Class;
+			private static var checkedForScreenClass:Boolean;
+			
+			/**
+			 * For Log API
+			 */
+			private var log:ILogger=Log.getLogger("aview.modules.video.MeetingVideoWall.mxml");
+			
+			
+			
+			
+			
+			private static function get screenClass():Class
+			{
+				if (!checkedForScreenClass)
+				{
+					checkedForScreenClass = true;
+					
+					if (ApplicationDomain.currentDomain.
+						hasDefinition("flash.display::Screen"))
+					{
+						_screenClass = Class(ApplicationDomain.currentDomain.
+							getDefinition("flash.display::Screen"));
+					}
+				}
+				return _screenClass;
+			}
+			
+			private function getScreenBounds():Rectangle
+			{       
+				var resultRect:Rectangle = new Rectangle(0, 0, stage.fullScreenWidth, stage.fullScreenHeight);
+				if (screenClass)
+				{
+					try 
+					{
+						var nativeWindowBounds:Rectangle = stage["nativeWindow"]["bounds"];             
+						var currentScreen:Object = screenClass["getScreensForRectangle"](nativeWindowBounds)[0];
+						resultRect = currentScreen["bounds"];
+					}
+					catch (e:Error)
+					{
+						if(Log.isError()) log.error("Error in getScreenBounds method :"+ e.getStackTrace());
+					}
+				}
+				return resultRect;
+			}
+			
+			private function fullScreenEventHandler(event:FullScreenEvent):void
+			{
+				if (event.fullScreen)
+					return;
+				fullScreen = false;
+				systemManager.stage.removeEventListener(FullScreenEvent.FULL_SCREEN, fullScreenEventHandler);
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.changeFullscreenBtnStatus();
+				this.x = beforeFullScreenInfo.x;
+				this.y = beforeFullScreenInfo.y;
+				this.width =  orgWidth;
+				this.height = orgHeight;
+				if(this.explicitWidth>0)
+				{
+					this.explicitWidth = beforeFullScreenInfo.explicitWidth;
+					this.explicitHeight = beforeFullScreenInfo.explicitHeight;
+				}
+				else
+				{
+					this.explicitWidth = orgWidth;
+					this.explicitHeight= orgHeight;
+				}
+				if (!beforeFullScreenInfo.isPopUp)
+				{
+					PopUpManager.removePopUp(this);
+					
+					if (beforeFullScreenInfo.parent is IVisualElementContainer)
+						beforeFullScreenInfo.parent.addElementAt(this, beforeFullScreenInfo.childIndex);
+					else
+						beforeFullScreenInfo.parent.addChildAt(this, beforeFullScreenInfo.childIndex);
+				}
+				systemManager.stage.scaleMode= StageScaleMode.NO_SCALE;
+				this.percentWidth = beforeFullScreenInfo.percentWidth;
+				this.percentHeight = beforeFullScreenInfo.percentHeight;
+				
+				beforeFullScreenInfo = null;
+				//FlexGlobals.topLevelApplication.stage.scaleMode = StageScaleMode.NO_SCALE;
+				invalidateSize();
+				invalidateDisplayList();
+				if(fullScreenStatus == true)
+				{
+					btnShow.visible=true;
+					btnShow.includeInLayout=true;
+					applicationType::desktop{
+						popOutBtn.visible=true;
+						popOutBtn.includeInLayout=true;
+						btnControls.width=84;
+					}
+					applicationType::web{
+						popOutBtn.visible=false;
+						popOutBtn.includeInLayout=false;
+						btnControls.width=62;
+					}
+					btnClose.visible=true;
+					btnClose.includeInLayout=true;
+					btnFullScreen.visible=true;
+					btnFullScreen.includeInLayout=true;
+					//for resizing the width and height while exiting the fullscreens
+					/* this.width =  orgWidth;
+					this.height = orgHeight; */
+					btnFullScreen.setStyle('icon',fullScreenIcon);
+					btnFullScreen.toolTip = "Full screen";
+					stage.displayState = 'normal';
+					fullScreenStatus = false;
+					
+				}
+			}
+		
+			private function close():void
+			{
+				if(ClassroomContext.currentPresenterName == ClassroomContext.userVO.userName)
+				{
+					var isSameLayout:Boolean = false;
+					if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.videoWallCollaborationObject.getData()["videoWallLayout"] == Constants.SIMPLE_LAYOUT)
+					{
+						isSameLayout = true;
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setVideoWallLayout(null);
+					}
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setVideoWallLayout(Constants.SIMPLE_LAYOUT);
+					if(isSameLayout)
+					{
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setVideoWallSharedObjectData("prevVideoWallLayout", Constants.MEETING_LAYOUT);
+					}
+				}
+				else
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.toggleVideoWall(); 
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.leftPanelTabNav.selectedIndex=2;
+				
+			}
+			
+			public function removeVideoTile(userName:String):VideoStreamDisplay
+			{
+				var removedTile:VideoStreamDisplay = null;
+				var selectedViewerArray:Array=null;
+				selectedViewerArray = mainTile.getChildren();
+				
+				for(var i:int=0;i<selectedViewerArray.length;i++)
+				{
+					if(selectedViewerArray[i].id==userName)
+					{
+						removedTile =	mainTile.removeChildAt(i) as VideoStreamDisplay;
+						break;
+					}
+				}	
+				return removedTile;
+			}
+			
+			protected function showHide_clickHandler(event:MouseEvent):void
+			{
+				if(btnControls.width==10)
+				{
+					btnShow.source = hideIcon;
+					btnShow.toolTip="Hide";
+					applicationType::desktop{
+						btnControls.width = 84;
+					}
+					applicationType::web{
+						btnControls.width = 62;
+					}
+					expand.play();
+					colapse.stop(); 
+					hboxControl.visible=true;
+					
+					
+				}
+				else
+				{
+					btnControls.width = 10;
+					btnShow.source = showIcon;
+					btnShow.toolTip="Show";
+					hboxControl.visible=false;
+					//hboxControl.enabled=false;
+					colapse.play();
+					expand.stop(); 
+					
+					
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!--<mx:VBox>-->
+		
+<!--	<mx:VBox width="100%" height="100%" >-->
+		
+	<!--<mx:Canvas width="100%" 
+			   height="85%">-->
+		
+	
+<!--	<mx:Tile x="5" y="5" id="selectedViewerTile" dragDrop="tileList_dragDropHandler(event)" 
+			 width="100%" height="{this.height*.35}" 
+			 dragEnter="tileList_dragEnterHandler(event)" 
+			 dragOver="tileList_dragOverHandler(event)" 
+			 dragExit="tileList_dragExitHandler(event)"	
+			 resize="onResizeTile(event)"
+			 
+			 />-->
+	<mx:Tile top="2" id="mainTile"  horizontalAlign="left" width="100%" height="100%">		
+	</mx:Tile>
+	<mx:HBox id="selectedViewerTile" width="100%" height="{this.height*.25}" bottom="0" horizontalGap="1" horizontalAlign="center" >
+		
+	</mx:HBox>
+	<mx:HBox visible="false" id="btnControls" right="1" top="1" width="84" height="29" backgroundColor="#343233"
+			 borderColor="#343233" cornerRadius="3" horizontalAlign="right" horizontalGap="1"
+			 paddingBottom="3" paddingLeft="1" paddingRight="3" paddingTop="3"
+			 verticalAlign="middle">
+		<mx:HBox  horizontalAlign="right" horizontalGap="1" id="hboxControl">
+			<mx:Button id="popOutBtn" 
+					   height="20" width="22"
+					   toolTip="Pop Out"
+					   visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+					   includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"/>
+			<mx:Button id="btnFullScreen" 
+					   height="20" width="22" 
+					 />
+			<mx:Button id="btnClose" 
+					   height="20" width="22" 
+					   toolTip="Close Video-wall"
+					   icon="@Embed(source='assets/images/video-close.png')"
+					   click="close()"/>
+		</mx:HBox>
+		
+	</mx:HBox>
+	<mx:Image  visible="false"
+		id="btnShow" 
+		useHandCursor="true"
+		buttonMode="true"
+		right="{btnControls.right+(btnControls.width-8)}" 
+		top="9" toolTip="Hide"
+		click="showHide_clickHandler(event)"
+		source="{hideIcon}"/>
+	<!--</mx:Canvas>-->
+<!--	</mx:VBox>-->
+	<!--</mx:VBox>-->
+	<!--<s:Button label="ADD" click="addVidComp()"/>
+	<s:HSlider id="resizeFactorSlider" x="86" y="6" liveDragging="true" maximum="200" minimum="40" stepSize="10" value="40" change="hslider1_changeHandler(event)"/>
+-->
+<!--	<mx:Button id="popOutBtn" buttonMode="true" useHandCursor="true" bottom="0" 
+			   mouseOver="popOutBtnVisble(true)" height="30" width="30" 
+			   mouseOut="popOutBtnVisble(false)" 
+			   click="popOutVideoWallWindow()"
+			   right="{btnFullScreen.bottom+btnFullScreen.width}"/>
+	<mx:Button id="btnFullScreen" height="30" width="30" bottom="0" right="0" alpha="0"  
+			   mouseOver="fullScreenBtnVisble(true)" 
+			   mouseOut="fullScreenBtnVisble(false)"  
+			   toolTip="Full screen" click="fullScreenSelected()"/>
+	
+	<mx:Button id="btnFullScreen1" height="30" width="30" bottom="0" right="0" alpha="0"  
+			   toolTip="Close" click="close()" mouseOver="closeBtnVisble(true)" mouseOut="closeBtnVisble(true)"/>
+--></mx:Canvas>

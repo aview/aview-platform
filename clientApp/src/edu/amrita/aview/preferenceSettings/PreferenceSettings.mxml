@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: PreferenceSettings.mxml
+Module		: preference settings
+Developer(s): Sivaram S.K
+Reviewer(s)	:
+
+This is used for sorting the userlist setting the video layout, question interface
+-->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="602"
+			   title="Preference Settings"
+			   height="514"
+			   close="removeMe()"
+			   borderColor="#2a5ea4"
+			   move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+			   backgroundColor="#e0effb"
+			   initialize="initPreferenceSettings(event)"
+			   xmlns:preferenceSettings="edu.amrita.aview.preferenceSettings.*">
+	<fx:Script source="PreferenceSettingsHandler.as" />
+
+	<s:HGroup width="100%"
+			  height="100%"
+			  gap="0"
+			  paddingLeft="-1"
+			  id="hgPreferenceSettings">
+		<s:BorderContainer width="165"
+						   height="482"
+						   bottom="-1"
+						   backgroundColor="#b6dcfa"
+						   borderColor="#7f97b0">
+			<s:layout>
+				<s:VerticalLayout paddingTop="5"
+								  gap="-1"/>
+			</s:layout>
+			<s:BorderContainer width="164"
+							   id="userSettingsContainer"
+							   height="40"
+							   borderColor="#7f97b0"
+							   backgroundColor="#b6dcfa"
+							   click="usersettingsHandler()">
+				<s:layout>
+					<s:HorizontalLayout verticalAlign="middle"
+										paddingLeft="18"/>
+				</s:layout>
+				<s:Image smooth="true" smoothingQuality="high"
+						 source="@Embed('/edu/amrita/aview/preferenceSettings/assets/images/prefArrow.png')"/>
+				<s:Label fontSize="13"
+						 text="User Settings"
+						 useHandCursor="true"
+						 buttonMode="true"/>
+			</s:BorderContainer>
+			<s:BorderContainer width="164"
+							   height="40"
+							   id="videoLayoutContainer"
+							   borderColor="#7f97b0"
+							   backgroundColor="#b6dcfa"
+							   click="videoLayoutHandler()">
+				<s:layout>
+					<s:HorizontalLayout verticalAlign="middle"
+										paddingLeft="18"/>
+				</s:layout>
+				<s:Image smooth="true" smoothingQuality="high"
+						 source="@Embed('/edu/amrita/aview/preferenceSettings/assets/images/prefArrow.png')"/>
+				<s:Label fontSize="13"
+						 text="Video Layout"
+						 useHandCursor="true"
+						 buttonMode="true"/>
+			</s:BorderContainer>
+			<s:BorderContainer width="164"
+							   height="40"
+							   id="desktopSharingContainer"
+							   borderColor="#7f97b0"
+							   backgroundColor="#b6dcfa"
+							   click="desktopHandler()">
+				<s:layout>
+					<s:HorizontalLayout verticalAlign="middle"
+										paddingLeft="18"/>
+				</s:layout>
+				<s:Image smooth="true" smoothingQuality="high"
+						 source="@Embed('/edu/amrita/aview/preferenceSettings/assets/images/prefArrow.png')"/>
+				<s:Label fontSize="13"
+						 text="Desktop Sharing"
+						 useHandCursor="true"
+						 buttonMode="true"/>
+			</s:BorderContainer>
+			<s:BorderContainer width="164"
+							   height="40"
+							   id="questionInterfaceContainer"
+							   borderColor="#7f97b0"
+							   backgroundColor="#b6dcfa"
+							   click="questionHandler()">
+				<s:layout>
+					<s:HorizontalLayout verticalAlign="middle"
+										paddingLeft="18"/>
+				</s:layout>
+				<s:Image smooth="true" smoothingQuality="high"
+						 source="@Embed('/edu/amrita/aview/preferenceSettings/assets/images/prefArrow.png')"/>
+				<s:Label fontSize="13"
+						 text="Question Interface"
+						 useHandCursor="true"
+						 buttonMode="true"/>
+			</s:BorderContainer>
+		</s:BorderContainer>
+		<s:VGroup width="100%"
+				  height="100%"
+				  gap="7">
+			<s:BorderContainer id="TitleWindowBaseContainer"
+							   width="100%"
+							   height="439"
+							   borderVisible="false"
+							   backgroundColor="#e1effa">
+				<mx:ViewStack id="preferenceTab"
+							  selectedIndex="0"
+							  width="100%"
+							  height="100%">
+					<s:NavigatorContent width="100%"
+										height="100%">
+						<preferenceSettings:UserSettings id="userSet"
+														 left="20"/>
+					</s:NavigatorContent>
+					<s:NavigatorContent width="100%"
+										height="100%">
+						<preferenceSettings:VideoLayout id="vidLayout"
+														left="20"/>
+					</s:NavigatorContent>
+					<s:NavigatorContent width="100%"
+										height="100%">
+						<preferenceSettings:Desktop id="prefDesk"
+													left="20"/>
+					</s:NavigatorContent>
+					<s:NavigatorContent width="100%"
+										height="100%">
+						<preferenceSettings:Question id="prefQuest"
+													 left="20"/>
+					</s:NavigatorContent>
+				</mx:ViewStack>
+
+			</s:BorderContainer>
+			<s:HGroup right="10"
+					  width="400"
+					  gap="6"
+					  horizontalAlign="right"
+					  paddingBottom="0"
+					  verticalAlign="bottom"
+					  id="hgPreferenceOptions">
+				<s:Button label="Save"
+						  chromeColor="#E0EFFB"
+						  click="saveHandler()"
+						  cornerRadius="3" toolTip="Save the settings"/>
+				<s:Button label="Cancel"
+						  chromeColor="#E0EFFB"
+						  click="removeMe()"
+						  cornerRadius="3" toolTip="Cancel"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+</s:TitleWindow>

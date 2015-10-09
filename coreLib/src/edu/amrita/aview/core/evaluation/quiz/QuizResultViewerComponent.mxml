@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuizResultViewerComponent.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component shows result to teacher in different formats :
+user wise , question level ,question paper  , location based , category wise
+
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*"
+		   width="850"
+		   height="700"
+		   creationComplete="{addStudentWiseResult()}"
+		   focusColor="#A9F9A0"
+		   chromeColor="#CCCCCC">
+	
+	<mx:Script source="QuizResultViewerComponentUIHandler.as"/>
+	<!-- Hbox to hold all the buttons. -->
+	<mx:HBox horizontalCenter="0"
+			 top="10">
+		<!-- Button to show student wise result. -->
+		<components:ImageButton id="btnStudentWise"
+								visible="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE}"
+								height="28" label="User-Wise Result" chromeColor="#E0EFFB"
+								click="{addStudentWiseResult()}" color="#000000" cornerRadius="3"
+								fontFamily="Arial" fontSize="12" fontWeight="normal"/>
+		<!-- Button to show question level result. -->
+		<components:ImageButton id="btnQuestionLevel"
+								visible="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE}"
+								height="28" label="Question Level Result" chromeColor="#E0EFFB"
+								click="{addQuestionLevelResult()}" color="#000000" cornerRadius="3"
+								fontFamily="Arial" fontSize="12" fontWeight="normal"/>
+		<!-- Button to show question paper result. -->
+		<components:ImageButton id="btnQuestionPaperResult"
+								visible="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE}"
+								height="28" label="Question Paper Result" chromeColor="#E0EFFB"
+								click="{addQuestionPaperResult()}" color="#000000" cornerRadius="3"
+								fontFamily="Arial" fontSize="12" fontWeight="normal"/>
+		<!-- Fix for Bug #19913-->
+		<!-- Button to show location based result. -->
+		<!--<components:ImageButton id="btnLocationBasedResult"
+								visible="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE}"
+								height="28" label="Location Based Result" chromeColor="#E0EFFB"
+								click="{addLocationBasedResult()}" color="#000000" cornerRadius="3"
+								fontFamily="Arial" fontSize="12" fontWeight="normal"/>-->
+		<!-- Button to show category wise result. -->
+		<components:ImageButton id="btnCategoryWiseResult"
+				  visible="false" includeInLayout="false"
+				  height="28"
+				  label="Category-Wise Result"
+				  click="{addCategoryWiseResult()}"
+				  fontFamily="Times New Roman"
+				  fontSize="15"/>
+<!--				  visible="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE}"-->
+
+		<!-- Button to refresh the result. -->
+		<components:MxImageButton id="btnRefresh"
+				   visible="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE}"
+				   height="30"
+				   width="32"
+				   click="{onRefresh()}"
+				   overSkin="mx.skins.halo.ButtonSkin"
+				   downSkin="mx.skins.halo.ButtonSkin"
+				   fontFamily="Times New Roman"
+				   fontSize="15"
+				   cornerRadius="5"
+				   icon="@Embed('assets/images/Refresh (32).png')"
+				   toolTip="Refresh the results"/>
+	</mx:HBox>
+	<!-- Canvas contaner to hold the content -->
+	<mx:Canvas id="canSelectedQuizComp"
+			   y="46"
+			   width="100%"
+			   height="95%"
+			   borderColor="#091319"
+			   borderStyle="none"
+			   horizontalCenter="0">
+	</mx:Canvas>
+</mx:Canvas>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   backgroundColor="#ffffff" borderColor="#96A0A9" borderStyle="solid" borderVisible="true"
+		   creationComplete="component_creationCompleteHandler(event)" dropShadowVisible="true">
+	<fx:Script source="HelpMenuHandler.as"/>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<mx:VBox width="100%" height="100%" verticalGap="0">
+		<s:VGroup width="100%" height="30" verticalAlign="middle">
+			<mx:LinkButton width="100%" height="100%" label="User Guide"
+						   click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.openHelpContents()"
+						   color="#292A2B" fontSize="12" paddingLeft="5" paddingRight="5"
+						   rollOverColor="#CEDBEF" textAlign="left"/>
+		</s:VGroup>
+		<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+		
+		<s:VGroup width="100%" height="30" verticalAlign="middle">
+			<mx:LinkButton width="100%" height="100%" label="Upcoming Public Lectures"
+						   click="navigateurl('publicLeacture')" color="#292A2B" enabled="true"
+						   fontSize="12" paddingLeft="5" paddingRight="5" rollOverColor="#CEDBEF"
+						   textAlign="left"/>
+		</s:VGroup>
+		<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+		<s:VGroup width="100%" height="30" verticalAlign="middle">
+			<mx:LinkButton width="100%" height="100%" label="Latest News" alpha="1.0"
+						   click="navigateurl('latestNews')" color="#292A2B" fontSize="12"
+						   paddingLeft="5" paddingRight="5" rollOverColor="#CEDBEF" textAlign="left"/>
+		
+		</s:VGroup>
+		<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+		<s:VGroup width="100%" height="30" verticalAlign="middle">
+			<!--<mx:LinkButton  width="100%"
+				label="Introduction"
+				click="FlexGlobals.topLevelApplication.navigateurl('intro')"
+				paddingLeft="4" textAlign="left"/>-->
+			<mx:LinkButton width="100%" height="100%" label="Video tutorials"
+						   click="navigateurl('howToGuide')" color="#292A2B" fontSize="12"
+						   paddingLeft="5" paddingRight="5" rollOverColor="#CEDBEF" textAlign="left"/>
+			<!--<mx:LinkButton label="New Features" width="100%"
+						   click="FlexGlobals.topLevelApplication.navigateurl('newFeatures')"
+						   color="#000000" paddingLeft="4" textAlign="left"/>-->
+		</s:VGroup>
+		<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+		<s:VGroup width="100%" height="30" verticalAlign="middle">
+		<mx:LinkButton width="100%" height="100%" label="Contact Us" click="navigateurl('contactUs')"
+					   color="#292A2B" fontSize="12" paddingLeft="5" paddingRight="5"
+					   rollOverColor="#CEDBEF" textAlign="left"/>
+		</s:VGroup>
+		<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+		<s:VGroup width="100%" height="30" verticalAlign="middle">
+			<mx:LinkButton width="100%" height="100%" label="Feedback Form"
+						   click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.showFeedbackForm()"
+						   color="#292A2B" fontSize="12" paddingLeft="5" paddingRight="5"
+						   rollOverColor="#CEDBEF" textAlign="left"/>
+		</s:VGroup>
+		<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+		<s:VGroup width="100%" height="30" verticalAlign="middle">
+			<mx:LinkButton width="100%" height="100%" label="AVIEW Releasenote"
+						   click="navigateurl('releasenote')" color="#292A2B" enabled="true"
+						   fontSize="12" paddingLeft="5" paddingRight="5" rollOverColor="#CEDBEF"
+						   textAlign="left"/>
+		</s:VGroup>
+		<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+		<s:VGroup width="100%" height="30" verticalAlign="middle">
+			<mx:LinkButton width="100%" height="100%" label="About A-VIEW"
+						   click="navigateurl('aboutAview')" color="#292A2B" enabled="true"
+						   fontSize="12" paddingLeft="5" paddingRight="5" rollOverColor="#CEDBEF"
+						   textAlign="left"/>
+		</s:VGroup>
+		<mx:HRule width="100%" height="1" chromeColor="#96A0A9"/>
+	</mx:VBox>
+</mx:Canvas>

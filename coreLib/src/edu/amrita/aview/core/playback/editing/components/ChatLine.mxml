@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: ChatLine.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File used for creating a line between each chat conversation in Video Editing chat block.
+
+-->
+
+<mx:UIComponent xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			/**
+			 * @public
+			 * Function for drawing a line by passing the co ordinates.
+			 *
+			 * @param x of type Number
+			 * @param y of type Number
+			 * @param l of type Number
+		 * @return void
+			  */
+			public function init(x:Number, y:Number, l:Number):void
+			{
+				graphics.lineStyle(1, 1, 1);
+				graphics.beginFill(0x000000);
+				graphics.moveTo(x, y - l);
+				graphics.lineTo(x, y + l);
+			}
+		]]>
+	</mx:Script>
+
+</mx:UIComponent>

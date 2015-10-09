@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:xt="library://ns.tink.ws/flex/mx"
+		 xmlns:components="edu.amrita.aview.core.shared.components.*"
+		 xmlns:calendar="com.keepcore.calendar.*"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%" height="100%" initialize="initApp(event)">
+	<fx:Script source="LectureCalendarViewUIHandler.as"/>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:BorderContainer id="calendarview" width="100%" height="100%" backgroundColor="#e0effb"
+					   borderVisible="false" color="#000000">
+
+		<mx:HBox id="hbsearch" width="100%" height="15%" verticalAlign="middle">
+			<mx:Label left="1" top="5" fontFamily="Arial" fontSize="11" text="Institute : "/>
+			<xt:FilterComboBox id="cmbInstitute" right="10" bottom="35" width="400" height="25"
+							   change="getCourse()"
+							   dataProvider="{GCLMContext.allCourseOfferingInstitutesAC}"
+							   labelField="instituteName" prompt="Select Institute"
+							   selectedIndex="-1"/>
+			<mx:Label left="1" top="5" fontFamily="Arial" fontSize="11" text="Course : "/>
+			<xt:FilterComboBox id="cmbCourseName" right="290" bottom="35" width="200" height="25"
+							   change="getClass()" dataProvider="{courses}"
+							   dropdownFactory="{GCLMContext.dropdownFactory}"
+							   labelField="courseName" prompt="" selectSingleMatch="true"/>
+			<mx:Label left="1" top="5" fontFamily="Arial" fontSize="11" text="Class : "/>
+			<xt:FilterComboBox id="cmbClassName" right="10" bottom="35" width="200" height="25"
+							   change="classChangeHandler()" dataProvider="{claslist}"
+							   dropdownFactory="{GCLMContext.dropdownFactory}"
+							   labelField="className" prompt="" selectSingleMatch="true"/>
+			<components:ImageButton label="Search" click="getLecture()"/>
+		</mx:HBox>
+		<calendar:KCCalendar id="kccal" y="{hbsearch.y+hbsearch.height}" width="100%" height="80%"
+							 backgroundColor="#FDF9F9" borderColor="#FFFFFF" borderStyle="outset"
+							 calendarControlBarBackgroundColor="#7095C9" color="#FFFFFF"
+							 columnModeEnabled="false"
+							 concurrentEventDisplayMode="{KCCalendar.SIDE_MODE}"
+							 creationComplete="KccalCreationCompleteHandler(event)"
+							 currentHourBarColor="#C8CBD0" dataProvider="{calendararray}"
+							 dayHeaderBackgroundColor="#C8CBD0" daysBarBackgroundColor="#C8CBD0"
+							 displayMode="{KCCalendar.WEEK_VIEW}" hoursBarBackgroundColor="#C8CBD0"
+							 monthHeaderBackgroundColor="#C8CBD0" startHourDisplay="0"
+							 visibleRangeChange="getLecture()" weeksBarBackgroundColor="#C8CBD0"
+							 yearViewVisible="true"/>
+	</s:BorderContainer>
+</s:Group>

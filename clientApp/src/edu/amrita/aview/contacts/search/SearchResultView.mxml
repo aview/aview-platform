@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="730"
+			   height="338"
+			   creationComplete="init()"
+			   cornerRadius="6"
+			   backgroundColor="#e0effb"
+			   borderColor="#2a5ea4"
+			   color="#FFFFFF"
+			   title="Matching results ({searchResultModel.users.length}) found"
+			   xmlns:components="components.*" xmlns:itemRenderers="edu.amrita.aview.meeting.itemRenderers.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="SearchResultViewHandler.as">
+		
+	</fx:Script>
+	<s:SkinnableContainer backgroundColor="#e0effb"
+						  width="100%"
+						  height="100%">
+		<itemRenderers:CheckBoxDataGrid id="userGrid"
+									 	y="0"
+									 	width="100%"
+									 	height="265"
+									 	verticalGridLineColor="#dadddf"
+									 	allowMultipleSelection="true"
+										borderVisible="false"
+									 	chromeColor="#A5B8CA"
+									 	color="#000000"
+									 	dataProvider="{searchResultModel.users}"
+									 	doubleClickEnabled="true"
+									 	fontWeight="bold"
+									 	rollOverColor="#FFFFFF"
+									 	selectionColor="#FFFFFF"
+									 	itemDoubleClick="add()"
+									 	textAlign="left"
+									 	verticalAlign="top">
+			<itemRenderers:columns>
+				
+				<itemRenderers:CheckBoxHeaderColumn width="30"
+												 editable="false"
+												 click="{toggleSelectionContactList()}"
+												 headerRenderer="edu.amrita.aview.meeting.itemRenderers.CheckBoxHeaderRenderer"
+												 itemRenderer="edu.amrita.aview.meeting.itemRenderers.CheckBoxRenderer"/>
+				<mx:DataGridColumn headerText="Contacts"
+								   textAlign="left"
+								   id="name_user"
+								   dataField="userDisplayName"
+								   itemRenderer="edu.amrita.aview.contacts.itemRenderers.UserStatusItemRenderer"/>
+				<mx:DataGridColumn headerText="User Name"
+								   textAlign="left"
+								   itemRenderer="edu.amrita.aview.contacts.itemRenderers.usernameItemRender"
+								   dataField="userName"
+								   />
+				<mx:DataGridColumn headerText="Institute"
+								   id="inst_name" 
+								   textAlign="left"
+								   textDecoration="none"
+								   dataField="instituteName" 
+								   itemRenderer="edu.amrita.aview.contacts.itemRenderers.InstituteNameIR"/>
+				<mx:DataGridColumn headerText="Email Id"
+								   textDecoration="none"
+								   textAlign="left"
+								   itemRenderer="edu.amrita.aview.contacts.itemRenderers.emailIDItemRender"
+								   dataField="email"
+								   />
+		</itemRenderers:columns>
+		</itemRenderers:CheckBoxDataGrid>
+		<s:Button x="215"
+				  y="274"
+				  id="btnAddToContact"
+				  label="Add to Contacts"
+				  click="add()"
+				  color="#000000"
+				  chromeColor="#E0EFFB"
+				  cornerRadius="3"/>
+		<s:Button x="359"
+				  y="273"
+				  label="Change search filter"
+				  click="cancel()"
+				  chromeColor="#E0EFFB"
+				  color="#000000"
+				  cornerRadius="3"/>
+	</s:SkinnableContainer>
+</s:TitleWindow>

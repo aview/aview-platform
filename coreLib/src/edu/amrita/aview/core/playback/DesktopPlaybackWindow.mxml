@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---RTCR: Avoid 'this' from description and use component name instead of 'this'. -->
+<!---
+
+File		: DesktopPlaybackWindow.mxml
+Module		: PlayBack
+Developer(s): Haridas, Anu
+Reviewer(s)	: Remya T
+
+This file for to handling the Desktop Playback  in full screen window
+-->
+<!--Main Window-->
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="init(event)" title="A-VIEW Desktop Playback(A-VIEW Classroom)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			/**
+			 * Refers for DesktopPlayback class
+			 */			
+			public var desktopPlaybackComp:DesktopPlayback=new DesktopPlayback();	
+			
+			/**
+			 * For adding the DesktopPlayback in to seperate window
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function init(event:FlexEvent):void{
+				this.addElement(desktopPlaybackComp);
+			}
+		]]>
+	</fx:Script>
+</s:Window>

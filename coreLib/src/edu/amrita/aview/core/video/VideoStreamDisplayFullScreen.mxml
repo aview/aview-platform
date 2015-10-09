@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+// 1.Authors      : Ajith Kumar R, Ashish Pillai
+// 2.Description  : SelectedViewerVideoFullScreen is a custom component for resizing the view-video to full screen.
+// 3.Dependencies : Video_ScriptCode.as,main.mxml,VideoModule.mxml,VideoConnection.as
+
+-->
+
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   backgroundColor="#e0effb"
+				   creationComplete="init()"
+				   minHeight="240"
+				   minWidth="320"
+				   xmlns:local="*"
+				   xmlns:components="edu.amrita.aview.core.shared.components.*"
+				   xmlns:MultipleViewerInteraction="edu.amrita.aview.core.video.*"
+				   close="closeHandler()" 
+				   skinClass="edu.amrita.aview.core.shared.skins.CustomWindowSkin" 
+				   systemChrome="standard" 
+				   type="normal">
+	<fx:Script source="VideoStreamDisplayFullScreenHandler.as"/>
+
+
+	<mx:Canvas id="vidCanvas"
+			   height="100%"
+			   width="100%"
+			   horizontalScrollPolicy="off"
+			   verticalScrollPolicy="off"
+			   backgroundColor="black"
+			   toolTip="Double Click to Tabbed view">
+		<mx:VideoDisplay id="vidDisp"
+						 width="100%"
+						 height="100%"
+						 doubleClickEnabled="true"/>
+		<mx:Label id="LabelHideAudioVideo" 
+				  visible="false" 
+				  color="#f11515" 
+				  fontFamily="Verdana"
+				  fontWeight="bold" 
+				  horizontalCenter="0" verticalCenter="0" fontSize="{getFontSizeForLabel(this.width)}">
+		</mx:Label>
+			<mx:HBox 
+				 horizontalGap="0"
+				 id="hBoxWaterMark"
+				 right="5"
+				 doubleClickEnabled="false"
+				 horizontalAlign="right"
+				 top="5">
+			<mx:Label text=""
+					  width="{getwidthforCopyright(this.width)}"
+					  height="100%"
+					  fontSize="{getFontSizeforCopyright(this.width)}"
+					  fontWeight="bold"
+					  alpha="0.1"
+					  color="#000000"
+					  mouseChildren="true"/>
+
+			<mx:Label verticalCenter="0"
+					  id="lblWaterMark"
+					  fontWeight="bold"
+					  fontSize="{getFontSize(this.width)}"
+					  textAlign="center"
+					  alpha="0.1"
+					  color="#000000"
+					  mouseChildren="true"
+					  text="A-VIEW"/>
+		</mx:HBox>
+		<mx:HBox alpha="0.8"
+				 horizontalGap="5"
+				 id="btnhbox"
+				 height="2.5%"
+				 horizontalAlign="center"
+				 bottom="10"
+				 horizontalCenter="0"
+				 backgroundColor="#C5B8B8">
+			<!-- //RGCR Commented
+			<mx:AddChild relativeTo="{btnbox}"
+			position="firstChild"
+			target="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.PTT_Talk_btns}"/>
+			-->
+			<MultipleViewerInteraction:StreamSignalDisplay id="signalDisplay"/>
+			<mx:HBox alpha="0.8"
+					 horizontalGap="5"
+					 id="btnhbox1"
+					 height="2%"
+					 horizontalAlign="center"
+					 bottom="0"
+					 horizontalCenter="0"
+					 backgroundColor="#C5B8B8"/>
+			<mx:Button id="btnVideoRefresh"
+					   icon="{parentWindow.videoRefresh_Icon}"
+					   doubleClickEnabled="false" visible="false" includeInLayout="false"
+					   enabled="true"
+					   width="30"
+					   height="30"
+					   cornerRadius="50"
+					   click="{parentWindow.videoRefresh(event)}"
+					   toolTip="Refresh incoming video"/>
+			<mx:Button id="btn_studentVideoreceive"
+					   icon="{video_Receive_FullScreen}"
+					   doubleClickEnabled="false"
+					   enabled="true"
+					   width="30"
+					   height="30"
+					   cornerRadius="50"
+					   click="{parentWindow.startStopVideo()}"
+					   toolTip="Stop Viewing Video"/>
+		</mx:HBox>
+		<mx:ProgressBar id="prgBarAudioSignal"
+						left="0"
+						bottom="0"
+						width="100%"
+						label=""
+						height="{parentWindow.getProgressbarHeight(this.width)}"
+						trackSkin="edu.amrita.aview.core.video.CustomProgressbarSkin"
+						labelPlacement="center"
+						alpha="1"
+						chromeColor="#33AA00"
+						creationComplete="parentWindow.prgBar_creationCompleteHandler(event)"
+						doubleClickEnabled="false"
+						visible="{!parentWindow.isViewVideo}"
+						includeInLayout="{!parentWindow.isViewVideo}"
+						maximum="{parentWindow.prgAudioMax}"
+						mode="manual"/>
+	</mx:Canvas>
+</s:Window>

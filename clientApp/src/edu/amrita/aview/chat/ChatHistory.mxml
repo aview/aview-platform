@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ChatHistory.mxml
+Module		: chat
+Developer(s): Soumya M.D,NidhiSarasan
+Reviewer(s)	: Vishnupreethi K
+
+component that displays the history of all chat sessions for the current user
+-->
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%"
+		 height="100%"
+		 creationComplete="creationCompletionHandler()">
+	
+	<fx:Script source="ChatHistoryScript.as"/>
+	<s:Group width="40%" height="100%" id="chatSessions">
+		<!-- list component that displays chatsessions-->
+		<s:List id="chatSessionsList"
+				width="100%"
+				height="90%"
+				borderVisible="true"
+				itemRenderer="edu.amrita.aview.chat.itemRenderers.ChatHistoryItemRenderer"
+				dragEnabled="true"
+				dataProvider="{chatSessionsHistory}"
+				click="onChatSessionsListClick(event)"
+				>
+			
+			
+		</s:List>
+		<!-- button to delete the selected chat sessions-->
+		<s:Button id="deleteBtn"
+				  x="{chatSessionsList.x}"
+				  y="{chatSessionsList.height+28}"
+				  label="Delete"
+				  click="deleteBtn_clickHandler(event)"/>
+	</s:Group>
+	<s:Group width="60%" height="100%" id="chatMessages">
+		<s:TextArea width="100%"
+				height="90%"
+				id="lstChatMessage"
+				textFlow="{selectedChatSession.chatHistoryTextFlow}"
+				editable="false"
+				borderVisible="true"
+				/>
+		<s:Button id="chatContinueBtn"
+				  y="{lstChatMessage.height+5}"
+				  visible="false"
+				  label="Continue Chat"
+				  click="onChatContinueBtnClick(event)"/>
+	</s:Group>
+
+</s:HGroup>

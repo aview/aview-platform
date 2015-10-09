@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: Toast.mxml
+Module		: UI
+Developer(s): Jeevanantham N
+Reviewer(s)	:
+
+Toast component to show short message like android Toast.-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   width="100%"
+				   height="100%"
+				   cornerRadius="10"
+				   borderWeight="2"
+				   borderColor="#FFFFFF">
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * Importing flash library
+			 */
+			import flash.utils.clearTimeout;
+			import flash.utils.setTimeout;
+
+			import mx.core.FlexGlobals;
+			import mx.managers.ISystemManager;
+			import mx.managers.PopUpManager;
+			import mx.managers.ToolTipManager;
+
+			/**
+			 * Holds toast message
+			 */
+			[Bindable]
+			public var toastMessage:String="";
+			/**
+			 * Used to close toast component after 1 sec
+			 */
+			private var setTimeForCloseToast:uint;
+
+			/**
+			 * @public
+			 *
+			 * To create toast component and set tooltip message
+			 *
+			 * @param toast holds the value of toast to be shown
+			 * @param parent holds the value of target object
+			 * @return Toast
+			 */
+			public static function show(toast:String="", parent:DisplayObject=null):Toast
+			{
+				var toastMenu:Toast=new Toast();
+
+				toastMenu.toastMessage=toast;
+				toastMenu.setFocus();
+
+				toastMenu.setTimeForCloseToast=setTimeout(toastMenu.toastCloseHandler, 1500);
+
+				if (!parent)
+				{
+					var sm:ISystemManager=ISystemManager(FlexGlobals.topLevelApplication.systemManager);
+					var mp:Object=sm.getImplementation("mx.managers.IMarshallPlanSystemManager");
+					if (mp && mp.useSWFBridge())
+						parent=Sprite(sm.getSandboxRoot());
+					else
+						parent=Sprite(FlexGlobals.topLevelApplication);
+				}
+
+				PopUpManager.addPopUp(toastMenu, parent, false);
+				toastMenu.x=(FlexGlobals.topLevelApplication.width - toastMenu.width) / 2;
+				toastMenu.y=FlexGlobals.topLevelApplication.height - 50;
+				return toastMenu;
+			}
+
+			/**
+			 * @public
+			 *
+			 * To close the toast after 1 second.
+			 *
+			 * @param null
+			 * @return null
+			 */
+			public function toastCloseHandler():void
+			{
+				clearTimeout(setTimeForCloseToast);
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	<s:Rect width="100%"
+			height="100%"
+			topLeftRadiusX="7"
+			topRightRadiusX="7"
+			bottomLeftRadiusX="7"
+			bottomRightRadiusX="7">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+	</s:Rect>
+	<!-- Label to display tooltip-->
+	<s:HGroup width="100%"
+			  height="100%"
+			  top="10"
+			  bottom="10"
+			  left="10"
+			  right="10"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+		<s:Label id="lblTooltip"
+				 width="100%"
+				 height="100%"
+				 fontSize="10"
+				 fontWeight="bold"
+				 color="0xFFFFFF"
+				 text="{toastMessage}"/>
+	</s:HGroup>
+</s:BorderContainer>

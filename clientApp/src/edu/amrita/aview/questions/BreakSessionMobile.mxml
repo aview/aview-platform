@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: BreakSessionMobile.mxml
+Module		: BreakSession
+Developer(s): Jeevanantham N
+Reviewer(s)	: Sivaram SK
+
+The UI layout to facilitate scheduling a break from an ongoing classroom session.
+The UI items defined for the Break Session feature is:-
+	a)	A text input message from the initiater of the break.
+	b)	A text input of the duration of the break in minutes.
+	c)	A check box to indicate if posting and voting of Questions is disabled / enabled.
+	d)	A trigger point to initiate the break via a SEND button or to exit the break session pop up via a CANCEL button.
+The message from (a) and the break duration in minutes from (b) above is notified to all the session attendees.
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 creationComplete="init(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.events.mobileCustomEvents.ChatActionEvent;
+			/**
+			 * @protected
+			 *
+			 * Add eventListener for send break session message
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function init(event:FlexEvent):void
+			{
+				this.addEventListener(ChatActionEvent.CHAT_SEND, FlexGlobals.topLevelApplication.chatComp.sendChatMessage);
+			}
+		]]>
+	</fx:Script>
+	<!-- Script to include handler -->
+	<fx:Script source="BreakSessionAS.as"/>
+	<s:Group textAlign="left"
+			 width="100%"
+			 height="100%">
+		<s:Rect width="100%"
+				height="100%"
+				radiusX="5">
+			<s:fill>
+				<s:SolidColor color="#071124"/>
+			</s:fill>
+			<s:stroke>
+				<s:LinearGradientStroke weight="5"
+										rotation="270">
+					<s:GradientEntry color="0x696969"/>
+					<s:GradientEntry color="0xB3B3B3"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+		</s:Rect>
+		<s:VGroup width="100%"
+				  height="100%"
+				  verticalAlign="middle"
+				  horizontalAlign="center"
+				  paddingBottom="10"
+				  paddingLeft="10"
+				  paddingRight="10"
+				  paddingTop="10">
+
+			<s:VGroup width="100%"
+					  height="10%"
+					  verticalAlign="middle"
+					  horizontalAlign="center">
+
+				<s:Label text="{Constants.BREAK_SESSION_COMPONENT_TITLE}"
+						 fontWeight="bold"
+						 color="0xFFFFFF"/>
+				<s:Line width="90%">
+					<s:stroke>
+						<s:SolidColorStroke color="0xFFFFFF"
+											weight="1"
+											alpha="1"/>
+					</s:stroke>
+				</s:Line>
+			</s:VGroup>
+			<!--Break message-->
+			<s:VGroup width="100%"
+					  height="30%"
+					  horizontalAlign="center"
+					  verticalAlign="middle">
+
+				<s:Label fontWeight="bold"
+						 color="0xFFFFFF"
+						 text="{Constants.BREAK_CURRENT_SESSION_PROMPT}"
+						 paddingTop="5"/>
+
+				<s:TextInput id="breakSessionMessageTextInput"
+							 width="92%"
+							 maxChars="150"
+							 enter="initiateateSessionBreak()"
+							 fontWeight="normal"
+							 focusIn="breakSessionMessageTextInput_focusInHandler(event)"
+							 focusOut="breakSessionMessageTextInput_focusOutHandler(event)"
+							 text="{Constants.BREAK_MESSAGE_INPUT_TEXT}"
+							 skinClass="spark.skins.mobile.TextInputSkin"/>
+			</s:VGroup>
+
+			
+			<!--Break duration-->
+			<s:HGroup width="100%"
+					  height="30%"
+					  horizontalAlign="center"
+					  verticalAlign="middle">
+
+				<s:Label fontWeight="bold"
+						 text="Break duration: "
+						 color="0xFFFFFF"/>
+				<s:TextInput id="breakSessionMinutesTextInput"
+							 toolTip="Break value in minutes"
+							 maxChars="2"
+							 restrict="0-9"
+							 fontWeight="normal"
+							 skinClass="spark.skins.mobile.TextInputSkin"
+							 focusIn="breakSessionMinutesTextInput_focusInHandler(event)"
+							 text="01"/>
+				<s:Label fontWeight="bold"
+						 text=" Minute(s)"
+						 color="0xFFFFFF"/>
+			</s:HGroup>
+			<!--Break session control buttons-->
+			<s:HGroup width="100%"
+					  height="100%"
+					  horizontalAlign="center"
+					  verticalAlign="middle"
+					  color="0xFFFFFF"
+					  paddingTop="10"
+					  paddingBottom="10">
+
+				<s:Button id="sendButton"
+						  width="25%"
+						  height="100%"
+						  minHeight="40"
+						  click="initiateateSessionBreak()"
+						  label="Send"
+						  enabled="{this.parentDocument.usersConnection.netConnection.connected}"
+						  toolTip="Send Break Message"
+						  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"/>
+				<s:Button id="btnCancel"
+						  width="25%"
+						  height="100%"
+						  minHeight="40"
+						  click="cancelSessionBreak()"
+						  label="Cancel"
+						  enabled="{this.parentDocument.usersConnection.netConnection.connected}"
+						  toolTip="Cancel Session Break"
+						  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:Group>
+</s:Group>

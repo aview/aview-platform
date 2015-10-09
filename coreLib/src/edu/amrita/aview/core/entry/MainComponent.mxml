@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--//RGCR: File should be named as aview.mxml-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:components="edu.amrita.aview.core.shared.components.*"
+				   top="0" width="100%" height="100%" backgroundAlpha="0" backgroundColor="#e0effb"
+				   borderVisible="false"
+				   creationComplete="mainComponent_creationCompleteHandler(event)"
+				   initialize="init();"
+				   preinitialize="windowedapplication1_preinitializeHandler(event)"> 
+				   <!-- resize="bordercontainer1_resizeHandler(event)" //PNCR: moved to creation complete.-->
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+
+		<mx:HTTPService id="getsaveduserdet"/>
+		<mx:HTTPService id="getservervalue"/>
+		<mx:HTTPService id="getvalue"/>
+		<s:HTTPService id="helpConfigService" fault="configFaultHandler(event)"
+					   result="configResultHandler(event)" resultFormat="e4x"
+					   url="{'http://'+ClassroomContext.HELP_DOCUMENT_URL+'/help/config/info.xml'}"/>
+
+		<mx:DateFormatter id="DateDisplay" formatString="DD/MM/YYYY"/>
+	
+		<s:BitmapFill id="normalBackground"
+					  source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"/>
+		<s:BitmapFill id="activeBackground"
+					  source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBgActive.jpg')"/>
+		<s:Resize id="showMenuBar" duration="300" heightFrom="0" heightTo="44"
+				  target="{menuIconContainer}"/>
+		<s:Resize id="hideMenuBar" duration="300" heightFrom="44" heightTo="0"
+				  target="{menuIconContainer}"/>
+
+		<s:Rotate id="rotateHideIcon" angleFrom="0" angleTo="180" duration="100"
+				  target="{btnShowHide}"/>
+		<s:Rotate id="rotateShowIcon" angleFrom="180" angleTo="0" duration="100"
+				  target="{btnShowHide}"/>
+	</fx:Declarations>
+
+	<fx:Script source="MainComponentHandler.as"/>
+
+	<fx:Style source="assets/styles/styles.css"/>
+	<fx:Script source="Icons.as"/>
+	<!--Fix for issues #19175,#18456 and #18390-->
+	<mx:Box left="0" right="0" top="0" bottom="22" horizontalGap="0" paddingBottom="1" id="mainBox"
+			paddingLeft="0" paddingRight="0" paddingTop="0" styleName="tabContainer" verticalGap="0">
+		<s:BorderContainer id="menuIconContainer" right="0" top="0" width="100%" height="44"
+						   borderVisible="false">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:BitmapFill fillMode="repeat"
+								  source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"/>
+				</s:fill>
+			</s:Rect>
+			<s:HGroup visible="{menuIconContainer.height==44?true:false}" right="0" top="0"
+					  width="100%" contentBackgroundAlpha="0.0" gap="0" horizontalAlign="left"
+					  verticalAlign="middle">
+				<s:BorderContainer id="liveSessionMenuContainer" width="78"
+								   backgroundImage="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"
+								   backgroundImageFillMode="repeat" borderVisible="false">
+					<s:layout>
+						<s:VerticalLayout gap="5" horizontalAlign="center" paddingBottom="1"
+										  paddingLeft="0" paddingTop="1" verticalAlign="middle"/>
+					</s:layout>
+					<s:Image id="btnClassroom" buttonMode="true"
+							 click="navigation(btnClassroom.id);changeBackground('liveSession')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/liveSession.png')"
+							 toolTip="Live Session" useHandCursor="true"/>
+					<s:Label id="lblLiveSession" buttonMode="true"
+							 click="navigation(btnClassroom.id);changeBackground('liveSession')"
+							 color="#12548E" fontFamily="Calibri" fontWeight="bold"
+							 text="Live Session" useHandCursor="true"/>
+				</s:BorderContainer>
+				<!--For Guest Login: Removed mainmenuseparator and meetingmenucontainer for Guest user-->
+				<s:Image height="44"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')" visible="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" includeInLayout="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" />
+				<!-- Fix for Bug #19947 start -->
+				<s:BorderContainer id="meetingMenuContainer"
+								   visible="{(ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE || ClassroomContext.userVO.role == Constants.MONITOR_TYPE || ClassroomContext.userVO.role == Constants.ADMIN_TYPE || ClassroomContext.userVO.role == Strings.GUEST_TYPE)?false:true}"
+								   width="69" backgroundAlpha="0.0" backgroundImage="undefined"
+								   backgroundImageFillMode="repeat" borderVisible="false"
+								   includeInLayout="{(ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE || ClassroomContext.userVO.role == Constants.MONITOR_TYPE || ClassroomContext.userVO.role == Constants.ADMIN_TYPE || ClassroomContext.userVO.role == Strings.GUEST_TYPE)?false:true}">
+								   <!-- Fix for Bug #19947 end -->
+
+								   
+					<s:layout>
+						<s:VerticalLayout gap="3" horizontalAlign="center" paddingBottom="1"
+										  paddingLeft="2" paddingRight="2" paddingTop="1"
+										  verticalAlign="middle" />
+					</s:layout>
+					<s:Image id="btnContacts" buttonMode="true"
+							 click="showContactsView();changeBackground('meeting')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/meeting.png')"
+							 toolTip="Meeting" useHandCursor="true"/>
+					<s:Label id="lblMeeting" buttonMode="true"
+							 click="showContactsView();changeBackground('meeting')" color="#12548E"
+							 fontFamily="Calibri" fontWeight="bold" text="Meeting" toolTip="Meeting"
+							 useHandCursor="true"/>
+				</s:BorderContainer>
+				<!--For Guest Login: Removed mainmenuseparator and librarymenucontainer for Guest user-->
+				<s:Image visible="{(ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE || ClassroomContext.userVO.role == Constants.MONITOR_TYPE  || ClassroomContext.userVO.role == Strings.GUEST_TYPE)?false:true}"
+						 height="44"
+						 includeInLayout="{(ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE || ClassroomContext.userVO.role == Constants.MONITOR_TYPE  || ClassroomContext.userVO.role == Strings.GUEST_TYPE)?false:true}"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')"/>
+				<s:BorderContainer id="libraryMenuContainer" width="56"
+								   backgroundImage="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"
+								   backgroundImageFillMode="repeat" borderVisible="false"
+								   visible="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" includeInLayout="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}">
+					<s:layout>
+						<s:VerticalLayout gap="5" horizontalAlign="center" paddingBottom="1"
+										  paddingLeft="2" paddingRight="2" paddingTop="1"
+										  verticalAlign="middle"/>
+					</s:layout>
+					<s:Image id="btnLibrary" buttonMode="true"
+							 click="navigation(btnLibrary.id);changeBackground('library')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/library.png')"
+							 toolTip="Library of recorded lectures" useHandCursor="true"/>
+					<s:Label id="lblLibrary" buttonMode="true"
+							 click="navigation(btnLibrary.id);changeBackground('library')"
+							 color="#12548E" fontFamily="Calibri" fontWeight="bold" text="Library"
+							 useHandCursor="true"/>
+				</s:BorderContainer>
+				<!--For Guest Login: Removed mainmenuseparator and quizmenucontainerfor Guest user-->
+				<s:Image height="44"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')" visible="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" includeInLayout="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" />
+				<s:BorderContainer id="quizMenuContainer" width="50"
+								   backgroundImage="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"
+								   backgroundImageFillMode="repeat" borderVisible="false"
+								   visible="{(ClassroomContext.userVO.role == Constants.MONITOR_TYPE  || ClassroomContext.userVO.role == Strings.GUEST_TYPE)?false:true}" 
+								   includeInLayout="{(ClassroomContext.userVO.role == Constants.MONITOR_TYPE || ClassroomContext.userVO.role == Strings.GUEST_TYPE)?false:true}">
+					<s:layout>
+						<s:VerticalLayout gap="3" horizontalAlign="center" paddingBottom="1"
+										  paddingLeft="2" paddingRight="2" paddingTop="1"
+										  verticalAlign="middle"/>
+					</s:layout>
+					<s:Image id="btnEvaluation" buttonMode="true"
+							 click="navigation(btnEvaluation.id);changeBackground('evaluation')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/quiz.png')"
+							 toolTip="Quiz" useHandCursor="true"/>
+					<s:Label id="lblEvaluation" buttonMode="true"
+							 click="navigation(btnEvaluation.id);changeBackground('evaluation')"
+							 color="#12548E" fontFamily="Calibri" fontWeight="bold" text="Quiz"
+							 useHandCursor="true"/>
+				</s:BorderContainer>
+				<!--For Guest Login:Removed mainmenuseparator and adminmenucontainer for Guest user-->
+				<s:Image height="44" id="imgSeprator"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')" 
+						 visible="{(ClassroomContext.userVO.role == Constants.MONITOR_TYPE || ClassroomContext.userVO.role == Strings.GUEST_TYPE)?false:true}"
+						 includeInLayout="{(ClassroomContext.userVO.role == Constants.MONITOR_TYPE || ClassroomContext.userVO.role == Strings.GUEST_TYPE)?false:true}"/>
+				<s:BorderContainer id="adminMenuContainer" width="51"
+								   backgroundImage="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"
+								   backgroundImageFillMode="repeat" borderVisible="false"
+								   visible="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" includeInLayout="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}">
+					<s:layout>
+						<s:VerticalLayout gap="5" horizontalAlign="center" paddingBottom="1"
+										  paddingLeft="2" paddingRight="2" paddingTop="1"
+										  verticalAlign="middle"/>
+					</s:layout>
+					<s:Image id="btnAdministrator" buttonMode="true"
+							 click="navigation(btnAdministrator.id);changeBackground('admin')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/admin.png')"
+							 toolTip="Setup - User Account and Class Registration"
+							 useHandCursor="true"/>
+					<s:Label id="lblAdmin" buttonMode="true"
+							 click="navigation(btnAdministrator.id);changeBackground('admin')"
+							 color="#12548E" fontFamily="Calibri" fontWeight="bold" text="Admin"
+							 useHandCursor="true"/>
+				</s:BorderContainer>
+				<s:Image height="44"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')"/>
+				<s:Spacer y="16" width="100%" height="12"/>
+				<s:Image height="44"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')"/>
+				<s:BorderContainer id="quicknoteMenuContainer" width="70"
+								   backgroundImage="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"
+								   backgroundImageFillMode="repeat" borderVisible="false">
+					<s:layout>
+						<s:VerticalLayout gap="4" horizontalAlign="center" paddingBottom="1"
+										  paddingLeft="2" paddingRight="2" paddingTop="1"
+										  verticalAlign="middle"/>
+					</s:layout>
+					<s:Image id="Conso_QuickNote" buttonMode="true"
+							 click="loadQuickNote();changeBackground('quicknote')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/quicknote.png')"
+							 toolTip="QuickNote" useHandCursor="true"/>
+					<s:Label id="lblQuickNote" buttonMode="true"
+							 click="loadQuickNote();changeBackground('quicknote')" color="#12548E"
+							 fontFamily="Calibri" fontWeight="bold" text="Quicknote"
+							 useHandCursor="true"/>
+				</s:BorderContainer>
+				<!--<s:Image height="44"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')"/>
+				<s:BorderContainer id="adminMenuContainer" width="51"
+								   backgroundImage="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"
+								   backgroundImageFillMode="repeat" borderVisible="false">
+					<s:layout>
+						<s:VerticalLayout gap="5" horizontalAlign="center" paddingBottom="1"
+										  paddingLeft="2" paddingRight="2" paddingTop="1"
+										  verticalAlign="middle"/>
+					</s:layout>
+					<s:Image id="btnAdministrator" buttonMode="true"
+							 click="navigation(btnAdministrator.id);changeBackground('admin')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/admin.png')"
+							 toolTip="Setup - User Account and Class Registration"
+							 useHandCursor="true"/>
+					<s:Label id="lblAdmin" buttonMode="true"
+							 click="navigation(btnAdministrator.id);changeBackground('admin')"
+							 color="#12548E" fontFamily="Calibri" fontWeight="bold" text="Admin"
+							 useHandCursor="true"/>
+				</s:BorderContainer>-->
+				<s:Image height="44"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')"/>
+				
+				<s:BorderContainer id="bandwidthContainer" width="70" height="44"
+								   backgroundImage="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"
+								   backgroundImageFillMode="repeat" borderVisible="false">
+					<s:layout>
+						<s:VerticalLayout gap="4" horizontalAlign="center" paddingBottom="0"
+										  paddingLeft="2" paddingRight="2" paddingTop="0"
+										  verticalAlign="middle"/>
+					</s:layout>
+					<s:Image id="btnBandWidth" buttonMode="true" click="showBandwidthWindow();changeBackground('bandwidth')"
+							 source="@Embed('edu/amrita/aview/core/entry/assets/images/bandwidth.png')"
+							 toolTip="Check your bandwidth" useHandCursor="true"/>
+					<s:Label id="lblBandWidth" buttonMode="true" click="showBandwidthWindow()"
+							 color="#12548E" fontFamily="Calibri" fontWeight="bold"
+							 text="Bandwidth" toolTip="Check Bandwidth" useHandCursor="true"/>
+				</s:BorderContainer>
+				<s:Image height="44"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')"/>
+				<s:BorderContainer id="Help" y="0" width="44" height="44"
+								   backgroundImage="@Embed('/edu/amrita/aview/core/entry/assets/images/mainHeaderBg.jpg')"
+								   backgroundImageFillMode="repeat" borderVisible="false">
+					<s:layout>
+						<s:VerticalLayout gap="4" horizontalAlign="center" paddingBottom="0"
+										  paddingLeft="2" paddingRight="2" paddingTop="0"
+										  verticalAlign="middle"/>
+					</s:layout>
+					<s:Image id="helpMenu" buttonMode="true" click="openHelpMenu();changeBackground('help')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/helpmenu.png')"
+							 toolTip="Help" useHandCursor="true"/>
+					<s:Label id="lblhelpMenu" buttonMode="true"
+							 click="openHelpMenu();changeBackground('help')" color="#12548E"
+							 fontFamily="Calibri" fontWeight="bold" text="Help" toolTip="Help"
+							 useHandCursor="true"/>
+				</s:BorderContainer>
+				<s:Image height="44"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuSeprator.png')"/>
+				<s:VGroup id="hBoxProfileContainer" gap="0" horizontalAlign="right" paddingLeft="4"
+						  paddingRight="2" verticalCenter="0">
+					<s:HGroup id="hBoxWelcomeMsgContainer" right="0" horizontalAlign="right"
+							  verticalAlign="bottom" verticalCenter="0">
+						<!--Fix for Bug#11366-->
+						<s:Label id="welcomeMsg" minWidth="160" maxWidth="160" buttonMode="true"
+								 click="showExitMenu(event)" color="#1956A9" fontFamily="Calibri"
+								 fontSize="14" fontWeight="bold" maxDisplayedLines="1"
+								 text="{ClassroomContext.welcomeMessage}" textAlign="right"
+								 toolTip="{ClassroomContext.userVO.userDisplayName}"
+								 useHandCursor="true"/>
+					</s:HGroup>
+					<s:Label id="role_status_display" maxWidth="160" color="#6C6A6A"
+							 fontFamily="Calibri" fontSize="12" fontWeight="normal"
+							 maxDisplayedLines="1" textAlign="right"
+							 toolTip="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.role_status_display.text}"/>
+					
+				</s:VGroup>
+				<s:VGroup y="3" height="38" paddingLeft="2" paddingRight="4" paddingTop="10">
+					<s:Image id="profileMenuDropdown" buttonMode="true" click="showExitMenu(event)"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/profileDropdown.png')"
+							 useHandCursor="true"/>
+					
+				</s:VGroup>
+				<s:Spacer width="10"/>
+					<!--<components:MxImageButton id="btnClassroom" left="0" width="38" height="35"
+											  buttonMode="true" click="navigation(btnClassroom.id)"
+											  color="#000000" cornerRadius="5"
+											  disabledSkin="@Embed('assets/images/classroom_unclicked.png')"
+											  downSkin="mx.skins.halo.ButtonSkin" fontSize="11"
+											  fontWeight="bold" icon="{VirtualClass}"
+											  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+											  skin="{null}" toolTip="Live Session" upSkin="{null}"
+											  useHandCursor="true"/>-->
+				
+				<!--<components:MxImageButton id="btnClassroom" left="0" width="38" height="35"
+										  buttonMode="true" click="navigation(btnClassroom.id)"
+										  color="#000000" cornerRadius="5"
+										  disabledSkin="@Embed('assets/images/classroom_unclicked.png')"
+										  downSkin="mx.skins.halo.ButtonSkin" fontSize="11"
+										  fontWeight="bold" icon="{VirtualClass}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="Live Session" upSkin="{null}"
+										  useHandCursor="true"/>-->
+			</s:HGroup>
+		</s:BorderContainer>
+		<!--<mx:Canvas width="100%" height="36" backgroundColor="#e0effb" creationPolicy="all"
+				   horizontalScrollPolicy="off" verticalScrollPolicy="off">
+			
+			<mx:HBox left="4" width="75%" horizontalAlign="left" horizontalGap="20"
+					 verticalAlign="middle">-->
+
+				<!-- SVRS-Issue no : #202 Took the gap between Class and Room in Classroom button-->
+			<!--	<components:MxImageButton id="btnClassroom" left="0" width="38" height="35"
+										  buttonMode="true" click="navigation(btnClassroom.id)"
+										  color="#000000" cornerRadius="5"
+										  disabledSkin="@Embed('assets/images/classroom_unclicked.png')"
+										  downSkin="mx.skins.halo.ButtonSkin" fontSize="11"
+										  fontWeight="bold" icon="{VirtualClass}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="Live Session" upSkin="{null}"
+										  useHandCursor="true"/>
+				<components:MxImageButton id="btnContacts"
+										  visible="{(ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE)?false:true}"
+										  width="38" height="35" buttonMode="true"
+										  click="showContactsView()" color="#000000"
+										  cornerRadius="5"
+										  disabledSkin="@Embed('assets/images/library_unclicked.png')"
+										  downSkin="mx.skins.halo.ButtonSkin" fontSize="11"
+										  fontWeight="bold" icon="{MeetingIcon}"
+										  includeInLayout="{(ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE)?false:true}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="Meetings" upSkin="{null}"
+										  useHandCursor="true"/>-->
+				<!-- SVRS-Issue no :#202 Changed the tool tip of Library button-->
+		<!--		<components:MxImageButton id="btnLibrary" width="38" height="35" buttonMode="true"
+										  click="navigation(btnLibrary.id)" color="#000000"
+										  cornerRadius="5"
+										  disabledSkin="@Embed('assets/images/library_unclicked.png')"
+										  downSkin="mx.skins.halo.ButtonSkin" enabled="true"
+										  fontSize="11" fontWeight="bold" icon="{LibraryIcon}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="Library of recorded lectures"
+										  upSkin="{null}" useHandCursor="true"/>
+				<components:MxImageButton id="btnEvaluation" width="38" height="35" buttonMode="true"
+										  click="{navigation(btnEvaluation.id)}" color="#000000"
+										  cornerRadius="5" downSkin="mx.skins.halo.ButtonSkin"
+										  enabled="true" fontWeight="bold" icon="{EvaluationIcon}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="Evaluation" upSkin="{null}"
+										  useHandCursor="true"/>
+				<components:MxImageButton id="btnBiometric" width="38" height="35" buttonMode="true"
+										  click="navigation(btnBiometric.id)" color="#000000"
+										  cornerRadius="5"
+										  disabledSkin="@Embed('assets/images/biometric_unclicked.png')"
+										  downSkin="mx.skins.halo.ButtonSkin" enabled="true"
+										  fontSize="11" fontWeight="bold" icon="{BiometricIcon}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="Face registration" upSkin="{null}"
+										  useHandCursor="true"/>-->
+
+				<!-- SVRS- Issue no : #202 Changed the label and width of Classroom Setup button-->
+				<!--<components:MxImageButton id="btnAdministrator" width="38" height="35"
+										  buttonMode="true" click="navigation(btnAdministrator.id)"
+										  color="#000000" cornerRadius="5"
+										  disabledSkin="@Embed('assets/images/setup_unclicked.png')"
+										  downSkin="mx.skins.halo.ButtonSkin" fontSize="11"
+										  fontWeight="bold" icon="{AdministrationIcon}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}"
+										  toolTip="Setup - User Account and Class Registration"
+										  upSkin="{null}" useHandCursor="true"/>-->
+				<!--QuitNote icon-->
+				<!--<components:MxImageButton id="Conso_QuickNote" width="38" height="35"
+										  buttonMode="true" click="loadQuickNote();" color="#000000"
+										  cornerRadius="5" downSkin="mx.skins.halo.ButtonSkin"
+										  fontSize="11" fontWeight="bold" icon="{quickNoteIcon}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="QuickNote" upSkin="{null}"
+										  useHandCursor="true"/>-->
+
+				<!-- //RGCR: rename id to btnBugReport -->
+			<!--	<components:MxImageButton id="btnbugreport" width="38" height="35" buttonMode="true"
+										  click="showFeedbackForm()" color="#000000"
+										  cornerRadius="5"
+										  disabledSkin="@Embed('assets/images/feedback_unclicked.png')"
+										  downSkin="mx.skins.halo.ButtonSkin" enabled="true"
+										  fontSize="11" fontWeight="bold" icon="{Feedback_icon}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="Feedback Form" upSkin="{null}"
+										  useHandCursor="true"/>-->
+
+				<!--<components:MxImageButton id="btnHelpContents" width="38" height="35"
+										  buttonMode="true" click="openHelpContents()"
+										  color="#000000" cornerRadius="5"
+										  downSkin="mx.skins.halo.ButtonSkin" fontSize="11"
+										  fontWeight="bold" icon="{Help_icon}" mouseChildren="false"
+										  overSkin="mx.skins.halo.ButtonSkin" skin="{null}"
+										  toolTip="Help" upSkin="{null}" useHandCursor="true"/>-->
+				
+			<!--	<components:MxImageButton id="btnChatHistory" visible="false" width="38" height="35"
+										  buttonMode="true" click="openChathistory()"
+										  color="#000000" cornerRadius="5"
+										  downSkin="mx.skins.halo.ButtonSkin" fontSize="11"
+										  fontWeight="bold" icon="{chatHistoryIcon}"
+										  mouseChildren="false" overSkin="mx.skins.halo.ButtonSkin"
+										  skin="{null}" toolTip="ChatHistory" upSkin="{null}"
+										  useHandCursor="true"/>-->
+				<!-- Bug fix # 14558
+					<s:ComboBox id="localeComboBox" change="localeComboBox_changeHandler(event)"
+							dataProvider="{localeChainDataProvider}"/> 
+				-->
+			<!--</mx:HBox>-->
+
+			<!--<s:VGroup id="hBoxProfileContainer" right="4" width="25%" gap="0" horizontalAlign="right"
+					  verticalCenter="0">
+				<s:HGroup id="hBoxWelcomeMsgContainer" right="0" horizontalAlign="right"
+						  verticalAlign="bottom" verticalCenter="0">
+					
+					<s:Label id="welcomeMsg" width="160" buttonMode="true"
+							 click="showExitMenu(event)" color="#000000" fontWeight="bold"
+							 maxDisplayedLines="1" text="{ClassroomContext.welcomeMessage}"
+							 textAlign="right" toolTip="{welcomeMsg.text}" useHandCursor="true"/>
+					<s:Image right="4" buttonMode="true" click="showExitMenu(event)"
+							 source="@Embed('assets/images/downMenu.png')" toolTip="Exit"
+							 useHandCursor="true"/>
+				</s:HGroup>
+				<s:Label id="role_status_display" width="200" color="#000000" fontWeight="bold"
+						 textAlign="right"
+						 toolTip="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.role_status_display}"/>
+				
+			</s:VGroup>-->
+
+			<!--					<mx:HBox  verticalCenter="0"
+			horizontalAlign="right"
+			width="25%"
+			right="0"
+			verticalAlign="middle">	-->
+			<!-- //RGCR: rename id to welcomeMsg -->
+			<!--						<mx:Label id="welcomemsg"
+			width="160"
+			color="#000000"
+			fontWeight="bold"
+			textAlign="right"/>
+			<mx:Button id="btnLogout"
+			height="32"
+			width="32"
+			toolTip="Log Out"
+			click="FlexGlobals.topLevelApplication.mainApp.initiateExit('logout')"
+			icon="{Icon_Exit}"
+			skin="{null}"
+			useHandCursor="true"
+			buttonMode="true"
+			mouseChildren="false"
+			overSkin="mx.skins.halo.ButtonSkin"
+			downSkin="mx.skins.halo.ButtonSkin"/>
+			</mx:HBox>
+		</mx:Canvas>-->
+		<!-- //RGCR: rename id to aviewControlBar -->
+		<mx:ViewStack id="maincontrolbar" width="100%" height="100%" creationPolicy="all"
+					  paddingLeft="0">
+			<!-- //RGCR: rename id to homePage -->
+			<mx:Canvas id="Homepage" width="100%" height="100%" backgroundAlpha="1"
+					   backgroundColor="#e0effb" creationPolicy="all">
+			</mx:Canvas>
+			<mx:Canvas id="emptyPage" width="100%" height="100%" label="Empty Page"
+					   borderColor="#3677F0" borderStyle="solid" borderVisible="true">
+			</mx:Canvas>
+			<mx:Canvas id="classRoomContainer" width="100%" height="100%" backgroundAlpha="0"
+					   backgroundColor="#e0effb" creationPolicy="all">
+			</mx:Canvas>
+			<!-- //RGCR: rename id to libraryCanvas -->
+			<mx:Canvas id="Library_canvas" x="0" y="0" width="100%" height="100%" alpha="1.0"
+					   autoLayout="true" backgroundColor="#e0effb" borderColor="#0691F3"
+					   borderStyle="solid" creationPolicy="all">
+			</mx:Canvas>
+			<!-- //RGCR: rename id to biometricCanvas -->
+			<mx:Canvas id="Biometric_canvas" x="0" y="0" width="100%" height="100%" alpha="1.0"
+					   autoLayout="true" backgroundColor="#e0effb" borderColor="#0691F3"
+					   borderStyle="solid" creationPolicy="all">
+			</mx:Canvas>
+			<!-- //RGCR: rename id to bugReportForm -->
+			<mx:Canvas id="bug_report_form" x="0" y="0" width="100%" height="100%" alpha="1.0"
+					   autoLayout="true" backgroundAlpha="1" backgroundColor="#e0effb"
+					   borderColor="#0691F3" borderStyle="solid" creationPolicy="all">
+			</mx:Canvas>
+			<mx:Canvas id="evaluationCanvas" x="0" y="0" width="100%" height="100%" alpha="1.0"
+					   autoLayout="true" backgroundAlpha="1.0" backgroundColor="#e0effb"
+					   borderColor="#0691F3" borderStyle="solid" creationPolicy="all">
+			</mx:Canvas>
+			<mx:Canvas id="meetingCanvas" x="0" y="0" width="100%" height="100%" alpha="1.0"
+					   autoLayout="true" backgroundAlpha="1.0" backgroundColor="#e0effb"
+					   borderColor="#0691F3" borderStyle="solid" creationPolicy="all"/>
+		</mx:ViewStack>
+	</mx:Box>
+	<s:Image id="btnShowHide" top="{(menuIconContainer.height-7)}" buttonMode="true"
+			 click="showHideMainMenu()" horizontalCenter="0"
+			 source="@Embed('/edu/amrita/aview/core/entry/assets/images/mainmenuShowHide.png')"
+			 toolTip="Show/Hide Menu" useHandCursor="true"/>
+</s:BorderContainer>

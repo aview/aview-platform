@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuestionComponentMobile.mxml
+Module		: Question
+Developer(s): Jeevanantham N
+Reviewer(s)	: 
+
+This component used to view question raised by users, Post question, Vote question for viewers.
+Accept and Delete question featute available for Presenter
+
+-->
+<s:Group  xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 width="100%" 
+		 height="100%">
+	
+	<fx:Script source="QuestionComponentHandler.as"/>
+	<fx:Script source="QuestionIcons.as"/>
+	
+	<s:Group width="100%" 
+			 height="100%"
+			 includeInLayout="true">
+		<s:Rect width="100%" 
+				height="100%"
+				top="0"
+				bottom="0"
+				left="0"
+				right="0">
+			<s:fill>
+				<s:SolidColor color="0X071124"/>
+			</s:fill>
+		</s:Rect>
+	
+		<s:VGroup width="100%"
+				  height="100%"
+				  paddingLeft="2"
+				  paddingRight="2"
+				  paddingBottom="2">
+			<!-- Title for Question -->
+			<s:HGroup width="100%"
+					  paddingTop="0"
+					  height="8%">
+				<s:Label text="Question"
+						 width="85%"
+						 height="100%"
+						 color="#FFFFFF"
+						 fontWeight="bold"
+						 textAlign="center"
+						 verticalAlign="middle"
+						 fontSize="12"/>
+				<s:Label text="Vote"
+						 width="15%"
+						 height="100%"
+						 color="#FFFFFF"
+						 textAlign="center"
+						 fontWeight="bold"
+						 verticalAlign="middle"
+						 fontSize="12"/>
+			</s:HGroup>
+			<!-- List to display questions-->
+			<s:List width="100%"
+					height="82%"
+					top="10"
+					alternatingItemColors="[0xFFFFFF,0xFFFFFF]"
+					color="0x000000"
+					contentBackgroundColor="0xFFFFFF"
+					id="questionDataGrid"
+					selectionColor="0xDDF2FC"
+					verticalScrollPolicy="auto"
+					horizontalScrollPolicy="auto"
+					fontSize="12"
+					itemRenderer="views.customItemRendererer.QuestionItemRenderer"
+					click="onClickQuestionGrid()">
+			</s:List>
+			<s:VGroup id="questionActionGroup"
+					  horizontalCenter="0"
+					  width="100%"
+					  height="10%"
+					  top="{questionDataGrid.height}">
+			
+				<s:HGroup width="100%"
+						  gap="3"
+						  height="100%"
+						  horizontalAlign="center"
+						  verticalAlign="bottom">
+					<!-- Text input field to facilitate typing the question to be posted -->
+					<s:TextInput id="questionInput"
+								 width="70%"
+								 height="100%"
+								 color="#090A0A"
+								 enabled="{FlexGlobals.topLevelApplication.isQuestionEnable}"
+								 enter="postQuestion()"/>
+					<!-- Button to mark the selected question as Answered. Button available only for Moderator / Presenter Role(s) -->
+					<s:Button id="answerQuestionButton"
+							  click="setQuestionToAnswered()"
+							  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"
+							  icon="{answerDisabled_icon}"
+							  width="15%"
+							  height="100%"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  enabled="false"
+							  fontFamily="Georgia"
+							  fontSize="10"
+							  fontWeight="bold"
+							  toolTip="Answer Question"
+							  rollOver="showTooltip(event)"
+							  mouseDown="showTooltip(event)"/>
+					<!-- Button to delete the selected question. Button available only for Moderator / Presenter Role(s) -->
+					<s:Button id="deleteQuestionButton"
+							  click="deleteQuestion()"
+							  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"
+							  icon="{deleteDisabled_icon}"
+							  width="15%"
+							  height="100%"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  mouseChildren="false"
+							  enabled="false"
+							  fontFamily="Georgia"
+							  fontSize="10"
+							  fontWeight="bold"
+							  rollOver="showTooltip(event)"
+							  mouseDown="showTooltip(event)"/>
+					<!-- Button to post the question entered in the text input field. Button available only for Viewer Role -->
+					<s:Button id="postQuestionButton"
+							  width="15%"
+							  height="100%"
+							  click="postQuestion()"
+							  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"
+							  icon="{post_icon}"
+							  keyDown="enterQuestion(event)"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  color="#040404"
+							  fontFamily="Georgia"
+							  fontSize="10"
+							  fontWeight="bold"
+							  toolTip="Post a Question"
+							  rollOver="showTooltip(event)"
+							  mouseDown="showTooltip(event)"
+							  enabled="{FlexGlobals.topLevelApplication.isQuestionEnable}"/>
+					<!-- Button to vote in favour of the selected question. Button available only for Moderator / Viewer Role(s) -->
+					<s:Button id="voteQuestionButton"
+							  click="voteForQuestion()"
+							  fontFamily="Georgia"
+							  width="15%"
+							  height="100%"
+							  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"
+							  icon="{voteDsiabled_icon}"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  fontSize="10"
+							  fontWeight="bold"
+							  toolTip="Vote for a Question"
+							  rollOver="showTooltip(event)"
+							  mouseDown="showTooltip(event)"
+							  enabled="false"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:VGroup>
+	</s:Group>
+</s:Group>

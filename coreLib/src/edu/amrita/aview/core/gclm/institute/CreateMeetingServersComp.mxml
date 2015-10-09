@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: CreateMeetingServersComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	: Swati, Abhirami, Sivaram Sk
+
+This component is used only by the master admin to add/remove servers to be used
+for meeting purposes.
+Only one server can be assigned for each of the following:
+1. Content
+2. Collaboration
+3. Presenter Video
+4. Viewer Video
+5. Desktop Sharing
+
+-->
+<components1:InsidePanel xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:components1="edu.amrita.aview.core.shared.components.*"
+						 width="500"
+						 height="400"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 fontFamily="Arial"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 title="{meetingServerTitle}">
+	<fx:Script source="CreateMeetingServersCompUIHandler.as"/>
+	<!-- container for server details -->
+	<mx:Canvas left="5"
+			   right="5"
+			   top="5"
+			   bottom="5"
+			   borderColor="#A3D7FF"
+			   borderStyle="solid"
+			   borderVisible="true"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- Label -->
+		<s:Label left="20"
+				 top="13"
+				 text="{Constants.AVM_PRESENTER_VIDEO_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.AVM_PRESENTER_VIDEO_DISPLAY}"/>
+		<!-- ComboBox for AVM presenter video servers-->
+		<s:ComboBox id="compAVMPresenterVideoServers"
+					left="250"
+					top="10"
+					width="200"
+					chromeColor="#E0EFFB"
+					cornerRadius="3"
+					dataProvider="{allAVMPresenterVideoServers}"
+					labelField="serverName"
+					toolTip="serverName"/>
+		<!-- Label -->
+		<s:Label left="20"
+				 top="63"
+				 text="{Constants.AVM_COLLABORATION_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.AVM_COLLABORATION_DISPLAY}"/>
+		<!-- ComboBox for AVM collaboration servers -->
+		<s:ComboBox id="compAVMCollaborationServers"
+					left="250"
+					top="60"
+					width="200"
+					chromeColor="#E0EFFB"
+					cornerRadius="3"
+					dataProvider="{allAVMCollaborationServers}"
+					labelField="serverName"
+					toolTip="serverName"/>
+		<!-- Label -->
+		<s:Label left="20"
+				 top="113"
+				 text="{Constants.AVM_CONTENT_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.AVM_CONTENT_DISPLAY}"/>
+		<!-- ComboBox for AVM content servers -->
+		<s:ComboBox id="compAVMContentServers"
+					left="250"
+					top="110"
+					width="200"
+					chromeColor="#E0EFFB"
+					cornerRadius="3"
+					dataProvider="{allAVMContentServers}"
+					labelField="serverName"
+					toolTip="serverName"/>
+		<!-- Label -->
+		<s:Label left="20"
+				 top="163"
+				 text="{Constants.AVM_VIEWER_VIDEO_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.AVM_VIEWER_VIDEO_DISPLAY}"/>
+		<!-- ComboBox for AVM viewer video servers -->
+		<s:ComboBox id="compAVMViewerVideoServers"
+					left="250"
+					top="160"
+					width="200"
+					chromeColor="#E0EFFB"
+					cornerRadius="3"
+					dataProvider="{allAVMViewerVideoServers}"
+					labelField="serverName"
+					toolTip="serverName"/>
+		<!-- Label -->
+		<mx:Label left="20"
+				  top="213"
+				  text="{Constants.AVM_DESKTOP_SHARING_DISPLAY}"
+				  toolTip="Select the server which you want to configure as {Constants.AVM_DESKTOP_SHARING_DISPLAY}"/>
+		<!-- ComboBox for AVM desktop sharing servers -->
+		<s:ComboBox id="compAVMDesktopSharingServers"
+					left="250"
+					top="210"
+					width="200"
+					chromeColor="#E0EFFB"
+					cornerRadius="3"
+					dataProvider="{allAVMDesktopSharingServers}"
+					labelField="serverName"
+					toolTip="serverName"/>
+		<!-- Button for add meeting servers -->
+		<components:ImageButton bottom="20"
+				  label="Add Meeting Servers"
+				  chromeColor="#E0EFFB"
+				  click="saveMeetingServersDetails()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="-50"/>
+		<!-- Button for Cancel -->
+		<components:ImageButton bottom="20"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="closeSaveMeetingServersComp()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="80"/>
+
+	</mx:Canvas>
+	<!-- Icon for closing save meeting servers container -->
+	<components:WindowCloseImage id="imgClose"
+			 right="5"
+			 top="-25"
+			 click="closeSaveMeetingServersComp()"
+			 />
+</components1:InsidePanel>

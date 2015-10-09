@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: InsertVideoFile.mxml
+Module		: Video Editing
+Developer(s): Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains the UI related code for selecting the audio/video driver and bandwidth for publishing video
+to server.
+
+-->
+<!-- Main canvas for start publishing -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="390" height="232" backgroundAlpha="1.0" backgroundColor="#e0effb"
+		   borderColor="#ABA7A7" borderStyle="solid" cornerRadius="3" creationComplete="init()"
+		   creationPolicy="all" mouseMove="Mouse.show()">
+	<!-- Script to include handler -->
+	<mx:Script source="../scripts/insertVideoFileScript.as"/>
+
+	<mx:ApplicationControlBar id="appControlBar" left="0" top="0" width="100%" color="#000000"
+							  fillAlphas="[1.0, 1.0]" fillColors="[#99d0ff, #ffffff]">
+		<mx:Label color="#060606" fontSize="12" fontWeight="bold" text="Settings"/>
+	</mx:ApplicationControlBar>
+
+
+	<mx:Canvas id="selectcamcanvas">
+
+	</mx:Canvas>
+	<!-- HBox contains the buttons -->
+	<mx:HBox id="hbxButton" x="4" y="186" width="100%" horizontalAlign="center">
+		<!-- Refresh button -->
+		<mx:Button id="btnRefreshDriver" width="71" label="Refresh" click="init()" color="#000000"
+				   toolTip="Refresh Microphone/Camera driver list"/>
+		<!-- OK button -->
+		<mx:Button id="btnOK" width="71" label="OK" click="ok()" color="#000000"/>
+		<!-- Cancel button -->
+		<mx:Button id="btnCancel" width="80" label="Cancel" click="cancel()" color="#000000"/>
+
+	</mx:HBox>
+	<!-- VHBox contains the label and combobox for selecting drivers -->
+	<mx:VBox x="38" y="44" verticalGap="10">
+		<mx:Label id="lblUserSettings" y="63" color="#000000" fontSize="12" fontWeight="bold"/>
+		<mx:Canvas id="hbxCamera">
+			<mx:Label id="lblselectcam" width="120" color="#000000" text="Select Camera"
+					  verticalCenter="0"/>
+			<!-- Video drivers combobox -->
+			<mx:ComboBox id="cmbCameraSelect" x="{lblselectcam.width+10}" width="180" color="#000000"
+						 itemRenderer="mx.controls.Label" rollOverColor="#e0effb"
+						 selectionColor="#99d0ff" toolTip="Select video driver">
+			</mx:ComboBox>
+		</mx:Canvas>
+		<mx:Canvas id="hbxMic">
+			<mx:Label id="lblselectmic" width="120" color="#000000" text="Select Microphone"
+					  verticalCenter="0"/>
+			<!-- Audio drivers combobox -->
+			<mx:ComboBox id="cmbMicrophoneSelect" x="{lblselectmic.width+10}" width="180"
+						 color="#000000" itemRenderer="mx.controls.Label" rollOverColor="#e0effb"
+						 selectionColor="#99d0ff" toolTip="Select audio driver">
+			</mx:ComboBox>
+		</mx:Canvas>
+		<mx:Canvas x="70" y="189">
+			<mx:Label id="lblVidQuality" width="120" color="#000000" text="Select Video Quality "
+					  verticalCenter="0"/>
+			<!-- Bandwidth combobox -->
+			<mx:ComboBox id="cmbBandwidthSelect" x="{lblVidQuality.width+10}" width="182"
+						 color="#000000"
+						 dataProvider="{Constants.availableVideoPublishingBandwidths}"
+						 labelField="value" rollOverColor="#e0effb" selectionColor="#99d0ff"
+						 toolTip="Select Bandwidth"/>
+		</mx:Canvas>
+	</mx:VBox>
+</mx:Canvas>
+

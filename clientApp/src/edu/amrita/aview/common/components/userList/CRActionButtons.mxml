@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CRActionButtons.mxml
+Module		: Common
+Developer(s): Ravi Sankar 
+Reviewer(s)	: Veena Gopal K.V
+
+-->
+<!--VGCR:-Add Description
+    VGCR:- Add Comments for each section 
+-->
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 horizontalGap="0"
+		 creationComplete="hbox1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+		]]>
+	</fx:Script>
+
+
+	<fx:Script source="Icons.as">
+
+	</fx:Script>
+	<fx:Script source="CRActionButtonsHandler.as"/>
+
+	<mx:HBox horizontalGap="7.5">
+		<s:Button id="btn_disaccept"
+				  icon="{AcceptingIcon}"
+				  visible="false"
+				  click="{onClickAccept(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  toolTip="Accept Viewer"
+				  enabled="false"
+				  width="30"
+				  height="30"
+				  cornerRadius="5"/>
+		<s:Button id="btn_accept"
+				  icon="{AcceptingIcon}"
+				  visible="false"
+				  click="{onClickAccept(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  toolTip="Start Viewer Interaction"
+				  enabled="false"
+				  width="30"
+				  height="30"
+				  cornerRadius="5"/>
+		<s:Button id="btn_release"
+				  icon="{releaseViewerIcon}"
+				  visible="false"
+				  click="{onClickRelease(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  cornerRadius="5"
+				  mouseChildren="false"
+				  toolTip="Stop Viewer Interaction"
+				  enabled="false"
+				  height="30"
+				  width="30"/>
+		<s:Button id="btn_cam"
+				  icon="{webcamIcon}"
+				  visible="false"
+				  click="{onClickViewVideo(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  toolTip="View video of Viewer"
+				  enabled="false"
+				  width="30"
+				  height="30"
+				  cornerRadius="5"/>
+		<s:Button id="btn_cam_rel"
+				  icon="{nowebcamIcon}"
+				  visible="false"
+				  click="{onClickCloseViewVideo(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  toolTip="Stop video of Viewer"
+				  enabled="false"
+				  width="30"
+				  height="30"
+				  cornerRadius="5"/>
+		<s:Button id="btn_handraise"
+				  icon="{HandraiseIcon}"
+				  visible="false"
+				  click="{onClickHandRaise(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  cornerRadius="5"
+				  mouseChildren="false"
+				  toolTip="Request interaction with Presenter"
+				  enabled="false"
+				  width="30"
+				  height="30"/>
+		<s:Button id="btn_handrelease"
+				  icon="{HandraiseReleaseIcon}"
+				  visible="false"
+				  click="{onClickHandraiseRelease(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  cornerRadius="5"
+				  mouseChildren="false"
+				  toolTip="Release the handraise request"
+				  enabled="false"
+				  height="30"
+				  width="30"/>
+		<s:Button id="presenterButton"
+				  icon="{make_presenter}"
+				  visible="false"
+				  click="{onClickMakePresenter(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  toolTip="Make Presenter"
+				  enabled="false"
+				  width="30"
+				  height="30"
+				  cornerRadius="5"/>
+		<s:Button id="takeControlButton"
+				  icon="{take_presenter_ctrl}"
+				  visible="false"
+				  click="{onClickTakeControl(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  toolTip="Take Control"
+				  enabled="false"
+				  width="30"
+				  height="30"
+				  cornerRadius="5"/>
+		<s:Button id="prsntrRequestButton"
+				  icon="{make_presenter}"
+				  visible="false"
+				  click="{onClickRequestPresenter(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  toolTip="Request presenter controls from moderator"
+				  enabled="false"
+				  width="30"
+				  height="30"
+				  cornerRadius="5"/>
+		<s:Button id="releasePrsntrRequestButton"
+				  icon="{take_presenter_ctrl}"
+				  visible="false"
+				  click="{onClickReleasePresenter(event)}"
+				  includeInLayout="false"
+				  useHandCursor="true"
+				  buttonMode="true"
+				  mouseChildren="false"
+				  toolTip="Release the Presenter Request"
+				  enabled="false"
+				  width="30"
+				  height="30"
+				  cornerRadius="5"/>
+		<mx:VBox id="pttButtonVBox"
+				 verticalAlign="bottom"
+				 horizontalAlign="left"
+				 visible="false"
+				 includeInLayout="false">
+			<s:Button icon="{disabledMicIcon}"
+					  width="30"
+					  height="30"
+					  id="btnFreeTalk"
+					  mouseChildren="false"
+					  visible="true"
+					  includeInLayout="true"
+					  enabled="false"
+					  cornerRadius="5"
+					  toolTip="{Constants.FREETALK}"/>
+			<s:Button icon="{pushToTalkMute_Icon}"
+					  width="30"
+					  height="30"
+					  id="btnTalk"
+					  cornerRadius="5"
+					  click="{talkMute(ClassroomContext.currentPresenterName)}"
+					  useHandCursor="true"
+					  buttonMode="true"
+					  mouseChildren="false"
+					  visible="false"
+					  includeInLayout="false"
+					  toolTip="You are on Mute now"/>
+			<s:Button icon="{pushToTalkUnmute_Icon}"
+					  width="30"
+					  height="30"
+					  id="btnMute"
+					  click="{talkMute(classRoomComp.getFirstAcceptedStudent())}"
+					  useHandCursor="true"
+					  buttonMode="true"
+					  cornerRadius="5"
+					  mouseChildren="false"
+					  visible="false"
+					  includeInLayout="false"
+					  toolTip="You are on Talk now"/>
+			<s:CheckBox label="PTT"
+						fontSize="9"
+						fontWeight="normal"
+						id="chkboxPushToTalk"
+						toolTip="Push To Talk"
+						change="{pushToTalk(chkboxPushToTalk.selected)}"
+						selected="{pttCheckBoxState}"/>
+		</mx:VBox>
+	</mx:HBox>
+	<mx:HBox x="{pttButtonVBox.x + pttButtonVBox.width}">
+	<s:Button width="30"
+			  height="30"
+			  id="breakSessionButton"
+			  
+			  click="{onClickBreakSession(event)}"
+			  useHandCursor="true"
+			  buttonMode="true"
+			  cornerRadius="5"
+			  mouseChildren="false"
+			  icon="{breakSession_icon}"
+			  visible="false"
+			  includeInLayout="false"
+			  enabled="{breakSessionButtonEnabledState}"
+			  toolTip="Break current session"/>
+	<s:Button icon="{addUserIcon}"
+			   width="30"
+			   height="30"
+			   id="AddPeopleBtn"			   
+			   useHandCursor="true"
+			   buttonMode="true"
+			   cornerRadius="5"
+			   mouseChildren="false"
+			   click="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.onClickAddPeople()}"			   
+			   visible="false"
+			   includeInLayout="false"
+			   enabled="true"
+			   toolTip="Add users to meeting"/>
+	</mx:HBox>
+</mx:HBox>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: InstituteComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	: Swati, Abhirami, Sivaram SK
+
+This component displays all the details of the Institutes. This is invoked from the
+Administration.mxml. Only Master Admin has access to this component
+
+Based on the logged in user credentials this component behaves as follows:
+Master Admin: Can view, create, edit, delete and approve Institutes/Child Institutes
+
+Others: Can create Institute when they register themselves from the http://aview.in url.
+However the master admin has to approve the institute only then it is available for further
+operations
+
+-->
+<!-- Filter for institute container -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="100%"
+		   height="100%"
+		   xmlns:ns1="edu.amrita.aview.core.shared.components.*"
+		   xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+		   xmlns:xt="library://ns.tink.ws/flex/mx"
+		   xmlns:s="library://ns.adobe.com/flex/spark">
+
+	<mx:Script source="InstituteCompUIHandler.as"/>
+	<!-- Vbox for filter and datagrid-->
+	<mx:VBox top="0"
+			 fontFamily="Arial"
+			 fontSize="12"
+			 width="100%"
+			 height="100%">
+		<!-- Label to show filter for instiute -->
+		<!-- Fix for Bug#16959-->
+		<s:Label width="100%"
+				 paddingTop="5"
+				 verticalCenter="0"
+				 horizontalCenter="0"
+				 textAlign="center"
+				 text="Filter for Institute"
+				 fontSize="15"
+				 fontWeight="bold"
+				 color="#0839C6"/>
+		<!--Filter for institute form area container -->
+		<mx:Canvas width="100%"
+				   height="180">
+			<!-- Start Fix for Bug #14554 : Commented the unwanted fields -->
+			<!-- Label to show institute name -->
+			<!-- <s:Label right="490"
+					 bottom="151.5"
+					 text="Institute Name : "/> -->
+			<!-- Textinput for accepts institute search keywords -->
+			<!-- <s:TextInput right="240"
+						 bottom="149"
+						 width="240"
+						 toolTip="Type1"
+						 id="txtInpInstituteSearch"/> -->
+			<!-- Label to show city -->
+			<!-- <s:Label right="200"
+					 bottom="151.5"
+					 text="City : "/> -->
+			<!-- Text input for accepts city search keyword -->
+			<!-- <s:TextInput right="10"
+						 bottom="149"
+						 width="180"
+						 toolTip="Category1"
+						 id="txtInpCitySearch"/> -->
+			<!-- Label to show parent institute name -->
+			<!-- <s:Label right="260"
+					 bottom="120.5"
+					 text="Parent Institute Name : "/>-->
+			<!-- Textinput to accepts parent institute search keywords -->
+			<!-- <s:TextInput right="10"
+						 bottom="118"
+						 width="240"
+						 toolTip="City1"
+						 id="txtInpParentInstituteSearch"/> -->
+			<!-- Button for get institute essentional details -->
+			<!-- <ns1:ImageButton right="116"
+					  bottom="87"
+					  width="110"
+					  label="Search"
+					  chromeColor="#E0EFFB"
+					  click="getInstitutesEssentialDetails()"
+					  color="#000000"
+					  cornerRadius="3"
+					  toolTip="Search"/> -->
+			<!-- End Fix for Bug #14554 : Commented the unwanted fields -->
+			<!-- Button for clear search -->
+			 <ns1:ImageButton right="26"
+					  bottom="29"
+					  width="90"
+					  label="Reset"
+					  chromeColor="#E0EFFB"
+					  click="clearSearch()"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{updateIcon}"
+					  toolTip="Reset"/>
+			<!-- Button for create institute -->
+			<ns1:ImageButton id="butCreateInstitute"
+					  left="17"
+					  top="85"
+					  width="110"
+					  label="Create"
+					  chromeColor="#E0EFFB"
+					  click="{createInstitute()}"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{createIcon}"
+					  toolTip="Create"/>
+			<!-- Button for edit institute -->
+			<ns1:ImageButton id="butEditInstitute"
+					  left="135"
+					  top="85"
+					  width="110"
+					  label="Edit"
+					  chromeColor="#E0EFFB"
+					  click="{editInstitute()}"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{updateIcon}"
+					  toolTip="Edit"/>
+			<!-- Button for delete institute -->
+			<ns1:ImageButton id="butDeleteInstitute"
+					  left="255"
+					  top="85"
+					  width="110"
+					  label="Delete"
+					  chromeColor="#E0EFFB"
+					  click="{prepareForDelete()}"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{deleteIcon}"
+					  toolTip="Delete"/>
+			<!-- Button for approve institute -->
+			<ns1:ImageButton id="butApproveInstitute"
+					  left="375"
+					  top="85"
+					  width="110"
+					  label="Approve"
+					  chromeColor="#E0EFFB"
+					  click="{approveInstitute()}"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{updateIcon}"
+					  toolTip="Approve"/>
+			<!-- Start Fix for Bug #14554 : Commented the unwanted fields -->
+			<!-- Button for reset -->
+			<!--<ns1:ImageButton id="clearBtn"
+					  right="8"
+					  bottom="87.5"
+					  width="80"
+					  label="Reset"
+					  chromeColor="#E0EFFB"
+					  click="clearSearch()"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{updateIcon}"/>-->
+			<!-- End Fix for Bug #14554 : Commented the unwanted fields -->
+			<!-- Label to show filters -->
+			<s:Label left="10"
+					 bottom="30.5"
+					 text="Filters : "/>
+			<!-- Text input to accepts institute name -->
+			<s:TextInput id="txtInpInstituteName"
+						 left="55"
+						 bottom="29"
+						 width="300"
+						 height="22"
+						 change="filterResults()"
+						 toolTip="InstituteName"
+						 restrict="{GCLMContext.allowedCharactersForName}"/>
+			<!-- Text input to accepts type -->
+			<s:TextInput id="txtInpType"
+						 bottom="29"
+						 left="365"
+						 width="80"
+						 toolTip="Type"
+						 change="filterResults()"/>
+			<!-- Text input to accept category -->
+			<s:TextInput id="txtInpCategory"
+						 bottom="29"
+						 left="454"
+						 width="150"
+						 toolTip="Category"
+						 change="filterResults()"/>
+			<!-- Text inputs to accepts city -->
+			<s:TextInput id="txtInpCity"
+						 bottom="29"
+						 left="613"
+						 width="100"
+						 toolTip="City"
+						 change="filterResults()"/>
+			<!-- Text inputs to accepts parent institute -->
+			<s:TextInput id="txtInpParentInstitute"
+						 bottom="29"
+						 left="725"
+						 width="150"
+						 toolTip="Parent Institute"
+						 change="filterResults()"/>
+
+		</mx:Canvas>
+		<!-- Data grid for listing all institutes -->
+		<ns1:RowColorDataGrid id="dgAllInstitutes"
+							  width="100%"
+							  height="100%"
+							  editable="false"
+							  textAlign="left"
+							  dataProvider="{GCLMContext.allInstitutesAC}"
+							  variableRowHeight="true">
+			<ns1:columns>
+				<!-- Data Grid Column for institute id -->
+				<mx:DataGridColumn headerText="Id"
+								   width="30"
+								   dataField="instituteId"
+								   visible="true"
+								   editable="false"/>
+				<!-- Data Grid Column for institute name -->
+				<mx:DataGridColumn headerText="Institute Name"
+								   width="200"
+								   dataField="instituteName"
+								   editable="false"
+								   wordWrap="true"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+				<!-- Data Grid Column for institute type -->
+				<mx:DataGridColumn headerText="Type"
+								   width="50"
+								   dataField="instituteType"
+								   editable="false"/>
+				<!-- Data Grid Column for institute category -->
+				<mx:DataGridColumn headerText="Category"
+								   width="90"
+								   dataField="instituteCategory"
+								   editable="false"/>
+				<!-- Data Grid Column for address -->
+				<mx:DataGridColumn headerText="Address"
+								   width="100"
+								   dataField="address"
+								   editable="false"
+								   wordWrap="true"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('address')}"/>
+				<!-- Data Grid Column for city -->
+				<mx:DataGridColumn headerText="City"
+								   width="70"
+								   dataField="city"
+								   editable="false"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('city')}"/>
+				<!-- Data Grid Column for district -->
+				<mx:DataGridColumn headerText="District"
+								   width="90"
+								   dataField="districtName"
+								   editable="false"/>
+				<!-- Data Grid Column for parent institute -->
+				<mx:DataGridColumn headerText="Parent Institute"
+								   width="90"
+								   dataField="parentInstituteName"
+								   editable="false"
+								   wordWrap="true"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('parentInstituteName')}"/>
+			</ns1:columns>
+		</ns1:RowColorDataGrid>
+
+	</mx:VBox>
+</mx:Canvas>

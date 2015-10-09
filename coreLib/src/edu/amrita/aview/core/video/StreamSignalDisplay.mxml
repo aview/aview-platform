@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx" width="37" height="25" borderVisible="true" toolTip="Audio/Video not started">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Label id="lbl1" x="5" y="14" width="4" height="8" backgroundColor="#71cb33">
+
+	</s:Label>
+	<s:Label id="lbl2" x="11" y="12" width="4" height="10" backgroundColor="#71cb33">
+
+	</s:Label>
+	<s:Label id="lbl3" x="17" y="10" width="4" height="12" backgroundColor="#71cb33">
+
+	</s:Label>
+	<s:Label id="lbl4" x="23" y="8" width="4" height="14" backgroundColor="#71cb33">
+
+	</s:Label>
+	<s:Label id="lbl5" x="29" y="6" width="4" height="16" backgroundColor="#71cb33"
+			 chromeColor="#71cb33">
+
+	</s:Label>
+	<s:Image id="noSignal" x="14" y="5.5" width="11" height="19"
+			 source="@Embed('assets/images/noStreamIndicator.jpg')"/>
+	<!--<s:Label x="36" y="3" width="5" height="19">
+
+	</s:Label-->
+	<fx:Script source="StreamSignalDisplayHandler.as"/>
+</mx:Canvas>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StudentAnswerSheetAnswerChoices.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Thirumalai murugan
+
+StudentAnswerSheetAnswerChoices.mxml component displays the answer choices in answersheet of a user .
+It displays the answer attempted by the user , as well as the actual correct answer .
+-->
+
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 verticalGap="0"
+		 fontFamily="Arial" color="#000000"
+		 xmlns:components="edu.amrita.aview.core.shared.components.*"
+		 creationComplete="creationCompleteHandler(event)">
+	<!--container to hold questions-->
+	<mx:HBox>
+		<!--Fix for Bug#15463-->
+		<!--label to hold questions-->
+		<s:Label id="question"
+				 maxWidth="600"
+				 text="{qno + ') ' + quesItem.questionText}"
+				 fontWeight="bold"/>
+		<!--label to hold marks-->
+		<s:Label text="{' [marks: ' + quesItem.marks + ']'}"/>
+	</mx:HBox>
+
+<mx:HBox horizontalGap="10">
+	<!--to set id to RadioButtonGroup-->
+	<s:RadioButtonGroup id="rb"/>
+	
+	<mx:VBox>
+	<!--to repeat quiz answer choice-->
+	<mx:Repeater id="answers"
+				 dataProvider="{quesItem.quizAnswerChoices}">
+		<!--to add space-->
+		<s:Spacer height="10"/>
+		<mx:HBox verticalAlign="middle">
+			<!--image to hold tick icon-->
+			<s:Image id="imgStudentAnswer"
+					 source="{iconClass}"
+					 visible="{answers.currentItem.fraction!=0}"
+					 width="17"
+					 height="18"
+					 verticalAlign="middle"
+					 horizontalAlign="center"/>
+			<!--Fix for Bug#15463-->
+			<components:ColorText id="colorStudentAns"
+								   text="{'('+(String.fromCharCode(answers.currentIndex + 97)) +')  '+ answers.currentItem.choiceText}"
+								   fontSize="12"
+								   alpha=".8"
+								   maxWidth="600"
+								   controlVaule="{answers.currentItem.studentAnsFraction}"
+								   customColor="#F88017"
+								   defaultColor="#408CF3">
+			</components:ColorText>
+		<!--to add space-->
+			<s:Spacer height="10"/>
+		</mx:HBox>
+	</mx:Repeater>
+	</mx:VBox>
+	<s:BorderContainer id="previewBox" visible="false" includeInLayout="false" left="0" verticalCenter="0" horizontalCenter="0">
+		<s:VideoPlayer source="{tempNativepath}" id="videoPlayer" autoPlay="true" maxHeight="200" maxWidth="300"  visible="false" includeInLayout="false"/>
+		<s:Image id="imageLoader" width="100%" height="100%" source="{tempNativepath}" maxHeight="200" maxWidth="300" visible="false" includeInLayout="false"/>
+	</s:BorderContainer>
+	<s:Spacer/>
+</mx:HBox>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.evaluation.QuizContext;
+			import edu.amrita.aview.core.evaluation.vo.QuizQuestionMediaFileVO;
+			import edu.amrita.aview.core.evaluation.vo.QuizQuestionVO;
+			
+			import mx.events.FlexEvent;
+			
+			/**
+			 * Variable to hold instance of  QuizQuestionVO
+			 **/
+			[Bindable]
+			public var quesItem:QuizQuestionVO;
+			
+			/**
+			 * Variable to hold question number
+			 **/
+			[Bindable]
+			public var qno:String;
+			/**
+			 * Icon class for tick image
+			 */
+			[Embed(source="assets/images/tick-icon.png")]
+			private var iconClass:Class;
+			[Bindable]
+			/**
+			 * Temporary variable to hold uploading file path
+			 */
+			private var tempNativepath : String = "";
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				if(quesItem.quizQuestionMediaFiles != null && quesItem.quizQuestionMediaFiles.length > 0)
+				{
+					var mediaFile:QuizQuestionMediaFileVO = quesItem.quizQuestionMediaFiles.getItemAt(0) as QuizQuestionMediaFileVO;
+					tempNativepath = mediaFile.quizQuestionMediaFolderPath + mediaFile.quizQuestionMediaFileName;
+					previewBox.visible = true;
+					previewBox.includeInLayout = true;
+					if(mediaFile.quizQuestionMediaFileType == QuizContext.MEDIA_FILE_TYPE_IMAGE)
+					{
+						imageLoader.visible = true;
+						imageLoader.includeInLayout = true;
+						
+					}
+					else if(mediaFile.quizQuestionMediaFileType == QuizContext.MEDIA_FILE_TYPE_AUDIO 
+						|| mediaFile.quizQuestionMediaFileType == QuizContext.MEDIA_FILE_TYPE_VIDEO)
+					{
+						videoPlayer.visible = true;
+						videoPlayer.includeInLayout = true;
+						
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+</mx:VBox>

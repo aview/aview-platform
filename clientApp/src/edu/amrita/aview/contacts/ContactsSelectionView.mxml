@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:itemRenderers="edu.amrita.aview.contacts.itemRenderers.*"
+				   width="100%" height="100%"
+				   creationComplete="init()">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script source="ContactsSelectionViewHandler.as"/>
+	<s:BorderContainer width="100%"
+					   backgroundColor="#F0F8FC"
+					   borderColor="#B8C4CC">
+		<s:layout>
+			<s:HorizontalLayout gap="0"
+								paddingLeft="20"
+								paddingRight="20"
+								variableColumnWidth="false"
+								verticalAlign="middle"/>
+		</s:layout>
+		<s:Label fontWeight="bold"
+				 text="{'All Contacts ('+contactsSelectionModel.allContactCount+')'}"/>
+	</s:BorderContainer>
+	
+	<s:BorderContainer width="100%" height="100%" backgroundColor="#F0F8FC" borderVisible="false">
+		<s:layout>
+			<s:HorizontalLayout gap="0"/>
+		</s:layout>
+		<mx:List width="100%" id="contactList"
+				 height="100%"
+				 allowMultipleSelection="true"
+				 borderVisible="false"
+				 contentBackgroundAlpha="0.0"
+				 dataProvider="{contactsSelectionModel.visibleContacts}" 
+				 doubleClickEnabled="false"
+				 paddingBottom="0"
+				 paddingLeft="0"
+				 paddingTop="0">
+			<mx:itemRenderer>
+				<fx:Component>
+					<itemRenderers:ItemRenderContact width="100%"/>
+				</fx:Component>
+			</mx:itemRenderer>
+		</mx:List>
+	</s:BorderContainer>
+	<s:HGroup id="actionBtns"
+			  width="100%"
+			  height="55"
+			  horizontalAlign="center"
+			  visible="{!contactsSelectionModel.isEmbedded}"
+			  includeInLayout="{!contactsSelectionModel.isEmbedded}"
+			  verticalAlign="middle">
+		<s:Button label="OK"
+				  chromeColor="#E0EFFB"
+				  cornerRadius="3"
+				  click="closeWindow(event)"/>
+		<s:Button label="Cancel"
+				  chromeColor="#E0EFFB" 
+				  click="closeWindow(event)"
+				  cornerRadius="3"/>
+	</s:HGroup>
+	
+</s:BorderContainer>

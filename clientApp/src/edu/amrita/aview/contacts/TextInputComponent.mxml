@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: TextInputComponent.mxml
+Module		: contacts
+Developer(s): NidhiSarasan,Soumya M.D
+Reviewer(s)	: Bri.Radha
+
+This file is used for add group, edit group and add meeting subject for meeting.
+-->
+<!-- Group is used to align all the components -->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="486"
+		 height="132">
+	<!-- Script to include handler -->
+	<fx:Script source="TextInputComponentScript.as"/>
+	<!-- SkinnableContainer used to back grouns color-->
+	<s:SkinnableContainer width="100%"
+						  height="100%"
+						  backgroundColor="#e0effb">
+		<!-- Group used to align all the components in the skinnable container-->
+		<s:Group id="main"
+				 height="100%"
+				 width="100%">
+			<!-- Rect used for border-->
+			<s:Rect width="100%"
+					height="100%">
+				<s:stroke>
+					<!--SolidColorStroke used for border color and width-->
+					<s:SolidColorStroke color="0x000000"
+										weight="1"/>
+				</s:stroke>
+			</s:Rect>
+			<!-- Label to show the title name of the component-->
+			<s:Label x="3"
+					 y="3"
+					 width="182"
+					 height="17"
+					 id="nameTitle"
+					 verticalAlign="middle"/>
+			<!-- VBox used to align the components vertically -->
+			<mx:VBox width="100%"
+					 height="100%"
+					 verticalAlign="middle"
+					 verticalCenter="0">
+				<!-- HBox used to align the components horizontally -->
+				<mx:HBox width="100%"
+						 horizontalAlign="center"
+						 height="20"
+						 verticalAlign="middle">
+					<s:Label id="lblTitle"/>
+				</mx:HBox>
+				<!-- HBox used to align the components horizontally -->
+				<mx:HBox width="100%"
+						 horizontalAlign="center">
+					<!-- TextInput used to enter the groupname or subject -->
+					<s:TextInput id="txtTitle"
+								 width="354"
+								 keyDown="if( event.keyCode == Keyboard.ENTER ) okHandler()"/>
+				</mx:HBox>
+				<!-- HBox used to align the components horizontally -->
+				<mx:HBox width="100%"
+						 horizontalAlign="center">
+					<!-- Ok Button -->
+					<s:Button id="groupOK"
+							  label="OK"
+							  click="okHandler()"/>
+					<!-- Cancel Button -->
+					<s:Button id="groupCancel"
+							  label="Cancel"
+							  click="cancelHandler()"/>
+				</mx:HBox>
+
+			</mx:VBox>
+		</s:Group>
+	</s:SkinnableContainer>
+</s:Group>

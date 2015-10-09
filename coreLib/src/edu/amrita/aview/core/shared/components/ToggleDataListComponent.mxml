@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ToggleDataListComponent.mxml
+Module		: Common
+Developer(s): Sethu Subramanian N
+Reviewer(s)	: Monisha Mohanan,Veena Gopal K.V
+
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="460"
+		 height="100"
+		 creationComplete="toggleDataListCompCreationCompleteHandler(event)" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!-- Script to include handler -->
+	<fx:Script source="ToggleDataListComponentHandler.as"/>
+	<!-- Label to show first original data -->
+	<s:List id="lstOriginalData"
+			x="10"
+			y="10"
+			width="156"
+			height="86"
+			allowMultipleSelection="true"
+			dataProvider="{originalDataAC}"
+			labelField="{originalDataLabelField}">
+	</s:List>
+	<!-- Add To List button -->
+	<components:ImageButton id="addToList"
+			  x="195"
+			  y="23"
+			  label="&gt;&gt;"
+			  chromeColor="#E0EFFB"
+			  click="addToList_clickHandler(event)"
+			  color="#000000"
+			  cornerRadius="3"/>
+	<!-- list component -->
+	<s:List id="lstSelectedData"
+			x="294"
+			y="10"
+			width="156"
+			height="86"
+			allowMultipleSelection="true"
+			dataProvider="{selectedDataAC}"
+			labelField="{selectedDataLabelField}">
+	</s:List>
+	<!-- remove button -->
+	<components:ImageButton id="remFromList"
+			  x="195"
+			  y="69"
+			  label="&lt;&lt;"
+			  chromeColor="#E0EFFB"
+			  click="removeFromList_clickHandler(event)"
+			  color="#000000"
+			  cornerRadius="3"/>
+
+</s:Group>

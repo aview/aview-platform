@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: Viewer3DMobileComponent.mxml
+Module		: ThreeD Sharing
+Developer(s): Salil George, Ganesan A, Jayakrishnan R, Jeevanantham N
+Reviewer(s)	: Sivaram SK 
+
+This component is  main component for threeD and it is used to implement threeD functionalities.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 creationComplete="viewer3DSWC_initializeHandler(event)"
+		 xmlns:local="*"
+		 width="100%"
+		 height="100%">
+	<fx:Script source="FileHandler3D.as"/>
+	<fx:Script source="Viewer3DComponentHandler.as"/>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.common.components.mobileComponents.toolTip.MobileToolTip;
+			
+			/**
+			 * Instance of MobileViewer3DSWC library
+			 */
+			public var viewer3DSWC:MobileViewer3DSWC;
+			
+			/**
+			 * @public
+			 *
+			 * To create fileManager component
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			public function listingServerFiles(event:MouseEvent):void
+			{
+				fileManagerForViewer3D=null;
+				listRemoteFiles();
+				fileManagerForViewer3D.open(event.target.valueOf());
+				btnListingServerFiles.enabled=false;
+			} 
+			/**
+			 * @protected
+			 *
+			 * To show tooltip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function threeDModuleTooltipHandler(event:MouseEvent):void
+			{
+				var threeDToolTip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				threeDToolTip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			
+			private var isPresenterRole:Boolean = false;
+			[Bindable]
+			private var is3DActionBtnsEnable:Boolean = false;
+			
+			public function resizeViewerThreeObject():void{
+				var x:Number;
+				var y:Number;
+				if(viewer3DSWC.flare3DEngineInstance != null){
+					if(FlexGlobals.topLevelApplication.screenTypes ==  Constants.SCREENTYPE_ALLINONE){
+						x =  (((FlexGlobals.topLevelApplication.width/100)*70) - viewer3DSWC.flare3DEngineInstance.scaledWidth)/2;
+						y =   FlexGlobals.topLevelApplication.actionBar.height;
+						viewer3DSWC.flare3DEngineInstance.sceneObject.setViewport(x, y, viewer3DSWC.flare3DEngineInstance.scaledWidth, viewer3DSWC.flare3DEngineInstance.scaledHeight);
+					}else{
+						x =  (((FlexGlobals.topLevelApplication.width/100)*90) - viewer3DSWC.flare3DEngineInstance.scaledWidth)/2;
+						y =   FlexGlobals.topLevelApplication.actionBar.height+FlexGlobals.topLevelApplication.collaborationBtnsHeight;
+						
+						if(viewer3DSWC.flare3DEngineInstance.scaledHeight > (FlexGlobals.topLevelApplication.height - y)){
+							viewer3DSWC.flare3DEngineInstance.sceneObject.setViewport(x, y, viewer3DSWC.flare3DEngineInstance.scaledWidth, (FlexGlobals.topLevelApplication.height - y));
+						}else{
+							viewer3DSWC.flare3DEngineInstance.sceneObject.setViewport(x, y, viewer3DSWC.flare3DEngineInstance.scaledWidth, viewer3DSWC.flare3DEngineInstance.scaledHeight);
+						}
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%"
+			  height="100%"
+			  gap="-1"
+			  x="0">
+		
+			<s:HGroup width="90%"
+					  height="100%"
+					  horizontalAlign="center"
+					  horizontalCenter="0"
+					  verticalAlign="middle"
+					  id="groupThreeDHolder"/>
+	
+			<s:Group width="10%"
+					 right="0"
+					 height="100%">
+				<s:Rect width="100%"
+						height="100%">
+					<s:fill>
+						<s:SolidColor color="#071124"/>
+					</s:fill>
+				</s:Rect>
+				<s:VGroup width="100%"
+						  height="100%"
+						  gap="-1">
+					<!--To open File manager component-->
+					<s:Button id="btnListingServerFiles"
+							  width="100%"
+							  height="100%"
+							  icon="@Embed('/views/toolSets/assets/my-doc-lib.png')"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  click="listingServerFiles(event)"
+							  toolTip="List My 3D objects"
+							  visible="{ClassroomContext.isModerator}"
+							  includeInLayout="{ClassroomContext.isModerator}"
+							  rollOver="threeDModuleTooltipHandler(event)"
+							  mouseDown="threeDModuleTooltipHandler(event)"/>
+					
+					<!--Refresh button-->
+					<s:Button id="btnReset"
+							  height="33%"
+							  width="100%"
+							  icon="@Embed('/views/toolSets/assets/refresh.png')"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  click="viewer3DSWC.resetScene()"
+							  toolTip="Reset objects to initial state"
+							  rollOver="threeDModuleTooltipHandler(event)"
+							  mouseDown="threeDModuleTooltipHandler(event)"
+							  enabled="{is3DActionBtnsEnable}"/>
+					
+					<!--Delete button-->
+					<s:Button id="btnDelete"
+							  height="100%"
+							  width="100%"
+							  icon="@Embed('/views/assets/RECYCLE BIN_2.png')"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  click="viewer3DSWC.deleteObjectFromScene()"
+							  toolTip="Delete object"
+							  visible="{ClassroomContext.isModerator}"
+							  includeInLayout="{ClassroomContext.isModerator}"
+							  rollOver="threeDModuleTooltipHandler(event)"
+							  mouseDown="threeDModuleTooltipHandler(event)"/>
+					
+					<!--ZoomIn button-->
+					<s:Button id="btnZoomIn"
+							  height="33%"
+							  width="100%"
+							  icon="@Embed('/views/assets/zoominx30.png')"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  toolTip="Zoom in"
+							  click="viewer3DSWC.zoomHandler(0.3)"
+							  rollOver="threeDModuleTooltipHandler(event)"
+							  mouseDown="threeDModuleTooltipHandler(event)"
+							  enabled="{is3DActionBtnsEnable}"/>
+					
+					<!--ZoomOut button-->
+					<s:Button id="btnZoomOut"
+							  height="33%"
+							  width="100%"
+							  icon="@Embed('/views/assets/zoomoutx30.png')"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  toolTip="Zoom out"
+							  click="viewer3DSWC.zoomHandler(-0.3)"
+							  rollOver="threeDModuleTooltipHandler(event)"
+							  mouseDown="threeDModuleTooltipHandler(event)"
+							  enabled="{is3DActionBtnsEnable}"/>
+				</s:VGroup>
+			</s:Group>
+	</s:HGroup>
+</s:Group>

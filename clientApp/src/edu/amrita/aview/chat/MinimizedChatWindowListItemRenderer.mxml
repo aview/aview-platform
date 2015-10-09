@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+VPCR: Add file description
+-->
+<!---
+
+File		: MinimizedChatWindowListItemRenderer.mxml
+Module		: chat
+Developer(s): Bri.Radha
+Reviewer(s)	: Bri.Radha,Vishnupreethi K
+
+
+-->
+
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="false" 
+				contentBackgroundColor="0x2AAAFF"
+				contentBackgroundAlpha="0.8" width="150" height="34" creationComplete="onCreationComplete()">
+	<s:Rect id="theBackgroundObject" top="0" bottom="0" left="0" right="0">
+		<s:fill>
+			<s:SolidColor color="0x2a5ea4" alpha="1"/>
+		</s:fill>
+	</s:Rect>
+	
+	<!--<s:HGroup width="100%" height="100%" verticalAlign="middle">-->
+		<s:Label text="{data.title}"
+				 maxDisplayedLines="1"
+				 left="9"
+				 right="36"
+				 top="1"
+				 bottom="0"
+				 minHeight="30"
+				 verticalAlign="middle"
+				 fontWeight="bold"
+				 color="#FFFFFF"/>
+	
+		<s:Button id="restoreButton" right="6" top="7" width="20" height="20" buttonMode="true"
+				  click="onRestoreWindow(event)"
+				  icon="@Embed('/edu/amrita/aview/chat/assets/images/maximize.png')"
+				  useHandCursor="true"/>
+				 <!-- For Web: skinClass="spark.skins.spark.windowChrome.RestoreButtonSkin" not available for web, so commented -->
+	
+		<!--- @copy spark.components.TitleWindow#closeButton -->
+		<!--<s:Button id="closeButton"
+				  width="15"
+				  height="15"
+				  right="7"
+				  top="7"
+				  skinClass="spark.skins.spark.TitleWindowCloseButtonSkin"/>-->
+	<!--</s:HGroup>-->
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.events.ChatEvent;
+			//PNCR: API. changed EventMap point to core/share/eventmap. It will change after create the swc.
+			import edu.amrita.aview.core.shared.eventmap.EventMap;
+			
+			[Bindable]
+			[Embed(source="assets/images/maximize.png")]
+			public var restoreIcon:Class;
+			
+			
+			/* applicationType::desktop{
+				//For Web:windowChrome.RestoreButtonSkin skin class not available for web.
+				import spark.skins.spark.windowChrome.RestoreButtonSkin;
+			} */
+			
+			/**
+			 * @private
+			 */ 
+			private function onCreationComplete():void
+			{
+				//For Web:windowChrome.RestoreButtonSkin skin class not available for web.
+				applicationType::DesktopWeb{
+					restoreButton.setStyle("icon", restoreIcon);
+					applicationType::DesktopWeb{
+						var chatWindow:ChatTitleWindow = data as ChatTitleWindow;
+					}
+					chatWindow.moduleRO.moduleEventMap.registerInitiator(this, ChatEvent.RESTORE);
+				}
+			}
+			/**
+			 * @private
+			 */
+			private function onRestoreWindow(event:MouseEvent):void
+			{
+				this.dispatchEvent(new ChatEvent(ChatEvent.RESTORE, data));
+			}
+		]]>
+	</fx:Script>
+	
+</s:ItemRenderer>

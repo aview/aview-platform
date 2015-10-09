@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: CreateInstituteComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	: Swati, Abhirami, Sivaram SK
+
+This component is used only by the master admin to create/update an institute
+
+-->
+<components1:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:xt="library://ns.tink.ws/flex/mx"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 width="602"
+						 height="572"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 xmlns:components1="edu.amrita.aview.core.shared.components.*">
+
+	<fx:Script source="CreateInstituteCompUIHandler.as"/>
+	<!-- Container for create/update institute -->
+	<mx:Canvas left="5"
+			   right="5"
+			   top="5"
+			   bottom="5"
+			   borderColor="#A3D7FF"
+			   borderVisible="true"
+			   borderStyle="solid"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="10"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show institute name -->
+		<s:Label left="20"
+				 top="10"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Institute Name :"/>
+		<!-- Text input to accepts institute name -->
+		<s:TextInput id="txtInpInstituteName"
+					 right="15"
+					 top="10"
+					 width="400"
+					 height="25"
+					 change="enableAddAdminButton();"
+					 maxChars="299"
+					 restrict="{GCLMContext.allowedCharactersForName}"/>
+		<!-- Label to show parent institute-->
+		<s:Label left="20"
+				 top="45"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Parent Institute :"/>
+		<!-- Combo box for parent institutes-->
+		<xt:FilterComboBox id="cmbParentInstitutes"
+						   visible="true"
+						   right="15"
+						   top="45"
+						   width="400"
+						   dataProvider="{parentInstitutes}"
+						   height="25"
+						   labelField="instituteName"
+						   selectSingleMatch="true"
+						   dropdownFactory="{GCLMContext.dropdownFactory}"
+						   prompt=""
+						   removeFilterOnSelection="true"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="80"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show institute type-->
+		<s:Label left="19"
+				 top="80"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Institute type :"/>
+		<!-- Combo box for institute type-->
+		<mx:ComboBox id="cmbInstituteType"
+					 left="175"
+					 top="80"
+					 width="200"
+					 height="25"
+					 change="enableAddAdminButton();"
+					 dataProvider="{instituteTypeArray}"/>
+		<!-- Label to show *-->
+		<s:Label left="10"
+				 top="115"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show institute category-->
+		<s:Label left="19"
+				 top="115"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Institute Category :"/>
+		<!-- Combo box for institute category-->
+		<mx:ComboBox id="cmbInstituteCategory"
+					 left="175"
+					 top="115"
+					 width="200"
+					 height="25"
+					 change="enableAddAdminButton()"
+					 dataProvider="{GCLMContext.instituteCategoriesAC}"
+					 labelField="instituteCategoryName"/>
+		<!-- Label to show *-->
+		<s:Label left="10"
+				 top="150"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show address-->
+		<s:Label left="20"
+				 top="150"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Address :"/>
+		<!-- Text area to accepts Address-->
+		<s:TextArea id="txtAreaAddress"
+					left="175"
+					top="150"
+					width="200"
+					height="80"
+					maxChars="499"
+					restrict="0-9a-zA-Z_. #/():,\&amp;\-"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="240"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show city-->
+		<s:Label left="20"
+				 top="240"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="City:"/>
+		<!-- Text input to accepts city-->
+		<s:TextInput id="txtInpCity"
+					 left="175"
+					 top="240"
+					 width="200"
+					 height="25"
+					 maxChars="99"
+					 restrict="a-zA-Z "/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="279"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="318"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<components1:StateDistrictDropDown id="instituteStateDistrict"
+										   left="20"
+										   right="210"
+										   top="275"
+										   height="66"
+										   cmbwidth="200"
+										   cmbHeight="25"
+										   districtsAC="{GCLMContext.districtsAC}"
+										   fontFamily="Arial"
+										   fontSize="12">
+		</components1:StateDistrictDropDown>
+		<!-- Label to show * -->
+		<mx:Label left="10"
+				  top="350"
+				  width="12"
+				  height="18"
+				  color="#ED3814"
+				  fontFamily="Times New Roman"
+				  fontSize="13"
+				  fontWeight="bold"
+				  text="*"/>
+		<!-- Label to show Minimum bandwidth to publish -->
+		<mx:Label left="20"
+				  top="350"
+				  height="21"
+				  text="Minimum bandwith to publish :"/>		
+		<!-- Combo box for MinBandwidth-->
+		<mx:ComboBox id="cmbMinBandwidth"
+					 left="178"
+					 top="350"
+					 height="25"
+					 width="200"
+					 change="{filterBandwidthValues(minimumPublishingBandwidths)}"
+					 dataProvider="{minimumPublishingBandwidths}"
+					 labelField="value">
+		</mx:ComboBox>
+		<!-- Fix Bug#1021 end -->
+		<!-- Label to show * -->
+		<mx:Label left="10"
+				  top="385"
+				  width="12"
+				  height="18"
+				  color="#ED3814"
+				  fontFamily="Times New Roman"
+				  fontSize="13"
+				  fontWeight="bold"
+				  text="*"/>
+		<!-- Label to show Maximum bandwith to publish -->
+		<mx:Label left="20"
+				  top="385"
+				  height="21"
+				  text="Maximum bandwith to publish :"
+				  truncateToFit="true"/>
+		<!-- Combo box for MaxBandwidth -->
+		<mx:ComboBox id="cmbMaxBandwidth"
+					 left="178"
+					 top="385"
+					 height="25"
+					 width="200"
+					 change="{filterBandwidthValues(maximimPublishingBandwidths)}"
+					 dataProvider="{maximimPublishingBandwidths}"
+					 labelField="value">
+		</mx:ComboBox>
+
+		<!-- Button for add branding -->
+		<components:ImageButton bottom="80"
+				  width="208"
+				  height="25"
+				  label="Click to add Branding"
+				  chromeColor="#E0EFFB"
+				  click="openSaveInstituteBrandingComp()"
+				  color="#000000"
+				  cornerRadius="3"
+				  enabled="{hasEnableAddBrandingButton}"
+				  horizontalCenter="-150"/>
+		<!-- Button for add class servers -->
+		<components:ImageButton bottom="80"
+				  width="208"
+				  height="25"
+				  label="Click to add Classroom Servers"
+				  chromeColor="#E0EFFB"
+				  click="openSaveInstituteServersComp()"
+				  color="#000000"
+				  cornerRadius="3"
+				  enabled="{hasEnabledAddAdminButton}"
+				  horizontalCenter="150"/>
+		<!-- Button for add admins-->
+		<components:ImageButton bottom="40"
+				  width="208"
+				  height="25"
+				  label="Click to add Admins"
+				  chromeColor="#E0EFFB"
+				  click="openSaveInstituteAdminsComp()"
+				  color="#000000"
+				  cornerRadius="3"
+				  enabled="{hasEnabledAddAdminButton}"
+				  horizontalCenter="-150"/>
+		<!-- Button for add meeting servers -->
+		<components:ImageButton bottom="40"
+				  width="208"
+				  height="25"
+				  label="Click to add Meeting Servers"
+				  chromeColor="#E0EFFB"
+				  click="openSaveInstituteMeetingServersComp()"
+				  color="#000000"
+				  cornerRadius="3"
+				  enabled="{hasEnabledAddAdminButton}"
+				  horizontalCenter="150"/>
+		<!-- Button for save institute -->
+		<components:ImageButton id="butSaveInstitute"
+				  bottom="10"
+				  width="80"
+				  height="25"
+				  label="Save"
+				  chromeColor="#E0EFFB"
+				  click="createInstitute()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="-60"/>
+		<!-- Button for close save institute component -->
+		<components:ImageButton bottom="10"
+				  width="80"
+				  height="25"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="closeSaveInstituteComp()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="60"/>
+		<!-- Radio button Group -->
+		<s:RadioButtonGroup id="rbgFireWall"/>
+		<!-- Label to show parent institute -->
+		<s:Label id="lblNoParentInstitute"
+				 x="168"
+				 y="47.5"
+				 text="(This institute is a parent of other institutes. Hence it can't have a parent.)"
+				 visible="false"/>
+
+
+	</mx:Canvas>
+	<!-- Icon to close save institute container -->
+	<components:WindowCloseImage right="5"
+			 top="-25"
+			 id="imgClose"
+			 click="closeSaveInstituteComp()"/>
+</components1:InsidePanel>

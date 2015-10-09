@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  width="100%" 
+		  height="100%"
+		  verticalAlign="middle"
+		  horizontalAlign="center"
+		  horizontalCenter="0"
+		  verticalCenter="0">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			
+			protected function lblRollOverHandler(event:MouseEvent):void{
+				event.target.setStyle("color","0X66CCFF");
+			}
+			
+			protected function lblRollOutHandler(event:MouseEvent):void{
+				event.target.setStyle("color","0X000000");
+			}
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%"
+			  gap="0"
+			  verticalAlign="middle"
+			  id="audioGroup"
+			  horizontalAlign="left"
+			  verticalCenter="0"
+			  visible="false"
+			  includeInLayout="false">
+		<s:Label id="lblAudio"
+				 text="Audio"
+				 fontWeight="bold"
+				 color="#000000"
+				 fontSize="14"
+				 minWidth="{(FlexGlobals.topLevelApplication.sliderDrawer.width/2.5)}"
+				 width="50%"
+				 paddingRight="5"/>
+		<s:ToggleSwitch id="toggleAudio" 
+						fontSize="12"
+						selected="true"
+						minHeight="45"/>
+	</s:HGroup>
+	
+	<s:HGroup width="100%"
+			  gap="0"
+			  verticalAlign="middle"
+			  id="videoGroup"
+			  verticalCenter="0"
+			  horizontalCenter="0"
+			  horizontalAlign="center"
+			  paddingBottom="10">
+		
+		<s:Button id="lblVideo"
+				  label="{FlexGlobals.topLevelApplication.videoPrefrenceOnLbl}"
+				  fontWeight="bold"
+				  color="#000000"
+				  fontSize="14"
+				  rollOver="lblRollOverHandler(event)"
+				  rollOut="lblRollOutHandler(event)"
+				  minHeight="45"/>
+		
+	</s:HGroup>
+</s:VGroup>

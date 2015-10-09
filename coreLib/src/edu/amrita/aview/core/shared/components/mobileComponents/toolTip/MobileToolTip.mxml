@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: MobileTooltip.mxml
+Module		: Component
+Developer(s): Jeevanantham N
+Reviewer(s)	: Sivaram SK
+
+MobileTooltip component is custom component to show the tool tip.
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="10%"
+		 height="5%">
+	
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * Importing flash library
+			 */
+			import flash.utils.clearTimeout;
+			import flash.utils.setTimeout;
+			
+			import mx.core.FlexGlobals;
+			import mx.managers.ISystemManager;
+			import mx.managers.PopUpManager;
+			import mx.managers.ToolTipManager;
+			
+			/**
+			 * Holds tool tip message
+			 */
+			[Bindable]
+			public var toolTipMessage:String="";
+			/**
+			 * Used to close tooltip component after 1 sec
+			 */
+			private var setTimeForCloseToolTip:uint;
+			
+			/**
+			 * @public
+			 *
+			 * To create tooltip component and set tooltip message
+			 *
+			 * @param toolTip holds the value of tooltip to be shown
+			 * @param parent holds the value of target object
+			 * @return MobileTooltip
+			 */
+			public static function open(toolTip:String="", parent:DisplayObject=null):MobileToolTip
+			{
+				var toolTipMenu:MobileToolTip=new MobileToolTip();
+				
+				toolTipMenu.toolTipMessage=toolTip;
+				toolTipMenu.setFocus();
+				
+				toolTipMenu.setTimeForCloseToolTip=setTimeout(toolTipMenu.toolTipCloseHandler, 1000);
+				parent.addEventListener(MouseEvent.ROLL_OUT, toolTipMenu.toolTipRollOutHandler);
+				parent.addEventListener(MouseEvent.MOUSE_DOWN, toolTipMenu.toolTipRollOutHandler);
+				
+				if (!parent)
+				{
+					var sm:ISystemManager=ISystemManager(FlexGlobals.topLevelApplication.systemManager);
+					var mp:Object=sm.getImplementation("mx.managers.IMarshallPlanSystemManager");
+					if (mp && mp.useSWFBridge())
+						parent=Sprite(sm.getSandboxRoot());
+					else
+						parent=Sprite(FlexGlobals.topLevelApplication);
+				}
+				
+				PopUpManager.addPopUp(toolTipMenu, parent, false);
+				return toolTipMenu;
+			}
+			
+			/**
+			 * @public
+			 *
+			 * To close the tooltip, when user roll-out from the object.
+			 *
+			 * @param event of MouseEvent
+			 * @return MobileTooltip
+			 */
+			public function toolTipRollOutHandler(event:MouseEvent):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			/**
+			 * @public
+			 *
+			 * To close the tooltip after 1 second.
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function toolTipCloseHandler():void
+			{
+				clearTimeout(setTimeForCloseToolTip);
+				PopUpManager.removePopUp(this);
+			}
+			
+			/**
+			 * @public
+			 *
+			 * To align the position of tooltip
+			 *
+			 * @param target holds the value of target object
+			 * @return void
+			 */
+			public function handleToolTipPosition(target:DisplayObject):void
+			{
+				// Scale the tip itself
+				target.scaleX=this.scaleX;
+				target.scaleY=this.scaleY;
+				
+				// Scale the offsets
+				var xOffset:int=10 * this.scaleX;
+				var yOffset:int=10 * this.scaleY;
+				
+				// Set the default positioning 
+				this.x=parent.mouseX + xOffset;
+				this.y=parent.mouseY + yOffset;
+				
+				// Set the adjusted height and width
+				var targetHeight:Number=this.height * this.scaleX;
+				var targetWidth:Number=this.width * this.scaleY;
+				
+				var rightEdge:int=this.x + targetWidth + xOffset;
+				var appWidth:int=parent.width;
+				var bottomEdge:int=this.y + targetHeight + yOffset;
+				var appHeight:int=parent.height;
+				
+				var x:Number=parent.mouseX - xOffset - targetWidth;
+				var y:Number=parent.mouseY + yOffset;
+				// If tooltip width is more
+				if (rightEdge > appWidth)
+				{
+					this.move(x, y);
+				}
+				// If tooltip height is more
+				if (bottomEdge > appHeight)
+				{
+					this.move(x + xOffset, y - yOffset - targetHeight);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Rect width="100%"
+			height="100%"
+			topLeftRadiusX="7"
+			topRightRadiusX="7"
+			bottomLeftRadiusX="7"
+			bottomRightRadiusX="7">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xffffff"
+								weight="2"/>
+		</s:stroke>
+	</s:Rect>
+	<!-- Label to display tooltip-->
+	<s:HGroup width="100%"
+			  height="100%"
+			  top="5"
+			  bottom="5"
+			  left="5"
+			  right="5"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+		<s:Label id="lblTooltip"
+				 width="100%"
+				 height="100%"
+				 fontSize="10"
+				 fontWeight="bold"
+				 color="0xFFFFFF"
+				 text="{toolTipMessage}"/>
+	</s:HGroup>
+</s:Group>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:SWFLoader xmlns:mx="http://www.adobe.com/2006/mxml"
+			  scaleContent="false"
+			  init="LoadedInt=setInterval(CheckLoaded,1)">
+
+	<mx:Metadata>
+        [Event(name="onPageChanged", type="Print2Flash.PageChangedEvent")]
+        [Event(name="onVisibleAreaChanged", type="Print2Flash.VisibleAreaEvent")]
+        [Event(name="onZoomChanged", type="Print2Flash.ZoomChangedEvent")]
+        [Event(name="onToolChanged", type="Print2Flash.ToolChangedEvent")]
+        [Event(name="onSelection", type="Print2Flash.Selection")]
+        [Event(name="onLoaded", type="flash.events.Event")]
+        [Event(name="onPageLoaded", type="Print2Flash.PageLoadedEvent")]        
+    </mx:Metadata>
+
+	<mx:Script source="Print2FlashDocHandler.as"/>
+
+</mx:SWFLoader>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: CreateInstituteServersComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	: Swati, Abhirami, Sivaram Sk
+
+This component is used only by the master admin to add/remove servers to be used
+for virtual classroom purposes.
+Only one server can be assigned for each of the following:
+1. Content
+2. Collaboration
+3. Presenter Video
+4. Viewer Video
+5. Desktop Sharing
+-->
+<components:InsidePanel xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+						 width="1000"
+						 height="500"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 fontFamily="Arial"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 title="{instituteServerTitle}"
+>
+
+	<fx:Script source="CreateInstituteServersCompUIHandler.as"/>
+	<!-- Add class server container -->
+	<mx:Canvas left="5"
+			   right="5"
+			   top="5"
+			   bottom="5"
+			   borderColor="#A3D7FF"
+			   borderVisible="true"
+			   borderStyle="solid"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+
+		<!-- Fix for Bug Id 3041 start -->
+		<!--<mx:Label x="10" y="10" width="12" height="18" color="#ED3814" fontFamily="Times New Roman"
+				 fontSize="13" fontWeight="bold" text="*"/>-->
+		<!-- Fix for Bug Id 3041 end -->
+		<!-- Label -->
+		<s:Label x="19"
+				 y="10"
+				 text="{Constants.FMS_DATA_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.FMS_DATA_DISPLAY}"/>
+		<!-- Toggle data list -->
+		<components:ToggleDataListComponent x="19"
+											 y="23"
+											 width="474"
+											 id="compDataServers"
+											 originalDataAC="{allDataServers}"
+											 selectedDataAC="{selectedDataServers}"
+											 originalDataLabelField="serverName"
+											 selectedDataLabelField="serverName"
+											 maxSelection="1000"/>
+
+		<!-- Fix for Bug Id 3041 start -->
+		<!--<mx:Label x="518" y="10" width="12" height="18" color="#ED3814" fontFamily="Times New Roman"
+				 fontSize="13" fontWeight="bold" text="*"/>-->
+		<!-- Fix for Bug Id 3041 end -->
+		<!-- Label -->
+		<s:Label x="527"
+				 y="10"
+				 text="{Constants.CONTENT_SERVER_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.CONTENT_SERVER_DISPLAY}"/>
+
+		<!-- Toggle data list -->
+		<components:ToggleDataListComponent x="518"
+											 y="23"
+											 width="459"
+											 id="compContentServers"
+											 originalDataAC="{allContentServers}"
+											 selectedDataAC="{selectedContentServers}"
+											 originalDataLabelField="serverName"
+											 selectedDataLabelField="serverName"
+											 maxSelection="1000"/>
+
+		<!-- Fix for Bug Id 3041 start -->
+		<!--<mx:Label x="9" y="133" width="12" height="18" color="#ED3814" fontFamily="Times New Roman"
+				  fontSize="13" fontWeight="bold" text="*"/>-->
+		<!-- Fix for Bug Id 3041 end -->
+		<!-- Label -->
+		<s:Label x="18"
+				 y="133"
+				 text="{Constants.FMS_DESKTOP_SHARING_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.FMS_DESKTOP_SHARING_DISPLAY}"/>
+		<!-- Toggle data list -->
+		<components:ToggleDataListComponent x="19"
+											 y="156"
+											 width="474"
+											 id="compDesktopServers"
+											 originalDataAC="{allDesktopSharingServers}"
+											 selectedDataAC="{selectedDesktopSharingServers}"
+											 originalDataLabelField="serverName"
+											 selectedDataLabelField="serverName"
+											 maxSelection="1000"/>
+		<!-- Fix for Bug Id 3041 start -->
+		<!--<mx:Label x="518" y="133" width="12" height="18" color="#ED3814" fontFamily="Times New Roman"
+				 fontSize="13" fontWeight="bold" text="*"/>-->
+		<!-- Fix for Bug Id 3041 end -->
+		<!-- Label -->
+		<s:Label x="527"
+				 y="133"
+				 text="{Constants.FMS_VIEWER_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.FMS_VIEWER_DISPLAY}"/>
+		<!-- Toggle data list -->
+		<components:ToggleDataListComponent x="518"
+											 y="155"
+											 width="459"
+											 id="compViewerServers"
+											 originalDataAC="{allPresenterViewerServers}"
+											 selectedDataAC="{selectedViewerVideoServers}"
+											 originalDataLabelField="serverName"
+											 selectedDataLabelField="serverName"
+											 maxSelection="1000"/>
+		<!-- Fix for Bug Id 3041 start -->
+		<!--<mx:Label x="10" y="263" width="12" height="18" color="#ED3814" fontFamily="Times New Roman"
+				 fontSize="13" fontWeight="bold" text="*"/>-->
+		<!-- Fix for Bug Id 3041 end -->
+		<!-- Label -->
+		<s:Label x="19"
+				 y="263"
+				 text="{Constants.FMS_PRESENTER_DISPLAY}"
+				 toolTip="Select the server which you want to configure as {Constants.FMS_PRESENTER_DISPLAY}"/>
+
+		<!-- Toggle data list -->
+		<components:ToggleDataListComponent x="19"
+											 y="283"
+											 width="473"
+											 id="compPresenterServers"
+											 originalDataAC="{allPresenterVideoServers}"
+											 selectedDataAC="{selectedPresenterVideoServers}"
+											 originalDataLabelField="serverName"
+											 selectedDataLabelField="serverName"
+											 maxSelection="1000"/>
+		<!-- Button for save institute servers details -->
+		<components:ImageButton x="358"
+				  y="416"
+				  width="145"
+				  label="Add Class Servers"
+				  chromeColor="#E0EFFB"
+				  click="saveInstituteServersDetails()"
+				  color="#000000"
+				  cornerRadius="3"/>
+		<!-- Button for close save institute component -->
+		<components:ImageButton x="519"
+				  y="416"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="closeSaveInstituteServersComp()"
+				  color="#000000"
+				  cornerRadius="3"/>
+
+	</mx:Canvas>
+	<!-- Icon for closing save institute container -->
+	<components:WindowCloseImage right="5"
+			 top="-25"
+			 id="imgClose"
+			 click="closeSaveInstituteServersComp()"/>
+</components:InsidePanel>

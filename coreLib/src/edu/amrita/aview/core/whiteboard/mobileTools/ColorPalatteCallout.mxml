@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ColorPalatteCallout.mxml
+Module		: WhiteBoard
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+ColorPalatteCallout component is used to change shapes color.
+
+-->
+
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="100%"
+		   horizontalPosition="end"
+		   creationComplete="init()">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.colorPickerClasses.WebSafePalette;
+			
+			private var wsp:WebSafePalette;
+			
+			/* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
+			static private const contentFill:Array = ["bgFill"];
+			
+			private function init():void {
+				wsp = new WebSafePalette();
+				dataGroup.dataProvider = wsp.getList();
+			}
+			
+			private function blank(item:Object):String
+			{
+				return "";
+			}
+			
+			private function handleEnter():void {
+				close(true, previewColor);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:VGroup id="swatchpanel" left="0" top="0" right="0" bottom="0" >
+		<s:HGroup>
+			<s:Rect id="preview" width="50" height="33" >
+				<s:fill>
+					<s:SolidColor id="previewColor" />
+				</s:fill>
+			</s:Rect>
+			<s:TextInput id="ti" 
+						 width="160" 
+						 change="previewColor.color = uint('0x' + ti.text)"
+						 enter="handleEnter()" 
+						 restrict="0123456789abcdefABCDEF"/>
+		</s:HGroup>
+		<s:Group>
+			<s:Rect left="0" top="0" right="0" bottom="0" width="336" height="204" >
+				<s:fill>
+					<s:SolidColor color="0x0" />
+				</s:fill>
+			</s:Rect>
+			<s:DataGroup id="dataGroup" left="0" top="0" right="0" bottom="0" width="336" height="204" >
+				<s:layout>
+					<s:TileLayout verticalGap="0" horizontalGap="0" requestedColumnCount="20" requestedRowCount="12"/>
+				</s:layout>
+				<s:itemRenderer>
+					<fx:Component>
+						<s:ItemRenderer rollOver="outerDocument.previewColor.color = uint(data); outerDocument.ti.text = data.toString(16)" click="clickHandler(event)">	
+							
+							<fx:Script>
+								<![CDATA[
+									protected function clickHandler(event:MouseEvent):void
+									{
+										outerDocument.close(true, outerDocument.previewColor);
+									}
+								]]>
+							</fx:Script>
+							
+							<s:states>
+								<s:State name="normal" />
+								<s:State name="hovered" />
+								<s:State name="selected" />
+							</s:states>
+							<s:Rect id="swatch" width="16" height="16">
+								<s:fill>
+									<s:SolidColor color="{data}" />
+								</s:fill>
+								<s:stroke>
+									<s:SolidColorStroke color="0xFFFF00" alpha.hovered="1" alpha="0" />
+								</s:stroke>
+							</s:Rect>
+						</s:ItemRenderer>
+					</fx:Component>
+				</s:itemRenderer>
+			</s:DataGroup>
+		</s:Group>
+	</s:VGroup>
+
+</s:Callout>

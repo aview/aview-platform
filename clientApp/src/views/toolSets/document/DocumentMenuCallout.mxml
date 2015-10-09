@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: DocumentMenuCallout.mxml
+Module		: Document Sharing
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+DocumentMenuCallout component is used to,
+
+	1. Load/unload files
+	2. Add/remove annotation
+
+-->
+
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="250"
+		   height="100%"
+		   creationComplete="updateDocList()"
+		   xmlns:AnnotationTool="edu.amrita.aview.core.documentSharing.components.annotations.*">
+	<fx:Declarations>
+		<AnnotationTool:MobileAnnotationTool id="annotationComp"
+											 mouseDownOutside="annotationComp.close()"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			/**
+			 * Static constants for menu items
+			 */
+			private static const DOWNLOAD_DOCUMENT:String="Download Document";
+			private static const UNLOAD_DOCUMENT:String="Unload Document";
+			private static const ALLOW_DOCUMENT:String="Allow Download";
+			private static const DENY_DOWNLOAD:String="Deny Download";
+			private static const PERMISSION_DENIED:String="Download Denied";
+			private static const ANNOTATE:String="Annotation Tools";
+			private static const REMOVE_ANNOTATE:String="Remove Annotation";
+			/**
+			 * Set to true when presenter gives permission to download
+			 */
+			private var isPermissionAllowed:Boolean=false;
+			/**
+			 * Holds document menu list height
+			 */
+			private var docListHeight:Number=0;
+			/**
+			 * Holds presenter menu list items
+			 */
+			[Bindable]
+			private var docMenuForPresenter:ArrayCollection=new ArrayCollection([{label: DOWNLOAD_DOCUMENT, icon: null}, {label: ALLOW_DOCUMENT, icon: null}, {label: UNLOAD_DOCUMENT, icon: null}, {label: ANNOTATE, icon: null}, {label: REMOVE_ANNOTATE, icon: null}]);
+			/**
+			 * Holds viewer menu list items
+			 */
+			[Bindable]
+			private var docMenuForViewer:ArrayCollection=new ArrayCollection([{label: PERMISSION_DENIED, icon: null}]);
+			/**
+			 * @protected
+			 *
+			 * To set the download permission
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function updateDocList():void
+			{
+				//Modify the items based on the permission given by presenter
+				if (FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+				{
+					//If presenter gives permission, set item as DENY_DOWNLOAD
+					//Otherwise set item as ALLOW_DOCUMENT
+					if (isPermissionAllowed)
+					{
+						docMenuForPresenter[1].label=DENY_DOWNLOAD;
+					}
+					else
+					{
+						docMenuForPresenter[1].label=ALLOW_DOCUMENT;
+					}
+					docMenuForPresenter.refresh();
+					docMenuList.dataProvider=docMenuForPresenter;
+				}
+				else
+				{
+					//If presenter gives permission, set item as DOWNLOAD_DOCUMENT
+					//Otherwise set item as PERMISSION_DENIED
+					if (FlexGlobals.topLevelApplication.docComp.isDownloadPermission)
+					{
+						docMenuForViewer[0].label=DOWNLOAD_DOCUMENT;
+					}
+					else
+					{
+						docMenuForViewer[0].label=PERMISSION_DENIED;
+					}
+					docMenuForViewer.refresh();
+					docMenuList.dataProvider=docMenuForViewer;
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To change the menu item
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function docMenuListChangeHandler(event:MouseEvent):void
+			{
+				switch (event.currentTarget.selectedItem.label)
+				{
+					//if selected item is "DOWNLOAD_DOCUMENT", download documenment to device directory
+					case DOWNLOAD_DOCUMENT:
+					{
+						FlexGlobals.topLevelApplication.docComp.downloadDocumentToLocal(FlexGlobals.topLevelApplication.docComp.remoteFileName, FlexGlobals.topLevelApplication.docComp.remoteFilePath);
+						this.close();
+						if (FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE){
+							FlexGlobals.topLevelApplication.docTool.btnPresenterMenu.enabled=true;
+						}else{
+							//FlexGlobals.topLevelApplication.docTool.btnViewerMenu.enabled=true;
+						}
+						break;
+					}
+					//if selected item is "PERMISSION_DENIED", close the call-out
+					case PERMISSION_DENIED:{
+						this.close();
+						if (FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE){
+							FlexGlobals.topLevelApplication.docTool.btnPresenterMenu.enabled=true;
+						}else{
+							//FlexGlobals.topLevelApplication.docTool.btnViewerMenu.enabled=true;
+						}
+						break;
+					}
+					//if selected item is "UNLOAD_DOCUMENT", to unload the document from the container
+					case UNLOAD_DOCUMENT:
+					{
+						FlexGlobals.topLevelApplication.docComp.unloadDocument();
+						this.close();
+						break;
+					}
+					//if selected item is "ALLOW_DOCUMENT", allow user to download document
+					case ALLOW_DOCUMENT:
+					{
+						if (FlexGlobals.topLevelApplication.docComp.p2fContainer.content != null && FlexGlobals.topLevelApplication.docComp.p2fContainer.visible == true)
+						{
+							isPermissionAllowed=true;
+							docMenuForPresenter[1].label=DENY_DOWNLOAD;
+							docMenuForPresenter.refresh();
+							FlexGlobals.topLevelApplication.usersConnection.call("downloadPermission", null, {permission: ALLOW_DOCUMENT});
+							break;
+						}
+					}
+					//if selected item is "DENY_DOWNLOAD", restrict user to download document
+					case DENY_DOWNLOAD:
+					{
+						if (FlexGlobals.topLevelApplication.docComp.p2fContainer.content != null && FlexGlobals.topLevelApplication.docComp.p2fContainer.visible == true)
+						{
+							isPermissionAllowed=false;
+							docMenuForPresenter[1].label=ALLOW_DOCUMENT;
+							docMenuForPresenter.refresh();
+							FlexGlobals.topLevelApplication.usersConnection.call("downloadPermission", null, {permission: "Deny download permission"});
+							break;
+						}
+					}
+					//if selected item is "ANNOTATE", open annotation component
+					case ANNOTATE:
+					{
+						annotationComp.open(this);
+						annotationComp.move(this.x - annotationComp.width, 4 * (this.height / 5));
+						annotationComp.addEventListener("onAnnotationToolSelected", FlexGlobals.topLevelApplication.docComp.annotationStart);
+						break;
+					}
+					//if selected item is "REMOVE_ANNOTATE", close annotation component
+					case REMOVE_ANNOTATE:
+					{
+						if (FlexGlobals.topLevelApplication.docComp.uiComp && FlexGlobals.topLevelApplication.docComp.uiComp.hasEventListener(MouseEvent.MOUSE_DOWN) && FlexGlobals.topLevelApplication.docComp.userRole == Constants.PRESENTER_ROLE)
+						{
+							FlexGlobals.topLevelApplication.docComp.uiComp.removeEventListener(MouseEvent.MOUSE_DOWN, FlexGlobals.topLevelApplication.docComp.mouseDownListener);
+						}
+						FlexGlobals.topLevelApplication.docComp.removeAnnotationTools();
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+			/**
+			 * @public
+			 *
+			 * To change the height of menu list based on the userRole.
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function changeDocListHeight():void
+			{
+				//If user is viewer ,decrease the height of document menu
+				//Otherwise assign default size
+				if (FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.VIEWER_ROLE)
+				{
+					if (docMenuList != null)
+					{
+						docListHeight=docMenuList.height;
+						docMenuList.height=Math.round(this.height / 5);
+					}
+				}
+				else
+				{
+					if (docMenuList != null)
+					{
+						if (docListHeight != 0)
+						{
+							docMenuList.percentHeight=docListHeight;
+						}
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Rect width="100%"
+			height="100%"
+			x="0"
+			y="0">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+	</s:Rect>
+	<!--List to display menu items-->
+	<s:Group width="100%"
+			 height="100%">
+		<s:HGroup width="100%"
+				  height="100%"
+				  horizontalAlign="center"
+				  verticalAlign="middle">
+			<s:List id="docMenuList"
+					left="0"
+					right="0"
+					top="0"
+					bottom="0"
+					verticalScrollPolicy="auto"
+					horizontalScrollPolicy="auto"
+					borderVisible="false"
+					alternatingItemColors="[0x071124, 0x071124]"
+					color="0xFFFFFF"
+					click="docMenuListChangeHandler(event)"
+					contentBackgroundColor="0x071124"
+					selectionColor="0x5c6269"
+					fontSize="14"
+					fontWeight="bold"
+					width="100%"
+					height="100%"
+					creationComplete="changeDocListHeight()">
+				<s:itemRenderer>
+					<fx:Component>
+						<s:IconItemRenderer iconField="icon"
+											height="100%"
+											width="100%"
+											mouseOver="this.alpha=1.0"
+											mouseOut="this.alpha=.7"
+											alpha=".7"/>
+					</fx:Component>
+				</s:itemRenderer>
+			</s:List>
+		</s:HGroup>
+	</s:Group>
+</s:Callout>

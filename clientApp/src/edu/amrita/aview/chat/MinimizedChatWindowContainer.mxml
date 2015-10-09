@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!--
+VPCR: Add file description 
+-->
+<!---
+
+File		: ChatMembersListItemRenderer.mxml
+Module		: chat
+Developer(s): Bri.Radha
+Reviewer(s)	: Bri.Radha,Vishnupreethi K
+
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		creationComplete="onCreationComplete()"> <!---->
+	
+	<s:List id="lst" left="0" bottom="0" width="100%"
+			dragEnabled="true" dragMoveEnabled="true" dropEnabled="true"
+			alternatingItemColors="[0x2AAAFF, 0x2AAAFF]"
+			dataProvider="{minimizedChatWindows}"
+			itemRenderer="edu.amrita.aview.chat.MinimizedChatWindowListItemRenderer"
+			contentBackgroundAlpha="0" borderVisible="false" horizontalScrollPolicy="off">
+		<s:layout>
+			<!--<s:TileLayout/>-->
+			<s:HorizontalLayout/>
+		</s:layout>
+	</s:List>
+	<!--<s:TileGroup id="lst" left="0" bottom="0" width="100%"
+				 orientation="rows"
+				 requestedRowCount="1"
+				 columnWidth="{lst.width/minimizedChatWindows.length}">
+		<s:DataGroup  dataProvider="{minimizedChatWindows}"/>
+	
+	</s:TileGroup>-->
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			// AKCR: please create a companion ActionScript file
+			import edu.amrita.aview.core.shared.events.ChatEvent;
+			//PNCR: API.
+			//changed EventMap point to core/share/eventmap. It will change after create the swc. 
+			import edu.amrita.aview.core.shared.eventmap.EventMap;
+			
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			private var minimizedChatWindows:ArrayCollection = new ArrayCollection;
+			private var _eventMap:EventMap = null;
+			
+			/**
+			 * @private
+			 */ 
+			/**
+			 * VPCR: Add function description for all functions */ 
+			
+			private function onCreationComplete():void
+			{
+				applicationType::DesktopWeb{
+					lst.addEventListener(MouseEvent.CLICK, clickHandler);
+					_eventMap.registerMapListener(ChatEvent.MINIMIZE, minimizeHandler);
+				}
+			}
+			/**
+			 * @private
+			 * @param event of type ChatEvent
+			 */
+			
+			private function minimizeHandler(event:ChatEvent):void
+			{
+				applicationType::DesktopWeb{
+					var chatWindow:ChatTitleWindow = event.data.window as ChatTitleWindow;
+					var chatSessionId:Number = event.data.chatSessionId as Number;
+					PopUpManager.removePopUp(chatWindow);
+					add(chatWindow);
+					_eventMap.registerMapListener(ChatEvent.RESTORED, removeHandler, chatSessionId+"");
+				}
+			}
+			/**
+			 * @private
+			 */
+			applicationType::DesktopWeb{
+				private function add(win:ChatTitleWindow):void
+				{
+					minimizedChatWindows.addItem(win);
+				}
+				/**
+				 * @private
+				 * @param event of type ChatEvent
+				 */ 
+				private function removeHandler(event:ChatEvent):void
+				{
+					remove(event.data as ChatTitleWindow);
+				}
+				/**
+				 * @private
+				 */
+				private function remove(win:ChatTitleWindow):void
+				{
+					for (var i:int = 0; i < minimizedChatWindows.length; i++)
+					{
+						if (minimizedChatWindows[i] == win)
+						{
+							minimizedChatWindows.removeItemAt(i);
+							break;
+						}
+					}
+					minimizedChatWindows.refresh();
+				}
+				/**
+				 * @private
+				 * @param event of type Event
+				 */ 
+				private function clickHandler(event:Event):void
+				{
+					if (event.target.id == "restoreButton")
+					{
+						var win:ChatTitleWindow = lst.selectedItem;
+						remove(win);
+					}
+				}
+			}
+			public function set eventMap(value:EventMap):void
+			{
+				_eventMap = value;
+			}
+
+			
+		]]>
+	</fx:Script>
+</s:Group>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:Canvas width="100%"
+		   height="100%"
+		   xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*"
+		   xmlns:xt="library://ns.tink.ws/flex/mx"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:components1="edu.amrita.aview.core.shared.components.*">
+
+	<fx:Script source="LectureCompUIHandler.as"/>
+	<!--Fix for Bug#20297,20288-->	
+	<s:DataGrid id="dgLectures" top="100" width="100%" height="100%" chromeColor="#E0EFFB"
+				dataProvider="{lectures}" doubleClickEnabled="false" editable="true" 
+				selectionMode="singleRow" sortableColumns="true" textAlign="left">
+		<s:columns>
+			<s:ArrayList>
+				
+				<s:GridColumn headerText="Id"
+							  minWidth="50"
+							  dataField="lectureId"
+							  editable="false"/>
+				
+				<s:GridColumn headerText="Lecture Name"
+							  minWidth="150"
+							  dataField="displayName"
+							  editable="false"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('lectureName')}"/>
+				
+				<s:GridColumn headerText="Class Name"
+							  minWidth="150"
+							  dataField="className"
+							  editable="false"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('className')}"/>
+				
+				<s:GridColumn headerText="Course Name"
+							  minWidth="150"
+							  dataField="courseName"
+							  editable="false"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('courseName')}"/>
+				
+				<s:GridColumn headerText="Institute Name"
+							  minWidth="150"
+							  dataField="instituteName"
+							  editable="false"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+				<!--Fix for Bug#14832-->
+				<s:GridColumn headerText="Date"
+							  minWidth="80"
+							  dataField="startDate"
+							  editable="false"
+							  sortCompareFunction="sortStartDate">
+				
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer>
+								<!--Fix for Bug#14690-->
+								<components1:DateFormatter fieldName="startDate" data = "{data}"/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
+				
+				<!--Fix for Bug#14832-->
+				<s:GridColumn headerText="Start Time"
+							  minWidth="80"
+							  dataField="startTime"
+							  editable="false"
+							  sortCompareFunction="sortStartTime">
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer>
+								<!--Fix for Bug#14690-->
+								<components1:TimeFormatter fieldName="startTime" data = "{data}"/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
+				
+				<!--Fix for Bug#14832-->
+				<s:GridColumn headerText="End Time"
+							  minWidth="80"
+							  dataField="endTime"
+							  editable="false"
+							  sortCompareFunction="sortEndTime">
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer>
+								<!--Fix for Bug#14690-->
+								<components1:TimeFormatter fieldName="endTime" data = "{data}"/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
+				
+				<s:GridColumn headerText="Keywords"
+							  minWidth="150"
+							  dataField="keywords"
+							  editable="false"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('keywords')}"/>
+				<!--Report generation for people count :Start-->
+				<!-- Fix for Bug #20312 -->
+				<s:GridColumn headerText="Reports"
+							  id="reports"
+							  minWidth="75"
+							  dataField="weekDaysName"
+							  editable="false"
+							  visible="{(ClassroomContext.userVO.role == Constants.STUDENT_TYPE) ? false : true}" >
+
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer >
+								<!--Fix for Bug#20297,20288,20286-->
+								<s:Button label="Download"  click="{outerDocument.checkIfClassIsConducted()}" top="5" left="5" toolTip="Download"/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
+				<!--Report generation for people count :End-->
+					
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+	
+	<!-- Fixed Bug 2447
+	1. Added busy cursor while creating,editing,searching a class
+	-->
+	
+	<mx:Canvas id="canButtons"
+			   left="2"
+			   right="2"
+			   top="30"
+			   height="70"
+			   borderStyle="none"
+			   horizontalScrollPolicy="off"
+			   verticalScrollPolicy="off">
+		
+		<components:ImageButton id="btnCreate"
+				  y="40"
+				  left="10"
+				  width="90"
+				  height="22"
+				  label="Create"
+				  chromeColor="#E0EFFB"
+				  click="createLecture()"
+				  cornerRadius="3"
+				  icon="{createIcon}"
+				  toolTip="Create"/>
+		
+		<components:ImageButton id="btnUpdate"
+				  y="40"
+				  left="110"
+				  width="90"
+				  height="22"
+				  label="Edit"
+				  chromeColor="#E0EFFB"
+				  click="editLecture()"
+				  cornerRadius="3"
+				  icon="{updateIcon}"
+				  toolTip="Edit"/>
+		
+		<components:ImageButton id="btnDelete"
+				  y="40"
+				  left="210"
+				  width="100"
+				  height="22"
+				  label="Delete"
+				  chromeColor="#E0EFFB"
+				  click="deleteLecture()"
+				  cornerRadius="3"
+				  icon="{deleteIcon}"
+				  toolTip="Delete"/>
+		
+		<mx:Button id="btnDeleteRecording"
+				   y="40"
+				   left="320"
+				   width="160"
+				   height="22"
+				   label="Delete Recording"
+				   chromeColor="#E0EFFB"
+				   click="deleteRecording()"
+				   cornerRadius="3"
+				   toolTip="Delete Recording"/>
+		
+		<s:Label right="512"
+				 top="7.5"
+				 text="Class Name :"/>
+		<!--<Sparkcontrols:AutoComplete id="cmbClasses" right="10" top="5" width="500" height="25"
+								  dataProvider="{classesAC}" labelField="classNameInstituteName"/>-->
+		
+		<xt:FilterComboBox id="cmbClasses"
+						   right="10"
+						   top="5"
+						   width="500"
+						   height="25"
+						   dataProvider="{aviewClasses}"
+						   labelField="classNameInstituteName"
+						   dropdownFactory="{GCLMContext.dropdownFactory}"
+						   selectSingleMatch="true"
+						   prompt=""
+						   removeFilterOnSelection="true"/>
+		
+		<components:ImageButton id="btnSearchLecture"
+				  right="100"
+				  top="40"
+				  width="80"
+				  height="25"
+				  label="Search"
+				  chromeColor="#E0EFFB"
+				  click="searchLectures()"
+				  cornerRadius="3"/>
+		
+		<components:ImageButton id="btnResetLecture"
+				  right="10"
+				  bottom="5"
+				  width="80"
+				  height="25"
+				  label="Reset"
+				  chromeColor="#E0EFFB"
+				  click="clearSearch()"
+				  cornerRadius="3"/>
+	</mx:Canvas>
+	
+	<!--Fix for Bug #16962-->
+	<s:Label top="5"
+			 width="100%"
+			 color="#0839C6"
+			 fontSize="15"
+			 fontWeight="bold"
+			 horizontalCenter="0"
+			 text="Filter for Lecture"
+			 textAlign="center"/>
+</mx:Canvas>
+

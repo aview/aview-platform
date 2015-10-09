@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: profileMenuComponent.mxml
+Module		: Common
+Developer(s): Sivaram.S.K
+Reviewer(s)	: Monisha Mohanan,Veena Gopal K.V
+
+-->
+<!-- VGCR:- Filename should be UpperCamelCase-->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="105"
+		   height="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp?43:24}"
+		   borderAlpha="1"
+		   dropShadowVisible="true"
+		   backgroundColor="#ffffff"
+		   creationComplete="component_creationCompleteHandler(event)">
+	<!-- Script to include handler -->
+	<fx:Script source="profileMenuComponentHandler.as"/>
+	<s:VGroup width="100%"
+			  gap="1"
+			  paddingBottom="2"
+			  paddingLeft="2"
+			  paddingRight="2"
+			  paddingTop="2"
+			  verticalAlign="top"
+			  verticalCenter="0">
+		<!-- Label to show classroom exit menu -->
+		<s:Label id="menuExitClassroom"
+				 width="100%"
+				 height="18"
+				 visible="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp}"
+				 includeInLayout="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp}"
+				 paddingBottom="2"
+				 paddingLeft="5"
+				 paddingRight="2"
+				 paddingTop="0"
+				 rollOut="{menuExitClassroom.setStyle('backgroundColor','#FFFFFF')}"
+				 rollOver="{menuExitClassroom.setStyle('backgroundColor','#99D0FF')}"
+				 text="Exit Session"
+				 buttonMode="true"
+				 useHandCursor="true"
+				 verticalAlign="middle"
+				 click="FlexGlobals.topLevelApplication.mainApp.initiateExit('exitClassroom')"/>
+		<!-- Label to show menu logout -->
+		<s:Label id="menuLogout"
+				 width="100%"
+				 height="18"
+				 paddingBottom="2"
+				 paddingLeft="5"
+				 paddingRight="2"
+				 paddingTop="3"
+				 text="Log out"
+				 rollOut="{menuLogout.setStyle('backgroundColor','#ffffff')}"
+				 rollOver="{menuLogout.setStyle('backgroundColor','#99D0FF')}"
+				 buttonMode="true"
+				 useHandCursor="true"
+				 verticalAlign="middle"
+				 click="FlexGlobals.topLevelApplication.mainApp.initiateExit('logout')"/>
+	</s:VGroup>
+
+</mx:Canvas>

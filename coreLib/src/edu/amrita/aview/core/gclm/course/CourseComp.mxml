@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+File		: CourseComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	: Vinod Kumar P
+
+Name of Author(s): Ramesh G, Sethu Subramanian N
+
+This component displays all the details of the courses for an Institute. AVIEW Course creation
+depends on Institute. Each aview course belongs to an Insitute.
+
+Based on the logged in user credentials this component behaves as follows:
+Master Admin: Can view all courses, Create, edit and Delete of courses for any institute.
+
+Institute Administrators: Can view all courses belongs to their institute/child institutes.
+Create, Edit and Delete of courses are also possible within their institute boundary.
+
+Moderator, Presenter and Viewer: Can view only those courses for which they have been registered.
+However they can search for courses available with other institutes, for which they
+can register if they are interested.
+-->
+<!-- Container -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:xt="library://ns.tink.ws/flex/mx"
+		   xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+		   width="100%"
+		   height="100%" xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<mx:Script source="CourseCompUIHandler.as"/>
+	<!-- Border Container -->
+	<s:BorderContainer top="0"
+					   fontFamily="Arial"
+					   fontSize="12"
+					   width="100%"
+					   height="100%"
+					   backgroundColor="#e0effb">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center"
+							  gap="8"/>
+		</s:layout>
+		<!-- Label to show Filter for Course -->
+		<!-- Fix for Bug#16960-->
+		<s:Label width="100%" paddingTop="5"
+				 textAlign="center"
+				 text="Filter for Course"
+				 fontSize="15"
+				 fontWeight="bold"
+				 color="#0839C6"/>
+		<!-- Container -->
+		<mx:Canvas width="100%"
+				   height="100">
+			<!-- Label to show course name -->
+			<s:Label id="courseNameLabel"
+					 right="495"
+					 bottom="72.5"
+					 text="Course Name : "/>
+			<!-- Text input to accepts keywords of name search -->
+			<s:TextInput id="courseNameText"
+						 right="295"
+						 bottom="70"
+						 width="200"
+						 height="25"
+						 maxChars="99"
+						 restrict="{GCLMContext.allowedCharactersForName}"/>
+			<!-- Label to show course code -->
+			<s:Label id="courseCodeLabel"
+					 right="210"
+					 bottom="72.5"
+					 text="Course Code : "/>
+			<!-- Text input to accepts keywords of code search -->
+			<s:TextInput id="courseCodeText"
+						 right="10"
+						 bottom="70"
+						 width="200"
+						 restrict="a-zA-Z0-9_ "/>
+			<!-- Label to show institute name -->
+			<s:Label id="lblInstituteName"
+					 right="410"
+					 bottom="37.5"
+					 text="Institute Name : "/>
+			<!--<Sparkcontrols:AutoComplete id="cmbInstitute" right="10" bottom="35" width="400"
+										height="25" dataProvider="{institutesAC}"
+										labelField="instituteName"/>-->
+			<!-- Filter combo box for institute -->
+			<xt:FilterComboBox id="cmbInstitute"
+							   right="10"
+							   bottom="35"
+							   width="400"
+							   height="25"
+							   dataProvider="{GCLMContext.allCourseOfferingInstitutesAC}"
+							   dropdownFactory="{GCLMContext.dropdownFactory}"
+							   labelField="instituteName"
+							   selectSingleMatch="true"
+							   prompt=""
+							   removeFilterOnSelection="true"/>
+			<!-- Create Button -->
+			<components:ImageButton id="createCourseButton"
+					  left="10"
+					  bottom="5"
+					  width="90"
+					  height="22"
+					  label="Create"
+					  chromeColor="#E0EFFB"
+					  click="createCourse()"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{createIcon}"
+					  toolTip="Create"/>
+			<!-- Edit Button --> 
+			<components:ImageButton id="editCourseButton"
+					  left="110"
+					  bottom="5"
+					  width="90"
+					  height="22"
+					  label="Edit"
+					  chromeColor="#E0EFFB"
+					  click="editCourse()"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{updateIcon}"
+					  toolTip="Edit"/>
+			<!-- Delete Button -->
+			<components:ImageButton id="deleteCourseButton"
+					  left="210"
+					  bottom="5"
+					  width="90"
+					  height="22"
+					  label="Delete"
+					  chromeColor="#E0EFFB"
+					  click="prepareForDeleteCourse()"
+					  color="#000000"
+					  cornerRadius="3"
+					  icon="{deleteIcon}"
+					  toolTip="Delete"/>
+			<!-- Search Button -->
+			<components:ImageButton id="searchButton"
+					  right="100"
+					  bottom="5"
+					  width="80"
+					  label="Search"
+					  chromeColor="#E0EFFB"
+					  click="searchCourses()"
+					  color="#000000"
+					  cornerRadius="3"/>
+			<!-- Reset Button -->
+			<components:ImageButton id="clearButton"
+					  right="10"
+					  bottom="5"
+					  width="80"
+					  label="Reset"
+					  chromeColor="#E0EFFB"
+					  click="clearSearch()"
+					  color="#000000"
+					  cornerRadius="3"/>
+		</mx:Canvas>
+		<!-- Datagrid for course -->
+		<!--Fix for Bug#8672-->
+		<s:DataGrid id="dgCourses"
+					visible="true"
+					width="100%"
+					height="90%"
+					chromeColor="#E0EFFB"
+					dataProvider="{activeCourses}"
+					textAlign="left">
+			<s:columns>
+				<s:ArrayList>
+					<!-- Grid column for course id -->
+					<s:GridColumn headerText="Id"
+								  minWidth="30"
+								  maxWidth="70"
+								  dataField="courseId"
+								  editable="false"/>
+					<!-- Grid column for course name -->
+					<s:GridColumn headerText="Course Name"
+								  minWidth="350"
+								  dataField="courseName"
+								  editable="false"
+								  sortable="true"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('courseName')}"/>
+					<!-- Grid column for course code -->
+					<s:GridColumn headerText="Course Code"
+								  minWidth="350"
+								  dataField="courseCode"
+								  editable="false"
+								  sortable="true"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('courseCode')}"/>
+					<!-- Grid column for institute name -->
+					<s:GridColumn headerText="Institute Name"
+								  minWidth="400"
+								  dataField="instituteName"
+								  editable="false"
+								  sortable="true"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+	</s:BorderContainer>
+</mx:Canvas>
+

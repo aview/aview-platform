@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   horizontalScrollPolicy="off"
+		   verticalScrollPolicy="off"
+		   width="125"
+		   height="100" borderVisible="false"
+		   backgroundColor="#ECEFF0"
+		   borderColor="blue">
+	<mx:Grid width="50%" height="80%" backgroundColor="#ECEFF0" dropShadowVisible="false"
+			 horizontalCenter="0" horizontalGap="10" paddingBottom="2" paddingLeft="5"
+			 paddingRight="2" paddingTop="2" verticalCenter="0" verticalGap="5">
+		
+		<mx:GridRow width="100%" height="100%" backgroundColor="#ECEFF0" dropShadowVisible="false">
+			<mx:GridItem>
+				<mx:Label text="{data.pageno}"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%" backgroundColor="#FFFFFF" borderColor="blue"
+						 horizontalAlign="center" verticalAlign="middle">
+				<mx:Image width="90"
+						  height="90"
+						  source="{data.filepath}"
+						  completeEffect="Fade"/>
+			</mx:GridItem>
+			<mx:GridItem>
+				<mx:Spacer/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+</mx:Canvas>

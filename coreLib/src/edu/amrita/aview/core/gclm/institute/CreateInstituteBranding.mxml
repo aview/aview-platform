@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: CreateInstituteBranding.mxml
+Module		: GCLM
+Developer(s): Ramesh G
+Reviewer(s)	: Swati, Abhirami, Sivaram SK
+
+This component is used only by the master admin to create/update an institute
+
+-->
+<components1:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:fileManager="edu.amrita.aview.core.shared.components.fileManager.*"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 width="690"
+						 height="300"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 title="{instituteBrandingTitle}"
+						 xmlns:components1="edu.amrita.aview.core.shared.components.*">
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+
+	<fx:Script source="CreateInstituteBrandingUIHandler.as"/>
+	<!-- Container for uploading logo and institute style -->
+	<mx:Canvas width="100%"
+			   height="100%"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- Label to show institute logo -->
+		<s:Label x="52"
+				 y="25"
+				 text="Insitute Logo : "/>
+		<fileManager:SingleFileUpload id="uplLogo"
+									  y="13"
+									  right="20"
+									  fileFilter="*.jpg;*.bmp;*.gif;*.png;"
+									  fileFilterTitle="Please choose logo"
+									  parentFolder="InstituteBrandings/{instituteId}"/>
+		<!-- Label to show institute style sheet -->
+		<s:Label left="20"
+				 top="103"
+				 text="Insitute Style Sheet : "/>
+		<fileManager:SingleFileUpload id="uplStyle"
+									  y="90"
+									  right="20"
+									  fileFilter="*.swf;"
+									  fileFilterTitle="Please choose stylesheet"
+									  parentFolder="InstituteBrandings/{instituteId}"/>
+		<!-- Button to save institute branding -->
+		<components:ImageButton bottom="20"
+				  label="Save"
+				  chromeColor="#E0EFFB"
+				  click="saveInstituteBranding()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="-50"/>
+		<!-- Button to remove institute branding component -->
+		<components:ImageButton bottom="20"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="removeInstituteBrandingComp()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="50"/>
+
+	</mx:Canvas>
+	<!-- Remove institute branding icon -->
+	<components:WindowCloseImage right="5"
+			 top="-25"
+			 id="imgClose"
+			 click="removeInstituteBrandingComp()"/>
+</components1:InsidePanel>

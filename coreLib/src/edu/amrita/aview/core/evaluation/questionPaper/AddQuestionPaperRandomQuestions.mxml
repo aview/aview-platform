@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: AddQuestionPaperRandomQuestions.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to add 'Random' pattern type question paper question to question paper .
+User selects the 'Random' qpq from the list and adds it to the respective question paper .
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:Extended="edu.amrita.aview.core.evaluation.components.Extended.*"
+						 width="881"
+						 height="416"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#FFFFFF"
+						 creationPolicy="all"
+						 dropShadowVisible="false"
+						 focusColor="#A9F9A0"
+						 fontFamily="Arial"
+						 initialize="{initAddQPRandomQuestions()}"						 
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:checkBox="edu.amrita.aview.core.shared.components.checkBox.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<!--script to include handler-->
+	<fx:Script source="AddQuestionPaperRandomQuestionsUIHandler.as"/>
+	<!--Fix for Bug#16340-->
+	<mx:VBox id="vBoxCanvas1"
+			 y="2"
+			 right="5"
+			 width="100%"
+			 height="382" horizontalAlign="center"
+			 horizontalScrollPolicy="off"
+			 paddingLeft="12"
+			 paddingRight="3">
+		<s:Label height="14"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 text="Random Questions"
+				 verticalAlign="middle" color="#000000"/>
+		<mx:HBox paddingBottom="10"
+				 chromeColor="#E0EFFB">
+			<!-- Button to Add Random question-->
+			<!--Fix for Bug#16341-->
+			<components:ImageButton width="180"
+					  label="Add Random Questions"
+					  click="{addRandomQuestion()}"
+					  fontFamily="Arial"
+					  fontSize="12"
+					  fontWeight="normal" color="#000000" cornerRadius="3"/>
+			<!-- Currently Edit and Delete random questions option not used-->
+			<!-- Button to Edit Selected Question-->
+			<!--<components1:ImageButton width="180"
+					  label="Edit Selected Question"
+					  click="{editRandomQuestion()}"
+					  fontFamily="Arial"
+					  fontSize="12"
+					  fontWeight="normal"/>-->
+			<!-- Button to Delete Selected Question-->
+			<!--<components1:ImageButton width="180"
+					  label="Delete Selected Question(s)"
+					  click="{deleteRandomQuestions()}"
+					  fontFamily="Arial"
+					  fontSize="12"
+					  fontWeight="normal"/>-->
+		</mx:HBox>
+		<!-- Datagrid for displaying random questions -->
+		<checkBox:CheckBoxDataGrid id="dgRandomQuestions"
+								   width="861"
+								   height="255"
+								   allowMultipleSelection="true"
+								   dataProvider="{qpRandomQuestions}"
+								   verticalAlign="middle"
+								   textAlign="left"
+								   wordWrap="true"
+								   chromeColor="#E0EFFB"
+								   focusEnabled="true">
+			<checkBox:columns>
+				<!-- The header column -->
+				<checkBox:CheckBoxHeaderColumn id="chkHeader"
+											   width="30"
+											   click="{toggleSelection()}"
+											   editable="false"
+											   headerRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxHeaderRenderer"
+											   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxRenderer"/>
+				<!-- Column for category name -->
+				<mx:DataGridColumn minWidth="150"
+								   dataField="qbCategoryName"
+								   headerText="Category"
+								   paddingLeft="10"
+								   wordWrap="true"/>
+				<!-- Column for subcategory name -->
+				<mx:DataGridColumn minWidth="150"
+								   dataField="qbSubcategoryName"
+								   headerText="Subcategory"
+								   paddingLeft="10"/>
+				<!-- Column for difficulty level name -->
+				<mx:DataGridColumn minWidth="150"
+								   dataField="qbDifficultyLevelName"
+								   headerText="Difficulty Level"
+								   paddingLeft="10"/>
+				<!-- Column for question type name --> 
+				<mx:DataGridColumn minWidth="150"
+								   dataField="qbQuestionTypeName"
+								   headerText="Question Type"
+								   paddingLeft="10"/>
+				<!-- Column for nos. of random questions -->
+				<mx:DataGridColumn width="70"
+								   minWidth="150"
+								   dataField="numRandomQuestions"
+								   headerText="No. of Questions"/>
+				<!-- Column for marks -->
+				<mx:DataGridColumn width="50"
+								   minWidth="50"
+								   dataField="marks"
+								   headerText="Marks"/>
+			</checkBox:columns>
+		</checkBox:CheckBoxDataGrid>
+		<mx:HBox width="100%"
+				 horizontalCenter="0"
+				 paddingBottom="10"
+				 paddingTop="10"
+				 chromeColor="#E0EFFB"
+				 verticalCenter="0"
+				 horizontalAlign="center">
+			<!-- Add button-->
+			<components:ImageButton id="btnAdd"
+					  width="150"
+					  label="Add to Question Paper"
+					  horizontalCenter="0"
+					  fontFamily="Arial"
+					  fontSize="12"
+					  fontWeight="normal"
+					  click="btnAddClickHandler(event)" color="#000000" cornerRadius="3"/>
+			<!-- Close button-->
+			<components:ImageButton width="150"
+					  id="btnClose"
+					  label="Close"
+					  click="{closeAddQPRandomQuestions()}"
+					  fontFamily="Arial"
+					  fontSize="12"
+					  fontWeight="normal" color="#000000" cornerRadius="3"/>
+		</mx:HBox>
+	</mx:VBox>
+</components:InsidePanel>

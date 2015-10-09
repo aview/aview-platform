@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--//RGCR: This class can be renamed as ClassroomContainer.mxml, as it acts as container to Single or Mulitple comps-->
+<!--//RGCR: The code related to Classroom logic should be moved to an as file -->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx" borderVisible="false"
+				   xmlns:toggleSwitch="edu.amrita.aview.core.shared.components.toggleSwitch.*"
+				   width="100%" height="100%" backgroundAlpha="0" backgroundColor="#e0effb">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.util.StringUtility;
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<!--#Issue #297 START -->
+
+		<mx:DateFormatter id="DateDisplay" formatString="DD/MM/YYYY"/>
+
+		<s:GlowFilter id="glowBtn" blurX="30" blurY="30" color="#FA9B5C" inner="true"/>
+		<s:AnimateFilter id="glowEffect" bitmapFilter="{glowBtn}" duration="600"
+						 repeatBehavior="reverse" repeatCount="5">
+			<s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1"/>
+		</s:AnimateFilter>
+		<s:GlowFilter id="unglowBtn" blurX="30" blurY="30" color="#dddddd" inner="false"/>
+		<s:AnimateFilter id="unglowEffect" bitmapFilter="{unglowBtn}" duration="600"
+						 repeatBehavior="reverse" repeatCount="5">
+			<s:SimpleMotionPath property="alpha" valueFrom="1" valueTo="0"/>
+		</s:AnimateFilter>
+
+		<mx:Resize id="settingsListClose" heightFrom="{settingsList.height}" heightTo="0"
+				   target="{settingsList}"/>
+		<mx:Resize id="settingsListOpen" heightFrom="0" heightTo="130" target="{settingsList}"/>
+
+	</fx:Declarations>
+
+	<!--#Issue #297 END -->
+	<fx:Style source="assets/styles/styles.css"/>
+	<fx:Script source="Video_ScriptCode.as"/>
+	<fx:Script source="Users.as"/>
+	<fx:Script source="Icons.as"/>
+	<fx:Script source="../gclm/GCLMIcons.as"/>
+	<fx:Script source="../video/VideoIcons.as"/>
+	<fx:Script source="DesktopSharingModule.as"/>
+	<fx:Script source="../desktopSharing/ApplicationSharingModule.as"/>
+
+	<fx:Script source="ClassroomComponentHandler.as"/>
+
+	<mx:Canvas id="Classroom_canvas" width="100%" height="100%" creationPolicy="all">
+		<s:List id="appList" visible="false" width="0" height="0" doubleClickEnabled="true"
+				includeInLayout="false" itemRenderer="edu.amrita.aview.core.entry.IconRenderer">
+		</s:List>
+		<mx:Canvas id="classroomContainer" width="100%" height="100%"
+				   creationPolicy="all">
+		</mx:Canvas>
+		<!--<mx:Canvas id="hbox_statusbar" x="0" bottom="0" width="100%" height="24" borderVisible="false"
+				   borderColor="#000000" borderStyle="solid" creationPolicy="all">
+			<mx:HBox id="connectionStatusbar" left="0" bottom="0" height="100%" horizontalGap="5"
+					 verticalAlign="middle">
+				<s:Label id="usersStatus" color="#c10505" fontSize="14" verticalAlign="middle"/>
+				<s:Label id="videoStatus" color="#c10505" fontSize="14" verticalAlign="middle"/>
+				<s:Label id="ViewerStatus" color="#c10505" fontSize="14" verticalAlign="middle"/>
+			</mx:HBox>
+			<mx:HBox id="lectureStatusBar" x="{connectionStatusbar.x+connectionStatusbar.width}"
+					 height="100%" horizontalGap="5" verticalAlign="middle">
+				<s:Label id="courseNameLabel" color="#0505c1" fontSize="14" visible="false"
+						 text="{'Course :' + StringUtility.trimString(ClassroomContext.course.courseName, 40)}"
+						 verticalAlign="middle"/>
+				<s:Label id="lectureNameLabel" color="#0505c1" fontSize="14" visible="false"
+						 text="{'Lecture : '+StringUtility.trimString(ClassroomContext.lecture.displayName,40)}"
+						 verticalAlign="middle"/>
+			</mx:HBox>
+			<s:Label id="bandwidthStatus" right="0" color="#c10505" fontSize="14" textAlign="right"/>
+		</mx:Canvas>-->
+	</mx:Canvas>
+	<mx:Canvas id="settingsList" visible="false" width="242" height="0" backgroundColor="#FFFFFF"
+			   borderStyle="none" cornerRadius="1" dropShadowVisible="true"
+			   horizontalScrollPolicy="off"
+			   mouseOut="{FlexGlobals.topLevelApplication.mainApp.settingsMenuOpen=true}"
+			   mouseOver="{FlexGlobals.topLevelApplication.mainApp.settingsMenuOpen=false}"
+			   verticalScrollPolicy="off">
+		<mx:VBox width="100%" height="100%" paddingBottom="2" paddingLeft="8" paddingRight="4"
+				 paddingTop="11">
+			<mx:HBox visible="{classroomContextObj.userRole == Constants.PRESENTER_ROLE}"
+				 width="100%"
+					 includeInLayout="{classroomContextObj.userRole == Constants.PRESENTER_ROLE}"
+					 verticalAlign="middle">
+				<s:Label width="155" height="20" fontSize="11"
+						 text="User-list grouping &amp; prioritizing" verticalAlign="middle"/>
+				<toggleSwitch:ToggleSwitch id="chkBoxUserSorting" width="50" height="10"
+										   change="sortUserList()" deselectedLabel="Off"
+										   selected="true" selectedLabel="On"
+										   styleName="toggleSwitch"/>
+
+			</mx:HBox>
+			<mx:HBox visible="{classroomContextObj.userRole == Constants.PRESENTER_ROLE ||ClassroomContext.userVO.userName == ClassroomContext.moderatorName}"
+					 width="100%"
+					 includeInLayout="{classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName}"
+					 verticalAlign="middle">
+				<!--CRRT: TODO: Add Multiple User Interaction logic-->
+				<s:Label width="155" height="20" fontSize="11" text="Multiple user interaction"
+						 verticalAlign="middle"/>
+				<toggleSwitch:ToggleSwitch id="chkBoxMultiUserInteraction" width="50" height="10"
+										   change="changeMUIMode(true)" deselectedLabel="Off"
+										   selected="{isMUISelected}"  selectedLabel="On"
+										   styleName="toggleSwitch"/>
+
+			</mx:HBox>
+			<mx:HBox visible="{classroomContextObj.userRole == Constants.PRESENTER_ROLE}"
+					 width="100%"
+					 includeInLayout="{classroomContextObj.userRole == Constants.PRESENTER_ROLE}"
+					 verticalAlign="middle">
+				<s:Label width="155" height="20" fontSize="11" text="Uninterrupted desktop sharing"
+						 verticalAlign="middle"/>
+				<toggleSwitch:ToggleSwitch id="chkBoxDesktopSharingInteraction" width="50"
+										   height="10"
+										   change="setUninterruptedDesktopSharingStatus()"
+										   deselectedLabel="Off" selectedLabel="On"
+										   styleName="toggleSwitch"/>
+
+			</mx:HBox>
+
+			<mx:HBox visible="{classroomContextObj.userRole == Constants.PRESENTER_ROLE ||ClassroomContext.userVO.userName == ClassroomContext.moderatorName}"
+					 width="100%"
+					 includeInLayout="{classroomContextObj.userRole == Constants.PRESENTER_ROLE ||ClassroomContext.userVO.userName == ClassroomContext.moderatorName}"
+					 verticalAlign="middle">
+				<mx:Label width="155" text="Question Interaction"/>
+				<toggleSwitch:ToggleSwitch id="questionInteractionCheckBox" width="50" height="10"
+										   change="{onClickQuestionInteractionCheckBox()}"
+										   selected="{questionAnswerEnabledState}"
+										   deselectedLabel="Off"
+										   selectedLabel="On" styleName="toggleSwitch"/>
+
+			</mx:HBox>
+
+		</mx:VBox>
+	</mx:Canvas>
+</s:BorderContainer>

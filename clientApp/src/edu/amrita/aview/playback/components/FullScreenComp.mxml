@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- VVCR: Add Description about the file copy right notice etc -->
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="init()" 
+		   minHeight="680" minWidth="920" doubleClickEnabled="true" doubleClick="window1_doubleClickHandler(event)">
+	
+	<mx:Script>
+		<![CDATA[
+			protected function window1_doubleClickHandler(event:MouseEvent):void
+			{
+				this.close();
+				
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:Script source="fullScreenCompAs.as"/>
+</mx:Window>

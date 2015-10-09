@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: DynamicTextArea.mxml
+Module		: Whiteboard
+Developer(s): Jeevanantham N
+Reviewer(s)	: Sivaram SK
+
+DynamicTextArea component is used to display the text.
+-->
+<s:TextArea xmlns:fx="http://ns.adobe.com/mxml/2009"
+			xmlns:s="library://ns.adobe.com/flex/spark"
+			xmlns:mx="library://ns.adobe.com/flex/mx"
+			borderVisible="false"
+			contentBackgroundAlpha="0"
+			selectable="false"
+			editable="false"
+			verticalScrollPolicy="off"
+			horizontalScrollPolicy="off"
+			focusColor="0xFFFFFF"
+			focusEnabled="false"
+			skinClass="spark.skins.spark.TextAreaSkin">
+</s:TextArea>

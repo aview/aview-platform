@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: SearchView.mxml
+Module		: contacts
+Developer(s): NidhiSarasan,Soumya M.D
+Reviewer(s)	: Bri.Radha
+
+This is used to search users for adding to the group
+Search is done mainly with name.
+check all the fields(name,username,institute,mail id,phone no)are non empty.
+-->
+<!-- TitleWindow is used to validate Add User -->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:xt="library://ns.tink.ws/flex/mx"
+			   width="618" height="268"  
+			   creationComplete="init()"
+			   skinClass="edu.amrita.aview.common.skins.CustomTitleWindowSkin"
+			   title="Search User">
+
+	<!-- Script to include handler -->
+	<fx:Script source="SearchViewHandler.as"/>
+	
+
+	<!-- SkinnableContainer is used to show the background color and add all elements to this container -->
+	<s:SkinnableContainer y="0" left="19" right="1" height="100%" backgroundColor="#e0effb">
+		
+			<s:Group y="0" width="100%" height="100%" horizontalCenter="1">
+				<s:Spacer width="2"/>
+				
+				<s:Label x="8" y="18" color="#000000" fontWeight="bold" text="Name"/>
+				<s:TextInput id="txtname" x="8" y="32" width="251" color="#000000" keyDown="if(event.keyCode == Keyboard.ENTER) search()"/>
+				
+				<s:Spacer width="2"/>
+				<s:Label x="317" y="18" color="#000000" fontWeight="bold" text="A-VIEW User Name"/>
+				<s:TextInput id="txtuserName" x="316" y="32" width="250" color="#000000" 
+							 restrict="{GCLMContext.allowedCharactersForName}"
+							 keyDown="if(event.keyCode == Keyboard.ENTER) search()"/>
+				
+				<s:Spacer width="2"/>
+				<s:Label x="9" y="68" color="#000000" fontWeight="bold" text="Institute"/>
+				<xt:FilterComboBox id="txtinstitute" right="335" bottom="127" width="250" height="25"
+								   color="#000000"
+								   dataProvider="{GCLMContext.allCourseOfferingInstitutesAC}"
+								   dropdownFactory="{GCLMContext.myDropdownFactory}"
+								   labelField="instituteName" prompt=" "
+								   removeFilterOnSelection="true" selectSingleMatch="true" keyDown="if(event.keyCode == Keyboard.ENTER) search()"/>
+				
+				<s:Spacer width="2"/>
+				<s:Label x="317" y="70" color="#000000" fontWeight="bold" text="Email ID"/>
+				<s:TextInput id="txtemailid" x="317" y="85" width="250" color="#000000" keyDown="if(event.keyCode == Keyboard.ENTER) search()"/>
+				
+				<s:Spacer width="2"/>
+				<s:Label x="10" y="123" color="#000000" fontWeight="bold" text="Phone Number"/>
+				
+				<s:TextInput id="txtphoneno" x="9" y="139" width="250" color="#000000" restrict="0-9" maxChars="10" keyDown="if(event.keyCode == Keyboard.ENTER) search()"/>
+				<s:Label x="318" y="123" color="#000000" fontWeight="bold" text="State"/>
+				<!-- Fix for Bug #13227 start -->
+				<!--<s:TextInput id="txtState" x="318" y="138" width="250" color="#000000"/>-->
+				<xt:FilterComboBox id="cmbState" x="318" y="138" width="250" height="25"
+								   color="#000000"
+								   dataProvider="{GCLMContext.statesAC}"
+								   dropdownFactory="{GCLMContext.myDropdownFactory}"
+								   labelField="stateName" prompt=" "
+								   removeFilterOnSelection="true" selectSingleMatch="true" keyDown="if(event.keyCode == Keyboard.ENTER) search()"/>
+				<!-- Fix for Bug #13227 end -->
+				<s:Spacer width="2"/>
+				<s:Button id="btnSearch" y="182" label="Search" chromeColor="#E0EFFB"
+						  click="search()" color="#000000" cornerRadius="3" horizontalCenter="-8"
+						  keyDown="if(event.keyCode == Keyboard.ENTER) search()"/>				
+			</s:Group>
+		
+	</s:SkinnableContainer>
+
+</s:TitleWindow>

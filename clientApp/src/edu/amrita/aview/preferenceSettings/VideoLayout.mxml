@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: VideoLayout.mxml
+Module		: preference settings
+Developer(s): Sivaram S.K
+Reviewer(s)	:
+
+for choosing the video layout for the meeting and classroom
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:ToggleSwitch="components.ToggleSwitch.*"
+		  width="415"
+		  height="435"
+		  paddingBottom="5"
+		  paddingLeft="5"
+		  paddingRight="5"
+		  paddingTop="35"
+		  gap="10" creationComplete="init()">
+	<fx:Script source="VideoLayoutHandler.as" />
+
+	<fx:Declarations>
+		<mx:RadioButtonGroup id="rbgLayout"/>
+	</fx:Declarations>
+	<s:Label fontSize="14"
+			 fontWeight="bold"
+			 text="Video Wall Layout"/>
+
+	<mx:RadioButton selected="true"
+					groupName="rbgLayout"
+					id="rbSimple"
+					label="Basic Layout"/>
+	<s:HGroup width="400"
+			  height="84"
+			  verticalAlign="middle">
+		<s:Image smooth="true" smoothingQuality="high"
+				 source="@Embed('/edu/amrita/aview/preferenceSettings/assets/images/DefaultLayout.png')"/>
+		<s:Label width="274" height="77" color="#868686"
+				 text="Student will view the content in the right panel, Presenter video is shown above the User list on the Left Panel. Selected viewer videos will appear under the Viewer tab. Use for sessions where Presenter shares content with the student"/>
+
+	</s:HGroup>
+	<mx:RadioButton groupName="rbgLayout"
+					id="rbPresentation"
+					label="Presentation Layout"/>
+	<s:HGroup width="400"
+			  height="84"
+			  verticalAlign="middle">
+		<s:Image smooth="true" smoothingQuality="high"
+				 source="@Embed('/edu/amrita/aview/preferenceSettings/assets/images/PresentationLayout.png')"/>
+		<s:Label width="274" height="77" color="#868686"
+				 text="Automatically enables the video wall with Teacher/Moderator in big screen and the selected viewers at the bottom."/>
+
+	</s:HGroup>
+	<mx:RadioButton groupName="rbgLayout"
+					id="rbDiscussion"
+					label="Discussion Layout"/>
+	<s:HGroup width="400"
+			  height="85"
+			  verticalAlign="middle">
+		<s:Image smooth="true" smoothingQuality="high"
+				 source="@Embed('/edu/amrita/aview/preferenceSettings/assets/images/DiscussionLayout.png')"/>
+		<s:Label width="274" height="77" color="#868686"
+				 text="As a meeting layout, it combines all videos in similar size inside the Video wall. Changing of any small video into a big video as well as into a new window is possible.  "/>
+
+	</s:HGroup>
+</s:VGroup>

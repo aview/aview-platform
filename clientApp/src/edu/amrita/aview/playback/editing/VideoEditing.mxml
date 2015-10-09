@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: VideoEditing.mxml
+Module		: Video Editing
+Developer(s): Ashish Pillai
+Reviewer(s)	: Remya T
+
+File hold the container for displaying the video editing component for desktop application.
+
+-->
+<mx:Window xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:editing="edu.amrita.aview.playback.editing.components.*"
+		   xmlns:components="edu.amrita.aview.playback.components.*"
+		   xmlns:playback="modules.playback.*"
+		   width="100%"
+		   height="100%"
+		   backgroundColor="#e0effb"
+		   color="#000506"
+		   creationComplete="init(event)"
+		   resize="onAviewPlayerWindowResize(event)"
+		   close="closeVideoEditing()"
+		   layout="absolute"
+		   showStatusBar="false"
+		   status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+		   title="Lecture Editor (A-VIEW Classroom)">
+	<!-- Script to include handler -->
+	<fx:Script source="scripts/VideoEditingScript.as"/>
+	<!-- AVIEW Playback canvas -->
+	<mx:Canvas id="mainCan"
+			   x="0"
+			   y="0"
+			   width="100%"
+			   height="60%"
+			   horizontalScrollPolicy="off"
+			   verticalScrollPolicy="off">
+		<components:AviewPlayerComp id="aviewPlayer"
+									width="100%"
+									height="100%"/>
+	</mx:Canvas>
+	<mx:Canvas id="scaleCan"
+			   x="0"
+			   y="{ mainCan.y + mainCan.height}"
+			   left="50"
+			   right="28"
+			   width="100%"
+			   height="50"
+			   backgroundColor="#FFFFFF"
+			   focusEnabled="false">
+
+	</mx:Canvas>
+	<mx:Canvas id="vbBlocks"
+			   y="{ mainCan.y + mainCan.height - 5 }"
+			   left="10"
+			   right="10"
+			   width="100%"
+			   height="50%"
+			   creationPolicy="all"
+			   focusEnabled="false">
+		<editing:EditingToolContainer id="editingToolContainer"/>
+	</mx:Canvas>
+	<mx:Canvas id="chatCan"
+			   x="{ aviewPlayer.can_panel.x + aviewPlayer.can_panel.width + 2 }"
+			   y="{ aviewPlayer.mainCan.y }"
+			   width="25%"
+			   height="25%"
+			   focusEnabled="false"
+			   resize="resizeChatCanvas()"/>
+	<mx:Canvas id="canSlide"
+			   x="{ aviewPlayer.can_panel.x + aviewPlayer.can_panel.width + 2 }"
+			   y="{ chatCan.y + chatCan.height + 2 }"
+			   width="25%"
+			   height="33%"
+			   focusEnabled="false">
+
+		<s:Panel id="hbButtonContainer"
+				 width="{canSlide.width}"
+				 height="18.25%"
+				 backgroundColor="#E0EFFB"
+				 focusEnabled="true"
+				 title="Tools">
+			<mx:HBox id="toolBox"
+					 width="100%"
+					 height="100%"
+					 horizontalAlign="center"
+					 verticalAlign="middle">
+
+				<s:Button id="imgCutSession"
+						  x="0"
+						  y="0"
+						  width="20"
+						  height="20"
+						  click="editRecordedSession()"
+						  enabled="true"
+						  focusEnabled="true"
+						  focusRect="true"
+						  icon="{imgCutSessionIcon}"
+						  keyDown="if( event.keyCode == Keyboard.ENTER ) editRecordedSession()"
+						  styleName="toolBoxButton"
+						  toolTip="Cut Lecture"/>
+
+				<s:Button id="imgStop"
+						  x="{ imgCutSession.x + imgCutSession.width+5 }"
+						  y="0"
+						  width="18"
+						  height="18"
+						  click="stopVideoEditingPlayback()"
+						  enabled="true"
+						  focusEnabled="true"
+						  focusRect="true"
+						  horizontalCenter="0"
+						  icon="{imgStopIcon}"
+						  keyDown="if( event.keyCode == Keyboard.ENTER ) stopVideoEditingPlayback()"
+						  styleName="toolBoxButton"
+						  toolTip="Stop"/>
+
+				<s:Button id="imgPlay"
+						  x="{ imgStop.x + imgStop.width+5 }"
+						  y="0"
+						  width="{ imgCutSession.width}"
+						  height="{ imgCutSession.height}"
+						  click="setPlayMode(null)"
+						  enabled="true"
+						  focusEnabled="true"
+						  focusRect="true"
+						  horizontalCenter="0"
+						  icon="{imgPlayIcon}"
+						  keyDown="if( event.keyCode == Keyboard.ENTER ) setPlayMode(null)"
+						  styleName="toolBoxButton"
+						  toolTip="Pause"/>
+
+				<s:Button id="imgInsertSession"
+						  x="0"
+						  y="0"
+						  width="20"
+						  height="20"
+						  buttonMode="true"
+						  click="insertLecture()"
+						  enabled="{ true }"
+						  focusEnabled="true"
+						  focusRect="true"
+						  icon="{imgInsertSessionIcon}"
+						  keyDown="if (event.keyCode == Keyboard.ENTER) insertLecture()"
+						  styleName="toolBoxButton"
+						  toolTip="Insert Lecture"/>
+
+			</mx:HBox>
+		</s:Panel>
+	</mx:Canvas>
+</mx:Window>

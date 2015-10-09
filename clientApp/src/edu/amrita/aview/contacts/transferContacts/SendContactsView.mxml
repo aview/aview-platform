@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="524" height="300"
+		 title="Send Group">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="SendContactsViewHandler.as">
+	
+	</fx:Script>
+	<s:TextInput x="100" y="11" width="340" id="txtSearchInput" keyUp=""/>
+	<s:List x="10" y="73" width="219" height="133" id="lstUsers"
+			dataProvider="{sendContactsModel.users}" 
+			labelField="userDisplayName"
+			allowMultipleSelection="true">
+	</s:List>
+	<s:Label x="8" y="16" text="Search users :"/>
+	<s:Button x="200" y="214" label="send" click="sendContactsToSelectedUsers()"/>
+	<s:Button x="443" y="11" label="search" id="btnSearch" click="searchUsers()"/>
+	<s:Button x="277" y="214" label="Cancel" click="removePopup()"/>
+	<s:List x="293" y="73" width="219" height="133" id="lstSelectedUsers"
+			dataProvider="{sendContactsModel.selectedUsers}" 
+			labelField="userDisplayName"
+			allowMultipleSelection="true" itemRenderer="edu.amrita.aview.contacts.transferContacts.itemRenderer.SelectedUserListItem">
+	</s:List>
+	<s:Button x="238" y="121" width="47" label="&gt;&gt;" click="setSelectedUsers()"/>
+	<s:Label x="14" y="56" width="73" text="Users"/>
+	<s:Label x="294" y="56" width="183" text="Send To"/>
+	
+</s:Panel>

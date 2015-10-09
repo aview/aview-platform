@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: UserComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	:
+
+
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="100%"
+		   height="100%"
+		   xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+		   xmlns:xt="library://ns.tink.ws/flex/mx"
+		   xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!-- Script to include handler -->
+	<mx:Script source="UserCompUIHandler.as"/>
+
+	<mx:VBox top="0"
+			 fontFamily="Arial"
+			 fontSize="12"
+			 width="100%"
+			 height="100%">
+		<s:Label width="100%"
+				 textAlign="center"
+				 text=""
+				 fontSize="15"
+				 fontWeight="bold"
+				 color="#0839C6"/>
+		<mx:HBox width="100%">
+			<mx:Canvas width="100%"
+					   height="100">
+				<!-- create button -->
+				<components:ImageButton id="btnCreate"
+						  left="138"
+						  bottom="35"
+						  width="100"
+						  height="22"
+						  label="Create"
+						  chromeColor="#E0EFFB"
+						  click="createUser();"
+						  cornerRadius="3"
+						  icon="{CreateIcon}"
+						  toolTip="Create"/>
+				<!-- userEdit button -->
+				<components:ImageButton id="btnUserEdit"
+						  left="247"
+						  bottom="35"
+						  width="100"
+						  height="22"
+						  label="Edit"
+						  chromeColor="#E0EFFB"
+						  click="editUser()"
+						  cornerRadius="3"
+						  enabled="{hasEditPermission}"
+						  icon="{UpdateIcon}"
+						  toolTip="Edit"/>
+				<!-- Delete button -->
+				<components:ImageButton id="btnDelete"
+						  left="356"
+						  bottom="35"
+						  width="100"
+						  height="22"
+						  label="Delete"
+						  chromeColor="#E0EFFB"
+						  click="deleteUser()"
+						  cornerRadius="3"
+						  enabled="{hasEditPermission}"
+						  icon="{DeleteIcon}"
+						  toolTip="Delete"/>
+				<!--	3814
+									<mx:Button id="butApprove" left="165" bottom="3" height="22" width="85"
+											   label="Approve" click="approveUsers()" icon="{UpdateIcon}"
+											   toolTip="Approve"/>
+				3814	-->
+				<!-- ChangePassword button -->
+				<components:ImageButton id="btnChangePassword"
+						  left="5"
+						  bottom="3"
+						  width="150"
+						  height="22"
+						  label="Change Password"
+						  chromeColor="#E0EFFB"
+						  click="changePassword()"
+						  cornerRadius="3"
+						  enabled="{hasEditPermission}"
+						  icon="{UpdateIcon}"
+						  toolTip="Change Password"/>
+
+				<!--	3814	-->
+				<!-- Approve button -->
+				<components:ImageButton id="btnApprove"
+						  left="165"
+						  bottom="3"
+						  width="100"
+						  height="22"
+						  label="Approve"
+						  chromeColor="#E0EFFB"
+						  click="approveUsers()"
+						  cornerRadius="3"
+						  icon="{UpdateIcon}"
+						  toolTip="Approve"/>
+				<!--Fix for Bug #16958-->
+				<components:ImageButton id="btnfaceRegistration"
+										left="5"
+										bottom="35"
+										width="125"
+										height="22"
+										label="Face Registration"
+										chromeColor="#E0EFFB"
+										click="showFaceRegistrationModule()"
+										cornerRadius="3"										
+										toolTip="Face Registration"/>
+				<!--	3814	-->
+				<!--Label to show User Name-->
+				<s:Label right="660"
+						 bottom="72.5"
+						 text="User Name : "
+						 id="lblUserName"/>
+				<!--Text to search User Name-->
+				<s:TextInput id="txtInpSearchUserName"
+							 right="510"
+							 bottom="70"
+							 width="150"
+							 height="25"
+							 restrict="{GCLMContext.allowedCharactersForName}"/>
+				<!--Label to show User First Name-->
+				<s:Label right="410"
+						 bottom="72.5"
+						 text="User First Name : "
+						 id="lblFirstName"/>
+				<!--Text to search FirstName-->
+				<s:TextInput id="txtInpSearchFirstName"
+							 right="260"
+							 bottom="70"
+							 width="150"
+							 height="25"
+							 restrict="0-9a-zA-Z_ "/>
+				<!--Label to show User Last Name-->
+				<s:Label text="User Last Name : "
+						 right="160"
+						 bottom="72.5"
+						 id="lblLastName"/>
+				<!--Text to search LastName-->
+				<s:TextInput id="txtInpSearchLastName"
+							 width="150"
+							 bottom="70"
+							 height="25"
+							 right="10"
+							 restrict="0-9a-zA-Z_ "/>
+				<!--Label to show User Type-->
+				<s:Label right="375"
+						 bottom="37.5"
+						 text="User Type : "
+						 id="lblUserType"/>
+				<!--ComboBox to Select Role-->
+				<mx:ComboBox id="cmbSearchRole"
+							 right="225"
+							 bottom="35"
+							 width="150"
+							 height="25"
+							 dataProvider="{userRole}"/>
+				<!--Label to show City-->
+				<s:Label text="City : "
+						 bottom="37.5"
+						 right="160"
+						 id="lblCity"/>
+				<!--Text to search City-->
+				<s:TextInput id="txtInpSearchCity"
+							 width="150"
+							 bottom="35"
+							 right="10"
+							 height="25"/>
+				<!--Label to show Institute Name -->
+				<s:Label right="590"
+						 bottom="5.5"
+						 text="Institute Name : "
+						 id="lblInstituteName"/>
+				<!--<Sparkcontrols:AutoComplete id="cmbInstitute" right="190" bottom="3"
+											 width="400" height="25"
+											 dataProvider="{institutesAC}"
+											 labelField="instituteName"/>-->
+				<xt:FilterComboBox id="edtCmbInstitute"
+								   right="190"
+								   bottom="3"
+								   width="400"
+								   height="25"
+								   removeFilterOnSelection="true"
+								   dataProvider="{GCLMContext.allInstitutesAC}"
+								   prompt=""
+								   dropdownFactory="{GCLMContext.dropdownFactory}"
+								   labelField="instituteName"
+								   selectSingleMatch="true"/>
+
+				<!-- Search button -->
+				<components:ImageButton id="btnSearch"
+						  right="95"
+						  bottom="3"
+						  width="80"
+						  height="22"
+						  label="Search"
+						  chromeColor="#E0EFFB"
+						  click="searchActiveUsers()"
+						  cornerRadius="3"/>
+				<!-- Reset button -->
+				<components:ImageButton id="btnReset"
+						  right="10"
+						  bottom="3"
+						  width="80"
+						  height="22"
+						  label="Reset"
+						  chromeColor="#E0EFFB"
+						  click="clearValues()"
+						  cornerRadius="3"/>
+			</mx:Canvas>
+		</mx:HBox>
+		<s:DataGrid id="dgUsers"
+					width="100%"
+					height="100%"
+					chromeColor="#E0EFFB"
+					click="setEditUserPermission()"
+					dataProvider="{users}"
+					editable="true"
+					textAlign="left">
+			<s:columns>
+				<s:ArrayList>
+
+					<s:GridColumn headerText="UserId"
+								  minWidth="30"
+								  dataField="userId"
+								  editable="false"/>
+					<s:GridColumn headerText="User Name"
+								  minWidth="100"
+								  dataField="userName"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('userName')}"
+								  editable="false"/>
+					<s:GridColumn headerText="First Name"
+								  minWidth="100"
+								  dataField="fname"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('fname')}"
+								  editable="false"/>
+					<s:GridColumn headerText="Last Name"
+								  minWidth="100"
+								  dataField="lname"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('lname')}"
+								  editable="false"/>
+					<s:GridColumn headerText="Email"
+								  minWidth="100"
+								  dataField="email"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('email')}"
+								  editable="false"/>
+					<s:GridColumn headerText="Phone"
+								  minWidth="100"
+								  dataField="mobileNumber"
+								  editable="false"/>
+					<s:GridColumn headerText="Role"
+								  minWidth="70"
+								  dataField="role"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('role')}"
+								  editable="false"/>
+					<s:GridColumn headerText="Institute Name"
+								  minWidth="100"
+								  dataField="instituteName"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"
+								  editable="false"/>
+					<s:GridColumn headerText="Parent Institute Name"
+								  minWidth="100"
+								  dataField="parentInstituteName"
+								  sortCompareFunction="{AViewStringUtil.caselessSortForField('parentInstituteName')}"
+								  editable="false"/>
+
+					<!--<mx:DataGridColumn headerText="Location"
+									   width="100"
+									   dataField="location"
+									   editable="false"/>-->
+					<!--<mx:DataGridColumn headerText="Mobile No."
+									   width="90"
+									   dataField="mobileNumber"
+									   editable="false"/>-->
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+	</mx:VBox>
+	<!--Fix for Bug #8856-->
+	<s:Label top="5"
+			 width="100%"
+			 color="#0839C6"
+			 fontSize="15"
+			 fontWeight="bold"
+			 horizontalCenter="0"
+			 text="{(ClassroomContext.userVO.role == Constants.TEACHER_TYPE || ClassroomContext.userVO.role == Constants.STUDENT_TYPE)? 'User Information' : 'Filter for User'}"
+			 textAlign="center"/>
+</mx:Canvas>
+

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// 1.Author     : Ajith Kumar R.
+// 2.Description  : LocalVideoFullscreen is a custom component for resizing the local video to full screen.
+// 3.Dependencies : LocalVideo.mxml
+
+-->
+<mx:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx" verticalGap="0"
+		   width="610" height="392" closing="removeFullscreen()" statusBarBackgroundColor="#2a5da4"
+		   title="MyVideo" xmlns:components="edu.amrita.aview.core.shared.components.*" xmlns:video="edu.amrita.aview.core.video.*">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+		]]>
+	</fx:Script>
+	<fx:Script source="LocalVideoFullscreenHandler.as"/>
+	<mx:Canvas width="100%" height="100%" doubleClick="removeFullscreen()">
+	<mx:VideoDisplay id="localVideoDisplay"
+					 width="100%"
+					 height="100%"
+					 doubleClick="removeFullscreen()"
+					 doubleClickEnabled="true"
+					 resize="resizeVideo()"
+					 toolTip="Double Click to Tabbed view"/>
+	
+	<s:Label id="LabelAudioHide" visible="false" color="#f11515" fontFamily="Verdana"
+			 fontSize="10" fontWeight="bold" horizontalCenter="0" verticalCenter="0"/>
+	<mx:Canvas width="100%" height="100%" id="canVideoHide"
+				backgroundColor="#000000" visible="false" doubleClick="removeFullscreen()" doubleClickEnabled="true"
+				resize="resizeVideo()" toolTip="Double Click to Tabbed view">
+		<s:Label id="LabelAudioVideoHide" visible="false" color="#f11515" fontFamily="Verdana"
+				 fontSize="10" fontWeight="bold" horizontalCenter="0" verticalCenter="0"/>
+	</mx:Canvas>
+	</mx:Canvas>
+	<s:HGroup width="100%"  gap="0" horizontalAlign="center" verticalAlign="middle">
+		<components:ImageButton id="btnAudioStatus"  visible="{ClassroomContext.aviewClass.videoCodec == 'VP6' ||FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE|| ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								width="24" height="25" buttonMode="true" cornerRadius="5"
+								imageSkin="{audioStatus}"
+								includeInLayout="{ClassroomContext.aviewClass.videoCodec == 'VP6' || FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE ||ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								mouseChildren="false"
+								skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+								toolTip="{audioStatusTooltip}" useHandCursor="true" click="muteTheAudio()" />
+		<s:Image smooth="true" smoothingQuality="high" source="@Embed('/edu/amrita/aview/core/video/assets/images/seperator.png')"/>
+		<components:ImageButton id="btnVideoStatus" visible="{ClassroomContext.aviewClass.videoCodec == 'VP6' ||FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE|| ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								width="30" height="25" buttonMode="true" cornerRadius="5"
+								imageSkin="{videoStatus}"
+								includeInLayout="{ClassroomContext.aviewClass.videoCodec == 'VP6' || FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE||ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								mouseChildren="false"
+								skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+								toolTip="{videoStatusTooltip}" useHandCursor="true" click="hideTheVideo()" />
+		<s:Image visible="{btnVideoStatus.visible}"
+				 smooth="true" smoothingQuality="high"
+				 source="@Embed('/edu/amrita/aview/core/video/assets/images/seperator.png')"/>
+	<!--	<components:ImageButton visible="{ClassroomContext.aviewClass.videoCodec == 'VP6' ||FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE|| ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								width="30" height="25" buttonMode="true" cornerRadius="5"
+								imageSkin="{audioVideoStatus}"
+								includeInLayout="{ClassroomContext.aviewClass.videoCodec == 'VP6' ||FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isFMLE ||ClassroomContext.aviewClass.isMultiBitrate == 'Y'?false:true}"
+								mouseChildren="false"
+								skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+								toolTip="{audioVideoStatusTooltip}" useHandCursor="true" click="stopLocalAudioVideo()"/>-->
+		<s:Image smooth="true" smoothingQuality="high"
+				 source="@Embed('/edu/amrita/aview/core/video/assets/images/seperator.png')"/>
+		<s:Spacer width="100%"/>
+		<video:StreamSignalDisplay id="displayStreamStrength" x="144" y="91"/>
+		<s:Image smooth="true" smoothingQuality="high" source="@Embed('/edu/amrita/aview/core/video/assets/images/seperator.png')"/>
+	</s:HGroup>
+	<mx:ProgressBar id="localPrgBarAudioSignal" left="0" bottom="0" width="100%" height="15" label=" "
+					chromeColor="#33AA00" labelPlacement="center" maximum="100" mode="manual"
+					trackSkin="edu.amrita.aview.core.video.CustomProgressbarSkin"/>
+</mx:Window>

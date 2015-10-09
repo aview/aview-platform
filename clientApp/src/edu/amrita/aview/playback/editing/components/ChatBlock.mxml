@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: ChatBlock.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains all the UI for displaying the chat block in video editing time line.
+
+-->
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" borderStyle="solid" cornerRadius="2" horizontalScrollPolicy="off" mouseChildren="false"
+		   mouseMove="chatBlockMouseMove(event)" mouseOut="chatBlockMouseOut(event)" mouseOver="chatBlockMouseOver(event)" styleName="normalVideoBlock" textAlign="center"
+		   verticalCenter="0" verticalScrollPolicy="off">
+	<!-- Script to include handler -->
+	<mx:Script source="../scripts/ChatBlockScript.as"/>
+</mx:Canvas>

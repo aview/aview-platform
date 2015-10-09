@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: DesktopViewer.mxml
+Module		: DesktopSharing
+Developer(s): Ajith Kumar R,Remya T, Sneha I
+Reviewer(s)	: 
+
+This file is the custom component for viewing desktop stream.
+
+-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   width="100%" 
+				   height="100%"
+				   borderColor="#2a5ea4"
+				   borderVisible="true"
+				   backgroundColor="#FFFFFF"
+				   horizontalCenter="0"
+				   verticalCenter="0"
+				   resize="calculatePlayerSize()">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.AVCEnvironment;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<!--Fix for issue #15318-->
+			<s:Resize id="expand" widthFrom="10" widthTo="67" duration="200" target="{hgControls}"/>
+			<s:Resize id="colapse" widthFrom="67" widthTo="10" duration="200" target="{hgControls}"/>
+	</fx:Declarations>
+	<fx:Script source="DesktopViewerHandler.as"/>
+  	<!--Fix for issue #15318-->
+	<mx:HBox id="hgControls" 
+			 width="106" 
+			 height="29" 
+			 backgroundColor="#343233"
+			 borderColor="#343233"
+			 cornerRadius="3" 
+			 horizontalAlign="right" 
+			 horizontalGap="1" 
+			 paddingRight="1" 
+			 right="0"
+			 paddingTop="4">
+		<s:Button id="btnRefresh" 
+				  height="20" 
+				  width="22" 
+				  toolTip="Refresh"  
+				  useHandCursor="true"
+				  enabled="true"
+				  click="refreshDesktopPlayer()" 	
+				  icon="{refreshIcon}" />
+	<mx:HBox  
+			horizontalAlign="right" 
+			horizontalGap="1" 
+			id="hboxControl">
+			<s:Button id="btnPanScreen"
+					  icon="{panScreenIcon}"  
+					  toolTip="Pan Screen"
+					  height="20"
+					  width="22" 
+					  click="btnPanning_clickHandler()" 
+					  keyDown="if (event.keyCode==Keyboard.ENTER)btnPanning_clickHandler()"/>
+			<s:Button id="btnFullScreen"  
+					  icon="{fullScreenIcon}" 
+					  toolTip="Full Screen"
+					  height="20" 
+					  width="22"   
+					  click="createFullScreen()" 
+					  keyDown="if (event.keyCode==Keyboard.ENTER)createFullScreen()"/>
+			<s:Button id="btnPopout" 
+					  height="20" 
+					  width="22"
+					  toolTip="Pop Out"  
+					  click="popOutDesktopSharingWindow()" 
+					  icon="{popoutIcon}" />
+		</mx:HBox>
+   </mx:HBox>
+	<mx:Image 
+		id="btnHideShow" 
+		useHandCursor="true"
+		buttonMode="true"
+		right="{hgControls.right+(hgControls.width-8)}" 
+		top="9" 
+		toolTip="Hide" 
+		click="showHide_clickHandler()"/>
+	<!--Fix for issue #15604-->
+	<mx:Label id="lblSharingMessage"
+			  text="Presenter is not sharing his/her desktop now"
+			  fontSize="16"
+			  fontWeight="bold"
+			  verticalCenter="0"
+			  horizontalCenter="0"
+			  visible="false"
+			  color="#ff0000"/>
+	<s:Scroller top="35" 
+				width="100%" 
+				height="100%"
+				bottom="0"
+				id="scclrPlayer">
+		<!-- player is added to  this scroll group -->
+		<!--Fix for issue #15501-->
+		<s:Group id="scrlgroup" width="100%" height="100%" resize="calculatePlayerSize()" horizontalCenter="0"
+				 verticalCenter="0">
+			<!--Fix for issue #16140 and #16144-->
+			<mx:Label id="lblLoadingMessage"
+					  text="Loading Desktop Player..."
+					  fontSize="16"
+					  fontWeight="bold"
+					  verticalCenter="0"
+					  horizontalCenter="0"
+					  color="#ff0000"/>
+		</s:Group>
+		<!-- player is added to scroll group -->
+	</s:Scroller>
+</s:BorderContainer>

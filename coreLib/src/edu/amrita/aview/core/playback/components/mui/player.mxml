@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: player.mxml
+Module		: PlayBack
+Developer(s): Haridas, Anu
+Reviewer(s) : Thirumalai murugan
+
+Description:The Multi User Interaction Playback Module ,the entire session which has already recorded
+have to playback again .This module contain videos,chat,document sharing and whitboard playback again like
+in live session .This file maintain the GUI part of this module
+
+-->
+<s:SparkSkin  xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark"  xmlns:vd="edu.amrita.aview.core.playback.mui.*" xmlns:pl="edu.amrita.aview.core.playback.player.*"
+			  xmlns:mx="library://ns.adobe.com/flex/mx"  width="100%" creationComplete="playerInitilize()" height="100%" xmlns:thumbNail="edu.amrita.aview.core.documentSharing.thumbnails.*" xmlns:palyerComp="edu.amrita.aview.core.playback.components.*" xmlns:metadata="org.osmf.metadata.*" xmlns:thumbnails="edu.amrita.aview.core.documentSharing.components.thumbnails.*" >
+	
+	<fx:Declarations>				
+	</fx:Declarations>
+	<fx:Script source="PlayerHandler.as"/>
+	<!--GTMCR:: Give description for the component-->
+	<s:Group id="playerBaseCon" height="100%" width="100%" resize="playerBaseCon_resizeHandler(event)">
+		<!-- All video components palced here-->
+		<s:BorderContainer id="pnl" height="100%" width="25%" resize="">
+			<!-- Outer border for Presenter video component-->
+			<s:BorderContainer  id="userPanal" height="30%" width="100%">
+				<!-- Panel for Presenter video component-->
+				<s:Panel title="Presenter Video" id="presenterVideoConatiner" horizontalCenter="0" verticalCenter="0"  height="100%" width="100%" chromeColor="#8AC4FF">			
+							
+				</s:Panel>
+				<!--<pl:PlayerControl  id="tools" alpha="1"  bottom="0" width="100%" height="15%" isSeekBar="false" initialize="{ tools.play.visible=false;tools.stop.visible=false;}"/>-->			
+			</s:BorderContainer>
+			<!-- Panel for viewer video component-->
+			<!--GTMCR:: give proper id for component-->
+			<s:Panel id="viewerVideosPannel" title="Viewer's Video" height="35%" width="100%" y="{userPanal.height}"  chromeColor="#8AC4FF">
+				<!-- Grup for viewer video components-->
+				<s:VGroup height="100%" width="100%">
+					<!-- Grup for main viewer video component-->
+					<s:HGroup height="100%" width="100%">
+						<!-- border for viewer video components-->
+						<s:BorderContainer height="100%" width="75%" borderColor="0x6B8E23" id="mainVideoContainer">	
+												
+						</s:BorderContainer>
+						<!-- Border container for all viewers video-->
+						<s:BorderContainer height="100%" width="20%" borderColor="0x6B8E23">
+							<!-- Group of viewer videos-->
+							<mx:VBox height="100%" width="100%"> 
+								<!--GTMCR:: Give description for all the below component-->
+								<s:BorderContainer height="30%" width="100%" id="viewerVideoContainer5" click="swapVideos(event)">		
+								</s:BorderContainer>
+								<!--GTMCR:: Give proper ID-->
+								<s:BorderContainer height="30%" width="100%" id="viewerVideoContainer6" click="swapVideos(event)">		
+								</s:BorderContainer>
+								<!--GTMCR:: Give proper ID-->
+								<s:BorderContainer height="30%" width="100%" id="viewerVideoContainer7" click="swapVideos(event)">		
+								</s:BorderContainer>
+								<!--GTMCR:: Give proper ID-->
+								<s:BorderContainer height="30%" width="100%" id="viewerVideoContainer8" click="swapVideos(event)">		
+								</s:BorderContainer>
+							</mx:VBox>
+						</s:BorderContainer>
+					</s:HGroup>
+					<!-- Border container for all viewers video-->
+					<s:BorderContainer left="10" height="30%" width="75%"    borderAlpha="1">
+						<!--GTMCR:: Give description for all the below component-->
+						<mx:HBox height="100%" width="100%"> 		  
+							<s:BorderContainer height="100%" width="100%" id="viewerVideoContainer1" click="swapVideos(event)">							
+							</s:BorderContainer>
+							<s:BorderContainer height="100%" width="100%" id="viewerVideoContainer2" click="swapVideos(event)">		
+							</s:BorderContainer>
+							<s:BorderContainer height="100%" width="100%" id="viewerVideoContainer3" click="swapVideos(event)">	
+							</s:BorderContainer>
+							<s:BorderContainer height="100%" width="100%" id="viewerVideoContainer4" click="swapVideos(event)">
+							</s:BorderContainer>
+						</mx:HBox>
+					</s:BorderContainer>		
+				</s:VGroup>
+			</s:Panel>
+			<!-- Panel   for Chat -->
+			<s:Panel borderColor="blue" id="chatPnl"  title="Chat" height="35%" width="100%" y="{userPanal.height+viewerVideosPannel.height}" chromeColor="#8AC4FF" creationComplete="setChatComp()" >
+				<palyerComp:ChatCom width="100%" height="100%" id="chatWndw"/>
+			</s:Panel>
+		</s:BorderContainer>
+		<!--GTMCR:: Give description for all the below component-->
+		<s:Group width="50%">
+			<!--GTMCR:: Give proper ID-->
+			<s:TabBar x="{pnl.width}" id="moduleCom" width="100%"  height="35"		
+					  direction="rtl" dataProvider="{viewStack}" skinClass="edu.amrita.aview.core.playback.skins.customTabbar"/>	
+		</s:Group>
+		<!-- View stack for white board and document sharing-->
+		<mx:ViewStack height="100%" width="100%" x="{moduleCom.x}"  top="{moduleCom.top+moduleCom.height}" id="viewStack"  chromeColor="0x6B8E23" creationPolicy="all">				
+			<!-- Canvas for  document sharing-->
+			<mx:Canvas id="docContainer"  label="Document" width="100%" height="100%">
+				<s:Group  width="100%" height="100%" >
+					<!--GTMCR:: naming convention for ID-->
+					<thumbnails:ThumList   id="slidelist" OnSlideClickEvent="slidelist_OnSlideClickEventHandler(event)" isHorizontalThumbShow="true" thumbNailDataProvider="{slideList}"  width="100%" height="15%"/>					
+					<s:BorderContainer id="documentTab" borderColor="red"  width="100%" height="100%" y="{slidelist.height}">
+						<palyerComp:DocComp id="docComp"   creationComplete="setDocComp()"/>
+					</s:BorderContainer>
+				</s:Group>			
+			</mx:Canvas>
+			<!-- Canvas for  white board-->
+			<!--GTMCR:: Give description for the bellow comoponents, Give proper ID  -->
+			<mx:Canvas id="Can"    borderStyle="solid"   borderVisible="true" label="Whiteboard" width="100%" height="100%"  >
+					<!--GTMCR::Give proper ID -->
+					<s:BorderContainer id="wbCan" width="100%" height="100%" creationComplete="createWbComp()" resize="onResizeWb(event)">						
+					</s:BorderContainer>	
+					<s:Image id="pageNoImage"
+							 left="0"	
+							 top="2"/>
+					<mx:Text id="pageNo" top="0" left="0" text="Page No : "/>
+				
+			</mx:Canvas>
+		</mx:ViewStack>
+		<!-- Main seek bar and its controls-->
+		<!--GTMCR::Give proper ID change the function name -->
+		<pl:PlayerControl id="mainSeek" isPlay="true" centeralTime="00:00:00" isMute="false"  onMediaControlerEvent="mainSeek_onMediaControlerEventHandler(event)"  OnVolumeChangedEvent="mainSeek_OnVolumeChangedEventHandler(event)" isSeekBar="true" alpha=".2"   bottom="0" width="100%" height="8%" mouseOver="playercontrol1_mouseOverHandler(event)" mouseOut="mainSeek_mouseOutHandler(event)" initialize="{mainSeek.btnFullScrean.visible=false;}">					
+		</pl:PlayerControl>
+	</s:Group>	
+</s:SparkSkin>

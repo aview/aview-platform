@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ErrorReportFormForMobile.mxml
+Module		: Biometric Login
+Developer(s): Meena S
+Reviewer(s)	: Sivaram SK 
+
+ErrorReportFormForMobile component is used to submit error report.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 width="300"
+		 height="158"
+		 xmlns:s="library://ns.adobe.com/flex/spark">
+	<fx:Declarations>
+		<s:Animate id="fader" 
+				   duration="500" 
+				   repeatBehavior="reverse" 
+				   repeatCount="0" 
+				   target="{lblErrorMsg}">
+			<s:SimpleMotionPath property="alpha" 
+								valueFrom="1.0" 
+								valueTo="0.0" />
+		</s:Animate>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.components.mobileComponents.messageBox.MobileMessageBox;
+			
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			/**
+			 * Holds error message
+			 */
+			private var error_message:String;
+			/**
+			 * Holds process name 
+			 */
+			private var error_process:String;
+			/**
+			 * Holds guide line text
+			 */
+			[Bindable]
+			private var guideLinetext:String = "For guidelines, please refer the <b>'Biometrics'</b> <br>section in the help document.";
+			
+			/**
+			 * @public
+			 *
+			 * Assign error message and process name
+			 *
+			 * @param errorMessage holds error message
+			 * @param errorProcess holds process anme
+			 * @return void
+			 */
+			public function loadData(errorMessage:String, errorProcess:String):void 
+			{
+				error_message = errorMessage;
+				error_process = errorProcess;
+			}
+			/**
+			 * @private
+			 *
+			 * To assign error messge
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function assignOutputString():void
+			{
+				lblErrorMsg.text = error_message;
+			}
+			/**
+			 * @private
+			 *
+			 * To show the alert message
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function showAlertMessage():void
+			{
+				if(error_process == "Enroll")
+				{
+					MobileMessageBox.show("Registration Failed","Error",MobileMessageBox.MB_OK,this,null);
+				}
+				else if("Match")
+				{
+					MobileMessageBox.show("Login Failed","Error",MobileMessageBox.MB_OK,this,null);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Group width="100%" 
+			 height="100%">
+		<!--Create border-->
+		<s:Rect width="100%" 
+				height="100%"
+				top="0"
+				bottom="0"
+				left="0"
+				right="0">
+			<s:fill>
+				<s:SolidColor color="0x071124" />
+			</s:fill>
+			<s:stroke>
+				<s:LinearGradientStroke weight="5" rotation="270"> 
+					<s:GradientEntry color="0x696969"/>
+					<s:GradientEntry color="0xB3B3B3"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+			<s:filters>
+				<s:GlowFilter color="0xFFFFFF" 
+							  alpha="0.3" 
+							  blurX="0" 
+							  blurY="40" 
+							  strength="1" 
+							  inner="true" />
+			</s:filters>
+		</s:Rect>
+		
+		<!--To display error message and control button-->
+		<s:VGroup width="100%" 
+				 height="100%" 
+				 fontFamily="Arial" 
+				 horizontalAlign="center"
+				 verticalAlign="middle"
+				 creationComplete="showAlertMessage()">
+			
+			<s:Label id="lblErrorMsg" 
+					 width="100%" 
+					 fontSize="12" 
+					 fontWeight="bold" 
+					 creationComplete="assignOutputString(); fader.play();" 
+					 color="0xFFFFFF" />
+			<s:Label id="lblGuideLine" 
+					 fontSize="12" 
+					 text="{guideLinetext}" 
+					 color="0xFFFFFF" 
+					 buttonMode="true" 
+					 useHandCursor="true" 
+					 mouseChildren="false" />
+			<s:Button id="btnOk"
+					  label="OK"
+					  width="50%"
+					  height="20%"
+					  color="0xFFFFFF"
+					  skinClass="skins.mobile.MobileButtonSkin"
+					  click="PopUpManager.removePopUp(this)" 
+					  fontWeight="bold"/>
+			
+		</s:VGroup>
+	</s:Group>
+</s:Group>

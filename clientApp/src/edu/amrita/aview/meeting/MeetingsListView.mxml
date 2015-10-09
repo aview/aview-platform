@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" height="100%" 
+		 xmlns:checkBox="edu.amrita.aview.common.components.checkBox.*"
+		 xmlns:itemRenderers="edu.amrita.aview.meeting.itemRenderers.*"
+		 >
+	
+	
+	<fx:Declarations>
+	
+		<s:RadioButtonGroup id="allMeetingRadioBtnGroup"/>
+		<mx:DateFormatter id="dateFormatter"
+						  formatString="DD MMMM YYYY"/>
+		<mx:DateFormatter id="timeFormatter"
+						  formatString="LL.NN A"/>
+		<mx:DateFormatter id="dateFormatterName"
+						  formatString="YYYY_M_D"/>
+		<mx:DateFormatter id="timeFormatterName"
+						  formatString="J_N_S"/>
+	</fx:Declarations>
+	<fx:Script source="MeetingsListViewHandler.as">	
+	</fx:Script>
+	
+	<mx:VBox width="100%"
+			 height="100%"
+			 verticalGap="-1">
+		<itemRenderers:CheckBoxDataGrid id="meetingsList"
+									 width="100%"
+									 height="50%"
+									 allowMultipleSelection="true"
+									 borderColor="#7A7E81"
+									 borderVisible="true"
+									 chromeColor="#A5B8CA"
+									 color="#535354"
+									 dataProvider="{meetingsListModel.currentAndUpcomingMeetings}"
+									 focusEnabled="false"
+									 fontFamily="Arial"
+									 fontWeight="bold"
+									 rollOverColor="#CEDBEF"
+									 selectionColor="#CEDBEF"
+									 textAlign="left"
+									 verticalGridLineColor="#dadddf"
+									 variableRowHeight="false"
+									 verticalAlign="middle"
+									 verticalScrollPolicy="on"
+									 change="meetingsList_changeHandler(event)"
+									 wordWrap="true"
+									>
+			<itemRenderers:columns>
+				<itemRenderers:CheckBoxHeaderColumn width="20"
+												 editable="true"												 
+												 click="{toggleSelectionMeetingList()}"
+												 headerRenderer="edu.amrita.aview.meeting.itemRenderers.CheckBoxHeaderRenderer"
+												 itemRenderer="edu.amrita.aview.meeting.itemRenderers.CheckBoxRenderer"
+												 visible="{!meetingsListModel.isAllMeetingsSelected}"	/>
+				<mx:DataGridColumn width="251"
+								   minWidth="251"
+								   headerText="Meeting Name"
+								   wordWrap="true"
+								   dataField="displayName"/>
+				<mx:DataGridColumn headerText="Date &amp; Time"
+								   dataField="startTime"
+								   labelFunction="formatDate"
+								   minWidth="200"
+								   width="200"/>
+				<mx:DataGridColumn headerText="Meeting Room"
+								   visible="{meetingsListModel.isAllMeetingsSelected}"
+								   dataField="className"
+								   minWidth="90"/>
+			</itemRenderers:columns>
+		</itemRenderers:CheckBoxDataGrid>
+		<mx:DataGrid id="pastMeetingsDataGrid"
+					 width="100%"
+					 height="50%"
+					 borderColor="#7A7E81"
+					 borderVisible="false"
+					 chromeColor="#A5B8CA"
+					 color="#535354"
+					 dataProvider="{meetingsListModel.pastMeetings}"
+					 dropShadowVisible="false"
+					 focusEnabled="false"
+					 fontFamily="Arial"
+					 fontWeight="bold"
+					 rollOverColor="#CEDBEF"
+					 selectionColor="#CEDBEF"
+					 textAlign="left"
+					 variableRowHeight="false"
+					 verticalGridLineColor="#dadddf"
+					 verticalScrollPolicy="on">
+			<mx:columns>
+				
+				<mx:DataGridColumn dataField="displayName"
+								   headerText="Sessions Completed"
+								   minWidth="{meetingsList.columns[1].minWidth+20}"
+								   width="{meetingsList.columns[1].width+20}"/>
+				<mx:DataGridColumn dataField="startTime"
+								   minWidth="{meetingsList.columns[2].minWidth}"
+								   headerText="Date &amp; Time"
+								   width="{meetingsList.columns[2].width}"
+								   labelFunction="formatDate"/>
+				<mx:DataGridColumn dataField="className"
+								   visible="{meetingsListModel.isAllMeetingsSelected}"
+								   headerText=" "
+								   minWidth="90"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+</s:Group>

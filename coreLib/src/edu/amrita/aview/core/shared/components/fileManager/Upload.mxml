@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: Upload.mxml
+Module			: Common
+Developer(s)	: Haridasan
+Reviewer(s)	    : Veena Gopal K.V
+
+The Upload component is a custom component for file uploading functionality. 
+This component will take all the initiative for file uploading process.
+This Component fired some  custom events for upload progressing
+-->
+<!-- main Border panel of upload component -->
+<s:Panel x="121"
+		 y="90"
+		 width="480"
+		 height="186"
+		 visible="true"
+		 alpha="1.0"
+		 backgroundColor="#e0effb"
+		 backgroundAlpha="1.0"
+		
+		 borderVisible="true"
+		 borderAlpha="1"
+		 
+		 
+		 creationPolicy="all"
+		 textAlign="center"
+		 title="{resourceManager.getString('myResource','uploadcomp.documentuploadtitle')}"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:fileManager="edu.amrita.aview.core.shared.components.fileManager.*"
+		 xmlns:asfiles="edu.amrita.aview.common.components.fileManager.asfiles.*"
+		 creationComplete="panel1_creationCompleteHandler()" xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<fx:Script source="UploadAS.as"/>
+
+	<fx:Metadata>
+	        [Event(name="onUploadCompleted", type="edu.amrita.aview.core.shared.components.fileManager.events.UploadCompletedEvent")]
+	        [Event(name="onCloseFileComponentEvent", type="edu.amrita.aview.core.shared.components.fileManager.events.CloseFileComponentEvent")]
+	    </fx:Metadata>
+	<fx:Declarations>
+		<!--HTTPService is to call server files delete.php,deleteDirectory.php and createDirectory.php-->
+
+		<mx:HTTPService id="xmlLoadingService"
+						result="loadXmlFileResultHandler(event)"
+						fault="faultHandler(event)"/>
+		<mx:HTTPService id="xmlUpdatingService"
+						result="colladaUpdateCompleted(event)"
+						fault="faultHandler(event)"/>
+	</fx:Declarations>
+
+	<!-- Width of the label is set to 98 for supporting multiple mode also-->
+
+	<mx:Label x="12"
+			  y="15"
+			  text="{resourceManager.getString('myResource','uploadcomp.choosedocument')}"
+			  width="425"
+			  fontSize="11"
+			  fontWeight="bold"
+			  textAlign="left"/>
+
+	<!--TextInput for displaying the selected file name by user for uploading -->
+	<mx:TextInput id="uploadFileName"
+				  x="11"
+				  y="48"
+				  width="355"
+				  height="25"
+				  tabIndex="0"
+				  color="#000000"
+				  text="{uploadFile}"
+				  textAlign="left"
+				  enabled="false"
+				  creationComplete="uploadFileName_creationCompleteHandler()"/>
+	<!--Browse button for selecting a file to upload-->
+	<!--Issue #127 START
+		Changed the horizontal and vertical position of the label(message) and swfloader-->
+	<components:MxImageButton id="upload"
+			   x="374"
+			   y="43.5"
+			   width="91"
+			   height="32"
+			   label="{resourceManager.getString('myResource','uploadcomp.browsebutton')}"
+			   chromeColor="#E0EFFB"
+			   click="initializeUpload()"
+			   cornerRadius="1"
+			   keyUp="keyboaredEventHandeler(event)"
+			   icon="@Embed(source='assets/images/browse icon 32x32.png')"
+			   paddingLeft="-7"
+			   tabIndex="1"/>
+	<mx:Label x="104"
+			  y="87"
+			  fontSize="10"
+			  id="message"/>
+	<!-- Added a SwfLoader for load documents -->
+	<mx:SWFLoader x="62"
+				  y="85"
+				  width="31"
+				  height="22"
+				  source="@Embed(source='assets/flash/loading.swf')"
+				  id="progressIcon"
+				  visible="false"
+				  autoLoad="true"
+				  scaleContent="true"/>
+	<!-- Added a button to start upload after browsing a file -->
+
+	<components:MxImageButton id="startUploadBtn"
+			   x="158"
+			   y="109"
+			   width="130"
+			   height="25"
+			   cornerRadius="3"
+			   tabIndex="2"
+			   label="{resourceManager.getString('myResource','uploadcomp.uploaddocumentbutton')}"
+			   chromeColor="#E0EFFB"
+			   click="startUpload()"
+			   keyUp="keyboaredEventHandeler(event)"/>
+</s:Panel>

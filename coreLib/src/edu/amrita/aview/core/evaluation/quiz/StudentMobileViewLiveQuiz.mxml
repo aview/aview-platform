@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StudentMobileViewLiveQuiz.mxml
+Module		: Quiz
+Developer(s): Jeevanantham N
+Reviewer(s)	: Sivaram SK 
+
+StudentMobileViewLiveQuiz component is used to view quiz questions.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 visible="true"
+		 xmlns:quiz="modules.quiz.quiz.*">
+	<fx:Script source="StudentViewLiveQuizUIHandler.as"/>
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * Importing various components from modules
+			 */
+			import edu.amrita.aview.core.evaluation.event.SendAnswerResponseEvent;
+			import mx.events.FlexEvent;
+			
+			/**
+			 * @protected
+			 *
+			 * Add event listeners for Muliple response and Multiple choice questions selection
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function questionContainerCreationCompleteHandler(event:FlexEvent):void
+			{
+				questionContainer.dataProvider=quizQuestioLst;
+				this.addEventListener(SendAnswerResponseEvent.RADIO_BUTTON_CHANGED, radioButtonClickHandler);
+				this.addEventListener(SendAnswerResponseEvent.CHK_BUTTON_CHANGED, handlerAnswerForMultipleResponse);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- To animate an image -->
+		<s:Animate id="animateFader"
+				   duration="500"
+				   repeatBehavior="reverse"
+				   repeatCount="0"
+				   target="{imgbell}">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="1.0"
+								valueTo="0.0"/>
+		</s:Animate>
+	</fx:Declarations>
+	<s:Rect width="100%"
+			height="100%">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+	</s:Rect>
+	<s:VGroup id="groupTitle"
+			  top="10"
+			  verticalAlign="middle"
+			  horizontalAlign="center"
+			  width="100%"
+			  height="10%">
+		<!--Title of the component-->
+		<s:BorderContainer width="100%"
+				  height="10%"
+				  backgroundColor="0x071124"
+				  borderVisible="false">
+			<s:layout>
+				<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center"/>
+			</s:layout>
+			<s:BorderContainer width="100%"
+							   height="100%"
+							   backgroundColor="0x071124"
+							   borderVisible="false">
+				<s:layout>
+					<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center"/>
+				</s:layout>
+				<s:Label id="lblTitle"
+						 text="{titleForPnl}"
+						 fontWeight="bold"
+						 color="0xFFFFFF"
+						 fontSize="18"
+						 horizontalCenter="0"
+						 textAlign="center"
+						 width="100%"/>
+			</s:BorderContainer>
+		</s:BorderContainer>
+		<s:HGroup width="100%"
+				  height="10%"
+				  horizontalAlign="center"
+				  verticalAlign="middle">
+			<s:Line width="95%">
+				<s:stroke>
+					<s:SolidColorStroke color="0x5b5b5b"
+										weight="2"/>
+				</s:stroke>
+			</s:Line>
+		</s:HGroup>
+	</s:VGroup>
+
+	<s:Group id="groupContent"
+			 y="{groupTitle.y+groupTitle.height}"
+			 width="100%"
+			 height="100%">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<s:BorderContainer height="10%"
+						   width="100%"
+						   backgroundColor="0x071124"
+						   borderVisible="false"
+						   visible="{isPolling}"
+						   includeInLayout="{isPolling}">
+			<s:layout>
+				<s:HorizontalLayout verticalAlign="middle" horizontalAlign="right"/>
+			</s:layout>
+			<!-- Image to show a bell ringing when quiz time is less than 1 minute -->
+			<s:Image id="imgbell" 
+					 right="0"
+					 visible="{!isPolling}"
+					 includeInLayout="{isPolling}"/>
+			<!-- Label to show Count -->
+			<s:Label color="Red" 
+					 fontFamily="Times New Roman" 
+					 fontSize="14"
+					 paddingRight="5" 
+					 paddingTop="5" 
+					 right="0"
+					 visible="{isPolling}"
+					 includeInLayout="{isPolling}"
+					 fontWeight="bold"
+					 text="Time left:"/>
+			<!-- Label to show count -->
+			<s:Label id="lblCounter" 
+					 color="Green" 
+					 fontSize="14" 
+					 right="0"
+					 fontWeight="bold" 
+					 paddingRight="5" 
+					 paddingTop="5"
+					 visible="{isPolling}"
+					 includeInLayout="{isPolling}"
+					 fontFamily="Times New Roman"/>
+		</s:BorderContainer>
+		<s:HGroup width="100%"
+				  height="10%"
+				  paddingTop="10"
+				  includeInLayout="{!isPolling}"
+				  visible="{!isPolling}"
+				  fontFamily="Times New Roman"
+				  fontSize="14"
+				  fontWeight="bold"
+				  horizontalAlign="center"
+				  color="0xFFFFFF">
+			<!--Total mark-->
+			<s:Label text="Total Marks :"
+					 includeInLayout="{!isPolling}"
+					 visible="{!isPolling}"/>
+			<s:Label id="lblTotalMarks"
+					 includeInLayout="{!isPolling}"
+					 visible="{!isPolling}"/>
+			<s:Spacer width="20%"/>
+			<!--Number of qusetions-->
+			<s:Label text="Current Question/Total Questions :"
+					 includeInLayout="{!isPolling}"
+					 visible="{!isPolling}"/>
+			<s:Label id="lblNextQuestionCount"
+					 includeInLayout="{!isPolling}"
+					 visible="{!isPolling}"/>
+			<s:CheckBox id="cbSelectQuest"
+						label="All Questions :"
+						change="{callFirstQuestion(event)}"
+						visible="false"
+						includeInLayout="{!isPolling}"/>
+		</s:HGroup>
+
+		<s:Group id="canAnswer"
+				 width="100%"
+				 height="90%">
+			<s:HGroup id="hBoxAllQuestions"
+					  visible="false"
+					  top="0"
+					  width="100%"
+					  height="100%"
+					  paddingRight="10"
+					  paddingLeft="10">
+				<!--Question container-->
+				<s:DataGroup id="questionContainer"
+							 width="100%"
+							 height="100%"
+							 creationComplete="questionContainerCreationCompleteHandler(event)">
+					<s:layout>
+						<s:VerticalLayout/>
+					</s:layout>
+					<s:itemRenderer>
+						<fx:Component>
+							<s:ItemRenderer width="100%"
+											height="100%">
+								<fx:Declarations>
+									<s:RadioButtonGroup id="ansRBG"/>
+								</fx:Declarations>
+								<fx:Script>
+									<![CDATA[
+										/**
+										 * Importing mx library
+										 */
+										import mx.events.FlexEvent;
+										
+										/**
+										 * Set to true if question type is Multiplechoice
+										 */
+										public var isMultipleChoice:Boolean=false;
+										/**
+										 * Set to true if question type is MultipleResponse
+										 */
+										public var isMultipleResponse:Boolean=false;
+										
+										/**
+										 * @protected
+										 *
+										 * To create question choice list and enable/disable Checkbox or radiobutton based on the question type.
+										 *
+										 * @param event of FlexEvent
+										 * @return void
+										 */
+										protected function quesChoiceListCreationCompleteHandler(event:FlexEvent):void
+										{
+											var i:int;
+											for (i=0; i < quesChoiceLst.dataProvider.length; i++)
+											{
+												var obj:Object=new Object;
+												obj=quesChoiceLst.dataProvider[i];
+												obj.group=ansRBG;
+												quesChoiceLst.dataProvider.removeItemAt(i);
+												quesChoiceLst.dataProvider.addItemAt(obj, i);
+											}
+											//To set visibilty of Checkbox or radiobutton based on the question type.
+											if (data.questionTypeName == "Multiple Response")
+											{
+												isMultipleResponse=true;
+											}
+											else
+											{
+												isMultipleChoice=true;
+											}
+										}
+									]]>
+								</fx:Script>
+								<s:Rect width="100%"
+										height="100%">
+									<s:fill>
+										<s:SolidColor color="0x071124"/>
+									</s:fill>
+								</s:Rect>
+								<!--Label for question number, question and marks-->
+								<s:VGroup width="100%"
+										  height="100%"
+										  color="0xFFFFFF"
+										  fontWeight="bold"
+										  gap="20"
+										  paddingLeft="30"
+										  paddingRight="30">
+									<s:HGroup paddingTop="10"
+											  width="100%"
+											  height="10%"
+											  paddingBottom="10">
+										<s:Label text="{outerDocument.questionNumber}"
+												 width="3%"/>
+										<s:Label text="{data.questionText}"
+												 width="85%"/>
+										<s:Label text="{' [ Marks: ' + data.marks + ' ]'}"
+												 paddingRight="0"
+												 includeInLayout="{!(this.outerDocument.isPolling)}"/>
+									</s:HGroup>
+									<s:Scroller width="100%"
+												height="100%">
+										<!--Question options container-->
+										<s:DataGroup id="quesChoiceLst"
+													 width="100%"
+													 height="100%"
+													 dataProvider="{data.quizAnswerChoices}"
+													 creationComplete="quesChoiceListCreationCompleteHandler(event)">
+											<s:layout>
+												<s:VerticalLayout useVirtualLayout="true" gap="10"/>
+											</s:layout>
+											<s:itemRenderer>
+												<fx:Component>
+													<s:ItemRenderer width="100%"
+																	height="100%">
+														<fx:Script>
+															<![CDATA[
+																/**
+																 * Importing components from modules
+																 */
+																import edu.amrita.aview.core.evaluation.vo.QuizAnswerChoiceVO;
+																import edu.amrita.aview.core.evaluation.event.SendAnswerResponseEvent;
+																import mx.events.FlexEvent;
+																
+																/**
+																 * @protected
+																 *
+																 * To send selected answer for validation
+																 *
+																 * @param quizAns holds the values of quiz answer
+																 * @param event of FlexEvent
+																 * @return void
+																 */
+																protected function questionChoiceSelectionHandler(quizAns:QuizAnswerChoiceVO, event:Event):void
+																{
+																	if (quizAns != null)
+																	{
+																		if (event.currentTarget.selected)
+																		{
+																			this.outerDocument.outerDocument.dispatchEvent(new SendAnswerResponseEvent(SendAnswerResponseEvent.RADIO_BUTTON_CHANGED, quizAns));
+																		}
+																		else
+																		{
+																			this.outerDocument.outerDocument.dispatchEvent(new SendAnswerResponseEvent(SendAnswerResponseEvent.CHK_BUTTON_CHANGED, quizAns));
+																		}
+																	}
+																}
+															]]>
+														</fx:Script>
+														<s:Rect width="100%"
+																height="100%">
+															<s:fill>
+																<s:SolidColor color="0x071124"/>
+															</s:fill>
+														</s:Rect>
+														<!--Question choices-->
+														<s:HGroup width="100%"
+																  height="2%"
+																  horizontalAlign="left"
+																  verticalAlign="middle"
+																  color="0xFFFFFF"
+																  fontWeight="bold"
+																  paddingLeft="25">
+
+															<s:CheckBox id="cbMultipleResponse"
+																		left="0"
+																		visible="{outerDocument.isMultipleResponse}"
+																		includeInLayout="{outerDocument.isMultipleResponse}"
+																		change="{questionChoiceSelectionHandler(data as QuizAnswerChoiceVO,event)}"
+																		selected="{data.studentAnsFraction == 1}"
+																		keyDown="{questionChoiceSelectionHandler(data as QuizAnswerChoiceVO,event)}"/>
+															<s:RadioButton id="rgMultipleChoice"
+																		   left="0"
+																		   visible="{outerDocument.isMultipleChoice}"
+																		   includeInLayout="{outerDocument.isMultipleChoice}"
+																		   group="{data.group}"
+																		   selected="{data.studentAnsFraction == 1}"
+																		   keyDown="{questionChoiceSelectionHandler(data as QuizAnswerChoiceVO,event)}"
+																		   change="{questionChoiceSelectionHandler(data as QuizAnswerChoiceVO,event)}"/>
+															<s:Label width="100%"
+																	 text="{'('+String.fromCharCode(itemIndex + 97) +')'+' '+data.choiceText}"/>
+														</s:HGroup>
+													</s:ItemRenderer>
+												</fx:Component>
+											</s:itemRenderer>
+										</s:DataGroup>
+									</s:Scroller>
+								</s:VGroup>
+							</s:ItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:DataGroup>
+			</s:HGroup>
+
+		</s:Group>
+
+		<s:VGroup height="15%"
+				  width="100%"
+				  verticalAlign="middle"
+				  horizontalAlign="center"
+				  bottom="0"
+				  paddingBottom="10">
+			<!--Navigation control-->
+			<s:HGroup id="navigationControls"
+					  width="100%"
+					  height="100%"
+					  chromeColor="#CCCCCC"
+					  verticalAlign="middle"
+					  horizontalAlign="center"
+					  fontSize="13"
+					  color="0xFFFFFF">
+
+				<s:Button id="btnPrevious"
+						  width="15%"
+						  height="100%"
+						  label="Previous"
+						  click="{loadPrevQuestion(event)}"
+						  includeInLayout="{!isPolling}"
+						  visible="{!isPolling}"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+				<s:Button id="btnNext"
+						  width="15%"
+						  height="100%"
+						  label="Next"
+						  click="{loadNextQuestion(event)}"
+						  includeInLayout="{!isPolling}"
+						  visible="{!isPolling}"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+				<s:Button id="btnFinish"
+						  width="15%"
+						  height="100%"
+						  label="Submit"
+						  click="{conformationForSubmit(event)}"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+
+			</s:HGroup>
+		</s:VGroup>
+	</s:Group>
+</s:Group>

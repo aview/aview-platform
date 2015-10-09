@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---RTCR: Avoid 'this' from description and use component name instead of 'this'. -->
+<!---
+
+File		: VideoComp.mxml
+Module		: PlayBack
+Developer(s): Haridas, Anu
+Reviewer(s)	: Remya T
+
+This is old play back video component.This file not used in new MUI play back
+
+-->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+				showCloseButton="true" 
+				creationComplete="titlewindow1_creationCompleteHandler(event)"
+				borderVisible="false">
+	<mx:Script>
+		<![CDATA[
+			import edu.amrita.aview.playback.VideoPlayer;
+			
+			import mx.core.mx_internal;
+			import mx.events.FlexEvent;
+			
+			
+			public  var videoPlayer:VideoPlayer=new VideoPlayer();
+			private var previousWidth:Number = 0;
+			[Bindable]
+			private var resizeCount:Number = 0;
+			[Bindable]
+			private var vidWidth:Number=0;
+			[Bindable]
+			private var vidHeight:Number=0;
+			
+			//Playback Icons
+			[Bindable]
+			[Embed(source="../assets/images/volumeCntrl.png")]
+			public var playBack_unclicked:Class;
+			[Bindable]
+			[Embed(source="../assets/images/volumMute.png")]
+			public var playBack_clicked:Class;
+			[Bindable]
+			public var playBackIcon:Class=playBack_unclicked;
+			
+			private function resolution():void
+			{
+				var tempWidth:Number;
+				
+				vidHeight=VideoContiner.height;
+				tempWidth=(vidHeight / 3) * 4;
+				if (tempWidth >= VideoContiner.width)
+				{
+					vidWidth=VideoContiner.width;
+					vidHeight=(vidWidth / 4) * 3;
+				}
+				else
+				{
+					vidWidth=tempWidth;
+				}  
+			}
+			public  function onVidResize():void
+			{
+				resolution();
+				videoDisp.height=vidHeight
+				videoDisp.width=vidWidth;
+				addSpace.width=(VideoContiner.width/2)-(videoDisp.width/2);
+				muteButton.y=volumeBox.y+5;				
+			}
+			
+			
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				mx_internal::closeButton.height=mx_internal::closeButton.width=18;
+				
+			}
+			
+			
+		]]>
+	</mx:Script>	
+	<mx:VBox height="100%" width="100%" verticalAlign="middle">
+	<mx:Canvas x="0" y="0" width="100%"  height="80%" top="10" id="VideoContiner" resize="onVidResize()" verticalScrollPolicy="off">		
+		<mx:VideoDisplay  id="videoDisp" horizontalCenter="0"/>	
+		<mx:Label id="lblVideoMode" text="Audio Only Mode" color="#ff0000" horizontalCenter="0" verticalCenter="0" visible="false"/>
+	</mx:Canvas>
+	<mx:HBox width="100%" paddingTop="5" id="volumeBox">		
+		<mx:Spacer id="addSpace" width="{(VideoContiner.width/2)-(videoDisp.width/2)}"/>
+		<mx:Button  y="{volumeBox.y+5}" toolTip="Mute" width="5" 
+				   height="5" id="muteButton" bottom="0" icon="{playBackIcon}"/>
+		<mx:HSlider height="5" width="70" toolTip="volume" chromeColor="#e0effb" id="volumeSeek" value="75" minimum="0" maximum="100"  showTrackHighlight="true"/>				
+	</mx:HBox>
+	</mx:VBox>
+	</mx:TitleWindow>

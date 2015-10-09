@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StudentAnswerSheet.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Thirumalai murugan
+
+StudentAnswerSheet.mxml component displays the answer sheet of a user i.e the quiz attended .
+It displays the answers attempted by the user as well as the actual correct answer .
+-->
+
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:quizResponse="edu.amrita.aview.core.evaluation.quizResponse.*"
+						 creationComplete="initAppStudentAnswerSheet()"
+						 width="710"
+						 height="610"
+						 backgroundColor="#e0effb"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 textAlign="center"
+>
+	<!-- Script to include handler -->
+	<fx:Script source="StudentAnswerSheetUIHandler.as"/>
+	<!-- container to hold student answer sheet -->
+	<mx:VBox left="5"
+			 right="5"
+			 top="5"
+			 bottom="5"
+			 borderColor="#A3D7FF"
+			 borderStyle="solid"
+			 chromeColor="#CCCCCC">
+		<!-- container to hold quiz name -->
+		<mx:HBox width="100%"
+				 horizontalAlign="center">
+			<!-- label to hold quiz name -->
+			<s:Label text="Quiz Name : {quizVO.quizName}"
+					 fontWeight="bold"
+					 color="#000101"
+					 fontSize="18"
+					 fontFamily="Arial"/>
+		</mx:HBox>
+		<!-- container to hold total marks -->
+		<mx:HBox left="0"
+				 top="27"
+				 width="100%"
+				 horizontalAlign="left">
+			<!-- label to hold total marks -->
+			<s:Label id="lblTotalMarks"
+					 text="Total Marks : {Math.round(quizVO.totalMarks*100)/100}"
+					 fontWeight="bold"
+					 color="#000101"
+					 fontSize="12"
+					 paddingLeft="10"/>
+			<!--to add space between marks-->
+			<mx:Spacer width="65%"/>
+			<!-- label to hold maximum marks -->
+			<s:Label id="lblMaxMarks"
+					 text="Score : {Math.round(quizResponseVO.totalScore*100)/100}"
+					 fontWeight="bold"
+					 color="#000101"
+					 fontSize="12"/>
+		</mx:HBox>
+		<!-- container to hold correct answer -->
+		<mx:VBox width="100%">
+			<mx:HBox width="100%"
+					 horizontalAlign="left"
+					 verticalAlign="middle"
+					 paddingLeft="10">
+				<!-- label to hold correct answer -->
+				<s:Label color="#000000" fontSize="12" text="Correct Answer :"/>
+				<!-- image to hold tick icon -->
+				<s:Image id="tickImg"
+						 source="{iconClass}"
+						 width="17"
+						 height="18"/>
+				<!-- label to hold user answer -->
+				<s:Label color="#000000" text="User Answer :"/>
+				<!-- button -->
+				<components:ImageButton x="207"
+						  width="14"
+						  height="15"
+						  chromeColor="#F88017"/>
+			</mx:HBox>
+			<!-- hRule -->
+			<mx:HRule width="100%"/>
+		</mx:VBox>
+		<!--to add space-->
+		<s:Spacer/>
+		<!--Fix for Bug#15463-->
+		<!--Container to hold student answer sheet answer choices-->
+		<mx:Canvas width="100%"
+				   height="430"
+				   textAlign="left" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<!--Fix for Bug#15463-->
+			<!--Container to hold student answer sheet answer choices in vertical order-->
+			<mx:VBox top="1"
+					 width="100%"
+					 height="429"
+					 verticalGap="5"
+					 paddingLeft="5" verticalScrollPolicy="auto" horizontalScrollPolicy="auto">
+				<!--repeater of repeating the question-->
+				<mx:Repeater id="rpQuiz"
+							 dataProvider="{questions}">
+					<quizResponse:StudentAnswerSheetAnswerChoices id="quizQuestions"
+																  width="100%"
+																  quesItem="{rpQuiz.currentItem}"
+																  qno="{rpQuiz.currentIndex+1}"/>
+					<mx:HRule width="100%"/>
+				</mx:Repeater>
+			</mx:VBox>
+		</mx:Canvas>
+		<mx:HRule width="100%"/>
+		<!--Container to hold close button-->
+		<mx:HBox bottom="9"
+				 width="696"
+				 height="22"
+				 horizontalAlign="center"
+				 horizontalCenter="-1"
+				 chromeColor="#CCCCCC"
+				 verticalCenter="254">
+			<!--close button-->
+			<s:Button x="290" y="556" label="Close" chromeColor="#E0EFFB"
+					  click="closeStudentAnswerSheet()" color="#000000" cornerRadius="3"/>
+		</mx:HBox>
+	</mx:VBox>
+
+
+</components:InsidePanel>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="100%" height="35" clipAndEnableScrolling="true">
+	<s:layout>
+		<s:HorizontalLayout paddingBottom="5" paddingLeft="20" paddingRight="20" paddingTop="5"
+							verticalAlign="middle"/>
+	</s:layout>
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.utils.StringUtil;
+			
+			[Bindable]
+			public var btnStatus:Boolean=false;
+			
+			
+			
+			override public function set data(value:Object):void 
+			{
+				 super.data=value;
+				 btnJoinNow.enabled = true;
+				if (data.aviewClass.classType == 'Classroom')
+				{
+					sessionClass.visible=true;
+					sessionClass.includeInLayout=true;
+					sessionMeeting.visible=false;
+					sessionMeeting.includeInLayout=false;
+				}
+				else
+				{
+					sessionMeeting.visible=true;
+					sessionMeeting.includeInLayout=true;
+					sessionClass.visible=false;
+					sessionClass.includeInLayout=false;
+				}
+				
+			}
+			
+			protected function joinNow(event:MouseEvent):void
+			{
+				btnJoinNow.enabled = false;
+				dispatchEvent(new Event('joinNow', true, false));				
+			}
+			
+			public function set buttonStatus(status:Boolean):void
+			{
+				btnStatus = status
+			}
+			public function get buttonStatus():Boolean
+			{
+				return btnStatus;
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:HBox width="100%" verticalAlign="middle" doubleClick="joinNow(event)" doubleClickEnabled="true"> 
+		<s:Image id="sessionClass" source='@Embed(source="/edu/amrita/aview/core/entry/assets/images/Classroom.png")'/>
+		<s:Image id="sessionMeeting" source='@Embed(source="/edu/amrita/aview/core/entry/assets/images/MeetingSessionIcon.png")'/>
+		<s:Label id="SessionLbl" width="100%" color="#000000" maxDisplayedLines="1"
+				 text="{data.lecture.displayName}"/>
+		<s:Image id="btnJoinNow" smooth="true" source='@Embed(source="/edu/amrita/aview/core/entry/assets/images/joinnow.png")'
+				 click="joinNow(event)" visible="{btnStatus}" includeInLayout="{btnStatus}"
+				 useHandCursor="true" buttonMode="true" enabled="true"/>
+	</mx:HBox>
+</s:GridItemRenderer>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:grid="org.alivepdf.grid.*"
+				   height="{this.parent.height}">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:Resize widthFrom="0"
+				  widthTo="150"
+				  id="thumbInsreaseWidthEffect"/>
+		<s:Resize widthFrom="150"
+				  widthTo="0"
+				  id="thumbDecreaseWidthEffect"/>
+		<s:Resize heightFrom="0"
+				  heightTo="150"
+				  id="thumbInsreaseHeightEffect"/>
+		<s:Resize heightFrom="150"
+				  heightTo="0"
+				  id="thumbDecreaseHeightEffect"/>
+
+
+	</fx:Declarations>
+	<fx:Metadata>		
+		[Event(name="OnSlideClickEvent", type="edu.amrita.aview.core.documentSharing.components.thumbnails.CustomThumbnailEvents.OnSlideClickEvent")]
+		[Event(name="OnSlideChangedEvent", type="edu.amrita.aview.core.documentSharing.components.thumbnails.CustomThumbnailEvents.OnSlideChangedEvent")]
+	</fx:Metadata>
+	<fx:Script source="ThumListHandler.as"/>
+	<mx:Grid width="100%" horizontalGap="0"
+			 id="horizontalThumb"
+			 includeInLayout="{_ishorizontalThumbShow}">
+		<mx:GridRow width="100%"
+					chromeColor="#8AC4FF">
+			<mx:GridItem>
+				<s:Button id="cmdScrollPrev"
+						  width="25"
+						  height="{this.height}"
+						  buttonMode="true"
+						  alpha=".5"
+						  click="cmdScrollPrevForHorizontal_clickHandler(event)"
+						  hideEffect="Fade"
+						  icon="{prevIcon}"
+						  showEffect="Fade"
+						  skinClass="edu.amrita.aview.core.documentSharing.components.thumbnails.Skins.CustomPrevbtnSkin"
+						  useHandCursor="true"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%">
+				<mx:HorizontalList id="verticalThumbnail" width="100%" height="{this.height}"
+								   allowDragSelection="true" borderStyle="solid" buttonMode="true"
+								   columnWidth="150" contentBackgroundColor="#ECEFF0"
+								   dataProvider="{_thumbNailDataProvider}" horizontalCenter="0"
+								   horizontalScrollPolicy="off"
+								   itemClick="lstThumbnails_itemClickHandler(event)"
+								   itemRenderer="edu.amrita.aview.core.documentSharing.components.thumbnails.HorizontalListItemRenderer"
+								   rowHeight="100" selectedIndex="{_slideIndex}"
+								   useHandCursor="true" verticalCenter="0"
+								   verticalScrollPolicy="off"/>
+
+			</mx:GridItem>
+			<mx:GridItem>
+				<s:Button id="cmdScrollNext"
+						  width="23"
+						  height="100%"
+						  buttonMode="true"
+						  alpha=".5"
+						  click="cmdScrollNextForHorizontal_clickHandler(event)"
+						  hideEffect="Fade"
+						  icon="{nextIcon}"
+						  showEffect="Fade"
+						  skinClass="edu.amrita.aview.core.documentSharing.components.thumbnails.Skins.CustomPrevbtnSkin"
+						  useHandCursor="true"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+	<s:VGroup width="{this.width}"
+			  height="100%"
+			  id="verticalThumb" gap="0"
+			  includeInLayout="{_isverticalThumbShow}"
+			  chromeColor="#8AC4FF">
+		<s:Button width="{this.width}"
+				  height="2%"
+				  buttonMode="true"
+				  alpha=".5"
+				  click="cmdScrollPrevForVertical_clickHandler(event)"
+				  hideEffect="Fade"
+				  icon="{upIcon}"
+				  showEffect="Fade"
+				  skinClass="edu.amrita.aview.core.documentSharing.components.thumbnails.Skins.CustomPrevbtnSkin"
+				  useHandCursor="true"/>
+
+		<mx:List id="horizontalThumbnail" width="{this.width}" height="100%"
+				 allowDragSelection="true" borderStyle="solid" contentBackgroundColor="#ECEFF0"
+				 dataProvider="{_thumbNailDataProvider}" horizontalCenter="0"
+				 horizontalScrollPolicy="off" itemClick="lstThumbnails_itemClickHandler(event)"
+				 itemRenderer="edu.amrita.aview.core.documentSharing.components.thumbnails.HorizontalListItemRenderer"
+				 mouseWheel="horizontalThumbnail_mouseWheelHandler(event)"
+				 columnWidth="150"
+				 selectedIndex="{_slideIndex}" useHandCursor="true" verticalCenter="0"
+				 verticalScrollPolicy="off"/>
+
+		<s:Button width="{this.width}"
+				  height="2%"
+				  buttonMode="true"
+				  alpha=".5"
+				  click="cmdScrollNextForVertical_clickHandler(event)"
+				  hideEffect="Fade"
+				  icon="{downIcon}"
+				  showEffect="Fade"
+				  skinClass="edu.amrita.aview.core.documentSharing.components.thumbnails.Skins.CustomPrevbtnSkin"
+				  useHandCursor="true"/>
+	</s:VGroup>
+</s:BorderContainer>
+
+

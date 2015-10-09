@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:UIComponent xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+
+
+	<mx:Script>
+		<![CDATA[
+			import flash.display.*;
+			/**
+			 * Function to create a drawing area and filled with given background color. 
+			 * @param backgroundColor type of Number. Example: 0xffffff for white background.
+			 */
+			public function drawBackground(backgroundColor:Number):void{
+				graphics.beginFill(backgroundColor, 0);
+				graphics.drawRect(0, 0, width, height);
+				graphics.endFill();
+			}
+		]]>
+	</mx:Script>
+
+
+</mx:UIComponent>

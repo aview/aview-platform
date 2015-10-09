@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: ViewQuestionBankQuestion.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to view question bank questions in question paper
+-->
+
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="380"
+		 height="100%"
+		 xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*">
+	<!--Fix for Bug#12138-->
+	<s:Spacer height="2%"/>
+	<s:HGroup width="100%">		
+	<s:Spacer/>
+	<!-- Label for question -->
+	<s:Label text="Question:"
+			 fontWeight="bold"
+			 color="#000000"/>
+	<!--Fix for Bug#12138-->
+	<s:Spacer width="100%"/>	
+	<!-- Label for displaying marks -->
+	<s:Label text="{' [marks: ' + questionAns.marks + ']'}" right="3"
+				fontWeight="bold" color="#000000"/>
+	</s:HGroup>
+	<mx:HBox width="95%">
+	<!--Fix for Bug#12138-->
+		<s:Spacer width="2"/>
+		<!-- Label for displaying question text -->
+		<s:Label width="95%"
+				 id="lblQuestion"
+				 text="{questionAns.questionText}"
+				 fontWeight="bold" color="#000000"/>
+		
+	</mx:HBox>
+	<mx:Spacer/>
+	<!--Fix for Bug#12138-->
+	<s:HGroup>
+	<s:Spacer/>	
+	<!-- Label for answer choice -->
+	<s:Label text="Answer Choice:"
+			 fontWeight="bold"
+			 color="#000000"/>
+	</s:HGroup>
+	
+	<!--Fix for Bug#12138-->
+	<!-- Displays answers -->
+	<s:DataGroup dataProvider="{questionAns.qbAnswerChoices}"
+				 width="98%"
+				 minWidth="200">
+		<s:itemRenderer>
+			<fx:Component>
+				<s:ItemRenderer showsCaret="false" width="98%">
+					<fx:Script>
+						<![CDATA[
+							import edu.amrita.aview.core.entry.ClassroomContext;
+							import edu.amrita.aview.core.entry.Constants;
+							[Embed(source="assets/images/tick-icon.png")]
+							private var tickIcon:Class;
+						]]>
+					</fx:Script>
+					<mx:HBox width="98%">
+						<!--Fix for Bug#12138-->
+						<s:Spacer width="2"/>
+						<!-- Image of tick for correct answer -->
+						<s:Image id="imgLoader"
+								 source="{tickIcon}"
+								 visible="{data.fraction==1}"
+								 width="17"
+								 height="18"/>
+						<!--Fix for Bug#12138-->
+						<!-- The actual answer -->
+						<s:Label text="{ClassroomContext.userVO.role == Constants.TEACHER_TYPE ?('('+(String.fromCharCode(itemIndex +97))+')'+'  '+data.choiceText):''}"
+								 width="320"/>
+					</mx:HBox>
+				</s:ItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+	</s:DataGroup>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import edu.amrita.aview.core.evaluation.vo.QbQuestionVO;
+			import edu.amrita.aview.core.evaluation.vo.QbAnswerChoiceVO;
+			
+			[Bindable]
+			public var questionAns:QbQuestionVO;
+		]]>
+	</fx:Script>
+</mx:VBox>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: RatingComponent.mxml
+Module			: Feedback
+Developer(s)	: Vijayakumar.R
+Reviewer(s)		: Deepika CP
+this a common component for rating the application
+-->
+
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:starRating="edu.amrita.aview.common.components.starRating.*"
+		 width="100%">
+	<!--Script to include handler-->
+	<fx:Script source="RatingComponentHandler.as"/>
+
+	<mx:Tile id="tileList" width="100%">
+		<mx:VBox width="{tileList.width}">
+			<!-- Overall rating-->
+			<mx:HBox width="100%" horizontalGap="3" verticalAlign="middle">
+				<mx:Text width="150" fontFamily="Arial" fontSize="13" text="Overall Quality"/>
+				<starRating:StarRating id="overallRating" horizontalCenter="0" verticalCenter="0"/>
+
+				<s:Image visible="{txtOverAllRating.text==''?true:false}" buttonMode="true"
+						 click="moreRatingDetails(event,'overall',txtOverAllRating.text,this)"
+						 includeInLayout="{txtOverAllRating.text==''?true:false}" smooth="true"
+						 smoothingQuality="high"
+						 source="@Embed('/edu/amrita/aview/feedback/assets/images/morecomments.png')"
+						 toolTip="Add comment" useHandCursor="true"/>
+				<s:TextInput id="txtOverAllRating" visible="false" width="100%"
+							 click="moreRatingDetails(event,'overall',txtOverAllRating.text,this)"
+							 editable="false" maxChars="256" selectable="false"
+							 text="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.overAll}"/>
+			</mx:HBox>
+			<!--Audio quality rating-->
+			<mx:HBox width="100%" horizontalGap="3" verticalAlign="middle">
+				<mx:Text width="150" fontFamily="Arial" fontSize="13" text="Audio Quality"/>
+				<starRating:StarRating id="audioRating" horizontalCenter="0" verticalCenter="0"/>
+
+				<s:Image visible="{txtAudioRating.text==''?true:false}" buttonMode="true"
+						 click="moreRatingDetails(event,'audio',txtAudioRating.text,this)"
+						 includeInLayout="{txtAudioRating.text==''?true:false}"
+						 source="@Embed('/edu/amrita/aview/feedback/assets/images/morecomments.png')"
+						 toolTip="Add comment" useHandCursor="true"/>
+
+				<s:TextInput id="txtAudioRating" visible="false" width="100%"
+							 click="moreRatingDetails(event,'audio',txtAudioRating.text,this)"
+							 editable="false" maxChars="256" selectable="false"
+							 text="{application.mainApp.mainContainerComp.audioRate}"/>
+			</mx:HBox>
+			<!--Video Quality rating-->
+			<mx:HBox width="100%" horizontalGap="3" verticalAlign="middle">
+				<mx:Text width="150" fontFamily="Arial" fontSize="13" text="Video Quality"/>
+				<starRating:StarRating id="videoRating" horizontalCenter="0" verticalCenter="0"/>
+
+				<s:Image visible="{txtvideoRating.text==''?true:false}" buttonMode="true"
+						 click="moreRatingDetails(event,'video',txtvideoRating.text,this)"
+						 includeInLayout="{txtvideoRating.text==''?true:false}"
+						 source="@Embed('/edu/amrita/aview/feedback/assets/images/morecomments.png')"
+						 toolTip="Add comment" useHandCursor="true"/>
+
+				<s:TextInput id="txtvideoRating" visible="false" width="100%"
+							 click="moreRatingDetails(event,'video',txtvideoRating.text,this)"
+							 editable="false" maxChars="256" selectable="false"
+							 text="{application.mainApp.mainContainerComp.videoRate}"/>
+			</mx:HBox>
+			<!--Interaction Rating-->
+			<mx:HBox width="100%" horizontalGap="3" verticalAlign="middle">
+				<mx:Text width="150" fontFamily="Arial" fontSize="13" text="Interaction"/>
+				<starRating:StarRating id="interactionRating" horizontalCenter="0" verticalCenter="0"/>
+
+				<s:Image visible="{txtinteractionRating.text==''?true:false}" buttonMode="true"
+						 click="moreRatingDetails(event,'interaction',txtinteractionRating.text,this)"
+						 includeInLayout="{txtinteractionRating.text==''?true:false}"
+						 source="@Embed('/edu/amrita/aview/feedback/assets/images/morecomments.png')"
+						 toolTip="Add comment" useHandCursor="true"/>
+
+				<s:TextInput id="txtinteractionRating" visible="false" width="100%"
+							 click="moreRatingDetails(event,'interaction',txtinteractionRating.text,this)"
+							 editable="false" maxChars="256" selectable="false"
+							 text="{application.mainApp.mainContainerComp.interactionRate}"/>
+			</mx:HBox>
+			<!--Whiteboard rating-->
+			<mx:HBox width="100%" horizontalGap="3" verticalAlign="middle">
+				<mx:Text width="150" fontSize="13" text="Whiteboard"/>
+
+				<starRating:StarRating id="whiteBrdRating" horizontalCenter="0" verticalCenter="0"/>
+
+				<s:Image visible="{txtwhiteBrdRating.text==''?true:false}" buttonMode="true"
+						 click="moreRatingDetails(event,'whiteboard',txtwhiteBrdRating.text,this)"
+						 includeInLayout="{txtwhiteBrdRating.text==''?true:false}"
+						 source="@Embed('/edu/amrita/aview/feedback/assets/images/morecomments.png')"
+						 toolTip="Add comment" useHandCursor="true"/>
+				<s:TextInput id="txtwhiteBrdRating" visible="false" width="100%"
+							 click="moreRatingDetails(event,'whiteboard',txtwhiteBrdRating.text,this)"
+							 editable="false" maxChars="256" selectable="false"
+							 text="{application.mainApp.mainContainerComp.wbRate}"/>
+			</mx:HBox>
+			<!--Document sharing rating-->
+			<mx:HBox width="100%" horizontalGap="3" verticalAlign="middle">
+				<mx:Text width="150" fontSize="13" text="Document Sharing"/>
+				<starRating:StarRating id="contentRating" horizontalCenter="0" verticalCenter="0"/>
+
+				<s:Image visible="{txtcontentRating.text==''?true:false}" buttonMode="true"
+						 click="moreRatingDetails(event,'document',txtcontentRating.text,this)"
+						 includeInLayout="{txtcontentRating.text==''?true:false}"
+						 source="@Embed('/edu/amrita/aview/feedback/assets/images/morecomments.png')"
+						 toolTip="Add comment" useHandCursor="true"/>
+
+				<s:TextInput id="txtcontentRating" visible="false" width="100%"
+							 click="moreRatingDetails(event,'document',txtcontentRating.text,this)"
+							 editable="false" maxChars="256" selectable="false"
+							 text="{application.mainApp.mainContainerComp.docRate}"/>
+			</mx:HBox>
+			<!--Desktop sharing Rating-->
+			<mx:HBox width="100%" horizontalGap="3" verticalAlign="middle">
+				<mx:Text width="150" fontFamily="Arial" fontSize="13" text="Desktop Sharing"/>
+				<starRating:StarRating id="shrRating" horizontalCenter="0" verticalCenter="0"/>
+
+				<s:Image visible="{txtshrRating.text==''?true:false}" buttonMode="true"
+						 click="moreRatingDetails(event,'desktop',txtshrRating.text,this)"
+						 includeInLayout="{txtshrRating.text==''?true:false}"
+						 source="@Embed('/edu/amrita/aview/feedback/assets/images/morecomments.png')"
+						 toolTip="Add Comment" useHandCursor="true"/>
+
+				<s:TextInput id="txtshrRating" visible="false" width="100%"
+							 click="moreRatingDetails(event,'desktop',txtshrRating.text,this)"
+							 editable="false" maxChars="256" selectable="false"
+							 text="{application.mainApp.mainContainerComp.deskRate}"/>
+			</mx:HBox>
+			<!--User interaction rating-->
+			<mx:HBox width="100%" horizontalGap="3" verticalAlign="middle">
+				<mx:Text width="150" fontFamily="Arial" fontSize="13" text="Ease of use"/>
+				<starRating:StarRating id="userInterRating" horizontalCenter="0" verticalCenter="0"/>
+
+				<s:Image visible="{txtUserInterRating.text==''?true:false}" buttonMode="true"
+						 click="moreRatingDetails(event,'userInterAct',txtUserInterRating.text,this)"
+						 includeInLayout="{txtUserInterRating.text==''?true:false}"
+						 source="@Embed('/edu/amrita/aview/feedback/assets/images/morecomments.png')"
+						 toolTip="Add Comment" useHandCursor="true"/>
+
+				<s:TextInput id="txtUserInterRating" visible="false" width="100%"
+							 click="moreRatingDetails(event,'userInterAct',txtUserInterRating.text,this)"
+							 editable="false" maxChars="256" selectable="false"
+							 text="{application.mainApp.mainContainerComp.uiRate}"/>
+			</mx:HBox>
+		</mx:VBox>
+
+
+	</mx:Tile>
+</mx:HBox>

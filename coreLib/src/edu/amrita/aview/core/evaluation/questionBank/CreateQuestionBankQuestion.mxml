@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CreateQuestionBankQuestion.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Narayanasamy S, Sivaram SK
+
+UI component to create/edit question bank question.
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						xmlns:s="library://ns.adobe.com/flex/spark"
+						xmlns:mx="library://ns.adobe.com/flex/mx"
+						xmlns:components="edu.amrita.aview.core.shared.components.*"
+						xmlns:questionBank="edu.amrita.aview.core.evaluation.questionBank.*"
+						width="800"
+						height="600"
+						backgroundColor="#e0effb"
+						color="#FFFFFF"
+						dropShadowVisible="false"
+						initialize="{initQBQ()}"
+						title="Create Question"
+						focusColor="#A9F9A0"
+						xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*"
+						textAlign="center"
+						fontFamily="Arial"
+						fontSize="12">
+	<!-- Script to include handler -->
+	<fx:Script source="CreateQuestionBankQuestionUIHandler.as"/>
+	<!-- Main container-->
+	<s:BorderContainer width="100%"
+					   height="100%"
+					   backgroundColor="#e0effb"
+					   borderColor="#A3D7FF"
+					   borderStyle="solid"
+					   borderVisible="false"
+					   chromeColor="#CCCCCC"
+					   horizontalCenter="0"
+					   verticalCenter="0">
+		<!-- Canvas for question bank question details -->
+		<!--Fix for Bug#14811-->
+		<mx:Canvas width="100%"
+				   height="85%"
+				   id="questionCanvas" horizontalScrollPolicy="off">
+			<!-- VBox for question type,question difficulty level, question text and media file uploading -->
+			<mx:VBox width="98%"
+					 height="35%"
+					 chromeColor="#97CAFA"
+					 backgroundColor="#e0effb"
+					 id="typeBorderContainer"
+					 borderVisible="false">
+				<!-- Hbox for question type -->
+				<mx:HBox id="typeHBox"
+						 visible = "{!isPolling}"
+						 includeInLayout = "{!isPolling}"
+						 width="100%"
+						 height="50%"
+						 verticalAlign="middle"
+						 paddingLeft="10">
+					<mx:Spacer/>
+					<!-- Vbox for question type -->
+					<mx:VBox chromeColor="#CCCCCC">
+					<!-- Label for showing Question Type -->
+					<mx:Spacer height="5"/>
+						<s:Label text="Question Type:"
+								 fontWeight="normal"
+								 fontFamily="Arial" color="#000000"
+								 fontSize="12"/>
+						<!--Combobox to show question type-->
+						<s:ComboBox id="cbQuestionTypes"
+									width="140"
+									height="27"  color="#000000"
+									change="{onChangeQuestionType()}"
+									dataProvider="{questionTypes}"
+									labelField="qbQuestionTypeName"
+									prompt="Question Type"
+									selectedIndex="{QuizContext.getItemIndexByProperty(questionTypes, 'qbQuestionTypeId', QuizContext.MULTIPLE_CHOICE_QUESTION_TYPE_ID.toString())}"/>
+					</mx:VBox>
+					<mx:Spacer/>
+					<!-- Vbox for question difficulty level -->
+					<mx:VBox chromeColor="#CCCCCC">
+						<!-- Label for showing Difficulty Level -->
+					<mx:Spacer height="5"/>
+						<s:Label fontWeight="normal"
+								 fontFamily="Arial"
+								 fontSize="12" color="#000000"
+								 text="Difficulty Level:"/>
+						<!--Combobox to show question levels-->
+						<!-- Fix for Bug#14871,16837-->
+						<s:ComboBox id="levelsComboBox"
+									width="140"
+									height="27" color="#000000"
+									change="{difficultyLevelChangeHandler()}"
+									dataProvider="{levels}"
+									labelField="qbDifficultyLevelName"
+									prompt="Difficulty Level"
+									selectedIndex="{QuizContext.getItemIndexByProperty(levels,'qbDifficultyLevelId', ClassroomContext.EASY.toString())}"/>
+					</mx:VBox>
+				</mx:HBox>
+				<!-- Hbox for question text -->
+				<mx:HBox id="hBoxQuestionPart"
+						 width="100%"
+						 height="50%"
+						 y="{typeHBox.y+typeHBox.height}"
+						 paddingLeft="10">
+					<!-- Vbox for question text -->
+					<mx:VBox width="93%"
+							 height="96%">
+						<!-- Label for showing Question text -->
+						<s:Label height="16" color="#000000"
+								 fontWeight="normal"
+								 fontFamily="Arial"
+								 fontSize="12"
+								 text="Question text"/>
+						<!-- Custom component for entering question text -->
+						<questionBank:QuestionText id="questionText"
+												   width="100%"
+												   height="47"
+												   focusOut="{qbQuestionVO.questionText = StringUtil.trim(questionText.text);}"
+												   text="{qbQuestionVO.questionText}"
+												   textAlign="left"
+												   creationComplete="questionTextCreationCompleteHandler(event)"/>
+
+					</mx:VBox>
+					<!-- Vbox for marks -->
+					<mx:VBox width="8%"
+							 height="96%"
+							 visible = "{!isPolling}"
+							 includeInLayout = "{!isPolling}"
+							 verticalAlign="middle"
+							 id="forMarksVB">
+						<!-- Label for showing Marks -->
+						<s:Label height="16"
+								 fontWeight="normal" color="#000000"
+								 fontFamily="Arial"
+								 fontSize="12"
+								 text="Marks"/>
+						<!--Text for mark-->
+						<!--Fix for Bug#15665 : Decimal number is not allowed for marks-->
+						<s:TextInput id="marksText" color="#000000"
+									 width="35"
+									 height="30"
+									 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"
+									 focusOut="{qbQuestionVO.marks = Number(marksText.text)}"
+									 maxChars="3"
+									 restrict="0-9"
+									 text="{qbQuestionVO.marks}"
+									 textAlign="left"/>
+					</mx:VBox>
+				</mx:HBox>
+				<!-- VGroup for media file uploading components -->
+				<!--<s:VGroup id="vGroupUpload" top="{hBoxQuestionPart.y+hBoxQuestionPart.height}" paddingLeft="10">-->
+					<!-- HGroup for media file uploading components -->
+					<!--<s:HGroup>	-->
+						<!-- TextInput for media file name -->
+						<!--<mx:TextInput id="uploadFileTextInput" width="250" height="25" enabled="false" editable="false" mouseEnabled="false"
+									  text="{uploadFileName}"/>-->
+						<!-- Button to browse media file -->
+						<!--<mx:Button id="fileBrowse" right="185" top="5" width="80" height="25" label="Browse"
+								   click="browseAndUpload()"/>-->
+						<!--<mx:Button id="upload" right="95" top="5" width="80" height="25" label="Upload"
+								   click="startUpload()"/>-->
+					<!--</s:HGroup>-->
+					
+					<!-- Progressbar to show media file uploading status -->
+					<!--<mx:ProgressBar id="progressIcon" visible="false" bottom="15" width="327" height="20" 
+									horizontalCenter="0" minimum="0" maximum="100" label="Loading %0%%" 
+									mode="manual"
+									/>-->
+				<!--</s:VGroup>-->
+			</mx:VBox>
+			<!--Fix for Bug#15068-->
+			<!--Scroller for answerCanvas-->
+			<s:Scroller width="100%" id="answerCanvasScroller" measuredSizeIncludesScrollBars="true"
+						height="70%" y="{typeBorderContainer.y+typeBorderContainer.height}">				
+			<!--HGroup for question answer choices and preview for media file-->
+			<s:HGroup width="100%" 
+					  height="70%"
+					  id="answerCanvas"
+					  y="{typeBorderContainer.y+typeBorderContainer.height}">
+				<!--Vbox for question answer choices -->
+				<mx:VBox width="65%"
+						 height="70%"
+						 paddingLeft="10">
+				<!--Repeater for question answer choices -->
+					<mx:Repeater id="rpChoices"
+								 dataProvider="{qbQuestionVO.qbAnswerChoices}"
+								 height="7%">
+						<!-- Custom component for entering question answer choices -->
+						<questionBank:Choice id="choices"
+											 width="100%"
+											 choiceItem="{rpChoices.currentItem}"
+											 choiceNum="{rpChoices.currentIndex+1}"
+											 radioButtonChange="{setCorrectAnswer(event)}"
+											 removeChoice="{removeChoice(event)}"
+											 fromClassroomPolling="{isPolling}"/>
+					</mx:Repeater>
+					<!--disabledColor="#184bbd" -->
+					<!-- Hbox for adding choice-->
+					<mx:HBox width="60%"
+							 height="30"
+							 horizontalAlign="right"
+							 verticalAlign="middle">
+						<!-- Image button for adding extra choice-->
+						<!--Fix for Bug#16265-->
+						<components:ImageButton y="217"
+												id="addChoiceButton"
+								  width="11"
+								  height="16"
+								  click="{addChoice()}"
+								  cornerRadius="12"
+								  icon="@Embed(source='assets/images/add_choice.png')"
+								  visible="{(cbQuestionTypes.selectedItem.qbQuestionTypeId == QuizContext.TRUE_OR_FALSE_QUESTION_TYPE_ID)?false:true}"
+								  toolTip="Add Choice"/>
+						<mx:Spacer width="4"/>
+					</mx:HBox>
+				</mx:VBox>
+			
+				<!-- VGroup for media file preview components -->
+				<!--<s:VGroup id="previewBox" visible="false" includeInLayout="false" left="0" horizontalAlign="center" verticalAlign="middle">-->
+					<!-- VideoPlayer to play video and audio -->
+					<!--<s:VideoPlayer source="{tempNativeFilePath}" id="videoPlayer" autoPlay="true" maxHeight="200" maxWidth="300"  visible="false" includeInLayout="false"/>-->
+					<!-- To preview Image -->
+					<!--<s:Image id="imageLoader" width="100%" height="100%" source="{tempNativeFilePath}" maxHeight="200" maxWidth="300" visible="false" includeInLayout="false"/>-->
+							 <!--httpStatus="imageHttpStatusEventHandler(event)" ioError="imageIOErrorEventHandler(event)" complete="imageLoadingCompleteHandler(event)"/>-->
+					<!-- To preview error Image[Not Used] -->
+					<!--<s:Image id="errorImage" width="100%" height="100%" source="{errorImageIcon}" maxHeight="200" maxWidth="300" visible="false" includeInLayout="false"/>-->
+					<!-- Button to delete choosen media file -->
+					<!--<s:Button id="btnDelete" label="Delete" bottom="0" horizontalCenter="0" click="removeMediaFile()" visible="{previewBox.visible}" includeInLayout="{previewBox.includeInLayout}"/>					
+				</s:VGroup>-->
+				</s:HGroup>
+			</s:Scroller>
+		</mx:Canvas>
+
+		<!-- Canvas for button-->
+		<!--Fix for Bug#14819,Bug#15068-->
+		<mx:Canvas width="100%"
+				   height="15%"
+				   y="{answerCanvasScroller.y+340}">
+			<mx:HRule width="100%"/>
+			<!-- Hbox for button-->
+			<mx:HBox width="100%"
+					 height="25"
+					 chromeColor="#CCCCCC"
+					 verticalCenter="0"
+					 horizontalCenter="0"
+					 horizontalAlign="center"
+					 paddingLeft="10">
+				<!--Save button-->
+				<components:ImageButton id="btnSave" width="90" label="Save" chromeColor="#E0EFFB"
+										click="saveQuestion(event)" color="#000000" cornerRadius="3"
+										focusEnabled="true" fontFamily="Arial" fontSize="12"
+										fontWeight="normal" toolTip="Save"/>
+				<mx:Spacer width="25"/>
+				<mx:Spacer/>
+				<!--disabledColor="#184bbd" -->
+				<!--Cancel button-->
+				<components:ImageButton id="btnCancel" width="90" label="Cancel"
+										chromeColor="#E0EFFB" click="{rollback()}" color="#000000"
+										cornerRadius="3" focusEnabled="true" fontFamily="Arial"
+										fontSize="12" fontWeight="normal" toolTip="Cancel"/>
+
+			</mx:HBox>
+			<mx:HRule width="100%"/>
+		</mx:Canvas>
+	</s:BorderContainer>
+</components:InsidePanel>

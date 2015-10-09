@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: Questionbank.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Narayanasamy S, Sivaram SK
+
+This component displays all the Question bank category and subcategory.
+It provides functionalities like create,edit,delete Question bank category and subcategory.
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="100%"
+		   height="100%"
+		   backgroundColor="#e0effb"
+		   focusColor="#A9F9A0"
+		   initialize="{initQuestionBank()}"
+		   xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<!-- Script to include handler -->
+	<mx:Script source="QuestionBankUIHandler.as"/>
+<!--Main hbox container -->
+	<mx:HBox id="hdBox"
+			 width="100%"
+			 height="100%"
+			 backgroundColor="#e0effb"
+			 borderColor="#ffffff">
+		<!-- Left side canvas for holding question bank tree -->
+		<mx:Canvas id="canvasTreeId"
+				   width="20%"
+				   height="100%"
+				   minWidth="180"
+				   maxWidth="180"
+				   focusEnabled="false"
+				   backgroundColor="#e0effb">
+			<!-- Question bank tree -->
+			<mx:Tree id="questionBankTree"
+					 width="100%"
+					 height="95%"
+					 itemClick="{questionBankTreeClickHandler(event)}"
+					 creationComplete="treeCreationComplete()"
+					 dataProvider="{questionBankData}"
+					 itemDoubleClick="questionBankTreeDoubleClickHandler(event)"
+					 doubleClickEnabled="true"
+					 itemOpen="expandNode(event)"
+					 labelFunction="getNodes"
+					 focusEnabled="false"
+					 dataTipFunction="showToolTip"
+					 showDataTips="true">
+				<!-- Item editor for question bank name -->
+				<mx:itemEditor>
+					<mx:Component>
+						<mx:VBox>
+							<mx:Script source="ItemEditorForQuestionBankTree.as"/>
+							<!-- Text box for user to enter new question bank name-->
+							<s:TextInput id="newQBName"
+										 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"
+										 text="{getNodes(data)}"
+										 width="100%"/>
+						</mx:VBox>
+					</mx:Component>
+				</mx:itemEditor>
+			</mx:Tree>
+			<!--Add button-->
+			<components:ImageButton id="btnAdd" x="0" y="{questionBankTree.height+5}" width="60"
+									label="Create" chromeColor="#E0EFFB" click="{addNewNode()}"
+									color="#000000" cornerRadius="3" focusEnabled="true"
+									fontFamily="Arial" fontSize="12"/>
+			<!-- Edit button-->
+			<components:ImageButton id="btnEdit" x="{btnAdd.width}" y="{questionBankTree.height+5}"
+									width="60" label="Edit" chromeColor="#E0EFFB"
+									click="{editNode()}" color="#000000" cornerRadius="3"
+									fontFamily="Arial" fontSize="12"/>
+			<!--Delete button-->
+			<components:ImageButton id="btnDelete" x="{btnAdd.width+btnEdit.width}"
+									y="{questionBankTree.height+5}" width="60" label="Delete"
+									chromeColor="#E0EFFB" click="{deleteQuestionbank()}"
+									color="#000000" cornerRadius="3" fontFamily="Arial"
+									fontSize="12"/>
+
+		</mx:Canvas>
+		<!-- Canvas for holding content -->
+		<mx:Canvas id="cnvContent"
+				   width="100%"
+				   height="100%"
+				   backgroundColor="#e0effb"
+				   borderStyle="solid">
+			<mx:Canvas width="100%"
+					   height="100%"
+					   focusEnabled="false"/>
+		</mx:Canvas>
+
+	</mx:HBox>
+
+</mx:Canvas>

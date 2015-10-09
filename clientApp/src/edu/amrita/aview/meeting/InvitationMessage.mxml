@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: InvitationMessage.mxml
+Module		: meeting
+Developer(s): NidhiSarasan,Soumya M.D
+Reviewer(s)	:
+
+This file contains the code for display the meeting invitation component.
+This component contains the meeting name,moderatorname,accept button and reject button.
+It also contains a ring to alert the online participants.
+-->
+<!-- TitleWindow is used to validate InvitationMessage -->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="400"
+			   height="216"
+			   creationComplete="initInvitation()"
+			   skinClass="edu.amrita.aview.common.skins.CustomTitleWindowSkin"
+			   backgroundColor="#e0effb">
+	<!-- Script to include handler -->
+	<fx:Script source="InvitationMessageScript.as"/>
+	<!-- TextArea to show invitation message -->
+	<s:TextArea id="txtInvitationMsg"
+				x="10"
+				y="29"
+				contentBackgroundAlpha="0"
+				width="380"
+				height="116"
+				borderVisible="false"
+				editable="false"/>
+	<!--Accept Button -->
+	<s:Button id="btnAccept"
+			  x="105"
+			  y="153"
+			  label="Accept"
+			  toolTip="Click to Enter Meeting"/>
+	<!--Reject Button -->
+	<s:Button id="btnReject"
+			  x="195"
+			  y="153"
+			  label="Reject"
+			  toolTip="Click if you don't want to enter into the Meeting"/>
+	<!--SkinnableContainer hold the meeting title  -->
+	<s:SkinnableContainer x="0"
+						  y="-29"
+						  width="348"
+						  height="25">
+		<!--Label to show the title text Meeting Invitation -->
+		<s:Label x="10"
+				 y="7"
+				 width="240"
+				 text="Meeting Invitation"
+				 color="#ffffff"
+				 fontWeight="bold"
+				 fontSize="12"/>
+	</s:SkinnableContainer>
+</s:TitleWindow>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+body{
+ margin:0px;
+ padding: 0px;
+ background:#80c4d6;
+ font-family:Arial, Helvetica, sans-serif;
+ font-size:13px;
+}
+a{
+	color:#448f0c;
+}
+#parentContainer{
+	width:470px;
+	height:212px;
+	margin:0 auto;
+	background: #f7f7f7; /* Old browsers */
+	background: -moz-linear-gradient(top,  #f7f7f7 0%, #dfe2e7 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(100%,#dfe2e7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #f7f7f7 0%,#dfe2e7 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #f7f7f7 0%,#dfe2e7 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #f7f7f7 0%,#dfe2e7 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #f7f7f7 0%,#dfe2e7 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#dfe2e7',GradientType=0 ); /* IE6-9 */
+	border-radius:4px;
+}
+#linkCntr{
+	text-align: center;
+	font-weight:bold;
+	font-size:15px;
+	padding-top:68px;
+	line-height:26px;
+}
+.logo-pane{
+	width:471px;
+	margin:0 auto;
+	background:URL(images/logo-bg.png) center top no-repeat;
+	font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size:30px;
+	font-weight:bold;
+	color:#045b77;
+	text-shadow:1px 1px 1px #fff;
+	text-align:center;	
+	line-height:28px;
+	padding: 105px 0 21px;
+}
+.logo-pane span{
+	font-size:36px;
+}
+</style>	
+</head>
+<body>
+	<div class="logo-pane">
+    	Live public sessions on<br/>
+        <span>A-VIEW</span>
+    </div>
+	<div id="parentContainer">
+	<script type="text/javascript">
+		
+		function navigatePage(id)
+		{
+			var dt = new Date().getTime();
+			id = typeof id !== 'undefined' ? id : '';
+			document.getElementById("lrid").value=id;
+			document.getElementById("frm1").submit();
+		}
+		
+	</script>
+	<form method="post" id="frm1" action="go_tosession_with_name.php">
+		<input type="hidden" name="lrid" id="lrid"/>
+	</form>
+	 <div id="linkCntr">
+	  <a id="link1" href="#" onclick="navigatePage(85263);" title="Demo session">Demo session</a></br>
+	  <a id="link2" href="#" onclick="navigatePage(85264);" title="Test session 1">Test session 1</a></br>
+	  <a id="link3" href="#">Test session 2</a>
+	 </div>
+ 	</div>
+	
+</body> 
+</html>

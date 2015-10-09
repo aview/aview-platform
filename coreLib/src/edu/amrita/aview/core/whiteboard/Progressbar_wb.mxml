@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   ********************************************************************************************************************************************
+   *  Authors: Sachin S Kumar, Chitra S Pai, Anu P																				     		  *
+   *																																		  *
+   * This component  is used to show progress bar the pop up when  user delete files											                  *
+   * 																																		  *
+   *  Revisions made.                                                       																  *																																*
+   ********************************************************************************************************************************************
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="424" height="130" backgroundAlpha="1.0" backgroundColor="#D9D6D6" borderColor="#e0effb" borderStyle="solid" cornerRadius="3">
+	<mx:Script>
+		<![CDATA[
+			
+		]]>
+	</mx:Script>
+	<mx:ApplicationControlBar left="0" top="0" width="100%" color="#009DFF" fillAlphas="[1.0, 1.0]" fillColors="[#99d0ff, #ffffff]">
+		<mx:Label id="popupAppBar" color="#000000" text="Please Wait.. Page is loading..."/>
+	</mx:ApplicationControlBar>
+	<mx:ProgressBar id="bar" visible="true" x="23" y="64" width="366" height="54" label="CurrentProgress 0%" direction="right" labelPlacement="bottom" maximum="100" minimum="0" mode="manual"/>
+</mx:Canvas>
+

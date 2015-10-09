@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: PollingResultForStudent.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Sinu Rachel John
+
+PollingResultForStudent.mxml contains all the UI related code for polling result at student side.
+
+-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   backgroundColor="#e0effb"
+				   borderVisible="false"
+				   width="100%"
+				   height="100%"
+				   focusColor="#A9F9A0"
+				   verticalCenter="0"
+				   right="25" left="25"
+				   xmlns:checkBox="edu.amrita.aview.core.shared.components.checkBox.*"
+				   xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Declarations>
+		<!--Date formatter-->
+		<mx:DateFormatter id="dateFormatter"
+						  formatString="DD MMM YYYY H:N:S"/>
+	</fx:Declarations>
+	
+	<fx:Script source="PollingResultForStudentUIHandler.as"/>
+	<!--HBox contains polling buttons-->
+	<!--<mx:HBox id="hBoxPollingButtons"
+			 horizontalAlign="center"
+			 verticalAlign="middle"
+			 width="100%"
+			 height="5%">
+	</mx:HBox>-->
+	<s:Spacer height="5%" width="100%"/>
+	<!--Custom datagrid for display polling questions-->
+	<!--Fix for Bug#8861-->
+	<checkBox:CheckBoxDataGrid id="dgForPollingQuestion" width="100%" height="88%"
+							   allowMultipleSelection="true" chromeColor="#E0EFFB"
+							   dataProvider="{questions}" focusEnabled="false"
+							   itemClick="dgItemClickHandler(event)" variableRowHeight="true"
+							   wordWrap="true">
+		<checkBox:columns>
+			<!-- Custom Data Grid Column with check box -->
+			<checkBox:CheckBoxHeaderColumn width="30"
+										   click="{toggleSelection()}"
+										   editable="false"
+										   headerRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxHeaderRenderer"
+										   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxRenderer"/>
+			<!-- Data Grid Column for S.No -->
+			<mx:DataGridColumn width="45"
+							   headerText="S.No."
+							   labelFunction="getSlNo"/>
+			
+			<!-- Data Grid Column for questions -->
+			<mx:DataGridColumn minWidth="150"
+							   dataField="questionText"
+							   headerText="Questions"
+							   wordWrap="true"
+							   sortCompareFunction="{AViewStringUtil.caselessSortForField('questionText')}"/>
+			<!-- Data Grid Column for answer choice -->
+			<mx:DataGridColumn headerText="AnswerChoice"
+							   itemRenderer="edu.amrita.aview.core.evaluation.polling.StudentPollingAnswerChoiceItemRenderer"
+							   minWidth="150"/>
+			<!-- Data Grid Column for created date -->
+			<mx:DataGridColumn headerText="CreatedDate"
+							   labelFunction="formatCreatedDate"
+							   dataField="createdDate"/>
+		</checkBox:columns>
+	</checkBox:CheckBoxDataGrid>
+	<!--HBox contains result button-->
+	<mx:HBox width="100%" height="5%" cornerRadius="3" horizontalAlign="center"
+			 verticalAlign="middle">
+		<!--Button used for view polling result-->
+		<components:ImageButton label="View Result" chromeColor="#E0EFFB" click="{showResult()}"
+								color="#000000" fontFamily="Arial" horizontalCenter="0"
+								toolTip="View Polling Result"/>
+	</mx:HBox>
+</s:BorderContainer>

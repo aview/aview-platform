@@ -1,0 +1,30 @@
+/* CSS file */
+.Vscrl{
+			        downArrowUpSkin: Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/downArrow.png");
+			        downArrowOverSkin: Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/downArrow.png");
+			        downArrowDownSkin: Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/downArrow.png");
+			        upArrowUpSkin: Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/upArrow.png");
+				    upArrowOverSkin: Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/upArrow.png");
+				    upArrowDownSkin: Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/upArrow.png");
+				    thumbDownSkin: 
+				        Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/ScrollTrack_Skin.png");
+/*				        scaleGridLeft="7", scaleGridTop="5", 
+				        scaleGridRight="8", scaleGridBottom="7");*/
+				        
+				    thumbUpSkin: 
+				        Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/ScrollTrack_Skin.png");
+/*				        scaleGridLeft="7", scaleGridTop="5", 
+				        scaleGridRight="8", scaleGridBottom="7");*/
+				        
+				    thumbOverSkin: 
+				        Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/ScrollTrack_Skin.png");
+/*				        scaleGridLeft="7", scaleGridTop="5", 
+				        scaleGridRight="8", scaleGridBottom="7");*/
+				        
+				    trackSkin: 
+				        Embed(source="/edu/amrita/aview/core/documentSharing/assets/images/ScrollTrack_Skin.png");
+/*				        scaleGridLeft="7", scaleGridTop="4", 
+				        scaleGridRight="8", scaleGridBottom="6" );   */
+				   track-colors:"0b333c","0b333c";
+			      } 
+

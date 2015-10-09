@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--
+VPCR: Add file description 
+-->
+<!---
+
+File		: ChatPopOut.mxml
+Module		: chat
+Developer(s): Soumya M.D
+Reviewer(s)	: Vishnupreethi K
+-->
+
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx" skinClass="edu.amrita.aview.common.skins.CustomWindowSkin"
+				   minWidth="390" status="{Constants.COPY_RIGHT_FOOTER}"
+				   minHeight="600">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.chat.ChatComponent;
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+
+	<mx:Canvas id="chat"
+			   x="0"
+			   y="0"
+			   width="100%"
+			   height="100%"
+			   top="0"
+			   bottom="0"
+			   borderStyle="solid">
+	</mx:Canvas>
+	<!--<s:HGroup x="0"
+			  bottom="0"
+			  width="100%"
+			  height="20"
+			  horizontalAlign="center"
+			  verticalAlign="middle">
+		<s:Label text="{}"
+				 width="100%"
+				 bottom="0"
+				 fontSize="10"
+				 horizontalCenter="0"/>
+	</s:HGroup>-->
+
+</s:Window>

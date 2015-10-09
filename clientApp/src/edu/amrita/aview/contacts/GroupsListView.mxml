@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 width="100%" height="100%">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="GroupsListViewHandler.as">
+		
+	</fx:Script>
+	<mx:VBox width="100%"
+			 height="100%"
+			 paddingTop="0"
+			 verticalGap="0">
+		<mx:HBox width="100%"
+				 id="allContactsContainer"
+				 height="40"
+				 backgroundColor="#FFFFFF"
+				 paddingBottom="2"
+				 paddingLeft="3"
+				 paddingRight="8"
+				 paddingTop="3"
+				 verticalAlign="middle">
+			<s:Label id="lblMyContacts" x="9" y="9" width="100%" height="22" buttonMode="true"
+					 click="myContacts_clickHandler(event)" color="#7D7D7D"
+					 fontWeight="bold" paddingLeft="10" paddingTop="0"
+					 text="{'My Contacts ('+groupListModel.allContactCount+')'}" textAlign="left" verticalAlign="middle"/>
+			
+			<s:Image click="shareGroup()"
+					 source="{shareGroupIcon}"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 toolTip="Share Group"
+					 verticalAlign="top"/>
+			<s:Image click="startGroupChat(event)"
+					 source="{groupChatIcon}"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 toolTip="Chat with the entire group"
+					 verticalAlign="top"/>
+			<s:Image click="addGroup(event)"
+					 source="{add_group}"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 toolTip="Add Group"
+					 verticalAlign="top"/>
+			<s:Image click="onClickEdit(event)"
+					 source="{edit_group}"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 toolTip="Edit Group"
+					 verticalAlign="top"/>
+			<s:Image click="onClickDelete(event)"
+					 source="{delete_group}"
+					 useHandCursor="true"
+					 buttonMode="true"
+					 toolTip="Delete Group"
+					 verticalAlign="top"/>
+		</mx:HBox>
+		<mx:HRule width="100%"
+				  height="1"
+				  chromeColor="#C9C9C9"/>
+		
+		<s:List id="groupList"
+				width="100%"
+				height="100%"
+				alternatingItemColors="[#ffffff,#ffffff]"
+				borderColor="#A5A5A5"
+				borderVisible="false"
+				click="onClickGroupList()"
+				dataProvider="{groupListModel.allGroupsAndContacts}"
+				focusColor="#E3EEFA"
+				itemRenderer="edu.amrita.aview.contacts.itemRenderers.GroupListItem"
+				labelField="contactGroupName"
+				rollOverColor="#E3EEFA"
+				selectionColor="#E3EEFA"
+				styleName="contactList"
+				/>
+		
+		<mx:HBox width="100%"
+				 id="receivedContactsContainer"
+				 height="40"
+				 backgroundColor="#FFFFFF"
+				 paddingBottom="2"
+				 paddingLeft="3"
+				 paddingRight="8"
+				 paddingTop="3"
+				 verticalAlign="middle">
+			<s:Label text="Shared Groups" color="#7D7D7D"
+					 fontWeight="bold" paddingLeft="10" paddingTop="0"
+					 textAlign="left" verticalAlign="middle"/>
+			
+			</mx:HBox>
+		<mx:HRule width="100%"
+				  height="1"
+				  chromeColor="#C9C9C9"/>
+		<s:List id="receivedGroupsList"
+				width="100%"
+				height="100%"
+				styleName="contactList"
+				dataProvider="{groupListModel.receivedGroups}"
+				borderVisible="false"
+				focusColor="#E3EEFA"
+				itemRenderer="edu.amrita.aview.contacts.itemRenderers.ReceivedGroupListItem">
+			
+		</s:List>
+	</mx:VBox>
+</s:Group>

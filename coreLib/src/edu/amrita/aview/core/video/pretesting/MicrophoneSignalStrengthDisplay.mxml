@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: MicrophoneSignalStrengthDisplay.mxml
+Module		: Video
+Developer(s): Ashish
+Reviewer(s)	: Narayanasamy S
+
+File contains all the UI and its functionalities of displaying the signal strength of microphone.
+-->
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="170"
+		   height="82">
+	<!-- Script to include handler -->
+	<mx:Script source="MicrophoneSignalStrengthDisplayScript.as"/>
+	<!-- Following canvas for showing the signal strength -->
+	<mx:Canvas x="43"
+			   y="59"
+			   id="cnvs10"
+			   width="6"
+			   height="10"
+			   backgroundColor="#FFFFFF">
+
+	</mx:Canvas>
+	<mx:Canvas x="50"
+			   y="54"
+			   id="cnvs20"
+			   width="6"
+			   height="15"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+	<mx:Canvas x="57"
+			   y="49"
+			   width="6"
+			   id="cnvs30"
+			   height="20"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+	<mx:Canvas x="64"
+			   id="cnvs40"
+			   y="44"
+			   width="6"
+			   height="25"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+	<mx:Canvas x="71"
+			   id="cnvs50"
+			   y="39"
+			   width="6"
+			   height="30"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+	<mx:Canvas x="78"
+			   id="cnvs60"
+			   y="34"
+			   width="6"
+			   height="35"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+	<mx:Canvas x="85"
+			   y="29"
+			   id="cnvs70"
+			   width="6"
+			   height="40"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+	<mx:Canvas x="92"
+			   id="cnvs80"
+			   y="24"
+			   width="6"
+			   height="45"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+	<mx:Canvas x="99"
+			   id="cnvs90"
+			   y="19"
+			   width="6"
+			   height="50"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+	<mx:Canvas x="106"
+			   id="cnvs100"
+			   y="14"
+			   width="6"
+			   height="55"
+			   backgroundColor="#FFFFFF">
+	</mx:Canvas>
+
+
+</mx:Canvas>

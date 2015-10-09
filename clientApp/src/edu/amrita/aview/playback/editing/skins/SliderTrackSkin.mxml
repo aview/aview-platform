@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: SliderTrackSkin.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains the styling of slider track.
+
+-->
+<!-- Main UI component -->
+<mx:UIComponent xmlns:mx="http://www.adobe.com/2006/mxml"
+				initialize="init()">
+
+	<mx:Script>
+		<![CDATA[
+			/**
+			 * Corner styling of track.
+			 */
+			private var cornerRadius:uint=0;
+			
+			/**
+			 * Array for gradient color.
+			 */
+			private var gradientColorsArray:Array=[0x000000, 0xffffff];
+			
+			/**
+			 * @private
+			 * Function sets the height.
+			 *
+			 * @param void
+			 * @return void
+			 */
+			private function init():void
+			{
+				this.height=0;
+			}
+			
+			/**
+			 * @protected
+			 * Function overrides the display list property.
+			 *
+			 * @param unscaledWidth of type Number
+			 * @param unscaledHeight of type Number
+			 * @return void
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				graphics.clear();
+				var matrix:Matrix=new Matrix();
+				matrix.createGradientBox(unscaledWidth, unscaledHeight, (Math.PI / 180) * 90);
+				graphics.beginGradientFill(GradientType.LINEAR, gradientColorsArray, [1, 1], [0, 255], matrix);
+				graphics.drawRoundRect(-unscaledHeight / 2, 0, unscaledWidth + unscaledHeight, unscaledHeight, cornerRadius, cornerRadius);
+			}
+		]]>
+	</mx:Script>
+</mx:UIComponent>

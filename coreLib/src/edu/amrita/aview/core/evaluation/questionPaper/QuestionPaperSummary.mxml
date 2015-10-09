@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuestionPaperSummary.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to view the list of question paper created by the user who is logged in.
+It shows details like question paper name , total questions , created user , created date ,
+marks and status of the question paper (complete or incomplete) .
+-->
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 xmlns:as="edu.amrita.aview.core.evaluation.components.Extended.*"
+		 creationPolicy="all"
+		 creationComplete="creationCompleteHandler()"
+		 xmlns:components="edu.amrita.aview.core.shared.components.*"
+		 focusColor="#A9F9A0">
+	<mx:Script source="QuestionPaperSummaryUIHandler.as"/>
+	<!-- The formatter for date -->
+	<mx:DateFormatter id="dateFormatter"
+					  formatString="DD MMM YYYY H:N:S"/>
+	<s:DataGrid id="dgQuestionPaperSummary"
+				width="100%"
+				y="30"
+				height="100%"
+				variableRowHeight="true"
+				dataProvider="{questionPapers}"
+				selectionMode="singleRow"
+				focusEnabled="false"
+				textAlign="left" color="#000000">
+		<s:columns>
+			<s:ArrayList>
+				<!-- Column for serial nos. -->
+				<!--Fix for Bug#14821, Bug#11216-->
+				<s:GridColumn width="45"
+							  headerText="S.No."
+							  dataField="displayIndex"/>
+				<!-- Column for question paper name -->
+				<s:GridColumn dataField="questionPaperName"
+							  headerText="Question Paper Name"
+							  minWidth="150"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('questionPaperName')}"/>
+				<!-- Column for total questions -->
+				<s:GridColumn dataField="totalQns"
+							  headerText="Total Questions"
+							  minWidth="50"/>
+				<!-- Column for max total marks -->
+				<s:GridColumn dataField="maxTotalMarks"
+							  headerText="Max. Total Marks"
+							  minWidth="45"/>
+				<!-- Column for current total marks -->
+				<s:GridColumn dataField="currentTotalMarks"
+							  headerText="Current Total Marks"
+							  minWidth="45"/>
+				<!-- Column for creator user name -->
+				<s:GridColumn dataField="createdByUserName"
+							  headerText="Created By"
+							  minWidth="50"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('createdByUserName')}"/>
+				<!-- Column for created date -->
+				<s:GridColumn labelFunction="formatCreatedDate"
+							  dataField="createdDate"
+							  headerText="Created Date"
+							  minWidth="50"/>
+				<!-- Column for modifier user name -->
+				<!--<s:GridColumn dataField="modifiedByUserName"
+							  headerText="Modified By"
+							  minWidth="50"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('modifiedByUserName')}"/>-->
+				<!-- Column for modified date -->
+				<!--<s:GridColumn labelFunction="formatModifiedDate"
+							  dataField="modifiedDate"
+							  headerText="Modified Date"
+							  minWidth="50"/>	-->		
+				<!-- Column for status -->
+				<!-- Fix for Bug#14821 -->
+				<s:GridColumn labelFunction="getStatus"
+							  headerText="Status"
+							  minWidth="50"
+							  dataField="isComplete"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('isComplete')}"/>
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+
+</mx:VBox>

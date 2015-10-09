@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" cornerRadius="20">
+	<mx:VideoDisplay id="video" top="0" bottom="40" right="12" left="12"/>
+	<mx:HBox x="126" bottom="10">
+		<mx:HSlider width="40" toolTip="Volume" id="vlmBtn"/>
+	<mx:Button label="Mute  " id="muteBtn"/>
+	</mx:HBox>
+</mx:Panel>

@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--VVCR: Needs complete documentation -->
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" 
+					  color="0x000000" xmlns:local="*" autoLayout="true" 
+					  creationComplete="init(event)" 
+					  xmlns:PlayerControl="edu.amrita.aview.core.playback.player.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="onStreamReady",type="edu.amrita.aview.core.playback.events.AviewPlayerEvent")]
+		[Event(name="onStreamNotReady",type="edu.amrita.aview.core.playback.events.AviewPlayerEvent")]
+		[Event(name="onPlayComplete",type="edu.amrita.aview.core.playback.events.AviewPlayerEvent")]
+	</fx:Metadata>
+	<!--<s:BorderContainer height="100%" width="100%" backgroundColor="0xFFFFFF"
+	borderColor="0xff0000" borderStyle="solid">-->
+	
+	<s:Group width="100%" height="100%">
+		<mx:VideoDisplay id="videoDisplay" width="100%" height="100%" horizontalCenter="0" verticalCenter="0" />
+		<PlayerControl:PlayerControl isMute="false" id="playerControl" alpha=".5" visible="{_showPlayerControlComp}" bottom="0" width="100%" height="15%" isSeekBar="false" initialize="{ playerControl.btnPlay.visible=false;playerControl.btnStop.visible=false;}"/>
+		<s:Button id="muteButton" height="21" width="20" bottom="0" right="0" visible="{_showMuteButton}" alpha=".5"/>
+	</s:Group>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.common.service.MediaServerConnection;
+			import edu.amrita.aview.core.playback.events.AviewPlayerEvent;
+			import edu.amrita.aview.core.playback.player.MediaEvents.OnVolumeChangedEvent;
+			
+			import mx.core.mx_internal;
+			import mx.events.FlexEvent;
+			
+			//videoPlayer
+			/* private function init():void
+			{
+			//videoDisplay.mx_internal::videoPlayer.
+			videoDisplay.seek(0);
+			} */
+			//[Bindable]
+			private var _showPlayerControlComp:Boolean=false;
+			//[Bindable]
+			private var _showMuteButton:Boolean=false;
+			private var _fmsUrl:String;
+			private var _vodFolderPath:String;
+			private var _videoFileName:String;
+			private var videoSource:String;
+			private  var _netConnectionVideo:MediaServerConnection=null;
+			private var netStreamVideo:NetStream;
+			private var netStreamClient:Object=new Object();
+		 	[Bindable]
+			[Embed("../../assets/images/speaker_on.png")]
+			private var volumeIcon:Class;
+			[Bindable]
+			[Embed("../../assets/images/mute.png")] 
+			private var muteIcon:Class;
+			private var _playerState:String;
+			private var currentVideoDuration:Number
+			private var _isStreamReady:Boolean=false;
+			private var streamPlayComplere:Boolean=false;
+			private var _seekValue:Number;
+			private var _isLocalPlayback:Boolean=false;
+			[Bindable]
+			private var _videoDisplayName:String;
+			private var _playerVolume:Number=6;
+			private var _isMute:Boolean;
+			private var isPlayerInitialized:Boolean=false
+			
+			/* public function set isPlaying(isPlaying:Boolean):void
+			{
+			this._isPlaying=isPlaying;
+			} */
+			//[Inspectable(defaultValue="false", enumeration="true,false")]
+			
+			public function get isLocalPlayback():Boolean
+			{
+				return _isLocalPlayback;
+			}
+
+			public function set isLocalPlayback(value:Boolean):void
+			{
+				_isLocalPlayback = value;
+			}
+
+			private function playServerVideoStream():void
+			{
+				
+				netStreamVideo= new NetStream(_netConnectionVideo.netConnection);
+				netStreamVideo.client=netStreamClient;
+				netStreamClient.onPlayStatus=onPlayStatusHandler;
+				netStreamClient.onMetaData=onMetaDataHandler;
+				netStreamVideo.bufferTime=15;
+				netStreamVideo.addEventListener(NetStatusEvent.NET_STATUS, streamHandler);
+				videoDisplay.mx_internal::videoPlayer.attachNetStream(netStreamVideo);            		
+				videoDisplay.mx_internal::videoPlayer.visible = true;  
+				netStreamVideo.addEventListener(NetStatusEvent.NET_STATUS, streamHandler);
+				var fileExtension:String=_videoFileName.substring((_videoFileName.length-3),_videoFileName.length)
+				if(fileExtension!="flv")
+					netStreamVideo.play("mp4:"+_vodFolderPath+_videoFileName,0,-1);
+				else if(fileExtension=="flv") 
+					netStreamVideo.play(_vodFolderPath+_videoFileName.substring(0,(_videoFileName.length-4))); 
+				
+			}
+			private function playLocalVideo():void
+			{
+				videoDisplay.mx_internal::videoPlayer.play(_vodFolderPath+_videoFileName);
+			}
+			private function streamHandler(evnt:NetStatusEvent):void
+			{
+				//if(Log.isInfo()) log.info("In streamHandler- Status:-"+evnt.info.code);
+				if(evnt.info.code=="NetStream.Buffer.Full")
+				{	
+					dispatchStreamReady()
+					
+				}
+				if(evnt.info.code=="NetStream.Play.Start")
+				{				
+					dispatchStreamReady()
+				}
+				if(evnt.info.code=="NetStream.Buffer.Empty")
+				{
+					dispatchStreamNotReady()
+				}
+				
+			}
+			private function dispatchStreamNotReady():void
+			{
+				netStreamVideo.bufferTime=10
+				if(!streamPlayComplere && netStreamVideo.time-1<=currentVideoDuration)
+				{
+					_isStreamReady=false;
+					dispatchEvent(new AviewPlayerEvent(AviewPlayerEvent.STREAM_NOT_READY));
+				}
+				else
+				{
+					streamPlayComplere=false;
+				}
+			}
+			private function dispatchStreamReady():void
+			{
+				_isStreamReady=true;
+				netStreamVideo.bufferTime=15;
+				dispatchEvent(new AviewPlayerEvent(AviewPlayerEvent.STREAM_READY));
+			}
+			private function onMetaDataHandler(info:Object):void
+			{
+				currentVideoDuration=info.duration ;
+			}
+			private function onPlayStatusHandler(info:Object):void
+			{
+				///if(Log.isInfo()) log.info("In onPlayStatusHandler- Status:-"+info.code);
+				if(info.code=="NetStream.Play.Complete")
+				{  
+					streamPlayComplere=true;
+					_isStreamReady=false
+					dispatchEvent(new AviewPlayerEvent(AviewPlayerEvent.STREAM_PLAY_COPMLETE));
+				}
+			}
+			
+			public function set isMute(isMute:Boolean):void
+			{
+				_isMute=isMute;
+				if(isPlayerInitialized)
+				{
+					if(isMute)
+					{
+						changeToMuteIcon()
+					}
+					else
+					{
+						changeToVolumeIcon()						
+					}
+				}
+			
+					
+			}	
+			public function set playerVolume(playerVolume:Number):void
+			{
+				_playerVolume=playerVolume;
+							
+			}	
+			public function set netConnectionVideo(netConnectionVideo:MediaServerConnection):void
+			{
+				_netConnectionVideo=netConnectionVideo;
+				
+			}	
+			public function set videoDisplayName(videoDisplayName:String):void
+			{
+				_videoDisplayName=videoDisplayName;
+				
+			}
+			public function get videoDisplayName():String
+			{
+				return _videoDisplayName;
+				
+			}
+			public function set seekValue(seekValue:Number):void
+			{
+				_seekValue=seekValue;
+				seekVideo(_seekValue);
+				
+			}	
+			public function set showPlayerControlComp(showPlayerControlComp:Boolean):void
+			{
+				_showPlayerControlComp=showPlayerControlComp;
+				if(playerControl)
+					playerControl.visible=showPlayerControlComp;
+			}	
+			//[Inspectable(defaultValue="false", enumeration="true,false")]
+			public function set showMuteButton(showMuteButton:Boolean):void
+			{
+				_showMuteButton=showMuteButton;
+				if(muteButton)
+					muteButton.visible=showMuteButton;
+				
+			}	
+			public function get isStreamReady():Boolean
+			{
+				return _isStreamReady;
+			}
+			public function get playerState():String
+			{
+				return _playerState
+			}
+			[Inspectable]
+			public function set fmsUrl(fmsUrl:String):void
+			{
+				this._fmsUrl=fmsUrl;
+			}
+			[Inspectable]
+			public function set vodFolderPath(vodFolderPath:String):void
+			{
+				this._vodFolderPath=vodFolderPath;
+			}
+			[Inspectable]
+			public function set videoFileName(videoFileName:String):void
+			{
+				this._videoFileName=videoFileName;
+			}
+			protected function init(event:FlexEvent):void
+			{
+				isPlayerInitialized=true;
+				addListeners()
+				if(!_isLocalPlayback)
+				{
+					playServerVideoStream();
+				}
+				else
+				{
+					playLocalVideo();
+				}
+				
+				/* displayNameLabel.text=_videoDisplayName; */
+				videoDisplay.toolTip=_videoDisplayName
+				playerControl.visible=_showPlayerControlComp;	
+				muteButton.visible=_showMuteButton;
+				if(_seekValue>0)
+				{
+					seekVideo(_seekValue);
+					_seekValue=0;
+				}
+				
+				if(_isMute)
+				{
+					muteVideo()
+					volumeBeforeMute =_playerVolume/10;
+				}
+				else
+				{
+					setVolume(_playerVolume/10);
+				}
+				
+					
+			}
+			
+			
+			
+			private function mouseOverHandler(evnt:MouseEvent):void
+			{
+				evnt.currentTarget.alpha=1;
+			}
+			private function mouseOutHandler(evnt:MouseEvent):void
+			{
+				evnt.currentTarget.alpha=.5;
+			}
+			private function muteVideo():void
+			{
+				if(netStreamVideo)
+				{
+					volumeBeforeMute= videoDisplay.volume;
+				}
+				else
+				{
+					volumeBeforeMute=_playerVolume;
+				}
+				setVolume(0);
+				changeToMuteIcon();
+			}
+			private function unMuteVideo():void
+			{
+				setVolume(volumeBeforeMute);
+				changeToVolumeIcon();
+			}
+			private function muteButtonClickHandler(evnt:MouseEvent):void
+			{
+				if(muteButton.getStyle("icon") == volumeIcon)
+				{
+					muteVideo()
+				}
+				else
+				{
+					unMuteVideo();						
+				}
+			
+			}
+			private var volumeBeforeMute:Number;
+			private function playercontrolVolumeChange(evnt:OnVolumeChangedEvent):void
+			{
+				evnt.currentTarget.value
+				 if(playerControl.isMute)
+				{
+					muteButton.setStyle("icon",muteIcon);
+					setVolume(0);
+				}
+				else
+				{
+					muteButton.setStyle("icon",volumeIcon)
+					setVolume(evnt.currentVolume/10);
+				} 
+				
+			}
+			private function addListeners():void
+			{
+				
+				if(!muteButton.hasEventListener(MouseEvent.MOUSE_OVER))
+					muteButton.addEventListener(MouseEvent.MOUSE_OVER,mouseOverHandler);
+				if(!muteButton.hasEventListener(MouseEvent.MOUSE_OUT))
+					muteButton.addEventListener(MouseEvent.MOUSE_OUT,mouseOutHandler);
+				//if(!muteButton.hasEventListener(MouseEvent.CLICK))
+					muteButton.addEventListener(MouseEvent.CLICK,muteButtonClickHandler);
+				if(!playerControl.hasEventListener(MouseEvent.MOUSE_OVER))
+					playerControl.addEventListener(MouseEvent.MOUSE_OVER,mouseOverHandler);
+				if(!playerControl.hasEventListener(MouseEvent.MOUSE_OUT))
+					playerControl.addEventListener(MouseEvent.MOUSE_OUT,mouseOutHandler);
+				if(!playerControl.hasEventListener("OnVolumeChangedEvent"))
+					playerControl.addEventListener("OnVolumeChangedEvent",playercontrolVolumeChange);
+				
+						
+						
+					
+			}
+			public function removeListners():void
+			{
+				if(netStreamVideo!=null && netStreamVideo.hasEventListener(NetStatusEvent.NET_STATUS))
+					netStreamVideo.removeEventListener(NetStatusEvent.NET_STATUS, streamHandler);
+			
+				if(muteButton.hasEventListener(MouseEvent.MOUSE_OVER))
+					muteButton.removeEventListener(MouseEvent.MOUSE_OVER,mouseOverHandler);
+				if(muteButton.hasEventListener(MouseEvent.MOUSE_OUT))
+					muteButton.removeEventListener(MouseEvent.MOUSE_OUT,mouseOutHandler);
+				if(muteButton.hasEventListener(MouseEvent.CLICK))
+					muteButton.removeEventListener(MouseEvent.CLICK,muteButtonClickHandler);
+				if(playerControl.hasEventListener(MouseEvent.MOUSE_OVER))
+					playerControl.removeEventListener(MouseEvent.MOUSE_OVER,mouseOverHandler);
+				if(playerControl.hasEventListener(MouseEvent.MOUSE_OUT))
+					playerControl.removeEventListener(MouseEvent.MOUSE_OUT,mouseOutHandler);
+				if(playerControl.hasEventListener("OnVolumeChangedEvent"))
+					playerControl.removeEventListener("OnVolumeChangedEvent",playercontrolVolumeChange);
+				
+			}
+			public function stopPlaying():void
+			{
+				removeListners();
+				if(!_isLocalPlayback)
+				{
+					videoDisplay.mx_internal::videoPlayer.attachNetStream(null); 
+					netStreamVideo=null;
+				}
+				else
+				{
+					videoDisplay.mx_internal::videoPlayer.clear();
+					videoDisplay.source=null;
+				}
+				//videoDisplay.stop();
+				//videoDisplay.source="";
+			}
+			public function resumePlaying():void
+			{
+				if(!_isLocalPlayback && netStreamVideo!=null)
+				netStreamVideo.resume();
+				else if(_isLocalPlayback)
+				{
+					videoDisplay.mx_internal::videoPlayer.play();
+				}
+			}
+			public function pausePlaying():void
+			{
+				if(!_isLocalPlayback)
+				{
+					netStreamVideo.pause();
+				}
+				else
+				{
+					videoDisplay.mx_internal::videoPlayer.pause();
+				}
+			}
+			
+			public function seekVideo(seekValue:Number):void
+			{
+				if(netStreamVideo!=null && !_isLocalPlayback)
+				{
+					netStreamVideo.seek(seekValue);
+				}
+				else if(_isLocalPlayback && seekValue>0 && videoDisplay.state!="disconnected")
+				{
+					videoDisplay.playheadTime=seekValue;					
+				}
+			}
+			private var videoVolume:SoundTransform = new SoundTransform();
+			public function setVolume(volume:Number):void
+			{
+				if(!isLocalPlayback && netStreamVideo!=null)
+				{
+					videoVolume.volume=volume;
+					netStreamVideo.soundTransform=videoVolume;
+				}
+				else if(_isLocalPlayback)
+				{
+					videoDisplay.mx_internal::videoPlayer.volume=volume;
+					
+				}
+				if(!_isMute)
+				{
+					playerControl.volume.value=volume*10;
+				}
+				
+			}
+			private function changeToVolumeIcon():void
+			{
+				 if(muteButton.getStyle("icon") == muteIcon)
+				{
+					muteButton.setStyle("icon",volumeIcon);
+				}
+				if(playerControl.isMute)
+				{
+					playerControl.isMute=false
+				} 
+			}
+			private function changeToMuteIcon():void
+			{
+				 if(muteButton.getStyle("icon") == volumeIcon)
+				{
+					muteButton.setStyle("icon",muteIcon);
+				}
+				if(!playerControl.isMute)
+				{
+					playerControl.isMute=true
+				} 
+			}
+			
+		]]>
+	</fx:Script>
+</s:SkinnableContainer>

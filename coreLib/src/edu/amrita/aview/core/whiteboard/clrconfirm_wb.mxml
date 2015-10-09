@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+   ********************************************************************************************************************************************
+   *  Authors: Sachin S Kumar, Chitra S Pai, Anu P																				     		  *
+   *																																		  *
+   * This component  is used to show the pop up when  user press the clear button															  *
+   * 																																		  *
+   *  Revisions made.                                                       																  *																																*
+   ********************************************************************************************************************************************
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="424" height="130" backgroundAlpha="1.0" backgroundColor="#e0effb"
+		   borderColor="#000000" borderStyle="solid" cornerRadius="3">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			
+			/**
+			 * This function is used to remove the pop_up
+			 */
+			public function removeme():void
+			{
+				PopUpManager.removePopUp(this);
+				//if user login using the multipple mode
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW)
+				{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW.wbComp.clearflagAlert=0;
+				}
+				// If the user login using the consolidate mode
+				else
+				{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.wbComp.clearflagAlert=0;
+				}
+			}
+			
+			/**
+			 * This function  call method to clear the whiteboard
+			 */
+			public function pleasedeleteme():void
+			{
+				var eve:Event;
+				//if user login using the multipple mode
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW)
+				{
+					//Clear the the white board in the multipple mode
+					mx.core.FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW.wbComp.clearScratchPad(eve);
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW.wbComp.clearflagAlert=0;
+				}
+				// If the user login using the consolidate mode
+				else
+				{
+					//Clear the the white board in the consolidate mode
+					mx.core.FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.wbComp.clearScratchPad(eve);
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.wbComp.clearflagAlert=0;
+				}
+				
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:ApplicationControlBar left="0" top="0" width="100%" color="#009DFF" fillAlphas="[1.0, 1.0]" fillColors="[#99d0ff, #ffffff]">
+		<mx:Label color="#000000" text="Confirm Whiteboard Clear"/>
+	</mx:ApplicationControlBar>
+	<mx:Label width="100%" color="#000000" fontSize="12" horizontalCenter="0" text="Are you sure you want to clear the whiteboard ?" textAlign="center" verticalCenter="0"/>
+	<mx:Button id="btn_yes_clr" x="143" y="82" width="65" label="Yes" click="pleasedeleteme()" color="#000000"/>
+	<mx:Button x="218" y="82" width="63" label="No" click="removeme()" color="#000000"/>
+</mx:Canvas>
+

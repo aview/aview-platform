@@ -1,0 +1,748 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: LoginView.mxml
+Module		: Login
+Developer(s): Salil George, Ganesan A, Jeevanantham N, Meena S
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+LoginView component is used to login to the application.
+It contains two tyes of login (Normal and Biometric).
+
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="Login"
+		backgroundColor="#071124"
+		initialize="intialize(event)"
+		xmlns:dropDownList="views.components.customComboBox.dropDownList.*">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.biometric.CameraSelectionFormMobile;
+			import edu.amrita.aview.common.components.messageBox.MessageBox;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.entry.ForgotPasswordMobile;
+			import edu.amrita.aview.core.login.boilerplate.Strings;
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			
+			import mx.collections.ArrayList;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.http.HTTPService;
+			import mx.utils.object_proxy;
+			
+			import spark.components.supportClasses.StyleableStageText;
+			import spark.components.supportClasses.StyleableTextField;
+			import spark.events.PopUpEvent;
+			
+			import views.toolSets.AddServerComponent;
+			/**
+			 * Holds camera object
+			 */
+			public var camera:Camera;
+			/**
+			 * Holds camera names
+			 */
+			private var camNames:Object=Camera.names;
+			/**
+			 * Camera selection component
+			 */
+			private var cameraSelectionComp:CameraSelectionFormMobile;
+			private var addComp:AddServerComponent;
+			private var txtServerInput:String;
+			private var uintServerIP:uint;
+			private var isExtraCompOened:Boolean = false;
+
+			/**
+			 * @public
+			 *
+			 * To enable the noraml login layouts
+			 * 
+			 * @param null
+			 * @return void
+			 */
+			public function resetComponents():void
+			{
+				groupPwd.visible=true;
+				groupPwd.includeInLayout=true;
+				txtLoginPass.visible=true;
+				txtLoginPass.includeInLayout=true;
+				lblPassword.visible=true;
+				lblPassword.includeInLayout=true;
+			}
+
+			/**
+			 * @public
+			 *
+			 * To modify the login layouts based on the user selection
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			public function popupCloseHandler(event:Event):void
+			{
+				//If selectionMode is "ok", enable the biometric login UI components and disable noraml login UI components
+				//Otherwise enable noraml login UI components
+				if (event.currentTarget.selectionMode == "ok")
+				{
+					camera=Camera.getCamera(event.currentTarget.preLogin.cameraIndex);
+					//If camera object is not null, set video width and height.
+					//Otherwise shows the info message
+					if (camera != null)
+					{
+
+						camera.addEventListener(ActivityEvent.ACTIVITY, activityHandler);
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.video=FlexGlobals.topLevelApplication.mainApp.prepareLogin.videoFrame;
+						//If vidDisplay width is zero, assign imgAviewLogo width and height to video
+						//Otherwise assign vidDisplay width and height to video
+						if (vidDisplay.width == 0)
+						{
+							camera.setMode(imgAviewLogo.width * 2, imgAviewLogo.height * 2, 15, true);
+							camera.setQuality(0, 100);
+							FlexGlobals.topLevelApplication.mainApp.prepareLogin.videoFrame.attachCamera(camera);
+							FlexGlobals.topLevelApplication.mainApp.prepareLogin.video.width=imgAviewLogo.width;
+							FlexGlobals.topLevelApplication.mainApp.prepareLogin.video.height=imgAviewLogo.height;
+						}
+						else
+						{
+							camera.setMode(vidDisplay.width * 2, vidDisplay.height * 2, 15, true);
+							camera.setQuality(0, 100);
+							FlexGlobals.topLevelApplication.mainApp.prepareLogin.videoFrame.attachCamera(camera);
+							FlexGlobals.topLevelApplication.mainApp.prepareLogin.video.width=vidDisplay.width;
+							FlexGlobals.topLevelApplication.mainApp.prepareLogin.video.height=vidDisplay.height;
+						}
+						
+						vidDisplay.addChild(FlexGlobals.topLevelApplication.mainApp.prepareLogin.video);
+						vidDisplay.visible=true;
+						vidDisplay.includeInLayout=true;
+						imgAviewLogo.visible=false;
+						imgAviewLogo.includeInLayout=false;
+						txtLoginPass.text="";
+						txtLoginPass.includeInLayout="";
+						btnSettings.visible=true;
+						btnSettings.includeInLayout=true;
+						FlexGlobals.topLevelApplication.callLater(btnSettingsCreationCompleteHandler)
+						groupPwd.visible=false;
+						groupPwd.includeInLayout=false;
+						txtLoginPass.visible=false;
+						txtLoginPass.includeInLayout=false;
+						lblPassword.visible=false;
+						lblPassword.includeInLayout=false;
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.loginTypeIndex=1;
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.cameraIndex=event.currentTarget.preLogin.cameraIndex;
+					}
+					else
+					{
+						MessageBox.show("Please check your camera connection.", "Device Error", MessageBox.MB_OK, this, resetUserName);
+						btnLoginType.selected=true;
+						btnSettings.visible=false;
+						btnSettings.includeInLayout=false;
+						btnLoginType.width=txtLoginUser.width;
+						resetComponents();
+					}
+				}
+				else
+				{
+					btnLoginType.selected=true;
+					btnSettings.visible=false;
+					btnSettings.includeInLayout=false;
+					btnLoginType.width=txtLoginUser.width;
+					event.currentTarget.selectionMode=null;
+					FlexGlobals.topLevelApplication.mainApp.prepareLogin.cameraIndex=null;
+					resetComponents();
+					FlexGlobals.topLevelApplication.mainApp.prepareLogin.loginTypeIndex=0;
+				}
+				
+			}
+			/**
+			 * @public
+			 *
+			 * To open the camera settings window
+			 *
+			 * @param event of ChangeEvent
+			 * @return void
+			 */
+			public function cameraSettings():void
+			{
+				cameraSelectionComp=new CameraSelectionFormMobile;
+				cameraSelectionComp.open(this, true);
+				cameraSelectionComp.addEventListener(PopUpEvent.CLOSE, popupSettingsHandler);
+				PopUpManager.centerPopUp(cameraSelectionComp);
+				cameraSelectionComp.isPopUp=true;
+			}
+			/**
+			 * @public
+			 *
+			 * To add video dispaly, when user selects biometric login
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			public function popupSettingsHandler(event:Event):void
+			{
+				if (event.currentTarget.selectionMode == "ok")
+				{
+					camera=Camera.getCamera(event.currentTarget.preLogin.cameraIndex);
+					if (camera != null)
+					{
+						camera.setMode(640, 480, 15, true);
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.videoFrame.attachCamera(camera);
+						camera.addEventListener(ActivityEvent.ACTIVITY, activityHandler);
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.video=FlexGlobals.topLevelApplication.mainApp.prepareLogin.videoFrame;
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.video.width=vidDisplay.width;
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.video.height=vidDisplay.height;
+						vidDisplay.addChild(FlexGlobals.topLevelApplication.mainApp.prepareLogin.video);
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.loginTypeIndex=1;
+						FlexGlobals.topLevelApplication.mainApp.prepareLogin.cameraIndex=event.currentTarget.preLogin.cameraIndex;
+					}
+					else
+					{
+						MessageBox.show("Please check your camera connection.", "Device Error", MessageBox.MB_OK, this, null);
+					}
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * Set cameraActivation as true when user selects biometric login
+			 *
+			 * @param event of ActivityEvent
+			 * @return void
+			 */
+			private function activityHandler(event:ActivityEvent):void
+			{
+				FlexGlobals.topLevelApplication.mainApp.prepareLogin.cameraActivation=true;
+			}
+			/**
+			 * @private
+			 *
+			 * To change the login button width
+			 *
+			 * @return void
+			 */
+			private function btnSettingsCreationCompleteHandler():void
+			{
+				btnLoginType.width=btnLoginType.width - btnSettings.width;
+			}
+			/**
+			 * @protected
+			 *
+			 * To change the login type
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			protected function btnLoginTypeChangeHandler(event:Event):void
+			{
+				if (!btnLoginType.selected)
+				{
+					FlexGlobals.topLevelApplication.authenticationMode=Constants.BIOMETRIC_LOGIN;
+					cameraSelectionComp=new CameraSelectionFormMobile;
+					cameraSelectionComp.open(this, true);
+					cameraSelectionComp.addEventListener(PopUpEvent.CLOSE, popupCloseHandler);
+					PopUpManager.centerPopUp(cameraSelectionComp);
+					cameraSelectionComp.isPopUp=true;
+					groupPwd.visible=false;
+					groupPwd.includeInLayout=false;
+					txtLoginPass.visible=false;
+					txtLoginPass.includeInLayout=false;
+					lblPassword.visible=false;
+					lblPassword.includeInLayout=false;
+				}
+				else
+				{
+					FlexGlobals.topLevelApplication.authenticationMode=Constants.NORMAL_LOGIN;
+					imgAviewLogo.visible=true;
+					imgAviewLogo.includeInLayout=true;
+					if (vidDisplay.visible)
+					{
+						vidDisplay.removeChild(FlexGlobals.topLevelApplication.mainApp.prepareLogin.video);
+						vidDisplay.visible=false;
+						vidDisplay.includeInLayout=false;
+					}
+					
+					FlexGlobals.topLevelApplication.mainApp.prepareLogin.videoFrame.attachCamera(null);
+					FlexGlobals.topLevelApplication.mainApp.prepareLogin.cameraIndex=null;
+					btnSettings.visible=false;
+					btnSettings.includeInLayout=false;
+					btnLoginType.width=txtLoginUser.width;
+					resetComponents();
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function loginViewTooltipOpenHandler(event:MouseEvent):void
+			{
+				var userModuleTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				userModuleTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			
+			/**
+			 * @private
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function loginViewToolTipHandler(event:MouseEvent):void
+			{
+				var loginPageToolTip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				loginPageToolTip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			/**
+			 * @protected
+			 *
+			 * Intialization function to get saved user details
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function intialize(event:FlexEvent):void
+			{
+				FlexGlobals.topLevelApplication.getUserDetails();
+				FlexGlobals.topLevelApplication.addEventListener(MouseEvent.CLICK,applicationClickHandler);
+			}
+			private function applicationClickHandler(event:MouseEvent):void{
+				if (navigator != null && navigator.activeView.title == "Login"){
+					if(event.target is StyleableTextField || event.target is StyleableStageText || event.target is DropDownList || event.target is Button){
+					}else{
+						//To remove the softkeyboard
+						stage.focus = null
+					}
+				}
+			}
+			protected function btnExtra_clickHandler(event:MouseEvent):void
+			{
+				isExtraCompOened = true;
+				addComp = new AddServerComponent;
+				addComp.percentHeight = 50;
+				addComp.percentWidth = 50;
+				addComp.open(this,true);
+				addComp.isPopUp = true;
+				PopUpManager.centerPopUp(addComp);
+				addComp.addEventListener(PopUpEvent.CLOSE,checkServer);
+				resetUserName();
+				FlexGlobals.topLevelApplication.mainApp.prepareLogin.addEventListener(LoginStatusEvent.SERVER_CREATION_COMPLETE,creationComplete);
+			}
+			
+			protected function btnLoginHandler(event:MouseEvent):void
+			{
+				if(cmbServerType.selectedItem != null && cmbServerType.selectedItem.ip!= "" && cmbServerType.selectedItem.ip != null){
+					FlexGlobals.topLevelApplication.mainApp.prepareLogin.loginCheckfn(txtLoginUser.text,txtLoginPass.text,txtServerInput,FlexGlobals.topLevelApplication.isAutoLogin);
+				}else{
+					MessageBox.show("Please select the server.", "Login Failed", MessageBox.MB_OK);
+				}
+			}
+			public function checkServer(event:PopUpEvent=null):void {
+				if(event.commit == true)
+				{
+					if (event.target.txtAddServer.text == Strings.PROMPT_SERVER_DROPDOWN) {
+						return;
+					}
+					txtServerInput=event.target.txtAddServer.text;
+					refreshServerList();
+					FlexGlobals.topLevelApplication.mainApp.prepareLogin.checkServerIsReachable(txtServerInput);
+				}
+			}
+			public function refreshServerList():void {
+				if (txtServerInput == "") {
+					cmbServerType.selectedIndex = -1;
+					cmbServerType.prompt = Constants.PROMPT_SERVER_DROPDOWN;
+					return;
+				}
+				if (txtServerInput == Strings.NATIONAL_SERVER) {
+					txtServerInput=Constants.NATIONAL_SERVER;
+				}
+				var isDataPresent:Boolean=false;
+				var i:int;
+				for (i=0; i < FlexGlobals.topLevelApplication.mainApp.loginServerTypearr.length; i++) {
+					if (FlexGlobals.topLevelApplication.mainApp.loginServerTypearr[i].name == txtServerInput) {
+						isDataPresent=true;
+						break;
+					}
+				}
+				if (!isDataPresent) {
+					var obj:Object=new Object();
+					obj.name=txtServerInput;
+					obj.ip = txtServerInput;
+					obj.domain = txtServerInput;
+					obj.defaultValue="false";
+					FlexGlobals.topLevelApplication.mainApp.loginServerTypearr.addItem(obj);
+					cmbServerType.dataProvider=null;
+					cmbServerType.dataProvider=FlexGlobals.topLevelApplication.mainApp.loginServerTypearr;
+					cmbServerType.selectedIndex=FlexGlobals.topLevelApplication.mainApp.loginServerTypearr.length;
+					uintServerIP=setTimeout(resetServerIP, 100, i);
+					cmbServerType.selectedIndex=i;
+				} else {
+					uintServerIP=setTimeout(resetServerIP, 100, i);
+					cmbServerType.selectedIndex=i;
+				}
+			}
+			private function resetServerIP(index:int):void {
+				clearTimeout(uintServerIP);
+				cmbServerType.selectedIndex=index;
+			}
+			
+			protected function cmbServerType_focusOutHandler(event:FocusEvent):void
+			{
+				if (cmbServerType.selectedItem != null && cmbServerType.selectedItem.ip != Strings.PROMPT_SERVER_DROPDOWN) {
+					if(!isExtraCompOened){
+						txtServerInput=cmbServerType.selectedItem.ip;
+					}else{
+						txtServerInput=cmbServerType.selectedItem.name;
+						isExtraCompOened = false;
+					}
+				}
+			}
+			
+			protected function txtLoginPassHandler(event:MouseEvent):void
+			{
+				FlexGlobals.topLevelApplication.isAutoLogin = false;
+			}
+			
+			private function creationComplete(event:LoginStatusEvent):void
+			{
+				refreshServerList();
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function loginTooltipHandler(event:MouseEvent):void
+			{
+				var loginTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				loginTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			private function resetPassword():void {
+				var forgotPasswordWnd:ForgotPasswordMobile=new ForgotPasswordMobile();
+				FlexGlobals.topLevelApplication.mainApp.prepareLogin.aviewEndPointValues();
+				forgotPasswordWnd.open(this);
+				forgotPasswordWnd.isPopUp=true;
+				PopUpManager.centerPopUp(forgotPasswordWnd);
+			}
+		]]>
+	</fx:Script>
+	<fx:Script source="../views/toolSets/Icons.as"/>
+	<fx:Script source="./viewHandlers/LoginViewHandler.as"/>
+	
+	<!--Menu items-->
+	<s:viewMenuItems>
+		<s:ViewMenuItem label="Exit"
+						click="applicationExit(event)"
+						icon="{exitIcon}"/>
+	</s:viewMenuItems>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center"/>
+	</s:layout>
+	<s:titleLayout>
+		<s:HorizontalLayout paddingLeft="0"
+							paddingRight="0"/>
+	</s:titleLayout>
+	<s:titleContent>
+		<!-- Header of the view, contains aview logo and module name-->
+		<s:Group id="titleContentBox"
+				 width="100%"
+				 height="100%">
+			<s:Rect width="100%"
+					height="100%"
+					x="0"
+					y="0">
+				<s:fill>
+					<s:SolidColor color="#071124"
+								  alpha="1"/>
+				</s:fill>
+				<s:filters>
+					<s:GlowFilter color="0xFFFFFF"
+								  alpha="0.4"
+								  blurX="0"
+								  inner="true"
+								  blurY="{titleContentBox.height}"
+								  strength="1"/>
+				</s:filters>
+			</s:Rect>
+			<s:HGroup width="100%"
+					  height="100%"
+					  verticalAlign="middle"
+					  paddingTop="-3"
+					  gap="-2">
+				<s:Group width="25%"
+						 height="100%">
+					<s:VGroup width="100%"
+							  height="100%"
+							  verticalAlign="middle"
+							  horizontalAlign="center">
+						<s:Image source="{defaultBanner}"
+								 x="0"
+								 y="0"/>
+					</s:VGroup>
+				</s:Group>
+				<s:Spacer width="100%"
+						  height="100%">
+				</s:Spacer>
+				<s:Group id="titleBox"
+						 width="45%"
+						 height="50%">
+					<s:Rect width="100%"
+							height="100%"
+							radiusX="0"
+							radiusY="0"
+							topLeftRadiusX="20"
+							topLeftRadiusY="20"
+							bottomLeftRadiusX="20"
+							bottomLeftRadiusY="20">
+						<s:fill>
+							<s:SolidColor color="#071124"
+										  alpha="0.8"/>
+						</s:fill>
+						<s:filters>
+							<s:GlowFilter color="0xFFFFFF"
+										  alpha="1"
+										  blurX="7"
+										  blurY="7"
+										  inner="true"
+										  strength="1"/>
+						</s:filters>
+					</s:Rect>
+					<s:Label color="#39f8ff"
+							 text="Login"
+							 fontSize="18"
+							 width="90%"
+							 height="100%"
+							 textAlign="center"
+							 verticalAlign="middle"/>
+					
+				</s:Group>
+			</s:HGroup>
+		</s:Group>
+	</s:titleContent>
+	<s:HGroup width="100%"
+			  height="100%"
+			  horizontalAlign="center"
+			  verticalAlign="middle">
+		<!--Contains Aview Logo and video display for biometric login-->
+		<s:HGroup width="100%"
+				  height="100%"
+				  horizontalAlign="center"
+				  verticalAlign="middle"
+				  paddingBottom="10"
+				  paddingTop="10">
+			<s:Image id="imgAviewLogo"
+					 scaleMode="letterbox"
+					 smooth="true"
+					 width="75%"
+					 height="75%"
+					 source="@Embed('/views/assets/aview_classroom.png')"/>
+			
+			<s:VideoDisplay id="vidDisplay"
+							width="75%"
+							height="75%"
+							includeInLayout="false"
+							visible="false"/>
+			
+		</s:HGroup>
+		<s:VGroup width="100%"
+				  height="100%"
+				  verticalAlign="middle"
+				  horizontalAlign="left">
+			<!--Authentication toggle switch-->
+			<s:HGroup width="100%"
+					  height="20%"
+					  horizontalAlign="left"
+					  verticalAlign="middle"
+					  paddingRight="10"
+					  includeInLayout="false"
+					  visible="false">
+				<s:Label id="lblLoginType"
+						 width="50%"
+						 color="0xFFFFFF"
+						 text="Authentication:"/>
+				<s:ToggleSwitch id="btnLoginType"
+								width="{txtLoginUser.width}"
+								height="25%"
+								left="5"
+								right="5"
+								selected="true"
+								horizontalCenter="0"
+								fontWeight="bold"
+								fontSize="12"
+								change="btnLoginTypeChangeHandler(event)"
+								skinClass="edu.amrita.aview.common.skins.mobile.LoginTypeSkin"/>
+				<s:Button id="btnSettings"
+						  buttonMode="true"
+						  height="25%"
+						  width="15%"
+						  visible="false"
+						  includeInLayout="false"
+						  click="cameraSettings()"
+						  toolTip="Camera Settings"
+						  useHandCursor="true"
+						  mouseChildren="false"
+						  rollOver="loginViewTooltipOpenHandler(event)"
+						  mouseOver="loginViewTooltipOpenHandler(event)"/>
+			</s:HGroup>
+			<!--Text input for Serevr -->
+			<s:HGroup width="100%"
+					  height="20%"
+					  horizontalAlign="left"
+					  verticalAlign="middle"
+					  paddingRight="10">
+				
+				<s:Label width="32%"
+						 id="lblServer"
+						 color="0xFFFFFF"
+						 text="Server"/>
+				
+				<s:HGroup width="68%"
+						  height="100%"
+						  horizontalAlign="center"
+						  verticalAlign="middle"
+						  verticalCenter="0">
+					
+					<dropDownList:DropDownList id="cmbServerType"
+											   fontSize="12"
+											   width="85%"
+											   height="50%"
+											   dataProvider="{FlexGlobals.topLevelApplication.mainApp.loginServerTypearr}"
+											   popUpWidth="400"
+											   labelField="name"
+											   verticalScrollPolicy="auto"
+											   requestedRowCount="4"
+											   focusOut="cmbServerType_focusOutHandler(event)"
+											   prompt="{Strings.PROMPT_SERVER_DROPDOWN}"/>
+					
+					<s:Button id="btnExtra"
+							  width="15%"
+							  label="..."
+							  toolTip="Add New Serevr/Domain"
+							  click="btnExtra_clickHandler(event)"
+							  rollOver="loginTooltipHandler(event)"
+							  mouseDown="loginTooltipHandler(event)"/>
+				</s:HGroup>
+			</s:HGroup>
+			<!--Text input for username -->
+			<s:HGroup width="100%"
+					  height="20%"
+					  horizontalAlign="left"
+					  verticalAlign="middle"
+					  paddingRight="10">
+				
+				<s:Label width="32%"
+						 id="lblUserName"
+						 color="0xFFFFFF"
+						 text="Username"/>
+				
+				<s:TextInput id="txtLoginUser"
+							 width="68%"
+							 skinClass="spark.skins.mobile.TextInputSkin"
+							 click="txtLoginPassHandler(event)"
+							 text="{FlexGlobals.topLevelApplication.mainApp.prepareLogin.userName}"/>
+			</s:HGroup>
+			<!--Text input for password-->
+			<s:HGroup width="100%"
+					  height="20%"
+					  horizontalAlign="left"
+					  verticalAlign="middle"
+					  id="groupPwd"
+					  paddingRight="10">
+				<s:Label width="32%"
+						 id="lblPassword"
+						 text="Password"
+						 color="0xFFFFFF"/>
+				<s:TextInput id="txtLoginPass"
+							 width="68%"
+							 click="txtLoginPassHandler(event)"
+							 skinClass="spark.skins.mobile.TextInputSkin"
+							 text="{FlexGlobals.topLevelApplication.mainApp.prepareLogin.password}"
+							 displayAsPassword="true"/>
+			</s:HGroup>
+			<!--Login button to login-->
+			<s:HGroup width="100%"
+					  height="20%"
+					  horizontalAlign="center"
+					  verticalAlign="middle">
+				<s:Spacer width="30%"/>
+				<s:HGroup width="70%"
+						  height="100%"
+						  horizontalAlign="center"
+						  verticalAlign="middle">
+					<s:Button id="btn_ForgotPassword" 
+							  label="Forgot Password?" 
+							  click="resetPassword()"
+							  width="50%"
+							  height="50%"
+							  color="white" 
+							  fontSize="16" 
+							  horizontalCenter="54"
+							  mouseChildren="false" 
+							  useHandCursor="true"
+							  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"/>
+					<s:Button id="btnLogin"
+							  label="Sign in"
+							  width="50%"
+							  height="50%"
+							  click="btnLoginHandler(event)"
+							  enabled="{FlexGlobals.topLevelApplication.mainApp.prepareLogin.logInButtonState}"
+							  fontSize="16"
+							  color="white"
+							  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"/>
+				</s:HGroup>
+			</s:HGroup>
+			
+		</s:VGroup>
+	</s:HGroup>
+	<s:Group width="100%"
+			 height="10%"
+			 textAlign="right">
+		<s:Rect width="100%"
+				height="100%"
+				x="0"
+				y="0">
+			<s:fill>
+				<s:SolidColor color="#071124"/>
+			</s:fill>
+			<s:filters>
+				<s:GlowFilter color="0xFFFFFF"
+							  alpha="0.3"
+							  blurX="0"
+							  blurY="40"
+							  strength="1"
+							  inner="true"/>
+			</s:filters>
+		</s:Rect>
+		<s:Label text="{Constants.COPY_RIGHT_FOOTER}"
+				 color="#cccccc"
+				 textAlign="center"
+				 fontWeight="bold"
+				 width="92%"
+				 height="100%"
+				 fontSize="10"
+				 paddingRight="5"
+				 verticalAlign="middle"/>
+	</s:Group>
+</s:View>

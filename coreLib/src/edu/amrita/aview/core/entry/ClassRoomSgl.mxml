@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- //PNCR: change namespace "components1" to "components" or some other meaningful name -->
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:local="*"
+		 xmlns:MultipleViewerInteraction="edu.amrita.aview.core.video.*"
+		 xmlns:components="edu.amrita.aview.core.shared.components.*"
+		 top="0" bottom="0" width="100%" creationPolicy="all" horizontalGap="0" paddingLeft="0">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.login.boilerplate.Strings;
+			
+			import mx.controls.Alert;
+		]]>
+	</fx:Script>
+	<fx:Script source="ClassRoomSglHandler.as"/>
+	<fx:Declarations>
+		<s:Resize id="controlvidboxHide" duration="1000"
+				  effectEnd="controlvidboxHide_effectEndHandler(event)" target="{controlvidbox}"
+				  widthFrom="{controlvidbox.width}" widthTo="0"/>
+		<mx:Dissolve id="disolveEffect"/>
+	</fx:Declarations>
+	
+	
+	<mx:VBox id="controlvidbox" x="0" y="0" width="21%" height="100%" minWidth="250" maxWidth="250"
+			 borderVisible="false"
+			 creationComplete="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.btnResize.left=controlvidbox.width-10}"
+			 creationPolicy="all" horizontalAlign="center" horizontalScrollPolicy="off"
+			 paddingLeft="0" resize="controlvidbox_resizeHandler(event)" verticalGap="0"
+			 verticalScrollPolicy="off">
+		<MultipleViewerInteraction:VideoStreamDisplay id="pnlTeacher" visible="false"
+													   
+													   includeInLayout="false" 
+													   showCloseButton="true" title="Presenter"/>
+		<s:BorderContainer width="100%" height="39" borderVisible="false">
+			<s:Rect width="100%" height="39">
+				<s:fill>
+					<s:BitmapFill fillMode="repeat"
+								  source="@Embed('/edu/amrita/aview/core/entry/assets/images/classRoomIconBg.jpg')"/>
+				</s:fill>
+			</s:Rect>
+			<mx:HBox id="videooptions" left="0" right="0" height="39" backgroundColor="#E7E8ED"
+					 creationPolicy="all" horizontalAlign="center" horizontalGap="2"
+					 verticalAlign="middle">
+				<!--For Guest login: Removed video start option-->
+				<s:Button id="btnStart" width="81" height="30" buttonMode="true"  enabled="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}"
+						  click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.startStopVideo(lblStart.text)"
+						  icon="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.startStopVideoToggleIcon}"
+						  skinClass="edu.amrita.aview.core.shared.skins.BorderlessButtonSkin"
+						  toolTip="Start your video" useHandCursor="true"
+						  visible="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}" includeInLayout="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}"/>
+				
+				<mx:Label id="lblStart" visible="false" width="0" height="0" color="#000000"
+						  fontSize="11" includeInLayout="false" paddingLeft="3" text="Start"
+						  textAlign="center"/>
+				<!--<s:Button id="btnMute" width="81" height="30"  useHandCursor="true" buttonMode="true"
+				
+				icon="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.muteIcon}"
+				skinClass="edu.amrita.aview.core.shared.skins.BorderlessButtonSkin"
+				toolTip="Mute your Audio"/>-->
+				<components:ImageButton id="btnRefresh" width="81" height="30" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.refreshVideo()"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/refreshbtn.png')"
+										imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/entry/assets/images/refreshBtndisabled.png')"
+										imageSkinDown="@Embed(source='/edu/amrita/aview/core/entry/assets/images/refresh_click.png')"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Refresh incoming video" useHandCursor="true"/>
+				<!--For Web: Since there is no record feature, we don't make the Record button visible-->
+				<!--Fix for issue #17108-->
+				<s:Button id="btnRecord"
+						  visible="{ClassroomContext.userVO.userName == ClassroomContext.moderatorName &amp;&amp; AVCEnvironment.runTime != AVCEnvironment.BROWSER}"
+						  width="81" height="30" buttonMode="true"
+						  click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.startRecord()"
+						  doubleClickEnabled="false" enabled="false"
+						  icon="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.recordIcon}"
+						  includeInLayout="{ClassroomContext.userVO.userName == ClassroomContext.moderatorName &amp;&amp; AVCEnvironment.runTime != AVCEnvironment.BROWSER}"
+						  mouseChildren="false"
+						  skinClass="edu.amrita.aview.core.shared.skins.BorderlessButtonSkin"
+						  toolTip="Record Session" useHandCursor="true"/>
+				
+				<!--<mx:Label id="record_label"
+				visible = "false"
+				width="0"
+				height="0"
+				text="Start"
+				textAlign="center"
+				includeInLayout="false"
+				color="#000000"
+				fontSize="11" />-->
+				<mx:Label id="record_labelRecordingPart" visible="false" width="0" height="0"
+						  color="#000000" fontSize="11" includeInLayout="false" paddingLeft="0"
+						  text="Recording" textAlign="center"/>
+				
+			</mx:HBox>
+		</s:BorderContainer>
+		<!--<MultipleViewerInteraction:VideoStreamDisplay id="pnlTeacher" visible="false"
+													  
+													  includeInLayout="false" 
+													  showCloseButton="true" title="Presenter"/>-->
+		    <mx:Canvas id="leftPanelTabCanvas" width="100%" height="100%" borderVisible="false"
+				   creationPolicy="all"
+				   initialize="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.initCamList()"
+				   verticalScrollPolicy="off" horizontalScrollPolicy="off">
+			<!--Intialze camdriver-->
+				
+				
+				<s:BorderContainer x="0" y="0" width="66" height="27" id="userListTab" borderVisible="false"
+								   useHandCursor="true" buttonMode="true"
+								   click="{leftPanelTabNav.selectedIndex=0;getBackground(leftPanelTabNav.selectedIndex)}"
+								   backgroundImage="{activeTab}">
+					
+					<s:Label left="0" top="0" width="100%" height="100%"
+							 color="#FFFFFF" id="userTabTxt" toolTip="Users participating in the current session"
+							 fontSize="12" fontWeight="bold" text="Users" textAlign="center"
+							 verticalAlign="middle"/>
+				</s:BorderContainer>
+				<s:Image x="65" y="0" smooth="true" smoothingQuality="high"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/tabseprator.png')"/>
+				<s:BorderContainer x="66" y="0" width="59" height="27" id="chatTab" borderVisible="false"
+								   useHandCursor="true" buttonMode="true"
+								   click="{leftPanelTabNav.selectedIndex=1;getBackground(leftPanelTabNav.selectedIndex)}"
+								   backgroundImage="{inactiveTab}"
+								   enabled="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE?true:false}">
+					
+					<s:Label left="0" top="0" width="100%" height="100%"
+							 color="#727273" id="chatTabTxt" toolTip="Chat with all users"
+							 fontSize="12" fontWeight="bold" text="Chat" textAlign="center"
+							 verticalAlign="middle"/>
+				</s:BorderContainer>
+				<s:Image x="124" y="0" smooth="true" smoothingQuality="high"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/tabseprator.png')"/>
+				<s:BorderContainer x="125" y="0" width="59" height="27" id="viewerTab" borderVisible="false"
+								   useHandCursor="true" buttonMode="true"
+								   click="{leftPanelTabNav.selectedIndex=2;getBackground(leftPanelTabNav.selectedIndex)}"
+								   backgroundImage="{inactiveTab}"
+								   enabled="{((ClassroomContext.aviewClass.classType!=Constants.CLASS_TYPE_WEBINAR) &amp;&amp; (ClassroomContext.userVO.role!=Constants.MONITOR_TYPE))}">
+					
+					<s:Label left="0" top="0" width="100%" height="100%" id="viewerTabTxt"
+							 color="#727273" toolTip="Shows video of interacting users and other users selected using view video"
+							 fontSize="12" fontWeight="bold" text="Viewer" textAlign="center"
+							 verticalAlign="middle"/>
+				</s:BorderContainer>
+				<s:Image x="183" y="0" smooth="true" smoothingQuality="high"
+						 source="@Embed('/edu/amrita/aview/core/entry/assets/images/tabseprator.png')"/>
+				<s:BorderContainer x="184" y="0" width="67" height="27" id="questionTab" borderVisible="false"
+								   useHandCursor="true" buttonMode="true"
+								   click="{leftPanelTabNav.selectedIndex=3;getBackground(leftPanelTabNav.selectedIndex)}"
+								   backgroundImage="{inactiveTab}" 
+								   enabled="{ClassroomContext.aviewClass.classType!=Constants.CLASS_TYPE_WEBINAR &amp;&amp; ClassroomContext.userVO.role!=Constants.MONITOR_TYPE }">
+					
+					<s:Label left="0" top="0" width="100%" height="100%"
+							 color="#727273" id="questionTabTxt" toolTip="Live Questions"
+							 fontSize="12" fontWeight="bold" text="Question" textAlign="center"
+							 verticalAlign="middle"/>
+				</s:BorderContainer>
+			<mx:ViewStack id="leftPanelTabNav" left="0" right="-2" top="26" bottom="72"
+							 backgroundColor="#e0effb" borderColor="#989EA9" borderVisible="true"
+							 change="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.onUserTabChange();tabIndexChangeHandler();"
+							 
+							 creationPolicy="all" paddingLeft="-1" paddingRight="0" paddingTop="0"
+							 showEffect="{disolveEffect}" ><!-- creationComplete="{leftPanelTabNav.setStyle('tabWidth',(leftPanelTabNav.width+2) / leftPanelTabNav.numChildren)}" tabStyleName="tab" selectedTabTextStyleName="selectedTab"-->
+				<mx:Canvas id="UserlistCanvas" width="100%" height="100%" label="Users"
+						   borderVisible="false" creationPolicy="all" horizontalScrollPolicy="off"
+						   verticalScrollPolicy="off" toolTip="Users participating in the current session">
+				</mx:Canvas>
+				<mx:Canvas id="Chat_canvas0" width="100%" height="100%" label="Chat" toolTip="Chat with all users"
+						   creationPolicy="all">
+				</mx:Canvas>
+				<mx:Canvas id="viewerCanvas" width="100%" height="100%" label="Viewer"
+						   borderVisible="true" creationPolicy="all" borderColor="#000000" borderStyle="solid"
+						   focusColor="#2F8BBB" horizontalCenter="0" horizontalScrollPolicy="off"
+						   verticalScrollPolicy="off" toolTip="Shows video of interacting users and other users selected using view video">
+					<mx:HBox id="titleHBox" x="0" y="2" width="100%" height="20"
+							 verticalAlign="middle">
+						<mx:Canvas width="85%">
+							<s:Label id="lblSelectedViewers" fontWeight="bold" horizontalCenter="0"
+									 text="No Selected Viewer" verticalCenter="0"/>
+
+
+						</mx:Canvas>
+
+						<s:Button id="btnShowVideoWall" visible="false" width="20" height="20"
+								  buttonMode="true"
+								  click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.toggleVideoWall()"
+								  icon="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.imgMultiViewerMaximize}"
+								  skinClass="edu.amrita.aview.core.shared.skins.BorderlessButtonSkin"
+								  toolTip="Show in Video Wall" useHandCursor="true"/>
+					</mx:HBox>
+					<mx:HRule y="{titleHBox.y+titleHBox.height + 1}" width="100%"
+							  strokeColor="#000000"/>
+					<MultipleViewerInteraction:viewerVideoTile id="viewersTile" x="0"
+															   y="{titleHBox.y+titleHBox.height + 5}"
+															   width="243" height="100%"
+															   horizontalAlign="center"
+															   horizontalCenter="0"
+															   horizontalScrollPolicy="off"
+															   tileWidth="{viewersTile.width}"/>
+					
+					<mx:HRule id="hruleViewVideo" visible="false"
+							  y="{viewersTile.y+viewersTile.height+5}" width="100%"
+							  includeInLayout="false" strokeColor="#999999"/>
+
+
+
+					<s:Scroller y="{hruleViewVideo.y + 5}" left="50" width="100%" height="100%">
+
+						<s:TileGroup id="viewVideoTile" visible="false" y="{hruleViewVideo.y + 5}"
+									 width="180" height="100%" horizontalAlign="center"
+									 horizontalCenter="0" horizontalGap="0" includeInLayout="false"
+									 verticalAlign="top" verticalCenter="0" verticalGap="0">
+
+						</s:TileGroup>
+
+					</s:Scroller>
+
+
+
+
+					<mx:ControlBar x="0" y="438" width="100%" height="100%">
+						<mx:Button id="btnViewStudent" visible="false" label="ViewStudent"
+								   click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.callViewStudent()"/>
+						<mx:Button id="btnClose" visible="false" label="CloseTile"
+								   click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.closeViewStudent()"/>
+					</mx:ControlBar>
+				</mx:Canvas>
+				<mx:Canvas id="questionInterface" width="100%" height="100%" label="Question"
+						   borderVisible="false" creationPolicy="all"
+						   horizontalScrollPolicy="off" verticalScrollPolicy="off" toolTip="Live Questions">
+				</mx:Canvas>
+			</mx:ViewStack>
+
+			<mx:HBox id="classRmActions" bottom="2" width="{leftPanelTabCanvas.width}"
+					 height="35" horizontalAlign="center" horizontalGap="7"
+					 verticalAlign="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName?'bottom':'middle'}">
+
+			</mx:HBox>
+		</mx:Canvas>
+
+		<s:Spacer id="spacerBelowPresenterVideo" visible="{pnlTeacher.visible}" width="100%"
+				  height="0" includeInLayout="{pnlTeacher.visible}"/>
+	</mx:VBox>
+		
+	<!--adding a function 'resizeFunction()' for resize event-->
+	<!--Issue #226 START-->
+	<mx:Canvas id="canvas3" width="100%" height="100%" creationPolicy="all"
+			   horizontalScrollPolicy="off"
+			   resize="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.resizeFunction()"
+			   verticalScrollPolicy="off">
+		<!--//Issue #226 END-->
+		<mx:HBox id="classOptionButtons" x="0" y="0" width="100%" horizontalGap="20" paddingLeft="0"
+				 verticalAlign="middle">
+			<!--SVRS- Issue no # 201 added an icon for document button-->
+			<s:BorderContainer width="100%" height="45" borderVisible="false">
+				<s:Rect width="100%" height="100%">
+					<s:fill>
+						<s:BitmapFill fillMode="repeat"
+									  source="@Embed('/edu/amrita/aview/core/entry/assets/images/classRoomIconBg.jpg')"/>
+					</s:fill>
+				</s:Rect>
+			
+			<s:HGroup gap="0" verticalAlign="middle">
+
+				<s:Image source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<components:ImageButton id="Conso_Doc" width="70" height="46" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectModuleByUser=true;FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.click_Conso_doc();"
+										cornerRadius="0" fontSize="11" fontWeight="bold"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/documentIcon.png')"
+										imageSkinDisabled="@Embed('/edu/amrita/aview/core/entry/assets/images/documentIconActive.png')"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Document Sharing" useHandCursor="true"
+										visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}"/>
+				<s:Image visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<mx:Button id="open_winDoc" visible="false" width="5" height="18" label="^"
+						   click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.opencurrentinWindow(Conso_Doc.id)"
+						   includeInLayout="false"/>
+				<!--<s:Spacer width="20"/>>
+				<SVRS- Issue no # 201 added an icon for whiteboard button>-->
+				<components:ImageButton id="Conso_Whiteboard" width="78" height="46"
+										buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectModuleByUser=true;FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.click_Conso_wb();"
+										cornerRadius="0" fontSize="11" fontWeight="bold"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/whiteboard.png')"
+										imageSkinDisabled="@Embed('/edu/amrita/aview/core/entry/assets/images/whiteboardActive.png')"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Whiteboard" useHandCursor="true" visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}"/>
+				
+				<s:Image visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<components:ImageButton id="Conso_vidsharing" width="87" height="46"
+										buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectModuleByUser=true;FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.click_Conso_vidsh();"
+										cornerRadius="0" fontSize="11" fontWeight="bold"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/VideoShare.png')"
+										imageSkinDisabled="@Embed('/edu/amrita/aview/core/entry/assets/images/VideoShareActive.png')"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Video Sharing" useHandCursor="true"
+										visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}"/>
+				<s:Image visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<!--For Web: Added imageSkinDisabled icon and mouseChildren for desktop sharing button-->
+				<components:ImageButton id="btnDesktopSharing" visible="false" width="59" height="46" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}"
+										label="Desktop Sharing" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectModuleByUser=true;FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.click_Conso_Desktop()"
+										cornerRadius="0"
+										enabled="{ClassroomContext.IS_DESKTOP_SHARING_ENABLED}"
+										fontSize="11" fontWeight="bold"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/DesktopShare.png')"
+										imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/entry/assets/images/DesktopShareActive.png')"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="{ClassroomContext.IS_DESKTOP_SHARING_ENABLED?&quot;Desktop Sharing&quot;:&quot;Desktop Sharing is Disabled&quot;}"
+										useHandCursor="true"/>
+				<s:Image visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<components:ImageButton id="Conso_3DViewer" width="70" height="46" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectModuleByUser=true;FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp.click_Conso_3DViewer();"
+										cornerRadius="0" fontSize="11" fontWeight="bold"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/3D.png')"
+										imageSkinDisabled="@Embed('/edu/amrita/aview/core/entry/assets/images/3DActive.png')"
+										mouseChildren="false" visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="3DViewer" useHandCursor="true"/>
+				<s:Image visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<components:ImageButton id="Conso_2DViewer" width="70" height="46" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectModuleByUser=true;FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer2DComp.click_Conso_2DViewer();"
+										cornerRadius="0" fontSize="11" fontWeight="bold"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/2D.png')"
+										imageSkinDisabled="@Embed('/edu/amrita/aview/core/entry/assets/images/2DActive.png')"
+										mouseChildren="false" visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="2DViewer" useHandCursor="true"/>
+				<s:Image visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<components:ImageButton id="btnShowViewersWall" visible="true" width="72" height="46"
+										buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.showViewerWall(true)"
+										cornerRadius="0"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/VideoWall.png')"
+										imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/entry/assets/images/VideoWallActive.png')"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Viewer Video Wall" useHandCursor="true"/>
+				<s:Image visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<!--Fix for Bug #8790 Visibilty of live quiz button changed-->
+				<components:ImageButton id="Conso_LiveQuiz" visible="{ClassroomContext.isModerator}"
+										width="63" height="46" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.clickLiveQuiz();"
+										cornerRadius="0" fontSize="11" fontWeight="bold"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/LiveQuiz.png')"
+										imageSkinDisabled="@Embed('/edu/amrita/aview/core/entry/assets/images/LiveQuizActive.png')"
+										includeInLayout="{ClassroomContext.isModerator}"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Live Quiz" useHandCursor="true"/>
+				<s:Image includeInLayout="{Conso_LiveQuiz.visible}" visible="{Conso_LiveQuiz.visible}"
+						 source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<components:ImageButton id="Conso_PollingQuiz"
+										visible="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE}"
+										width="51" height="46" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.pollingObj.clickPollingQuiz();"
+										cornerRadius="0" fontSize="11" fontWeight="bold"
+										imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/Poll.png')"
+										imageSkinDisabled="@Embed('/edu/amrita/aview/core/entry/assets/images/PollActive.png')"
+										includeInLayout="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE}"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Polling" useHandCursor="true"/>
+				<s:Image includeInLayout="{Conso_PollingQuiz.visible}" visible="{Conso_PollingQuiz.visible}"
+						 source="@Embed(source='/edu/amrita/aview/core/entry/assets/images/seperator.png')"/>
+				<mx:Button id="Conso_YoutubeLive" visible="false" width="30" height="30"
+						   buttonMode="true"
+						   click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.createYoutubeLiveSettingsPopUp();"
+						   cornerRadius="5"
+						   disabledIcon="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.youtubelive_IconClass}"
+						   disabledSkin="mx.skins.halo.ButtonSkin"
+						   downSkin="mx.skins.halo.ButtonSkin"
+						   enabled="{Capabilities.os.toString()=='Windows 7'}" fontSize="11"
+						   fontWeight="bold"
+						   icon="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.youtubelive_IconClass}"
+						   includeInLayout="false" mouseChildren="false"
+						   mouseOver="youtubeLiveButtonMouseOver()"
+						   overSkin="mx.skins.halo.ButtonSkin" skin="{null}" upSkin="{null}"
+						   useHandCursor="true"/>
+				
+				<!--  visible="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE}"
+				includeInLayout="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE}"-->
+				<!--************************************************************************************-->
+				<mx:Button id="open_winWB" visible="false" width="33" height="18" label="^"
+						   click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.opencurrentinWindow(Conso_Whiteboard.id);"/>
+			</s:HGroup>
+			</s:BorderContainer>
+		</mx:HBox>
+		<s:HGroup id="hGrpRightTopSgl" right="5" height="45" gap="10" horizontalAlign="right"
+				  verticalAlign="middle">
+			<!-- //PNCR: #BugFix: 14487. Added the missing Hbox with visibility condition. -->
+			<mx:HBox visible="{ClassroomContext.aviewClass.classType=='Meeting'}" width="100%"
+					 height="30" horizontalAlign="right" horizontalGap="2"
+					 includeInLayout="{ClassroomContext.aviewClass.classType=='Meeting' }"
+					 verticalAlign="middle">
+				<s:Label visible="false" width="100%" height="100%" minWidth="0" color="#2D88C8"
+						 fontWeight="bold" maxDisplayedLines="1"
+						 text="{ClassroomContext.lecture.displayName}" textAlign="right"
+						 toolTip="{ClassroomContext.lecture.displayName}" verticalAlign="middle"/>
+				<components:ImageButton id="endSession" visible="{ClassroomContext.isModerator}"
+										width="30" height="30" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.onClickEndMeeting();"
+										imageSkin="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.endSessionIcon}"
+										includeInLayout="{ClassroomContext.isModerator}"
+										keyDown="FlexGlobals.topLevelApplication.btn_keyDown(event)"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="End session" useHandCursor="true"/>
+				</mx:HBox>
+			<!--<mx:HBox visible="{ClassroomContext.aviewClass.classType!='Meeting'}" width="100%"
+					 height="30" horizontalAlign="right" horizontalGap="2"
+					 includeInLayout="{ClassroomContext.aviewClass.classType!='Meeting' }"
+					 verticalAlign="middle">
+				<s:Label visible="false" width="100%" height="100%" minWidth="0" color="#2D88C8"
+						 fontWeight="bold" maxDisplayedLines="1"
+						 text="{ClassroomContext.lecture.displayName}" textAlign="right"
+						 toolTip="{ClassroomContext.lecture.displayName}" verticalAlign="middle"/>
+				<components:ImageButton id="endClass" visible="{ClassroomContext.isModerator}"
+										width="30" height="30" buttonMode="true"
+										click="FlexGlobals.topLevelApplication.mainApp.initiateExit('exitClassroom');"
+										imageSkin="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.endSessionIcon}"
+										includeInLayout="{ClassroomContext.isModerator}"
+										mouseChildren="false"
+										skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+										toolTip="Exit session" useHandCursor="true"/>
+			</mx:HBox>-->
+			<components:ImageButton id="btnLocalVideo" visible="false"
+									 right="{5 + 30 + 10 + btnSettingsMenu.width + 10}" width="32"
+									 height="31" buttonMode="true"
+									 click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.callLocalVideo();FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.settingsList.visible=false;FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.settingsList.height=0"
+									 cornerRadius="5"
+									 imageSkin="@Embed(source='/edu/amrita/aview/core/entry/assets/images/myVideo.png')"
+									 imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/entry/assets/images/myVideo_disabled.png')"
+									 mouseChildren="false"
+									 skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									 toolTip="My video" useHandCursor="true"/>
+			<components:ImageButton id="btnSettingsMenu"
+									visible="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName}"
+									right="{5 + 30 + 10}" width="32" height="31" buttonMode="true"
+									click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.showSettingsMenu()"
+									cornerRadius="5"
+									creationComplete="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.settingsList.right = 5; FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.settingsList.top = btnSettingsMenu.top+btnSettingsMenu.height+7 }"
+									imageSkin="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.settingsIcon}"
+									includeInLayout="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE||ClassroomContext.userVO.userName == ClassroomContext.moderatorName}"
+									mouseChildren="false"
+									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
+									toolTip="Settings" useHandCursor="true"/>
+			<!--Fix for issue #17054: Added fullscreen button for viewer-->
+			<s:Button id="btnContentFullScreen"
+									icon="{openFullScreenIcon}"
+									right="0"
+									width="32"
+									height="31"
+									visible="false"
+									includeInLayout="false"
+									click="fullScreenSelected()" 
+									toolTip="Content full screen"/>
+		</s:HGroup>
+
+		<mx:ViewStack id="tab2" x="0" y="46" width="100%" height="100%"
+					  change="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.Changetxt()"
+					  creationPolicy="all" paddingLeft="0" paddingRight="0">
+			<s:NavigatorContent width="100%" height="100%">
+				<s:BorderContainer width="100%" height="100%" backgroundAlpha="0.0"
+								   borderColor="#5C5C5C" borderStyle="solid" borderVisible="true">
+					<s:layout>
+						<s:HorizontalLayout gap="0" horizontalAlign="center" paddingLeft="-4" paddingRight="0"
+											paddingTop="-3" verticalAlign="middle"/>
+					</s:layout>
+				
+					<s:HGroup id="docBox" width="100%" height="100%" gap="0" horizontalAlign="center"
+							  paddingBottom="0" paddingLeft="0" paddingRight="0"
+							  resize="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.onDocResize()"
+							  verticalAlign="middle">
+					</s:HGroup>
+				</s:BorderContainer>
+			</s:NavigatorContent>
+			<s:NavigatorContent width="100%" height="100%">
+				<s:BorderContainer width="100%" height="100%" backgroundAlpha="0.0"
+								   borderColor="#5C5C5C" borderStyle="solid" borderVisible="true">
+					<s:layout>
+						<s:HorizontalLayout gap="0" horizontalAlign="center" paddingLeft="0"
+											paddingTop="0" verticalAlign="middle"/>
+					</s:layout>
+					<s:HGroup id="wbBox" width="100%" height="100%" horizontalAlign="center"
+							  paddingLeft="0" paddingRight="0"
+							  resize="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.onWbResize()"
+							  verticalAlign="middle"/>
+				</s:BorderContainer>
+			</s:NavigatorContent>
+			<mx:HBox id="viewer3DBox" width="100%" height="100%" label="3DViewer"
+					 borderColor="#5C5C5C" borderStyle="solid" borderVisible="true"
+					 horizontalAlign="center"
+					 resize="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp.on3DViewerResize()"
+					 verticalAlign="middle"/>
+			<!--=======@2Dviewer BOX==================-->
+			<mx:HBox id="viewer2DBox" width="100%" height="100%" label="2DViewer"
+					 backgroundColor="#FFFFFF" borderColor="#5C5C5C" borderStyle="solid"
+					 borderVisible="true" horizontalAlign="center" verticalAlign="middle">
+			</mx:HBox>
+			<!--=======@2Dviewer BOX==================-->
+			<mx:HBox id="vidbox" width="100%" height="100%" label="Vid" backgroundColor="#ffffff"
+					 borderAlpha="0.98" borderColor="#5C5C5C" borderStyle="solid"
+					 borderVisible="true" horizontalScrollPolicy="off"
+					 resize="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.onVidShareResize()"
+					 verticalAlign="middle" verticalScrollPolicy="off">
+			</mx:HBox>
+			<mx:HBox id="desktopSharingBox" width="100%" height="100%" backgroundColor="#ffffff"
+					 borderAlpha="0.98" borderColor="#5C5C5C" borderStyle="solid"
+					 borderVisible="true" horizontalAlign="center" horizontalScrollPolicy="off"
+					 resize="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopSharingComponentResizeHandler()"
+					 verticalAlign="middle" verticalScrollPolicy="off">
+			</mx:HBox>
+			<!--Fix for issue #17054: Added properties horizontalScrollPolicy,verticalScrollPolicy , to fix video wall scroll issue-->
+			<!--Fix for issue #17990:Added resize event-->
+			<mx:Canvas id="viewerVideoWallBox" width="100%" height="100%" label="ViewerInteraction"
+					   borderColor="#5C5C5C" borderStyle="solid" borderVisible="true" horizontalScrollPolicy="off"
+					   verticalScrollPolicy="off" resize="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.videoWallResizeHandler()">
+			</mx:Canvas>
+			<mx:HBox id="quizBox" width="100%" height="100%" label="Quiz" backgroundColor="#ffffff"
+					 borderAlpha="0.98" borderColor="#5C5C5C" borderStyle="solid"/>
+			<mx:HBox id="pollingWnd" width="100%" height="100%" label="Polling"
+					 backgroundColor="#ffffff" borderAlpha="0.98" borderColor="#5C5C5C"
+					 borderStyle="solid"/>
+		</mx:ViewStack>
+	</mx:Canvas>
+</mx:HBox>

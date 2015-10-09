@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: DocumentToolBox.mxml
+Module		: Document Sharing
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+DocumentToolBox component is used to,
+
+	1. Open document menu call-out
+	2. Open document details call-out
+	3. Refresh document
+	4. Rotate document
+	5. Open fileManager call-out
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 xmlns:document="views.toolSets.document.*">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.shared.events.mobileCustomEvents.DocumentActionEvent;
+						
+			import mx.core.FlexGlobals;
+			import mx.events.FlexMouseEvent;
+			/**
+			 * Holds icon for mouse pointer.
+			 */
+			[Bindable]
+			public var mobileMousePointerShare:Class;
+
+			/**
+			 * @private
+			 *
+			 * To dispatch event based on the button
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function excuteDocumentAction(event:MouseEvent):void
+			{
+				switch (event.target.id)
+				{
+					//If target is "btnDocument", dispath custom event
+					case "btnDocument":
+					{
+						btnDocument.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.MY_DOCUMENTS));
+						break;
+					}
+					//If target is "btnViewerDocument", dispatch custom event with type of MY_DOCUMENTS
+					case "btnViewerDocument":
+					{
+						btnViewerDocument.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.MY_DOCUMENTS));
+						break;
+					}
+					//If target is "btnPresenterRefresh", dispatch custom event with type of TEACHER_DOCUMENT_REFRESH
+					case "btnPresenterRefresh":
+					{
+						btnPresenterRefresh.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.TEACHER_DOCUMENT_REFRESH));
+						break;
+					}
+					//If target is "btnEnableMousePointer", dispatch custom event with type of ENABLE_MOUSE_POINTER
+					case "btnEnableMousePointer":
+					{
+						btnEnableMousePointer.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.ENABLE_MOUSE_POINTER));
+						break;
+					}
+					//If target is "btnDocumentActualsize", dispatch custom event with type of DOCUMENT_ACTUAL_SIZE
+					case "btnDocumentActualsize":
+					{
+						btnDocumentActualsize.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.DOCUMENT_ACTUAL_SIZE));
+						break;
+					}
+					//If target is "btnRotate", dispatch custom event with type of DOCUMENT_ROTATE
+					case "btnRotate":
+					{
+						btnRotate.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.DOCUMENT_ROTATE));
+						break;
+					}
+					//If target is "btnViewerRefresh", dispatch custom event with type of STUDENT_DOCUMENT_REFRESH
+					case "btnViewerRefresh":
+					{
+						btnViewerRefresh.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.STUDENT_DOCUMENT_REFRESH));
+						break;
+					}
+					//If target is "btnViewerDocumentDetails", dispatch custom event with type of STUDENT_DOCUMENT_DETAILS
+					case "btnViewerDocumentDetails":
+					{
+						btnViewerDocumentDetails.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.STUDENT_DOCUMENT_DETAILS));
+						break;
+					}
+					//If target is "btnPresenterDocumentDetails", dispatch custom event with type of TEACHER_DOCUMENT_DETAILS
+					case "btnPresenterDocumentDetails":
+					{
+						btnPresenterDocumentDetails.dispatchEvent(new DocumentActionEvent(DocumentActionEvent.TEACHER_DOCUMENT_DETAILS));
+						break;
+					}
+					case "btnViewerMenu":{
+						FlexGlobals.topLevelApplication.docComp.downloadDocumentToLocal(FlexGlobals.topLevelApplication.docComp.remoteFileName, FlexGlobals.topLevelApplication.docComp.remoteFilePath);
+						break;
+					}
+					default:
+					{
+						break;
+					} 
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function documentTooltipHandler(event:MouseEvent):void
+			{
+				var docTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				docTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			/**
+			 * @protected
+			 *
+			 * To open document menu call-out
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function btnMenuClickHandler(event:MouseEvent):void
+			{
+				//If target is presenter menu, update presenter menu items
+				//Otherwise update presenter menu items for viewer
+				if (event.target.id == "btnPresenterMenu")
+				{
+					docMenuComp.open(btnPresenterMenu);
+					docMenuComp.horizontalPosition="before";
+					docMenuComp.verticalPosition="start";
+					docMenuComp.updateDocList();
+					btnPresenterMenu.enabled=false;
+				}
+				else
+				{
+					docMenuComp.open(btnViewerMenu);
+					docMenuComp.horizontalPosition="before";
+					docMenuComp.verticalPosition="start";
+					docMenuComp.updateDocList();
+					//btnViewerMenu.enabled=false;
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To close document menu call-out
+			 *
+			 * @param event of FlexMouseEvent
+			 * @return void
+			 */
+			protected function closeDocMenuHandler(event:FlexMouseEvent):void
+			{
+				docMenuComp.close();
+				if (FlexGlobals.topLevelApplication.docComp.p2fContainer.content != null && FlexGlobals.topLevelApplication.docComp.p2fContainer.visible == true)
+				{
+					if (FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+					{
+						btnPresenterMenu.enabled=true;
+					}
+					else
+					{
+						//btnViewerMenu.enabled=true;
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<document:DocumentMenuCallout id="docMenuComp"
+									  mouseDownOutside="closeDocMenuHandler(event)"/>
+	</fx:Declarations>
+	<!--Control buttons for presenter-->
+	<s:VGroup width="100%"
+			  height="100%"
+			  id="teacherAppbar"
+			  gap="0"
+			  bottom="0">
+		<s:Button id="btnPresenterMenu"
+				  width="100%"
+				  height="20%"
+				  enabled="false"
+				  icon="@Embed('/views/assets/android_menu_icon.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  click="btnMenuClickHandler(event)"
+				  toolTip="Document Menu"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+		<s:Button id="btnDocument"
+				  width="100%"
+				  height="20%"
+				  icon="@Embed('/views/toolSets/assets/my-doc-lib.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  click="excuteDocumentAction(event)"
+				  toolTip="My Documents"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+		<s:Button id="btnPresenterRefresh"
+				  width="100%"
+				  height="20%"
+				  icon="@Embed('/views/toolSets/assets/refresh.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  click="excuteDocumentAction(event)"
+				  enabled="false"
+				  toolTip="Refresh the document"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+		<s:Button id="btnEnableMousePointer"
+				  width="100%"
+				  height="20%"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  icon="{mobileMousePointerShare}"
+				  click="excuteDocumentAction(event)"
+				  toolTip="Mouse Pointer Share"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+		<s:Button id="btnRotate"
+				  width="100%"
+				  height="20%"
+				  click="excuteDocumentAction(event)"
+				  color="#020202"
+				  icon="@Embed(source='/views/assets/rotate-document.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  toolTip="Rotate Clockwise"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+		<s:Button id="btnPresenterDocumentDetails"
+				  width="100%"
+				  height="20%"
+				  click="excuteDocumentAction(event)"
+				  icon="@Embed(source='/views/assets/document_info.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  doubleClickEnabled="false"
+				  toolTip="Document Details"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+	</s:VGroup>
+	
+	<!--Control buttons for viewer-->
+	<s:VGroup width="100%"
+			  height="100%"
+			  id="studentAppbar"
+			  gap="0"
+			  bottom="0">
+		<s:Button id="btnViewerMenu"
+				  width="100%"
+				  height="20%"
+				  enabled="false"
+				  icon="@Embed('/views/assets/docicons/downloadTopc.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  click="excuteDocumentAction(event)"
+				  toolTip="Document Menu"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+		<s:Button id="btnViewerDocument"
+				  width="100%"
+				  height="20%"
+				  icon="@Embed('/views/toolSets/assets/my-doc-lib.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  click="excuteDocumentAction(event)"
+				  toolTip="Document Library"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+		<s:Button id="btnViewerRefresh"
+				  width="100%"
+				  height="20%"
+				  icon="@Embed('/views/toolSets/assets/refresh.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  click="excuteDocumentAction(event)"
+				  enabled="false"
+				  toolTip="Refresh the document"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+		<s:Button id="btnDocumentActualsize"
+				  width="100%"
+				  height="20%"
+				  click="excuteDocumentAction(event)"
+				  color="#020202"
+				  icon="@Embed(source='/views/assets/restoreSize.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  toolTip="Actual size"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"
+				  enabled="false"
+				  doubleClickEnabled="false"/>
+		<s:Button id="btnViewerDocumentDetails"
+				  width="100%"
+				  height="20%"
+				  bottom="0"
+				  enabled="false"
+				  click="excuteDocumentAction(event)"
+				  icon="@Embed(source='/views/assets/document_info.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  doubleClickEnabled="false"
+				  toolTip="Document Details"
+				  rollOver="documentTooltipHandler(event)"
+				  mouseDown="documentTooltipHandler(event)"/>
+	</s:VGroup>
+</s:Group>

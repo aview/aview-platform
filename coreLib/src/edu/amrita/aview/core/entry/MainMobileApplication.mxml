@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" 
+		 height="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="../login/PrepareClass.as"/>
+	<fx:Script source="LectureNoticeBoardUIHandler.as"/>
+	<fx:Script source="GetClassDetails.as"/>
+	<fx:Script source="Video_ScriptCode.as"/>
+	<fx:Script source="Users.as"/>
+	<fx:Script source="../evaluation/EvaluationUIHandler.as"/>
+	<fx:Script source="DesktopSharingModule.as"/>
+	<fx:Script source="../desktopSharing/ApplicationSharingModule.as"/>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.documentSharing.DocMobileComponent;
+			import edu.amrita.aview.core.gclm.helper.ClassRegistrationHelper;
+			import edu.amrita.aview.core.gclm.user.ChangePasswordCompMobile;
+			import edu.amrita.aview.core.gclm.vo.UserVO;
+			import edu.amrita.aview.core.login.PrepareLogin;
+			import edu.amrita.aview.core.shared.components.userList.UserControlButtons;
+			import edu.amrita.aview.core.shared.eventmap.EventMap;
+			import edu.amrita.aview.core.shared.log.LogUtil;
+			
+			import mx.events.FlexEvent;
+			import mx.logging.ILogger;
+			/**
+			 * To get device parameters
+			 */
+			private var avcEnvironment:AVCEnvironment=new AVCEnvironment();
+			/**
+			 * Instance of PrepareLogin
+			 */
+			[Bindable]
+			public var prepareLogin:PrepareLogin;//=new PrepareLogin();
+			/**
+			 * For Log API
+			 */
+			public var logUtilObj:LogUtil=new LogUtil();
+			/**
+			 * Used to log the details
+			 */
+			public var log:ILogger=Log.getLogger("aview.main");
+			/**
+			 * Holds selected class details in XML format
+			 */
+			[Bindable]
+			public var xmlClassRepository:XML=null;
+			/**
+			 * Holds instance of ChangePasswordCompMobile component to change password
+			 */
+			public var changePasswordComp:ChangePasswordCompMobile;
+			/**
+			 * Set to true, when user enbale the video module
+			 */
+			//public var isVideoPrefrenceON:Boolean=true;
+			/**
+			 * Instance of ClassroomContext to get user, lecture and class details
+			 */
+			[Bindable]
+			public var classroomContextObj:ClassroomContext=new ClassroomContext();
+			/**
+			 * Holds count of quiz entry
+			 */
+			public var quizEntryCount:Number=0;
+			[Bindable]
+			public var actionButtons:UserControlButtons = new UserControlButtons();
+			[Bindable]
+			public var classRoomModuleVO:ModuleVO = null;
+			public var contactModuleRO:ModuleRO = null;
+			public var classRoomModuleRO:ModuleVO = null;
+			public var _appEventMap:EventMap = null;
+			public var chatComp = null;
+			public var questionComp = null;
+			public var entryFac:EntryFac = new EntryFac;
+			
+			[Bindable]
+			public var loginServerTypearr:ArrayCollection=new ArrayCollection();
+			public var desktopSharingComp:DesktopSharingComponent = new DesktopSharingComponent();
+			/**
+			 * Holds the starttime for network connect/reconnect status
+			 */
+			private var startTime:Number;
+			/**
+			 * Holds the endtime for network connect/reconnect status
+			 */
+			private var endTime:Number;
+			/**
+			 * Holds the timer value for network connect/reconnect status
+			 */
+			private var notificationTimer:Timer;
+			[Bindable]
+			[Embed(source="/edu/amrita/aview/core/entry/assets/images/connect.png")]
+			private var connected:Class;
+			[Bindable]
+			[Embed(source="/edu/amrita/aview/core/entry/assets/images/disconnect.png")]
+			private var disConnected:Class;
+			/**
+			 * @public
+			 * 
+			 * To invoke service to get registered class details based on the userId
+			 * 
+			 * @return void
+			 */
+			public function getClassRepositoryFolderStructure():void
+			{
+				var classRegHelper:ClassRegistrationHelper=new ClassRegistrationHelper();
+				classRegHelper.getClassRepositoryFolderStructure(ClassroomContext.userVO.userId,getClassRepositoryFolderStructureResultHandler);
+			}
+			/**
+			 * @public
+			 * 
+			 * To get registered class details
+			 * 
+			 * @param xmlString holds the value of registered class
+			 * @return void
+			 */
+			public function getClassRepositoryFolderStructureResultHandler(xmlString:String):void
+			{
+				xmlClassRepository=new XML(xmlString);
+			}
+			/**
+			 * @private
+			 * 
+			 * To add eventListener for user action buttons
+			 * 
+			 * @return void
+			 */
+			public function addActionButtonsEventListener():void
+			{
+				actionButtons.btn_disaccept.addEventListener(MouseEvent.CLICK, actionButtons.onClickAccept);
+				actionButtons.btn_accept.addEventListener(MouseEvent.CLICK, actionButtons.onClickAccept);
+				actionButtons.btn_release.addEventListener(MouseEvent.CLICK, actionButtons.onClickRelease);
+//				actionButtons.btn_handraise.addEventListener(MouseEvent.CLICK, actionButtons.onClickHandRaise);
+				actionButtons.btn_handrelease.addEventListener(MouseEvent.CLICK, actionButtons.onClickHandraiseRelease);
+				actionButtons.presenterButton.addEventListener(MouseEvent.CLICK, actionButtons.onClickMakePresenter);
+				actionButtons.takeControlButton.addEventListener(MouseEvent.CLICK, actionButtons.onClickTakeControl);
+				actionButtons.prsntrRequestButton.addEventListener(MouseEvent.CLICK, actionButtons.onClickRequestPresenter);
+				actionButtons.releasePrsntrRequestButton.addEventListener(MouseEvent.CLICK, actionButtons.onClickReleasePresenter);
+				actionButtons.togglePushToTalk.addEventListener(Event.CHANGE, actionButtons.pushToTalk);
+				//actionButtons.btnPrivateChat.addEventListener(MouseEvent.CLICK, actionButtons.privateChat);
+			}
+			public function createUserList():void
+			{
+				lstUsers = new MobileUserList;
+				actionButtons.init(this,lstUsers,this.classRoomModuleVO as ModuleRO);
+				lstUsers.init(this,actionButtons,this.classRoomModuleVO as ModuleRO, contactModuleRO);
+				lstUsers.getClassRegisters();
+			}
+			public function get appEventMap():EventMap
+			{
+				return _appEventMap;
+			}
+			public function set appEventMap(value:EventMap):void
+			{
+				_appEventMap = value;
+			}
+			public function initaliseClassroomView():void
+			{
+				if(ClassroomContext.userVO.role!=Constants.ADMIN_TYPE && ClassroomContext.userVO.role!=Constants.MASTER_ADMIN_TYPE)
+				{
+					initNonCoreObjects();
+				}		
+				getClassRepositoryFolderStructure();
+				
+			}
+			private function initNonCoreObjects():void
+			{
+				chatComp = entryFac.chatComponent();
+				questionComp = entryFac.questionComponent();
+				createModuleVO(appEventMap, ClassroomContext.userVO);
+			}
+			public function createModuleVO(appEventMap:EventMap, userVO:UserVO):void {
+				classRoomModuleVO = new ModuleRO();
+				classRoomModuleVO.userVO = userVO;
+				classRoomModuleVO.applicationEventMap = new EventMap();
+				classRoomModuleVO.moduleEventMap = new EventMap();
+				classRoomModuleVO.lectureVO = ClassroomContext.lecture;
+				//setupEvents();
+			}
+			private function setupEvents():void{
+				//CRASH: API : done
+				
+				classRoomModuleRO.moduleEventMap.registerMapListener(EntryFac.BREAK_SESSION_ENDED_TYPE,onBreakSessionEndedEvent);
+				classRoomModuleRO.moduleEventMap.registerMapListener(EntryFac.BREAK_SESSION_STARTED_TYPE,onBreakSessionStartedEvent);
+				
+				classRoomModuleRO.moduleEventMap.registerMapListener(SessionStatusEvent.TYPE_SESSION_EXIT,cleanup);
+				classRoomModuleRO.applicationEventMap.registerMapListener(ApplicationStatusEvent.TYPE_APPLICATION_CLOSE,cleanup);
+				classRoomModuleRO.applicationEventMap.registerMapListener(ApplicationStatusEvent.TYPE_APPLICATION_LOGOUT,cleanup);
+			}
+			private function onBreakSessionStartedEvent(breakEvent):void {
+				actionButtons.breakSessionObj.questionAnswerEnabledState = breakEvent.breakDetails.enableQuestions;
+			}
+			
+			
+			private function onBreakSessionEndedEvent(breakEvent):void {
+				//The button state is not changed after break session has started, then reverse the state after ending it
+				if (breakEvent.breakDetails && (actionButtons.breakSessionObj.questionAnswerEnabledState == breakEvent.breakDetails.enableQuestions)) {
+					actionButtons.breakSessionObj.questionAnswerEnabledState = !actionButtons.breakSessionObj.questionAnswerEnabledState;
+				}
+			}
+			/**
+			 * The function is used to initialize the screen sharing component.
+			 *
+			 * @return void
+			 */
+			public function init_Desktop():void {
+				FlexGlobals.topLevelApplication.sharing.sharingHolder.removeAllElements();
+				if(FlexGlobals.topLevelApplication.deviceDPI.deviceModel == "Nexus 7"){
+					var desktopSharingInfo:FullScreenLabel = new FullScreenLabel;
+					desktopSharingInfo.text = "Sorry, Current AVIEW version doesn't support desktop sharing on your device.";
+					desktopSharingInfo.verticalCenter = 0;
+					desktopSharingInfo.horizontalCenter = 0;
+					desktopSharingInfo.percentHeight = 100;
+					desktopSharingInfo.percentWidth = 100;
+					FlexGlobals.topLevelApplication.sharing.sharingHolder.addElement(desktopSharingInfo);
+				}else{
+					desktopSharingComp.percentHeight = 100;
+					desktopSharingComp.percentWidth = 100;
+					FlexGlobals.topLevelApplication.sharing.sharingHolder.addElement(desktopSharingComp);
+				}
+			}
+			public function intializePreLoginClass():void{
+				prepareLogin = new PrepareLogin(this);
+			}
+			/**
+			 * The function is used to update the network status.
+			 *
+			 * @return void
+			 */
+			public function updateStatusbar(obj:Object):void {
+				if(obj.connectionStatus) {	
+					if(FlexGlobals.topLevelApplication.netConnectionStatus == true)
+					{
+						setTimeout(closeConnectMsg, 5000);
+						FlexGlobals.topLevelApplication.netConnectionStatus = false;
+					}
+					FlexGlobals.topLevelApplication.connectionStatusMessage="  Connected!!";
+					FlexGlobals.topLevelApplication.connectionStatusIcon = connected;
+				} else {
+					FlexGlobals.topLevelApplication.netConnectionStatus = true;
+					FlexGlobals.topLevelApplication.connectionStatusMessage="  Trying to reconnect...";
+					FlexGlobals.topLevelApplication.connectionStatusIcon = disConnected;
+					FlexGlobals.topLevelApplication.notificationStatusContainer=true;
+				}
+				if (arrVideoConnections.length == ClassroomContext.videoConnectedCount) {
+					if(FlexGlobals.topLevelApplication.netConnectionStatus == true)
+					{
+						setTimeout(closeConnectMsg,5000);
+						FlexGlobals.topLevelApplication.netConnectionStatus = false;
+					}
+					 FlexGlobals.topLevelApplication.connectionStatusMessage="  Connected!!";
+					 FlexGlobals.topLevelApplication.connectionStatusIcon = connected;
+				}
+				else{
+					FlexGlobals.topLevelApplication.netConnectionStatus = true;
+					FlexGlobals.topLevelApplication.connectionStatusMessage="  Trying to reconnect...";
+					FlexGlobals.topLevelApplication.connectionStatusIcon = disConnected;
+					FlexGlobals.topLevelApplication.notificationStatusContainer=true; 
+				}
+
+			}
+			/**
+			 * The function is used to invisible the connected msg label after 5 seconds.
+			 *
+			 * @return void
+			 */
+			public function closeConnectMsg():void
+			{
+				FlexGlobals.topLevelApplication.notificationStatusContainer=false;
+			}
+		]]>
+	</fx:Script>
+</s:Group>

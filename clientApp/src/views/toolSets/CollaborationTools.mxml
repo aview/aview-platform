@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CollaborationTools.mxml
+Module		: Classroom
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+Collaboration tools contains collaboartion control buttons and it is used to change the modules.
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		backgroundColor="#071124"
+		width="100%"
+		height="100%">
+	<s:HGroup id="actionBtnGrp"
+		      width="100%"
+			  height="100%"
+			  gap="-1">
+		<s:ButtonBar id="tabs" 
+					 width="100%"
+					 height="100%"
+					 requireSelection="true"
+					 fontSize="12"
+					 skinClass="edu.amrita.aview.common.skins.mobile.CustomButtonBarSkin">
+			<s:layout>
+				<s:HorizontalLayout gap="-1"/>
+			</s:layout>
+			<s:ArrayCollection>
+				<fx:Object id="btnVideoModule"  label="Video" enabled ="true"></fx:Object>
+				<fx:Object id="btnDocumentModule"  label="Document"></fx:Object>
+				<fx:Object id="btnWhiteBoardModule"  label="Whiteboard"></fx:Object>
+				<fx:Object id="btnDesktopModule"  label="Desktop"></fx:Object>
+				<fx:Object id="btnThreeDModule"  label="3D Viewer"></fx:Object>
+				<fx:Object id="btnUserModule"  label="Users / Chat"></fx:Object>
+				<fx:Object id="btnQuestionModule"  label="Question"></fx:Object>
+			</s:ArrayCollection>
+		</s:ButtonBar>
+	</s:HGroup>
+</s:View>

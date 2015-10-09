@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: Viewer3D.mxml
+Module		: ThreeD
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh,Jayakrishnan R
+
+This is a wrapper component to load 3D sharing component.
+
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="Viewer3D"
+		width="100%"
+		height="100%"
+		backgroundAlpha="1"
+		creationComplete="add3DViewer(event)">
+
+	<fx:Script>
+		<![CDATA[
+			
+			/**
+			 * Importing mx library
+			 */
+            import edu.amrita.aview.core.entry.Constants;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			/**
+			 * @protected
+			 *
+			 * To add 3DComponent to container
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function add3DViewer(event:FlexEvent):void
+			{
+				viewer3DContainer.addElement(FlexGlobals.topLevelApplication.viewer3DComp);
+			}
+		]]>
+	</fx:Script>
+
+	<s:HGroup width="100%"
+			  height="100%"
+			  id="viewer3DContainer"/>
+</s:View>

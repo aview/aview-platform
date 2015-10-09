@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: PollingWindow.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Sinu Rachel John
+
+PollingWindow.mxml file used for pop-out Polling in desktop version.
+-->
+
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
+		   creationComplete="creationCompleteHandler()"
+		   resize="resizeWindow()"
+		   minHeight="680"
+		   minWidth="920"
+		   backgroundColor="#e0effb"
+		   verticalScrollPolicy="off"
+		   horizontalCenter="0"
+		   verticalCenter="0"
+		   type="normal"
+		   close="closePollingWindow()"
+		   layout="absolute"
+		   statusBarBackgroundColor="#2a5da4"
+		   status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}">
+	<mx:Script source="PollingWindowUIHandler.as"/>
+
+	<mx:HBox id="hBoxPollingCanvas"
+			 x="0"
+			 y="0"
+			 width="100%"
+			 height="100%"
+			 top="0"
+			 paddingLeft="25"/>
+</mx:Window>

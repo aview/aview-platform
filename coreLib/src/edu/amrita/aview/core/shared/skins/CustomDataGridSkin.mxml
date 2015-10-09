@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CustomDataGridSkin.mxml
+Module		: Common
+Developer(s): Vijayakumar.R
+Reviewer(s)	: Veena Gopal K.V
+
+-->
+<!--
+VGCR:-add Description 
+-->
+<skins:DataGridSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+					xmlns:s="library://ns.adobe.com/flex/spark"
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					xmlns:skins="spark.skins.spark.*"
+					xmlns:skins1="edu.amrita.aview.core.shared.skins.*">
+
+	<fx:Declarations>
+
+		<!-- Must be a factory with id="headerRenderer".
+		This overrides the similar headerRenderer definition in DataGridSkin -->
+		<fx:Component id="headerRenderer">
+			<skins1:CustomHeaderRender/>
+		</fx:Component>
+
+	</fx:Declarations>
+
+</skins:DataGridSkin>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: CameraSelectionForm.mxml
+Module		: Biometric
+Developer(s): Jerald P
+Reviewer(s)	: Ramesh Guntha
+
+This component invoked when user select Biometric login.
+This component is used to select the apropriate camera for login.
+-->
+<!-- VGCR:- Comment for each section -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="334"
+		   height="160"
+		   initialize="init()"
+		   xmlns:s="library://ns.adobe.com/flex/spark" xmlns:components="edu.amrita.aview.common.components.*">
+	<mx:Script source="CameraSelectionFormHandler.as"/>
+	<mx:Panel x="0"
+			  y="0"
+			  width="334"
+			  height="156"
+			  backgroundColor="#e0effb"
+			  color="#000000"
+			  title="{resourceManager.getString('myResource','biometric.cameraSelection')}"
+			  layout="absolute"
+			  defaultButton="{btnOk}">
+		<mx:Label x="10"
+				  y="14"
+				  color="#000000"
+				  fontWeight="bold"
+				  text="{resourceManager.getString('myResource','biometric.cameras')}"/>
+		<s:DropDownList id="cameraList" x="33" y="37" width="248" chromeColor="#E0EFFB"
+						color="#000000" cornerRadius="3" dataProvider="{this.cameraNames}">
+		</s:DropDownList>
+		<components:MxImageButton id="btnRefresh"
+				   x="292"
+				   y="35"
+				   width="24"
+				   icon="@Embed(source='assets/images/refresh.png')"
+				   click="refreshCameraList()"
+				   toolTip="{resourceManager.getString('myResource','biometric.refreshCameraList')}"
+				   visible="{FlexGlobals.topLevelApplication.mainApp.scanHardwareEnableFlag}"/>
+		<components:MxImageButton id="btnOk" x="81" y="82" height="24"
+								  label="{resourceManager.getString('myResource','biometric.ok')}"
+								  chromeColor="#E0EFFB" click="getCameraName()" color="#000000"
+								  cornerRadius="3" fontWeight="bold"/>
+		<components:MxImageButton id="btnNo" x="165" y="82" height="24"
+								  label="{resourceManager.getString('myResource','biometric.cancel')}"
+								  chromeColor="#E0EFFB" click="cancelCameraSelection()"
+								  color="#000000" cornerRadius="3" fontWeight="bold"/>
+	</mx:Panel>
+
+</mx:Canvas>

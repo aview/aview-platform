@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" focusEnabled="false">
+	<mx:Script source="IconRendererHandler.as"/>
+
+	<mx:Image id="icon1" left="5" source="{data.ico}" verticalCenter="0"/>
+	<mx:Label id="labelDisplay" left="25" right="5" top="5" bottom="5" verticalCenter="0"/>
+
+</mx:VBox>

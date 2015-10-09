@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: MobileTextToolComponent.mxml
+Module		: WhiteBoard
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+MobileTextToolComponent is a custom text tool and it is used to enter text to display on whiteboard.
+
+-->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   resizeForSoftKeyboard="false"
+						   moveForSoftKeyboard="false"
+						   needsSoftKeyboard="true"
+						   width="100%"
+						   height="100%"
+						   minHeight="100"
+						   minWidth="200"
+						   mouseDown="mouseDownHandler(event)"
+						   mouseOut="mouseOutHandler(event)"
+						   mouseUp="mouseOutHandler(event)"
+						   creationComplete="init(event)"
+						   close="updateMsg(true);" 
+						   xmlns:mobileComponents="edu.amrita.aview.core.shared.components.mobileComponents.*">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.skins.mobile.TextAreaSkinComp;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.events.MoveEvent;
+			
+			import spark.events.TextOperationEvent;
+			
+
+			/**
+			 * To hold component width
+			 */
+			[Bindable]
+			public var textCompWidth:Number=0;
+			/**
+			 * To hold component height
+			 */
+			public var textCompHeight:Number=0;
+			/**
+			 * To hold component x position
+			 */
+			public var textCompX:Number=0;
+			/**
+			 * To hold component y position
+			 */
+			public var textCompY:Number=0;
+			/**
+			 * To hold component x position, when soft keyboard is getting opened.
+			 */
+			private var oldX:Number=0;
+			/**
+			 * To hold component y position, when soft keyboard is getting opened
+			 */
+			private var oldY:Number=0;
+			[Bindable]
+			public var startX:Number=0;
+			[Bindable]
+			public var startY:Number=0;
+			/**
+			 * To set the font size
+			 */
+			[Bindable]
+			public var textCompFontSize:Number=12;
+
+			/**
+			 * @public
+			 *
+			 * Update the component height and width, when MobileTextTool component is getting closed.
+			 *
+			 * @param isClosedByUser holds the value of whether MobileTextTool component is closed manually by user or not
+			 * @return void
+			 */
+			public function updateMsg(isClosedByUser:Boolean):void
+			{
+				textCompWidth=txtToolArea.width;
+				var conHessightss:TextAreaSkinComp = txtToolArea.skin as TextAreaSkinComp;
+				textCompHeight = Math.abs(conHessightss.textDisplay.contentHeight)+6;
+				txtToolArea.minWidth=240;
+				FlexGlobals.topLevelApplication.wbComp.isSoftKeyboardActivate=false;
+				if(FlexGlobals.topLevelApplication.wbComp.isSoftKeyboardActivate == true){
+					this.x=oldX;
+					this.y=oldY;
+				}
+				//If user paste the text, change width of MobileTextTool compomemt width
+				if (FlexGlobals.topLevelApplication.wbComp.isPasteActive)
+				{
+					textCompWidth=txtToolArea.width;
+					textCompHeight=txtToolArea.height;
+				}
+				//if MobileTextTool component is closed manually by user, display the text and close the component
+				//Otherwise remove the text and close the component
+				if (isClosedByUser)
+				{
+					this.close(true, txtToolArea.text);
+				}
+				else
+				{
+					this.close(true, "");
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To Drag the textTool component within the WbCanvas
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function mouseDownHandler(event:MouseEvent = null):void
+			{
+				this.startDrag(false, new Rectangle(0, 
+					(FlexGlobals.topLevelApplication.actionBar.height+FlexGlobals.topLevelApplication.collaborationBtnsHeight), 
+					FlexGlobals.topLevelApplication.wbComp.wbCanvas.width,
+					FlexGlobals.topLevelApplication.wbComp.wbCanvas.height));
+			}
+			/**
+			 * @private
+			 *
+			 * To stop the drag event
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function mouseOutHandler(event:MouseEvent):void
+			{
+				this.stopDrag();
+				textCompX = this.x;
+				textCompY = this.y;
+			}
+			/**
+			 * @private
+			 *
+			 * To decrease the font size
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function btnMinusClickHandler(event:MouseEvent):void
+			{
+				if (textCompFontSize > 12 && textCompFontSize <= 50)
+				{
+					textCompFontSize--;
+					btnThickness.label=textCompFontSize.toString();
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To increase the font size
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function btnPlusClickHandler(event:MouseEvent):void
+			{
+				if (textCompFontSize >= 12 && textCompFontSize < 50)
+				{
+					textCompFontSize++;
+					btnThickness.label=textCompFontSize.toString();
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To change the position of textTool component when user enter text
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function positionChangeHandler():void
+			{
+				//If MobileTextTool component width is more than wbCanvas width, change the width of MobileTextTool component
+				if (this.x + this.width > FlexGlobals.topLevelApplication.wbComp.wbCanvas.width)
+				{
+					this.x=FlexGlobals.topLevelApplication.wbComp.wbCanvas.width - this.width;
+				}
+				//If MobileTextTool component x value is less than wbCanvas x value, change the x position of MobileTextTool component
+				else if (this.x < 0)
+				{
+					this.x=0;
+				}
+				else
+				{
+					this.x=this.x;
+				}
+				//If MobileTextTool component height is more than wbCanvas height, change the height of MobileTextTool component
+				if (this.y + this.height > FlexGlobals.topLevelApplication.wbComp.wbCanvas.height)
+				{
+					this.y=(FlexGlobals.topLevelApplication.wbComp.wbCanvas.height + FlexGlobals.topLevelApplication.actionBar.height+FlexGlobals.topLevelApplication.collaborationBtnsHeight)- this.height ;
+				}
+				//If MobileTextTool component y value is less than actionBar height, change the y position of MobileTextTool component
+				else if (this.y < (FlexGlobals.topLevelApplication.actionBar.height+FlexGlobals.topLevelApplication.collaborationBtnsHeight))
+				{
+					this.y=(FlexGlobals.topLevelApplication.collaborationBtnsHeight+FlexGlobals.topLevelApplication.actionBar.height);
+				}
+				else
+				{
+					this.y=this.y;
+				}
+				trace("this.x : "+this.x+"this.y"+this.y);
+			}
+			/**
+			 * @protected
+			 *
+			 * To set the Max height, width and style for textArea
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function init(event:FlexEvent):void
+			{
+				txtToolArea.maxHeight=(FlexGlobals.topLevelApplication.wbComp.wbCanvas.height) / 2 - (btnGroup.height + lblTextTool.height + 40);
+				txtToolArea.setStyle("maxHeight", txtToolArea.maxHeight);
+				txtToolArea.maxWidth=((FlexGlobals.topLevelApplication.wbComp.wbCanvas.width) / 2) - 30;
+				parentTextToolGroup.maxHeight=txtToolArea.maxHeight;
+				parentTextToolGroup.maxWidth=txtToolArea.maxWidth;
+				positionChangeHandler();
+			}
+			/**
+			 * @public
+			 *
+			 * To move the textTool component
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			public function textCompMoveHandler(event:MoveEvent=null):void
+			{
+				this.startDrag(false, new Rectangle(0, (FlexGlobals.topLevelApplication.actionBar.height+FlexGlobals.topLevelApplication.collaborationBtnsHeight), FlexGlobals.topLevelApplication.wbComp.wbCanvas.width - this.width, FlexGlobals.topLevelApplication.wbComp.wbCanvas.height - this.height));
+			}
+			/**
+			 * @protected
+			 *
+			 * To store text component current x and y position, when soft keyboard is opened
+			 *
+			 * @param event of SoftKeyboardEvent
+			 * @return void
+			 */
+			protected function softKeyboardActivateHandler(event:SoftKeyboardEvent):void
+			{
+				txtToolArea.minWidth=0;
+				FlexGlobals.topLevelApplication.wbComp.isSoftKeyboardActivate=true;
+				oldX=this.x;
+				oldY=this.y;
+				this.y=FlexGlobals.topLevelApplication.actionBar.height;
+				positionChangeHandler();
+			}
+			/**
+			 * @protected
+			 *
+			 * To restore text component x and y position, when soft keyboard is closed
+			 *
+			 * @param event of SoftKeyboardEvent
+			 * @return void
+			 */
+			protected function softKeyboardDeActivateHandler(event:SoftKeyboardEvent):void
+			{
+				textCompWidth=txtToolArea.width;
+				var conHessightss:TextAreaSkinComp = txtToolArea.skin as TextAreaSkinComp;
+				textCompHeight = conHessightss.textDisplay.contentHeight+.6;
+				txtToolArea.minWidth=240;
+				FlexGlobals.topLevelApplication.wbComp.isSoftKeyboardActivate=false;
+				this.x=oldX;
+				this.y=oldY;
+			}
+			/**
+			 * @private
+			 *
+			 * To enable focus for text area
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function textAreaFocusHandler():void
+			{
+				txtToolArea.setFocus();
+			}
+			/**
+			 * @private 
+			 * @param event of type MouseEvent
+			 * 
+			 */
+			private function exitCcomponentHandler(event:MouseEvent):void
+			{
+				updateMsg(true);
+			}
+		]]>
+	</fx:Script>
+	<s:Rect width="100%"
+			height="100%"
+			x="0"
+			y="0">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xFFFFFF"/>
+		</s:stroke>
+	</s:Rect>
+	
+	<s:VGroup height="100%"
+			  width="100%"
+			  horizontalAlign="center"
+			  verticalAlign="middle"
+			  top="10"
+			  bottom="10"
+			  left="10"
+			  right="10">
+		<s:HGroup horizontalAlign="center" 
+				  verticalAlign="middle" 
+				  width="100%"
+				  height="10%">
+			<s:HGroup horizontalAlign="center" 
+					  verticalAlign="middle" 
+					  width="90%"
+					  height="100%">
+				<!--Title of the component-->
+				<s:Label id="lblTextTool"
+						 text="Enter text"
+						 color="0xFFFFFF"
+						 fontWeight="bold"/>
+			</s:HGroup>
+			<!--Image to close component-->
+			<s:HGroup width="10%"
+					  height="100%"
+					  paddingTop="10"
+					  horizontalAlign="center"
+					  verticalAlign="middle">
+				<s:Image id="imgCloseWindow"
+						 right="0"
+						 source="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/close.gif')"
+						 click="exitCcomponentHandler(event)"/>
+			</s:HGroup>
+		</s:HGroup>
+		
+		<!--Horizontal line-->
+		<mobileComponents:HorizontalStroke width="100%"/>
+		<!--Area to enter text-->
+		<s:Group id="parentTextToolGroup"
+				 width="100%"
+				 left="5"
+				 right="5"
+				 minWidth="240"
+				 needsSoftKeyboard="true"
+				 click="txtToolArea.minWidth = 240;callLater(textAreaFocusHandler);">
+			<s:Rect width="100%"
+					height="100%">
+				<s:fill>
+					<s:SolidColor color="0xFFFFFF"
+								  alpha="1"/>
+				</s:fill>
+			</s:Rect>
+			<s:TextArea id="txtToolArea"
+						editable="true"
+						focusEnabled="true"
+						paddingRight="10"
+						minWidth="240"
+						needsSoftKeyboard="true"
+						fontSize="{textCompFontSize}"
+						click="txtToolArea.setFocus();"
+						change="positionChangeHandler();"
+						borderVisible="false"
+						focusAlpha="0"
+						softKeyboardActivate="softKeyboardActivateHandler(event)"
+						softKeyboardDeactivate="softKeyboardDeActivateHandler(event)"
+						skinClass="edu.amrita.aview.core.shared.skins.mobile.TextAreaSkinComp"/>
+		</s:Group>
+		<!--Control buttons-->
+		<s:HGroup width="80%"
+				  verticalAlign="middle"
+				  horizontalAlign="center"
+				  gap="0"
+				  left="10"
+				  right="10"
+				  bottom="5"
+				  id="btnGroup">
+			<s:Button id="btnMinus"
+					  label="-"
+					  fontSize="22"
+					  fontWeight="bold"
+					  width="30%"
+					  height="100%"
+					  click="btnMinusClickHandler(event)"/>
+			<s:Button id="btnThickness"
+					  label="{textCompFontSize.toString()}"
+					  fontSize="22"
+					  fontWeight="bold"
+					  width="40%"
+					  height="100%"
+					  enabled="false"/>
+			<s:Button id="btnPlus"
+					  label="+"
+					  fontSize="22"
+					  fontWeight="bold"
+					  width="30%"
+					  height="100%"
+					  click="btnPlusClickHandler(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+</s:SkinnablePopUpContainer>

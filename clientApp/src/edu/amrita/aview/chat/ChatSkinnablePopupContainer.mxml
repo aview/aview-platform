@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   needsSoftKeyboard="true"
+						   width="100%"
+						   height="100%"
+						   minHeight="100"
+						   minWidth="200"
+						   mouseDown="mouseDownHandler(event)"
+						   mouseOut="mouseOutHandler(event)"
+						   mouseUp="mouseOutHandler(event)"
+						   creationComplete="creationCompleteHandler()" 
+						   xmlns:mobileComponents="edu.amrita.aview.core.shared.components.mobileComponents.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * To hold component width
+			 */
+			[Bindable]
+			public var textCompWidth:Number=0;
+			/**
+			 * To hold component height
+			 */
+			public var textCompHeight:Number=0;
+			/**
+			 * To hold component x position
+			 */
+			public var textCompX:Number=0;
+			/**
+			 * To hold component y position
+			 */
+			public var textCompY:Number=0;
+			/**
+			 * To hold component x position, when soft keyboard is getting opened.
+			 */
+			private var oldX:Number=0;
+			/**
+			 * To hold component y position, when soft keyboard is getting opened
+			 */
+			private var oldY:Number=0;
+			[Bindable]
+			public var title:String;
+			/**
+			 * To set the font size
+			 */
+			[Bindable]
+			public var textCompFontSize:Number=12;
+			/**
+			 * @private
+			 *
+			 * To Drag the textTool component within the WbCanvas
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function mouseDownHandler(event:MouseEvent):void
+			{
+				this.startDrag(false, new Rectangle(0, FlexGlobals.topLevelApplication.actionBar.height, FlexGlobals.topLevelApplication.width - this.width , FlexGlobals.topLevelApplication.height - (FlexGlobals.topLevelApplication.actionBar.height+this.height)));
+			}
+			/**
+			 * @private
+			 *
+			 * To stop the drag event
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function mouseOutHandler(event:MouseEvent):void
+			{
+				this.stopDrag();
+			}
+			private function creationCompleteHandler():void
+			{
+				this.x = (FlexGlobals.topLevelApplication.width - this.width)/2;
+				this.y = (FlexGlobals.topLevelApplication.height - this.height)/2;
+			}
+		]]>
+	</fx:Script>
+	<fx:Script source="ChatTitleWindowHandler.as"/>
+	<s:Rect width="100%" 
+			height="100%" 
+			x="0" 
+			y="0">
+		<s:fill>
+			<s:SolidColor color="0x071124" />
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xFFFFFF" />
+		</s:stroke>
+	</s:Rect>
+	<s:VGroup width="100%"
+			  height="100%">
+		<s:HGroup horizontalAlign="center" 
+				  verticalAlign="middle" 
+				  width="100%"
+				  height="10%">
+			<!--Title for private chat window-->
+			<s:HGroup horizontalAlign="center" 
+					  verticalAlign="middle" 
+					  width="90%"
+					  height="100%">
+				<s:Label text="{title}"
+					color="0xFFFFFF"
+					fontWeight="bold"/>
+			</s:HGroup>
+			<!--Image to close private chat component-->
+			<s:HGroup width="10%"
+					  height="100%"
+					  paddingTop="10"
+					  horizontalAlign="center"
+					  verticalAlign="middle">
+				<s:Image id="imgClosePvtChat"
+						 right="0"
+						 source="@Embed(source='assets/images/pvtChat_close.png')"
+						 click="exitChatHandler(event)"/>
+			</s:HGroup>
+		</s:HGroup>
+<!--		<mobileComponents:HorizontalStroke width="100%"/>-->	
+		<s:VGroup width="0%"
+			  height="100%"
+			  gap="2"
+			  top="2" id="chatHolder">
+		</s:VGroup>
+</s:VGroup>	
+</s:SkinnableContainer>

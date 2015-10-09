@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CollaborativeModeCallout.mxml
+Module		: WhiteBoard
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+CollaborativeModeCallout component is used to,
+
+	1. Allow selected user to draw on whiteboard
+	2. Allow all user to draw on whiteboard
+	3. Restrict user to draw on whiteboard
+	4. Hide whiteboard
+
+-->
+
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   height="230"
+		   width="100%">
+
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * Importing mx library
+			 */
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle"
+						  horizontalAlign="center"/>
+	</s:layout>
+	<s:VGroup width="100%"
+			  height="100%"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+		<!-- Collaboration title-->
+		<s:VGroup width="100%"
+				  height="20%"
+				  paddingTop="10"
+				  verticalAlign="middle"
+				  horizontalAlign="center">
+
+			<s:Label text="Collaboration Mode"
+					 fontWeight="bold"
+					 paddingLeft="10"
+					 paddingRight="10"/>
+			<s:Line width="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="0x000000"
+										weight="1"
+										alpha="1"/>
+				</s:stroke>
+			</s:Line>
+		</s:VGroup>
+		<!-- Collaboration list-->
+		<s:VGroup width="100%"
+				  height="100%"
+				  verticalAlign="middle"
+				  horizontalAlign="center">
+			<s:List id="collaborationList"
+					labelField="label"
+					width="100%"
+					height="100%"
+					selectionColor="#b3b3b3"
+					verticalScrollPolicy="off"
+					horizontalScrollPolicy="off"
+					click="FlexGlobals.topLevelApplication.wbComp.setCollaborationModeInCollabObject()">
+
+			</s:List>
+		</s:VGroup>
+	</s:VGroup>
+</s:Callout>

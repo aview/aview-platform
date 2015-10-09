@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						  xmlns:s="library://ns.adobe.com/flex/spark" 
+						  xmlns:mx="library://ns.adobe.com/flex/mx"
+						  creationComplete="itemrenderer1_creationCompleteHandler(event)"
+						  dataChange="itemrenderer1_dataChangeHandler(event)"
+						  autoDrawBackground="true" 
+						  xmlns:layout="org.alivepdf.layout.*"
+						  height="30"
+						  focusEnabled="true">
+	<s:layout>		
+		<s:HorizontalLayout horizontalAlign="left" paddingLeft="5" paddingRight="5"
+							verticalAlign="middle">
+			
+		</s:HorizontalLayout>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.components.List;
+			
+			[Bindable]
+			[Embed(source="/edu/amrita/aview/contacts/itemRenderers/assets/images/offline.png")]
+			public var user_offline:Class;
+			
+			[Bindable]
+			[Embed(source="/edu/amrita/aview/contacts/itemRenderers/assets/images/online.png")]
+			public var user_active:Class;
+			
+			[Bindable]
+			[Embed(source="/edu/amrita/aview/contacts/itemRenderers/assets/images/busy.png")]
+			public var user_busy:Class;
+			
+			[Bindable]
+			public var iconStatus:Class=user_offline;
+			
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				changeUserStatus();
+				
+			}
+			private function changeUserStatus():void
+			{
+				if(data==null ||data.userStatus==null)
+				{
+					return;
+				}
+				if(data.userStatus==Constants.ONLINE)
+				{
+					iconStatus=user_active;
+				}
+				else if(data.userStatus==Constants.OFFLINE)
+				{
+					iconStatus=user_offline;
+				}
+				else if(data.userStatus==Constants.BUSY)
+				{
+					iconStatus=user_busy;
+				}
+			}
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				changeUserStatus();				
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Image id="iconUserStatus" source="{iconStatus}" left="5" />	
+
+	<s:Label width="100%" height="100%" fontWeight="normal" maxDisplayedLines="1"
+			 text="{dataGridListData.label}" textAlign="left" toolTip="{dataGridListData.label}"
+			 verticalAlign="middle"/>
+
+</s:MXDataGridItemRenderer>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+			   width="400" height="116" backgroundColor="#e0effb" borderColor="#2a5ea4"
+			   color="#FFFFFF" cornerRadius="6" creationComplete="initInvitation()"
+			   title="Meeting Invitation"
+			   > 
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="InvitationViewHandler.as"/>
+	
+	<s:TextArea id="txtInvMsg" x="9" y="10" width="380" height="32" borderVisible="false"
+				color="#000000" contentBackgroundAlpha="0" editable="false"/>
+	<s:Button id="btnAccept" x="118" y="50" label="Accept" chromeColor="#E0EFFB" color="#000000"
+			  cornerRadius="3" toolTip="Click to Enter Meeting"/>
+	<s:Button id="btnReject" x="208" y="50" label="Reject" chromeColor="#E0EFFB" color="#000000"
+			  cornerRadius="3" toolTip="Click if you don't want to enter into the Meeting"/>
+	
+</s:TitleWindow>

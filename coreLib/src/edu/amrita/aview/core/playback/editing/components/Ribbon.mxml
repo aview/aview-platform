@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: Ribbon.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains the UI for creating the ribbon for modules.
+
+-->
+<!-- Main canvas for ribbon display -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="100%" horizontalScrollPolicy="off" styleName="ribbon">
+	<!-- Script to include handler -->
+	<mx:Script source="../scripts/RibbonScript.as"/>
+</mx:Canvas>

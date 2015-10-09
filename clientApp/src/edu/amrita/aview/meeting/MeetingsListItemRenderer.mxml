@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: MeetingsListItemRenderer.mxml
+Module		: meeting
+Developer(s): NidhiSarasan,Soumya M.D
+Reviewer(s)	:
+
+This file is the item renderer for notifications window.
+It contains the code for display the accept and reject images in the notifications.
+Click on to this images will lead to accept and reject the invitations.
+-->
+<!-- ItemRenderer for meetList in the LectureNoticeBoard.mxml-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				autoDrawBackground="true"
+				creationComplete="onInit()"
+				dataChange="onInit()"
+				doubleClickEnabled="true"
+				rollOut="onRollOut()"
+				width="100%"
+				height="100%">
+	<!-- Script to include handler -->
+	<fx:Script source="MeetingsListItemRendererScript.as"/>
+	<!-- States -->
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+		<s:State name="selected"/>
+	</s:states>
+	<!-- SkinnableContainer that holds all the components and set the background color-->
+	<s:SkinnableContainer id="invitationContainer"
+						  width="100%"
+						  height="43"
+						  backgroundColor="#FFFFFF"
+						  backgroundAlpha.hovered="1"
+						  backgroundAlpha="0.5"
+						  backgroundColor.hovered="#e0effb"
+						  mouseOver="onMouseOver()">
+		<!-- HGroup used to align the components horizontally-->
+		<s:HGroup width="100%"
+				  height="100%"
+				  left="5">
+			<!-- Label used to show the meeting name-->
+			<s:Label id="labelDisplay"
+					 toolTip="Meeting Title"
+					 verticalCenter="0"
+					 width="{this.owner.width-200}"
+					 left="10"
+					 color="#000000"
+					 height="100%"
+					 verticalAlign="middle"
+					 text="{data.meetingName}"/>
+			<!-- Label used to show the moderator name-->
+			<s:Label id="nameDisplay"
+					 color="#000000"
+					 text="{data.moderatorName}"
+					 toolTip="Moderator Name"
+					 verticalCenter="0"
+					 right="146"
+					 height="100%"
+					 verticalAlign="middle"/>
+			<!--HGroup used to align the components horizontally-->
+			<s:HGroup horizontalCenter="0"
+					  id="buttonContainer"
+					  gap="3"
+					  verticalAlign="middle"
+					  height="100%"/>
+		</s:HGroup>
+	</s:SkinnableContainer>
+</s:ItemRenderer>

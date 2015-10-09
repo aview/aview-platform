@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: AdminConsole.mxml
+Module		: SessionAdmin
+Developer(s): Salil George, Ramesh Guntha
+Reviewer(s)	: Remya T
+
+AdminConsole is a component for Administrator to monitor logged in users and their details for a
+particular server thus monitoring live A-VIEW classes.
+-->
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:local="*"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*"
+		   width="100%" height="100%" backgroundColor="#e0effb" borderColor="#1AB1F7"
+		   borderStyle="solid" click="removeCurrentLists()"
+		   creationComplete="adminconsoleCreationComplete()" rightClick="removeCurrentLists()">	
+	<!-- Script to include handler -->
+	<mx:Script source="AdminConsoleHandler.as"/>
+	<!-- Hbox to hold the Class details labels Labels-->
+	<mx:HBox left="90" right="10" top="10" height="30" horizontalAlign="center">
+		<!-- Label to hold the course name-->
+		<s:Label fontSize="13" fontWeight="bold"
+				 text="{'Course: '+ClassroomContext.course.courseName}"/>
+		<!-- Label to hold the class name-->
+		<s:Label fontSize="13" fontWeight="bold"
+				 text="{'Class: '+ClassroomContext.aviewClass.className}"/>
+		<!-- Label to hold the lecture name-->
+		<s:Label fontSize="13" fontWeight="bold"
+				 text="{'Lecture: '+ClassroomContext.lecture.displayName}"/>
+		<!-- Label to hold the number of user logged in to the class-->
+		<s:Label fontSize="13" fontWeight="bold"
+				 text="{'Number of Users: '+loggedInUserDetails.length}"/>
+	</mx:HBox>
+	<!-- Hbox to hold the button-->
+	<mx:HBox id="btnHolder" left="10" top="10" width="160" height="60" paddingLeft="10"
+			 verticalAlign="top">
+		<!-- Record button-->
+		<components:ImageButton id="btnRecord" width="81" height="30"
+								buttonMode="true" click="recordSession()" cornerRadius="5"
+								enabled="true" icon="{recordIcon}" mouseChildren="false"
+								skinClass="edu.amrita.aview.core.shared.skins.BorderlessButtonSkin"
+								toolTip="Start Recording" useHandCursor="true"/>
+		<!--<components:ImageButton id="btnRecord"
+				   width="81" height="30" buttonMode="true" visible="{ClassroomContext.userVO.userName == ClassroomContext.moderatorName &amp;&amp; AVCEnvironment.runTime != AVCEnvironment.BROWSER}"
+				  click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.startRecord()"
+				  doubleClickEnabled="false" enabled="false"
+				  icon="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.recordIcon}"
+		          mouseChildren="false"
+				  skinClass="edu.amrita.aview.core.shared.skins.BorderlessButtonSkin"
+				  toolTip="Record Session" useHandCursor="true"/>-->
+	
+	</mx:HBox>
+	<!-- Textinput for geting the insitute name to search-->
+	<s:TextInput id="txtInstituteFilter" y="60" right="380" width="160"
+				 change="instituteNameFilter()" color="#B1ABAB"
+				 focusIn="clearInstituteNameSearchFilter()" text="{Constants.INSTITUTE_SEARCH_STR}"
+				 toolTip="Institute Name"/>
+	<!-- Textinput for geting the user name to search-->
+	<s:TextInput id="txtUserNameFilter" y="60" right="200" width="160" change="userNameFilter()"
+				 color="#B1ABAB" focusIn="clearUserNameSearchFilter()"
+				 text="{Constants.USERNAME_SEARCH_STR}" toolTip="User Name"/>
+	<!-- Textinput for geting the user id to search-->
+	<s:TextInput id="txtUserIdFilter" y="60" right="20" width="160" change="userIdFilter()"
+				 color="#B1ABAB" focusIn="clearUserIdSearchFilter()"
+				 text="{Constants.USERID_SEARCH_STR}" toolTip="User id"/>
+	<!--Tab bar to navigate between the view stack view by clicking tabs-->
+	<s:TabBar id="tbTabBar" left="10" top="80" dataProvider="{vskTabDP}"
+			  skinClass="edu.amrita.aview.core.shared.skins.CustomTabBarSkin"/>
+	<!--To hold multiple views of admin. Right now only grid view is available, other views might come in future-->
+	<mx:ViewStack id="vskTabDP" left="10" right="10" top="105" bottom="10" width="100%" height="100%"
+				  backgroundColor="#FFFFFFF" borderStyle="solid" borderVisible="true">
+		<s:NavigatorContent width="100%" height="100%" label="User View">
+			<!-- DataGrid to hold the user details-->
+			<!-- Fix for Bug # 18497. Changed the datagrid from spark to mxml component for getting the itemRollOver event  -->
+			<mx:DataGrid id="userListDataGrid" left="10" right="10" top="10" bottom="23"
+						 click="handleTheMouseClickOnUserList(event)"
+						 dataProvider="{loggedInUserDetails}" editable="false" fontWeight="normal"
+						 itemRollOver="lastRollOverIndex = event.rowIndex"
+						 rightClick="handleTheMouseClickOnUserList(event)">
+				<mx:columns>
+						<!-- Display name of the user in the class-->
+						<mx:DataGridColumn minWidth="100" dataField="displayName" editable="false"
+										   headerText="Name"
+										   sortCompareFunction="{AViewStringUtil.caselessSortForField('displayName')}"/>
+						<!-- userName of the user in the class-->
+						<mx:DataGridColumn minWidth="100" dataField="userName" editable="false"
+										   headerText="User Id"
+										   sortCompareFunction="{AViewStringUtil.caselessSortForField('userName')}"/>
+						<!-- Time when the user entered into the session-->
+						<mx:DataGridColumn minWidth="100" dataField="loginTime" editable="false"
+										   headerText="Session entry time"/>
+						<!-- Camera dirver used by the user-->
+						<mx:DataGridColumn minWidth="100" dataField="camera" editable="false"
+										   sortCompareFunction="{AViewStringUtil.caselessSortForField('camera')}"/>
+						<!-- Microphone driver used by the user-->
+						<mx:DataGridColumn minWidth="100" dataField="microphone" editable="false"
+										   sortCompareFunction="{AViewStringUtil.caselessSortForField('microphone')}"/>
+						<!-- Average of the presenter's video bandwidth meter value across all readings-->
+						<mx:DataGridColumn minWidth="100" dataField="presenterSignalPercentage"
+										   editable="false" headerText="Presenter's Signal"/>
+						<!-- Average of the bandwidth meter value across all the viewer's videos and all readings-->
+						<mx:DataGridColumn minWidth="100" dataField="viewerSignalPercentage"
+										   editable="false" headerText="Average Viewer's Signal"/>					
+				</mx:columns>
+			</mx:DataGrid>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+</mx:Canvas>

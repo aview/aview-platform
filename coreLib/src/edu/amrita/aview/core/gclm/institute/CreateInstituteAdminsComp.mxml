@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: CreateInstituteAdminsComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	: Swati, Abhirami, Sivaram SK
+
+This component is used only by the master admin to create/update institute admins
+
+-->
+<components:InsidePanel xmlns:mx="library://ns.adobe.com/flex/mx"
+						xmlns:fx="http://ns.adobe.com/mxml/2009"
+						xmlns:s="library://ns.adobe.com/flex/spark"
+						width="841"
+						height="680"
+						backgroundColor="#e0effb"
+						color="#0653B3"
+						dropShadowVisible="false"
+						fontSize="15"
+						fontWeight="bold"
+						textAlign="center"
+						title="{instituteAdminTitle}"
+						xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<fx:Script source="CreateInstituteAdminsCompUIHandler.as"/>
+	<!-- Container for create institute admin -->
+	<mx:Canvas width="100%"
+			   height="100%"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- Label to show the User Name -->
+		<s:Label left="10"
+				 top="20.5"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 text="User Name : "/>
+		<!-- Bug fix for #6223 start -->
+		<s:TextInput id="txtInpUserName" left="75" top="18" width="120" height="25"
+					 chromeColor="#E0EFFB" maxChars="99"
+					 restrict="{GCLMContext.allowedCharactersForName}"/>
+		<!-- Bug fix for #6223 end -->
+		<!-- Label to show the user first name -->
+		<s:Label left="200"
+				 top="20.5"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 text="User First Name : "/>
+		<!-- Text input to get User first name -->
+		<s:TextInput id="txtInpUserFirstName" left="290" top="18" width="120" height="25"
+					 chromeColor="#E0EFFB" maxChars="99" restrict="a-zA-Z0-9_. - "/>
+		<!-- Label to show the user last name -->
+		<s:Label left="415"
+				 top="20.5"
+				 fontFamily="Arial"
+				 fontSize="11"
+				 text="User Last Name : "/>
+		<!-- Text input to get User last name -->
+		<s:TextInput id="txtInpUserLastName" left="505" top="18" width="120" height="25"
+					 chromeColor="#E0EFFB" maxChars="99" restrict="a-zA-Z0-9_. - "/>
+		<!-- button to the ResetSearch -->
+		<components:ImageButton id="btnResetSearchUsers" right="10" top="20" width="80" label="Reset"
+								chromeColor="#E0EFFB" click="clearFields()" color="#000000"
+								cornerRadius="3"/>
+		<!-- button to the SearchUsers -->
+		<components:ImageButton id="btnSearchUsers" right="100" top="20" width="80" label="Search"
+								chromeColor="#E0EFFB" click="searchActiveUsers()" color="#000000"
+								cornerRadius="3"/>
+		<!-- Container for all admin users data grid-->
+		<mx:Canvas left="5"
+				   right="5"
+				   top="60"
+				   height="270"
+				   borderAlpha="1"
+				   borderColor="#70B2EE"
+				   borderStyle="solid"
+				   borderVisible="true"
+				   dropShadowVisible="false">
+			<!-- Toggle Checkbox for select all admin users-->
+			<mx:CheckBox id="chkSelectAllAdminUsers" right="15" top="10" label="Select All"
+						 chromeColor="#E0EFFB" click="toggleAllAdminUsersSelection()"/>
+			<!-- DataGrid to show user list-->
+			<mx:DataGrid id="dgUsersList"
+						 left="10"
+						 right="10"
+						 top="35"
+						 bottom="40"
+						 click="toggleAllAdminUsersCb()"
+						 dataProvider="{allAdminUsers}">
+				<mx:columns>
+					<!-- Data Grid Column for user Id -->
+					<mx:DataGridColumn headerText="User Id"
+									   dataField="userId"/>
+					<!-- Data Grid Column for user name -->
+					<mx:DataGridColumn headerText="User Name"
+									   dataField="userName"
+									   sortCompareFunction="{AViewStringUtil.caselessSortForField('userName')}"/>
+					<!-- Data Grid Column for institute name -->
+					<mx:DataGridColumn headerText="Institute Name"
+									   dataField="instituteName"
+									   sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+					<!-- Data Grid Column for parent institute name -->
+					<mx:DataGridColumn headerText="Parent Institute Name"
+									   dataField="parentInstituteName"
+									   sortCompareFunction="{AViewStringUtil.caselessSortForField('parentInstituteName')}"/>
+					<!-- Data Grid Column to check admin institute status -->
+					<mx:DataGridColumn id="chkAllAdminInstituteStatus"
+									   headerText="Select"
+									   dataField="status"
+									   width="100"
+									   editable="true"
+									   editorDataField="selected"
+									   rendererIsEditor="true"
+									   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxItemRenderer"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<!-- Button to add institute admins-->
+			<components:ImageButton bottom="10" width="80" label="Add" chromeColor="#E0EFFB"
+									click="addInstituteAdmins()" color="#000000" cornerRadius="3"
+									horizontalCenter="0"/>
+		</mx:Canvas>
+		<!-- Container for remove institute admin -->
+		<mx:Canvas left="5"
+				   right="5"
+				   top="340"
+				   height="250"
+				   borderAlpha="1"
+				   borderColor="#70B2EE"
+				   borderStyle="solid"
+				   borderVisible="true"
+				   dropShadowVisible="false">
+			<!-- Button to remove institute admins -->
+			<components:ImageButton top="10" width="80" label="Remove" chromeColor="#E0EFFB"
+									click="removeInstituteAdmins()" color="#000000" cornerRadius="3"
+									horizontalCenter="0"/>
+			<!-- Toggle checkbox for select admin users -->
+			<mx:CheckBox id="chkSelectAllSelectedAdminUsers" right="15" top="10" label="Select All"
+						 chromeColor="#E0EFFB" click="toggleSelectedAdminUsersSelection()"/>
+			<components:RowColorDataGrid id="dgSelectedAdminUsersList"
+										 left="10"
+										 right="10"
+										 top="40"
+										 height="194"
+										 click="toggleAllSelectedAdminUsersCb()"
+										 dataProvider="{selectedAdminUsers}"
+										 rowColorFunction="getRowColor">
+				<components:columns>
+					<!-- Data grid column for user id -->
+					<mx:DataGridColumn headerText="User Id"
+									   dataField="userId"/>
+					<!-- Data grid column for user name -->
+					<mx:DataGridColumn headerText="User Name"
+									   dataField="userName"
+									   sortCompareFunction="{AViewStringUtil.caselessSortForField('userName')}"/>
+					<!-- Data grid column for institute name -->
+					<mx:DataGridColumn headerText="Institute Name"
+									   dataField="instituteName"
+									   sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+					<!-- Data grid column for Parent Institute Name -->
+					<mx:DataGridColumn headerText="Parent Institute Name"
+									   dataField="parentInstituteName"
+									   sortCompareFunction="{AViewStringUtil.caselessSortForField('parentInstituteName')}"/>
+					<!-- Data grid column for selected admin status -->
+					<mx:DataGridColumn id="chkSelectedAdminStatus"
+									   dataField="status"
+									   headerText="Select"
+									   width="100"
+									   editable="true"
+									   editorDataField="selected"
+									   rendererIsEditor="true"
+									   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxItemRenderer"/>
+				</components:columns>
+			</components:RowColorDataGrid>
+		</mx:Canvas>
+		<!-- Button to save institute admin details -->
+		<components:ImageButton bottom="10" label="Add Admins" chromeColor="#E0EFFB"
+								click="saveInstituteAdminsDetails()" color="#000000"
+								cornerRadius="3" horizontalCenter="-50"/>
+		<!-- Button to close save institute admin component  -->
+		<components:ImageButton bottom="10" width="83" label="Cancel" chromeColor="#E0EFFB"
+								click="closeSaveInstituteAdminsComp()" color="#000000"
+								cornerRadius="3" horizontalCenter="50"/>
+
+	</mx:Canvas>
+	<components:WindowCloseImage right="5"
+								 top="-25"
+								 id="imgClose"
+								 click="closeSaveInstituteAdminsComp()"/>
+</components:InsidePanel>

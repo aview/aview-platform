@@ -1,0 +1,21 @@
+<FlexMonkey>
+  <TestSuite name="New Test Suite" description="" ignore="false">
+    <TestCase name="New Test Case" description="" ignore="false">
+      <Test name="New Test" description="" defaultThinkTime="250" ignore="false">
+        <UIEvent command="SelectText" value="txtLoginUser" prop="automationName" delay="1000" attempts="10" retryOnlyOnResponse="false">
+          <arg value="0"/>
+          <arg value="30"/>
+        </UIEvent>
+        <UIEvent command="Input" value="txtLoginUser" prop="automationName" delay="1000" attempts="10" retryOnlyOnResponse="false">
+          <arg value="invalid username"/>
+        </UIEvent>
+        <UIEvent command="ChangeFocus" value="txtLoginUser" prop="automationName" delay="1000" attempts="10" retryOnlyOnResponse="false"/>
+        <UIEvent command="Input" value="txtLoginPass" prop="automationName" delay="1000" attempts="10" retryOnlyOnResponse="false">
+          <arg value="invalid password"/>
+        </UIEvent>
+        <UIEvent command="Click" value="Login" prop="automationName" delay="1000" attempts="10" retryOnlyOnResponse="false"/>
+        <UIEvent command="Click" value="OK" prop="automationName" delay="1000" attempts="10" retryOnlyOnResponse="false"/>
+      </Test>
+    </TestCase>
+  </TestSuite>
+</FlexMonkey>

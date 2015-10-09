@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:local="*"
+		   width="100%" height="100%" 		   
+		   backgroundColor="#e0effb"
+		   borderColor="#FFFFFF" 
+		   fontFamily="Arial"
+		   fontWeight="normal" 
+		   xmlns:components="edu.amrita.aview.core.entry.itemRenderers.*"
+		   initialize="initApp(event)"
+		   xmlns:itemrenderers="edu.amrita.aview.core.entry.itemrenderers.*">
+	
+	
+	<fx:Script source="Icons.as"/>
+	<fx:Script source="LectureNoticeBoardUIHandler.as"/>
+	<fx:Script source="GetClassDetails.as"/>
+	
+	<fx:Declarations>
+		<mx:DateFormatter id="timeFormatter"
+						  formatString="LL:NN A"/>
+		<mx:DateFormatter id="dateFormatter"
+						  formatString="DD MMMM YYYY, EEEE"/>
+	</fx:Declarations>
+	
+	<s:BorderContainer id="outerContainer"
+					   top="0"
+					   left="0"
+					   right="0"
+					   bottom="0"
+					   height="100%"
+					   backgroundColor="#e0effb"
+					   borderColor="#0691F3"
+					   borderStyle="solid"
+					   color="#083AAE"
+					   fontFamily="Arial"
+					   fontSize="12"
+					   fontWeight="bold">
+		<mx:VBox id="listview"
+				 width="100%"
+				 height="100%"
+				 backgroundColor="#e0effb"
+				 borderColor="#e0effb"
+				 color="#000000"
+				 fontFamily="Georgia"
+				 fontWeight="normal"
+				 paddingBottom="30"
+				 paddingLeft="30"
+				 paddingRight="30"
+				 paddingTop="30"
+				 verticalGap="0">
+			<mx:HBox width="100%"
+					 height="55">
+				<mx:VBox width="100%" verticalGap="0">
+					<mx:HBox verticalAlign="middle">
+						
+						
+						<s:Label color="#295EA4"
+								 fontFamily="Arial"
+								 fontSize="25"
+								 verticalAlign="bottom"
+								 fontWeight="bold"
+								 text="Today's Sessions"/>
+						
+						<s:Image id="refreshBtn"
+								 buttonMode="true"
+								 smooth="true"
+								 smoothingQuality="high"
+								 source="{lectureRefreshIcon}"
+								 click="refresh()" toolTip="Refresh"
+								 mouseOut="refreshBtnMouseOutHandler(event)"
+								 mouseOver="refreshBtnMouseOverHandler(event)"
+								 useHandCursor="true"/>
+					</mx:HBox>
+					<mx:HBox width="100%"
+							 height="100%"
+							 horizontalGap="0"
+							 verticalAlign="top">
+						<s:Label height="16"
+								 color="#494A4B"
+								 fontFamily="Arial"
+								 fontSize="12"
+								 fontWeight="bold"
+								 text="{dateFormatter.format(new Date())}"
+								 verticalAlign="top"/>
+						
+					</mx:HBox>
+				</mx:VBox>
+				<s:Spacer width="100%"/>
+				<mx:HBox verticalAlign="middle">
+					<mx:Label color="#494A4B"
+							  fontFamily="Arial"
+							  fontSize="12"
+							  fontWeight="bold"
+							  text="Session Filter:"/>
+					<s:BorderContainer left="639"
+									   right="7"
+									   top="6"
+									   height="30"
+									   borderColor="#A7A7A7"
+									   borderWeight="0"
+									   cornerRadius="5">
+						<s:layout>
+							<s:HorizontalLayout gap="2"
+												paddingBottom="1"
+												paddingLeft="3"
+												paddingRight="2"
+												paddingTop="1"
+												verticalAlign="middle"/>
+						</s:layout>
+						<s:TextInput width="243"
+									 height="26"
+									 borderVisible="false"
+									 color="#939393"
+									 id="txtClassFilter"
+									 click="clearClick()"
+									 keyDown="clearClick()"
+									 focusIn="clearClick()"
+									 fontFamily="Arial"
+									 focusOut="focusOutFilterText()"
+									 skinClass="edu.amrita.aview.core.entry.assets.skins.CustomTextInputSkin"
+									 change="filterResults()"
+									 text="Enter session to filter"/>
+								</s:BorderContainer>
+					
+				</mx:HBox>
+			</mx:HBox>
+			
+			
+			<mx:VBox width="100%"
+					 height="100%"
+					 borderColor="#808080"
+					 borderVisible="true"
+					 dropShadowVisible="false"
+					 horizontalAlign="center"
+					 verticalGap="-2">
+				<s:DataGrid id="dataGrid"
+							width="100%"
+							height="100%"
+							borderColor="#7A7E81"
+							borderVisible="true"
+							chromeColor="#89C4FA"
+							sortableColumns="false"
+							color="#535354"
+							dataProvider="{liveSesions}"
+							doubleClickEnabled="false"
+							fontFamily="Arial"
+							rollOverColor="#CEDBEF"
+							selectionColor="#CEDBEF"
+							skinClass="edu.amrita.aview.core.entry.assets.skins.CustomDataGridSkin"
+							verticalScrollPolicy="on">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn dataField=""
+										  headerText="    Live Sessions"
+										  sortable="false"
+										  minWidth="300">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<fx:Script>
+												<![CDATA[
+												
+												import edu.amrita.aview.core.entry.itemrenderers.CustomToolTip;
+												import mx.managers.PopUpManager;
+												
+												[Bindable]
+												private var customToolTip:CustomToolTip;
+												
+												protected function rollOverHandler(event:MouseEvent, obj:Object):void
+												{
+												customToolTip=new CustomToolTip();
+												customToolTip.selectedObject=obj;
+												PopUpManager.addPopUp(customToolTip, this, false);
+												var point:Point=localToGlobal(new Point(mouseX, mouseY));
+												customToolTip.move(point.x + 20, point.y);
+												}
+												
+												private function closePopupCS(event:Event):void
+												{
+												PopUpManager.removePopUp(customToolTip);
+												customToolTip=null;
+												}
+												]]>
+											</fx:Script>
+											<itemrenderers:itemRenderLiveSession width="100%"
+																			  rollOut="closePopupCS(event)"
+																			  click="closePopupCS(event)"
+																			  rollOver="rollOverHandler(event,data)"
+																			  data="{data}"
+																			  buttonStatus="true"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+							<s:GridColumn headerText="    Session Time"
+										  dataField=""
+										  minWidth="100"
+										  width="200">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<itemrenderers:ItemRenderSessionTime width="100%"
+																				  data="{data}"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+							<s:GridColumn headerText="    Organisation"
+										  minWidth="200"
+										  width="264">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<itemrenderers:ItemRenderOrganisation width="100%"
+																			   data="{data.institute}"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+							<s:GridColumn headerText="Maximum Students"
+										  dataField="displyMaxStudents"
+										  width="300"
+										  minWidth="120"
+										  visible="false"
+										  id="maxStudentColumn"/>
+							<s:GridColumn headerText="Minimum Bandwidth"
+										  dataField="displyMinPublishingBandwidthKbps"
+										  width="300"
+										  minWidth="120"
+										  visible="false"
+										  id="minBWColumn"/>
+							<s:GridColumn headerText="Maximum Bandwidth"
+										  dataField="displyMaxPublishingBandwidthKbps"
+										  width="300"
+										  minWidth="120"
+										  visible="false"
+										  id="maxBWColumn"/>
+						</s:ArrayList>
+					</s:columns>
+					
+				</s:DataGrid>
+				
+				<s:DataGrid id="dgUpcomingSessions"
+							width="100%"
+							height="100%"
+							sortableColumns="false"
+							borderColor="#9DB5CC"
+							borderVisible="true"
+							chromeColor="#B1C9E0"
+							color="#535354"
+							dataProvider="{upComingSessions}"
+							fontFamily="Arial"
+							rollOverColor="#CEDBEF"
+							selectionColor="#CEDBEF"
+							skinClass="edu.amrita.aview.core.entry.assets.skins.CustomDataGridSkin"
+							verticalScrollPolicy="on">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn headerText="    Upcoming Sessions"
+										  minWidth="300">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<fx:Script>
+												<![CDATA[
+												
+												import edu.amrita.aview.core.entry.itemrenderers.CustomToolTip;
+												
+												import mx.managers.PopUpManager;
+												
+												[Bindable]
+												private var customToolTip:CustomToolTip;
+												
+												protected function rollOverHandler(event:MouseEvent, obj:Object):void
+												{
+												customToolTip=new CustomToolTip();
+												customToolTip.selectedObject=obj;
+												PopUpManager.addPopUp(customToolTip, this, false);
+												var point:Point=localToGlobal(new Point(mouseX, mouseY));
+												customToolTip.move(point.x + 20, point.y);
+												}
+												
+												private function closePopupCS(event:Event):void
+												{
+												PopUpManager.removePopUp(customToolTip);
+												customToolTip=null;
+												}
+												]]>
+											</fx:Script>
+											<itemrenderers:itemRenderLiveSession width="100%"
+																			  rollOut="closePopupCS(event)"
+																			  rollOver="rollOverHandler(event,data)"
+																			  data="{data}"
+																			  buttonStatus="false"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+							<s:GridColumn headerText="    Session Time"
+										  minWidth="100"
+										  width="200">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<itemrenderers:ItemRenderSessionTime width="100%"
+																			  data="{data}"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+							<s:GridColumn headerText="    Organisation"
+										  minWidth="200"
+										  width="264">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<itemrenderers:ItemRenderOrganisation width="100%"
+																			   data="{data.institute}"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+						</s:ArrayList>
+					</s:columns>
+					
+				</s:DataGrid>
+				<s:DataGrid id="dgExpiredSessions"
+							width="100%"
+							height="100%"
+							sortableColumns="false"
+							borderColor="#B6B9BC"
+							borderVisible="true"
+							chromeColor="#BFC2C4"
+							color="#535354"
+							dataProvider="{expiredSessions}"
+							fontFamily="Arial"
+							rollOverColor="#CEDBEF"
+							selectionColor="#CEDBEF"
+							skinClass="edu.amrita.aview.core.entry.assets.skins.CustomDataGridSkin"
+							verticalScrollPolicy="on">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn headerText="    Sessions Completed"
+										  minWidth="300">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<fx:Script>
+												<![CDATA[
+												import edu.amrita.aview.core.entry.itemrenderers.CustomToolTip;
+												import mx.managers.PopUpManager;
+												
+												[Bindable]
+												private var customToolTip:CustomToolTip;
+												
+												protected function rollOverHandler(event:MouseEvent, obj:Object):void
+												{
+												customToolTip=new CustomToolTip();
+												customToolTip.selectedObject=obj;
+												PopUpManager.addPopUp(customToolTip, this, false);
+												var point:Point=localToGlobal(new Point(mouseX, mouseY));
+												customToolTip.move(point.x + 20, point.y);
+												}
+												
+												private function closePopupCS(event:Event):void
+												{
+												PopUpManager.removePopUp(customToolTip);
+												customToolTip=null;
+												}
+												]]>
+											</fx:Script>
+											<itemrenderers:itemRenderLiveSession width="100%"
+																			  buttonStatus="false"
+																			  rollOut="closePopupCS(event)"
+																			  rollOver="rollOverHandler(event,data)"
+																			  data="{data}"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+							<s:GridColumn headerText="    Session Time"
+										  minWidth="100"
+										  width="200">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<itemrenderers:ItemRenderLiveSessionTime width="100%"
+																			  data="{data}"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+							<s:GridColumn headerText="    Organisation"
+										  minWidth="200"
+										  width="264">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer>
+											<itemrenderers:ItemRenderOrganisation width="100%"
+																			   data="{data.institute}"/>
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+						</s:ArrayList>
+					</s:columns>
+					
+				</s:DataGrid>
+				
+				
+			</mx:VBox>
+			
+			
+		</mx:VBox>
+		
+		
+	</s:BorderContainer>
+
+</mx:Canvas>
+

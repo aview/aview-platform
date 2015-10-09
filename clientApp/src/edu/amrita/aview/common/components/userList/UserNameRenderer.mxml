@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: UserNameRenderer.mxml
+Module		: Common
+Developer(s): Sivaram SK
+Reviewer(s)	: Veena Gopal K.V
+
+-->
+<!-- 
+VGCR:- Add description
+VGCR:-Add comment for each section
+-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 dataChange="changeICon();"
+		 verticalAlign="middle"
+		 horizontalScrollPolicy="off">
+	<mx:Script source="UserNameRendererHandler.as"/>
+	<mx:Image source="{icon_source}"
+			  width="32"
+			  height="32"/>
+	<mx:VBox width="100%"
+			 height="100%"
+			 verticalGap="0"
+			 verticalScrollPolicy="off"
+			 horizontalScrollPolicy="off"
+			 verticalAlign="middle">
+		<mx:Label htmlText="{displayName}"
+				  fontSize="11"
+				  truncateToFit="true"
+				  width="100%"
+				  toolTip="{tooltipText}"
+				  enabled="false"
+				  disabledColor="#000000"/>
+		<mx:Label htmlText="{instituteName}"
+				  fontSize="9"
+				  truncateToFit="true"
+				  width="100%"
+				  toolTip="{tooltipText}"
+				  enabled="false"
+				  disabledColor="#000000"/>
+	</mx:VBox>
+</mx:HBox>

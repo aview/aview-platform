@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+File		: ClassComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	:
+
+This component displays all the details of the created AVIEW classes. AVIEW Class creation
+depends on course creation. Each aview class corresponds to a course.
+
+Based on the logged in user credentials this component behaves as follows:
+Master Admin: Can view all classes, Create, edit and Delete of classes for any course any institute
+
+Institute Administrators: Can view all the classes belongs to their institute/child institutes. Create, Edit and Delete of classes are also possible within their institute boundary
+
+Presenter and Viewer: Can view only those classes for which they have been registered.However they
+can search for available classes from other institutes to register themselved if they are interested.
+
+Moderator: Moderator can edit class details.
+-->
+<!-- Container for filter for class -->
+<mx:Canvas width="100%"
+		   height="100%"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*"
+		   xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+		   xmlns:xt="library://ns.tink.ws/flex/mx"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Script source="ClassCompUIHandler.as"/>
+
+	<mx:DateFormatter id="dateFormatter"
+					  formatString="month: MM, day: DD, year: YYYY"/>
+
+	<mx:VBox top="0"
+			 fontFamily="Arial"
+			 fontSize="12"
+			 width="100%"
+			 height="100%">
+		<!-- Label to show fliter for class -->
+		<!-- Fix for Bug #16961-->
+		<s:Label width="100%"
+				 paddingTop="5"
+				 textAlign="center"
+				 text="Filter for Class"
+				 fontSize="15"
+				 fontWeight="bold"
+				 color="#0839C6"/>
+		<!-- container for forms -->
+		<mx:Canvas width="100%"
+				   height="100">
+			<!-- Label to show course name -->
+			<s:Label id="lblCourseName"
+					 right="212"
+					 bottom="72.5"
+					 text="Course Name : "/>
+			<!-- Combo box for course name -->
+			<!--Fix for Bug#14917-->
+			<xt:FilterComboBox id="cmbCourses"
+							   right="10"
+							   bottom="70"
+							   width="200"
+							   height="25"
+							   dataProvider="{acActiveCourses}"
+							   prompt=""
+							   removeFilterOnSelection="true"
+							   change = "comboBoxChangeHandler(event)"
+							   dropdownFactory="{GCLMContext.dropdownFactory}"
+							   labelField="courseName"
+							   selectSingleMatch="true"/>
+			<!-- Label to show class name -->
+			<s:Label id="lblClassName"
+					 right="512"
+					 bottom="72.5"
+					 text="Class Name : "/>
+			<!-- Text input for accepting class name -->
+			<s:TextInput id="txtInpClassName"
+						 right="300"
+						 bottom="70"
+						 width="200"
+						 maxChars="99"
+						 restrict="{GCLMContext.allowedCharactersForName}"/>
+			<!-- Label to show institute name -->
+			<s:Label id="lblInstituteName"
+					 right="412"
+					 bottom="37.5"
+					 text="Institute Name : "/>
+			<!-- Filter combo box for intistutes -->
+			<!--Fix for Bug#14917-->
+			<xt:FilterComboBox id="cmbInstitutes"
+							   right="10"
+							   bottom="35"
+							   width="400"
+							   height="25"
+							   change = "comboBoxChangeHandler(event)"
+							   dataProvider="{GCLMContext.allCourseOfferingInstitutesAC}"
+							   dropdownFactory="{GCLMContext.dropdownFactory}"
+							   prompt=""
+							   removeFilterOnSelection="true"
+							   labelField="instituteName"
+							   selectSingleMatch="true"/>
+			<!-- Create Button -->
+			<components:ImageButton id="btnCreateClass"
+					  left="10"
+					  bottom="5"
+					  width="90"
+					  label="Create"
+					  chromeColor="#E0EFFB"
+					  click="createClass()"
+					  cornerRadius="3"
+					  icon="{iconClassCreate}"
+					  toolTip="Create"/>
+			<!-- Edit button -->
+			<components:ImageButton id="btnClassUpdate"
+					  left="105"
+					  bottom="5"
+					  width="90"
+					  label="Edit"
+					  chromeColor="#E0EFFB"
+					  click="editClass()"
+					  cornerRadius="3"
+					  icon="{iconClassUpdate}"
+					  toolTip="Edit"/>
+			<!-- Delete button -->
+			<components:ImageButton id="btnClassDelete"
+					  left="199"
+					  bottom="5"
+					  width="90"
+					  label="Delete"
+					  chromeColor="#E0EFFB"
+					  click="deleteClass()"
+					  cornerRadius="3"
+					  icon="{iconClassDelete}"
+					  toolTip="Delete"/>
+			<!-- Close button -->
+			<!-- //NPCR : Can give common name to chromeColor -->
+			<components:ImageButton id="btnCloseClassForRegistration"
+					  left="293"
+					  bottom="5"
+					  width="90"
+					  label="Close"
+					  chromeColor="#E0EFFB"
+					  click="closeClassForRegistration()"
+					  cornerRadius="3"
+					  icon="{iconClassDelete}"
+					  toolTip="Close Class for Registration"/>
+			<!-- Activate button -->
+			<components:ImageButton id="btnOpenClassForRegistration"
+					  left="387"
+					  bottom="5"
+					  width="90"
+					  label="Activate"
+					  chromeColor="#E0EFFB"
+					  click="activateClassForRegistration()"
+					  cornerRadius="3"
+					  icon="{iconClassUpdate}"
+					  toolTip="Activate Class for Registration"/>
+			<!-- Search button -->
+			<components:ImageButton id="btnSearchClass"
+					  right="100"
+					  bottom="5"
+					  width="80"
+					  label="Search"
+					  chromeColor="#E0EFFB"
+					  click="searchClass()"
+					  cornerRadius="3"/>
+			<!-- Reset button -->
+			<components:ImageButton id="btnClearSearchClassResult"
+					  right="10"
+					  bottom="5"
+					  width="80"
+					  label="Reset"
+					  chromeColor="#E0EFFB"
+					  click="clearSearch()"
+					  cornerRadius="3"/>
+		</mx:Canvas>
+		<!-- Data Grid -->
+		<components:RowColorDataGrid id="dgClasses"
+									 width="100%"
+									 height="100%"
+									 rowColorFunction="getRowColor"
+									 dataProvider="{acAviewClasses}"
+									 editable="true"
+									 textAlign="left"
+									 click="toggleClassActivationButton();">
+			<components:columns>
+				<!-- Data grid column for class id -->
+				<mx:DataGridColumn headerText="Id"
+								   width="30"
+								   dataField="classId"
+								   editable="false"/>
+				<!-- Data grid column for class name -->
+				<mx:DataGridColumn headerText="Class Name"
+								   width="150"
+								   dataField="className"
+								   editable="false"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('className')}"/>
+				<!-- Data grid column for course name -->
+				<mx:DataGridColumn headerText="Course Name"
+								   width="200"
+								   dataField="courseName"
+								   editable="false"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('courseName')}"/>
+				<!-- Dara grid column for institite name -->
+				<mx:DataGridColumn headerText="Institute Name"
+								   width="220"
+								   dataField="instituteName"
+								   editable="false"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+				<!-- Data grid column for start date -->
+				<mx:DataGridColumn headerText="Start Date"
+								   width="80"
+								   editable="false"
+								   sortCompareFunction="sortStartDate">
+					<mx:itemRenderer>
+						<mx:Component>
+							<components:DateFormatter fieldName="startDate"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<!-- Data grid column for end date -->
+				<mx:DataGridColumn headerText="End Date"
+								   width="80"
+								   editable="false"
+								   sortCompareFunction="sortEndDate">
+					<mx:itemRenderer>
+						<mx:Component>
+							<components:DateFormatter fieldName="endDate"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<!-- Data grid column for start time -->
+				<mx:DataGridColumn headerText="Start Time"
+								   width="70"
+								   editable="false"
+								   sortCompareFunction="sortStartTime">
+					<mx:itemRenderer>
+						<mx:Component>
+							<components:TimeFormatter fieldName="startTime"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<!-- Data grid column for end time -->
+				<mx:DataGridColumn headerText="End Time"
+								   width="60"
+								   editable="false"
+								   sortCompareFunction="sortEndTime">
+					<mx:itemRenderer>
+						<mx:Component>
+							<components:TimeFormatter fieldName="endTime"/>
+						</mx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<!-- Data grid column for week days -->
+				<mx:DataGridColumn headerText="Week Days"
+								   width="120"
+								   dataField="weekDaysName"
+								   editable="false"/>
+				<mx:DataGridColumn headerText="Reports"
+								   width="50"
+								   dataField="weekDaysName"
+								   editable="false"/>
+			</components:columns>
+		</components:RowColorDataGrid>
+	</mx:VBox>
+</mx:Canvas>

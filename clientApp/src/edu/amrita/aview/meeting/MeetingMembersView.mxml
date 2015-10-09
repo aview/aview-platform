@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%"
+		 height="100%"
+		 xmlns:itemRenderers="edu.amrita.aview.meeting.itemRenderers.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="MeetingMembersViewHandler.as">
+
+	</fx:Script>
+	<itemRenderers:CheckBoxDataGrid id="meetingMembersList"
+									width="100%"
+									height="100%"
+									allowMultipleSelection="true"
+									borderColor="#7A7E81"
+									borderVisible="true"
+									chromeColor="#A5B8CA"
+									color="#535354"
+									dataProvider="{meetingMembersModel.meetingMembers}"
+									focusEnabled="false"
+									fontFamily="Arial"
+									fontWeight="bold"
+									rollOverColor="#CEDBEF"
+									selectionColor="#CEDBEF"
+									textAlign="left"
+									verticalGridLineColor="#dadddf"
+									variableRowHeight="false"
+									verticalAlign="middle"
+									verticalScrollPolicy="on"
+									wordWrap="true"
+									change="setSelectedMeetingMembers()">
+		<itemRenderers:columns>
+			<itemRenderers:CheckBoxHeaderColumn width="20"
+												editable="false"
+												click="{toggleSelectionMeetingMembers()}"
+												headerRenderer="edu.amrita.aview.meeting.itemRenderers.CheckBoxHeaderRenderer"
+												itemRenderer="edu.amrita.aview.meeting.itemRenderers.CheckBoxRenderer"/>
+			<mx:DataGridColumn minWidth="250"
+							   width="250"
+							   dataField="user.userDisplayName"
+							   headerText="Contacts"
+							   wordWrap="true"
+							   itemRenderer="edu.amrita.aview.contacts.itemRenderers.ContactsUserListItemRenderer"/>
+			<mx:DataGridColumn headerText="Institute"
+							   minWidth="250"
+							   width="250"
+							   dataField="user.instituteName"
+							   itemRenderer="edu.amrita.aview.contacts.itemRenderers.InstituteNameItemRenderer"/>
+
+		</itemRenderers:columns>
+	</itemRenderers:CheckBoxDataGrid>
+</s:Group>

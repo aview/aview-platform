@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: UserListView.mxml
+Module		: User
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+UserListView is wrapper component to load userlist and user action buttons.
+
+-->
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		title="UserListView"
+		backgroundColor="#071124"
+		xmlns:views="views.*"
+		backgroundAlpha="1"
+		creationComplete="view1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+			{
+				FlexGlobals.topLevelApplication.chat.percentHeight = 100;
+				FlexGlobals.topLevelApplication.chat.percentWidth = 100;
+				chatContainer.addElement(FlexGlobals.topLevelApplication.chat);
+				//Set visibility of clear tool only for moderator
+				if (FlexGlobals.topLevelApplication.chat.chatToolSet)
+				{
+					FlexGlobals.topLevelApplication.chat.chatToolSet.includeInLayout=true;
+					FlexGlobals.topLevelApplication.chat.chatToolSet.visible=true;
+					if (ClassroomContext.isModerator)
+					{
+						FlexGlobals.topLevelApplication.chat.chatClearTool.includeInLayout=true;
+						FlexGlobals.topLevelApplication.chat.chatClearTool.visible=true;
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout />
+	</s:layout>
+	<s:HGroup width="50%"
+			  height="100%"
+			  gap="0">
+		<!--Container to display user list-->
+		<s:Group width="100%"
+				 height="100%"
+				 id="userListGroup"/>
+	</s:HGroup>
+	<s:Group id="chatContainer"
+			 width="50%"
+			 height="100%">
+		
+	</s:Group>
+</s:View>

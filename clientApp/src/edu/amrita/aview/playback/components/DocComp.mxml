@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- VVCR: providing usecase on the components will be good -->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="init()" resize="setDocLoader()"
+		 chromeColor="#8AC4FF" 
+		 width="100%" height="100%" xmlns:ispr="edu.amrita.aview.core.documentSharing.ispring.flex.*" horizontalGap="10">
+	<mx:Script source="DocCompAs.as"/>	
+	<mx:Canvas width="100%" height="100%"  horizontalCenter="0" verticalCenter="0" id="baseContainer">
+		<mx:Canvas width="{docWidth}" height="{docHeight}" id="docCanvas" horizontalCenter="0" verticalCenter="0">
+			<mx:SWFLoader  id="p2fLoader" />
+		</mx:Canvas>
+		<mx:Canvas width="{docWidth}" height="{docHeight}" id="ispringCanvas" horizontalCenter="0" verticalCenter="0">
+			<ispr:PresentationContainer width="99%" height="99%"  id="ispringLoader"/>
+		</mx:Canvas>
+	</mx:Canvas>	
+</mx:HBox>

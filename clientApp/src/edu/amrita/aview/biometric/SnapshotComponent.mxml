@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: SnapshotComponent.mxml
+Module		: Biometric
+Developer(s): Ajith
+Reviewer(s)	: Ramesh Guntha
+
+
+-->
+<!--//RGCR: File level description including Author is missing-->
+<!--//RGCR: Put all the user facing text (Alerts, label, toolTip, title, text) into the resource manager.-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="400"
+		 height="300"
+		 creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="SnapshotComponentHandler.as"/>
+	<mx:VideoDisplay y="30"
+					 id="faceImage"
+					 width="640"
+					 height="480"/>
+</s:Group>

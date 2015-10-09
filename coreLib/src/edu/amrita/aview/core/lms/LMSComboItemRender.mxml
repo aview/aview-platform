@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				autoDrawBackground="true"
+				width="330"
+				height="20">
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle"/>
+	</s:layout>
+
+	<s:Label width="100%"
+			 maxHeight="10"
+			 maxWidth="330"
+			 paddingLeft="1"
+			 paddingRight="1"
+			 text="{data.lmsDisplayName}"
+			 toolTip="{data.lmsDisplayName}"
+			 verticalAlign="middle"/>
+
+</s:ItemRenderer>

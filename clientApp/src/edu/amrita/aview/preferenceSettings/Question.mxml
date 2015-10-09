@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: Question.mxml
+Module		: preference settings
+Developer(s): Sivaram S.K
+Reviewer(s)	:
+
+to enable the question interaction
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="415"
+		  height="435"
+		  paddingBottom="5"
+		  paddingLeft="5"
+		  paddingRight="5"
+		  paddingTop="35"
+		  gap="25"
+		  xmlns:toggleSwitch="edu.amrita.aview.common.components.toggleSwitch.*">
+
+	<fx:Script source="QuestionHandler.as" />
+
+
+	<s:HGroup id="UserlistTitleGrp"
+			  width="100%"
+			  height="28"
+			  verticalAlign="top">
+		<s:VGroup width="293"
+				  height="26">
+			<s:Label fontSize="14"
+					 fontWeight="bold"
+					 text="Question Interaction"/>
+			<s:Label width="361"
+					 height="21"
+					 color="#868686"
+					 text="By enabling, students can post questions during the live session."
+					 verticalAlign="middle"/>
+		</s:VGroup>
+		<toggleSwitch:ToggleSwitch id="chkBoxQuestionInteraction"
+								   width="50"
+								   height="10"
+								   left="5"
+								   change="chkBoxQuestionInteraction_changeHandler(event)"
+								   deselectedLabel="Off"
+								   selected="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.actionButtons.breakSessionObj.questionAnswerEnabledState}"
+								   selectedLabel="On"
+								   styleName="toggleSwitch"/>
+	</s:HGroup>
+
+</s:VGroup>

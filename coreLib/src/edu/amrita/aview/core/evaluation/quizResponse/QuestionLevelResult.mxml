@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: QuestionLevelResult.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Thirumalai murugan
+
+This component is used to display the question level result .
+It displays the result as Column Chart
+-->
+<!--Container for the question level result chart-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:ns1="edu.amrita.aview.core.evaluation.components.*"
+		   width="100%"
+		   height="100%"
+		   focusColor="#A9F9A0"
+		   initialize="initQuestionLevelResult()"
+		   xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:quizResponse="edu.amrita.aview.core.evaluation.quizResponse.*" xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!-- Script to include handler -->
+	<mx:Script source="QuestionLevelResultUIHandler.as"/>
+	<!--Container for hold all the above components-->
+	<mx:Canvas id="mainCan"
+			   top="0"
+			   left="0"
+			   width="100%"
+			   height="90%">
+		<!--label for display question level result-->
+		<s:Label top="10"
+				 fontFamily="Arial"
+				 fontSize="15"
+				 color="#000000"
+				 fontWeight="bold"
+				 text="Question Level Result"
+				 horizontalCenter="0"/>
+		<!--Container for hold question level result-->
+		<mx:HBox width="98%"
+				 height="100%">
+			<!--Container for hold all question  -->
+			<mx:HDividedBox width="57%"
+							height="100%">
+				<!--Container for hold all question -->
+				<mx:VBox id="allQuestionsVB"
+						 visible="false"
+						 width="85%"
+						 height="90%"
+						 paddingTop="50">
+					<!--label for display questions -->
+					<s:Label text="Question:"
+							 fontWeight="bold"
+							 color="#000000"
+							 paddingLeft="10"/>
+					<!--Container for hold all answers of the questions -->
+					<mx:HBox>
+						<!--label to display question number -->
+						<s:Label id="qno" color="#000000"
+								 fontWeight="bold"
+								 paddingLeft="11"/>
+						<!--repeater to display question answer -->
+						<mx:Repeater id="repForQuestionAnswer"
+									 dataProvider="{questionAnsObj}">
+							<quizResponse:QuizQuestionAnswerForTeacher questionAns="{repForQuestionAnswer.currentItem}"/>
+						</mx:Repeater>
+					</mx:HBox>
+				</mx:VBox>
+
+			</mx:HDividedBox>
+			<!--spacer between the question -->
+			<s:Spacer height="2%"/>
+			<!--Container for hold chart-->
+			<mx:VBox width="37%"
+					 height="90%"
+					 paddingTop="50"
+					 horizontalAlign="right">
+				<!--chart to display result -->
+				<mx:ColumnChart id="chartForQuestionLevelResult" width="100%" height="100%"
+								color="#000000" columnWidthRatio="0.5" showDataTips="true">
+					<!-- display horizontal title  -->
+					<mx:horizontalAxis>
+						<mx:CategoryAxis categoryField="choiceLabel"
+										 id="a1"
+										 title="Answer Choices"/>
+					</mx:horizontalAxis>
+					<!-- display vertical title  -->
+					<mx:verticalAxis>
+						<mx:LinearAxis id="va1"
+									   interval="1"
+									   title="No. of users answered"/>
+					</mx:verticalAxis>
+					<!-- display results -->
+					<mx:series>
+						<mx:ColumnSeries displayName="{displayMessage}"
+										 yField="ansCount"/>
+					</mx:series>
+					<!-- vertical axis rendering -->
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{va1}"
+										 canDropLabels="true"
+										 verticalAxisTitleAlignment="vertical"/>
+					</mx:verticalAxisRenderers>
+				</mx:ColumnChart>
+			</mx:VBox>
+		</mx:HBox>
+	</mx:Canvas>
+	<!--container to hold back and next button  -->
+	<mx:HBox height="10%"
+			 width="100%"
+			 horizontalAlign="center"
+			 verticalAlign="middle"
+			 y="{mainCan.height+mainCan.y}">
+		<!-- back button for question  -->
+		<components:ImageButton id="backBtn" label="Back" chromeColor="#E0EFFB"
+								click="{displayPreviousQuestion();}" color="#000000"
+								cornerRadius="3"/>
+		<!-- next button for question  -->
+		<components:ImageButton id="nextBtn" label="Next" chromeColor="#E0EFFB"
+								click="{displayNextQuestion();}" color="#000000" cornerRadius="3"/>
+	</mx:HBox>
+</mx:Canvas>

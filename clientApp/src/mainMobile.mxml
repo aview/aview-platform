@@ -1,0 +1,1295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+							xmlns:s="library://ns.adobe.com/flex/spark" 
+							firstView="views.LoginView"
+							creationComplete="initMainApp(event)">
+	<fx:Style>
+		 @namespace s "library://ns.adobe.com/flex/spark";
+		 s|SpinnerListContainer {
+			 skinClass: ClassReference("edu.amrita.aview.common.skins.mobile.CustomSpinnerListContainerSkin");
+		 }
+		 s|ViewMenu {
+			 skinClass: ClassReference("edu.amrita.aview.common.skins.mobile.CustomViewMenuSkin");
+		 }
+		 s|ViewMenuItem
+		 {
+			 chromeColor: #071124;
+			 color :#FFFFFF;
+			 focusColor : #071124;
+			 focusAlpha : 0.1;
+			 iconPlacement : left;
+		 }
+		 
+	 </fx:Style>
+	<fx:Script source="./views/viewHandlers/LoginViewHandler.as"/>
+	<fx:Script>
+		<![CDATA[
+			import com.amrita.edu.collaboration.CollaborationObject;
+			
+			import edu.amrita.aview.chat.ChatMobileComponent;
+			import edu.amrita.aview.common.components.messageBox.MessageBox;
+			import edu.amrita.aview.common.service.events.MediaServerStatusEvent;
+			import edu.amrita.aview.core.documentSharing.DocMobileComponent;
+			import edu.amrita.aview.core.entry.AVCEnvironment;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.entry.MainMobileApplication;
+			import edu.amrita.aview.core.entry.ModuleRO;
+			import edu.amrita.aview.core.gclm.user.ChangePasswordCompMobile;
+			import edu.amrita.aview.core.login.PrepareLogin;
+			import edu.amrita.aview.core.shared.eventmap.EventMap;
+			import edu.amrita.aview.core.userPreference.ConfigFileReader;
+			import edu.amrita.aview.core.whiteboard.WhiteboardMobileComp;
+			import edu.amrita.aview.questions.QuestionComponentMobile;
+			import edu.amrita.aview.threeDSharing.Viewer3DMobileComponent;
+			
+			import flash.utils.clearInterval;
+			
+			import mx.core.FlexGlobals;
+			import mx.core.IChildList;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.logging.ILogger;
+			import mx.managers.PopUpManager;
+			import mx.managers.SystemManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.http.HTTPService;
+			
+			import spark.components.Image;
+			import spark.events.IndexChangeEvent;
+			
+			import views.AVCMobileHomeView;
+			import views.ChatView;
+			import views.ClassroomLayoutView;
+			import views.ClassroomListView;
+			import views.ConsolidatedView;
+			import views.DesktopSharingView;
+			import views.DeviceDPI;
+			import views.DocumentView;
+			import views.UserListView;
+			import views.VideoView;
+			import views.Viewer3D;
+			import views.WhiteBoardView;
+			import views.components.Drawer.LeftDrawer;
+			import views.components.customComboBox.MultipleUserInteractionPreference;
+			import views.components.customComboBox.VideoPreference;
+			import views.toolSets.CollaborationTools;
+			import views.toolSets.LoadingComponent;
+			import views.toolSets.PreTest.Events.PretestIconChangeEvent;
+			import views.toolSets.PreTest.PreTest;
+			import views.toolSets.SliderDrawer;
+			import views.toolSets.chat.ChatClearTool;
+			import views.toolSets.chat.ChatToolBox;
+			import views.toolSets.document.DocumentToolBox;
+			import views.toolSets.whiteBoard.WhiteBoardToolBox;
+			
+			
+			/**
+			 * Holds instance of ChangePasswordCompMobile component to change password
+			 */
+			public var changePasswordComp:ChangePasswordCompMobile;
+			/**
+			 * Used to download help document
+			 */
+			[Bindable]
+			public var helpFile:File=new File;
+			/**
+			 * Holds file name of help document
+			 */
+			[Bindable]
+			public var fileName:String=''; 
+			/**
+			 * Holds help document remote path
+			 */
+			[Bindable]
+			public var serverUrl:String=''; 
+			/**
+			 * Holds instance of MessageBox
+			 */
+			private var alertServerSwitching:MessageBox=null;
+			/**
+			 * Set to true, when reconnecting happened
+			 */
+			public var resumePublishing:Boolean=false;
+			/**
+			 * Timer for getting video connection
+			 */
+			private var enableVideoAfterServerSwitching:Timer;
+			/**
+			 * Holds stage width
+			 */
+			public var stage3DWidth:Number;
+			/**
+			 * Holds stage height
+			 */
+			public var stage3DHeight:Number;
+			/**
+			 * Set to true, when ClassroomLayout is intialized
+			 */
+			public var isClassroomLayoutIntialized:Boolean=false;
+			/**
+			 * Holds values of saved user details in xml format
+			 */
+			private var userXmldata:XML;
+			/**
+			 * Holds value of username
+			 */
+			public var loginUserName:String;
+			/**
+			 * Holds value of password
+			 */
+			public var loginUserPassWord:String;
+			/**
+			 * Holds value of bandwidth
+			 */
+			public var loginUserBandwidh:String;
+			/**
+			 * Holds value of VideoDriver
+			 */
+			public var loginUserVideoDriver:String;
+			/**
+			 * Holds login type
+			 */
+			public var authenticationMode:String=Constants.NORMAL_LOGIN;
+			/**
+			 * Holds value of ServerIP
+			 */
+			public var loginServerIP:String;
+			/**
+			 * HTTPService used to get saved user details
+			 */
+			public var userDetailsHttpService:HTTPService;
+			/**
+			 * Holds path to save user details
+			 */
+			public var userDetailsFilePath:String="file:///"+File.applicationStorageDirectory.nativePath + "/UserCredentials.xml";
+			/**
+			 * To downlaod help document
+			 */
+			private var stream:URLStream=new URLStream();
+			/**
+			 * To downlaod help document
+			 */
+			private var request:URLRequest=new URLRequest;
+			/**
+			 * Instance of classroomListView to hold selected class video details
+			 */
+			public var classRoomList:ClassroomListView ;
+			/**
+			 * Instance of CollaborationTools for changing modules
+			 */
+			public var colbTools:CollaborationTools;
+			/**
+			 * Hold selected module index value for changing the module
+			 */
+			[Bindable]
+			public var selectedIndex:int=-1;
+			public var selectedModuleIndex:int;
+			/**
+			 * Holds shared object of selected module
+			 */
+			public var selectedModuleSO:CollaborationObject;
+			/**
+			 * Instance of VideoView for adding video components
+			 */
+			[Bindable]
+			public var videoComp:VideoView;
+			/**
+			 * Instance of DocumentToolBox for document functionalities
+			 */
+			public var docTool:DocumentToolBox=new DocumentToolBox();
+			/**
+			 * Wrapper component of consolidate module
+			 */
+			[Bindable]
+			public var consolidated:ConsolidatedView;
+			/**
+			 * Wrapper component of chat module
+			 */
+			[Bindable]
+			public var chat:ChatView;
+			/**
+			 * Wrapper component of document module
+			 */
+			[Bindable]
+			public var doc:DocumentView;
+			/**
+			 * Wrapper component of whiteboard module
+			 */
+			public var wbView:WhiteBoardView;
+			/**
+			 * Wrapper component of threeD module
+			 */
+			public var viewer3D:Viewer3D=new Viewer3D();
+			/**
+			 * Instance of UserListView to show the userlist and user action buttons
+			 */
+			[Bindable]
+			public var users:UserListView;
+			/**
+			 * Set to true, when user clicks on menu 
+			 */
+			public var isFirstClick:Boolean=false;
+			/**
+			 * Holds instance of MultipleUserInteractionPreference component to change MUI option
+			 */
+			public var multipliUserIntercationPreference:MultipleUserInteractionPreference;
+			/**
+			 * Holds instance of VideoPreference component to add/remove video module
+			 */
+			public var videoPreference:VideoPreference
+			/**
+			 * To check whether video is started.
+			 */
+			public var isVideoON:Boolean=false;
+			/**
+			 * Instance of DocMobileComponent for adding document components
+			 */
+			 [Bindable]
+			public var docComp:DocMobileComponent; 
+			/**
+			 * Holds application width
+			 */
+			public var contentWidth:Number=0;
+			/**
+			 * Holds application height
+			 */
+			public var contentHeight:Number=0;
+			/**
+			 * Holds module name
+			 */
+			public var moduleName:String;
+			/**
+			 * Instance of WhiteBoardToolBox for whiteboard functionalities
+			 */
+			[Bindable]
+			public var whiteBoardTools:WhiteBoardToolBox=new WhiteBoardToolBox();
+			/**
+			 * Instance of WhiteboardMobileComp for adding whiteboard components
+			 */
+			public var wbComp:WhiteboardMobileComp;
+			/**
+			 * To check whether whiteboard creation complete function is called
+			 */
+			public var isWhiteBoardIntialized:Boolean=false;
+			/**
+			 * Holds count of video module entry
+			 */
+			public var videoModuleEntry:int=0;
+			/**
+			 * Holds count of user module entry
+			 */
+			public var userModuleEntry:int=0;
+			/**
+			 * Instance of ChatMobileComponent for adding chat components
+			 */
+			public var chatComp:ChatMobileComponent;
+			/**
+			 * Instance of ChatToolBox for chat functionalities
+			 */
+			public var chatToolBox:ChatToolBox=new ChatToolBox();
+			/**
+			 * Instance of ChatClearTool to clear the chat
+			 */
+			public var chatClearTool:ChatClearTool=new ChatClearTool();
+			/**
+			 * Set to true, when presenter enable MUI feature
+			 */
+			public var isMUISelected:Boolean=false;
+			/**
+			 * Set to true, when user enbale the video module
+			 */
+			public var isVideoPrefrenceON:Boolean=true;
+			/**
+			 * To modifity label, when user enbale the video module
+			 */
+			[Bindable]
+			public var videoPrefrenceOnLbl:String=Constants.VIDEO_PREF_OFF;
+			/**
+			 * Instance of PreTest component
+			 */
+			public var objPretesting:PreTest;
+			/**
+			 * Used to identify if user clicks on exit session item in menu
+			 */
+			public var isExitClassRoom:Boolean = false;
+			/**
+			 * Instance of Viewer3DMobileComponent for threeD components
+			 */
+			public var viewer3DComp:Viewer3DMobileComponent;
+			/**
+			 *  Hold network status message
+			 */
+			[Bindable]
+			public var connectionStatusMessage:String;
+			/**
+			 *  Hold the visible/invisible status of notificationStatusContainer
+			 */
+			[Bindable]
+			public var notificationStatusContainer:Boolean = false;
+			/**
+			 *  Hold the network connected status 
+			 */
+			public var netConnectionStatus:Boolean = true;
+			/**
+			 *  Hold the connect/disconnect status of image
+			 */
+			[Bindable]
+			public var connectionStatusIcon:Class;
+			/**
+			 * Set to true, when 3D file is removed
+			 */
+			public var remove3D:Boolean=true;
+			[Bindable]
+			public var sharing:DesktopSharingView;
+			[Bindable]
+			public var mainApp:MainMobileApplication = new MainMobileApplication();
+			[Bindable]
+			public var applicationModuleHandler:ApplicationModuleHandler = new ApplicationModuleHandler;
+			[Bindable]
+			public var screenTypes:String = Constants.SCREENTYPE_ALLINONE;
+			[Bindable]
+			public var sliderDrawer:SliderDrawer;
+			
+			public var questComponent:QuestionComponentMobile;
+			private var applicationEventMap:EventMap=new EventMap;
+			/**
+			 * Set to true, when user streams his/her video/audio
+			 */
+			[Bindable]
+			public var videoPublishStatus:Boolean=false;
+			public var isIndividulSelected:Boolean = false;
+			public var config:ConfigFileReader = new ConfigFileReader();
+			public var collaborationBtnsHeight:int;
+			public var slider:LeftDrawer;
+			/**
+			 *  SelectedViewerValue is used to hold selectedViewer name from dropdownList in consolidated as well as videoComp.
+			 */
+			public var selectedViewerValue:String;
+			
+			public var isAllowPresenter:Boolean = true;
+			
+			public var isDrawerCompleted:Boolean = false;
+			/**
+			 * Set to true, when 3D file is loaded
+			 */
+			public var viewer3DLoaded:Boolean = false;
+			[Bindable]
+			public var isRefreshBtnEnabled:Boolean = true;
+			public var deviceDPI:DeviceDPI;
+			// ashwini: the following line will be changed by the build script, and value will be set to 8 for production 
+			// please do not remove
+			public var LOG_LEVEL : int = 0;
+			public var isUserEntered:Boolean = false;
+			public var loadinComponent:LoadingComponent;
+			public var isDrawerClicked:Boolean = false;
+			public var isSliderOpenedManually:Boolean = false;
+			private var isClassRoomEnteredSuccess:Boolean = false;
+			/**
+			 * Set to true, when login happens automatically
+			 */
+			public var isAutoLogin:Boolean = true;
+			/**
+			 * Set to false, when user remove the video module at run time
+			 */
+			public var isVideoModuleEnable:Boolean = true;
+			public  var screenTypeAllinOne:String = Constants.SCREENTYPE_ALLINONE;
+			/**
+			 * Set to false, when presenter diabaled the questionInterface
+			 */
+			[Bindable]
+			public var isQuestionEnable:Boolean = true;
+			[Bindable]
+			public var isVideoTabVisible:Boolean = true;
+			
+			
+			/**
+			 * 
+			 * @public
+			 * 
+			 * To check whether poup window is exist
+			 * 
+			 * @param event holds the value of object name
+			 * @return Boolean
+			 */
+			public function isPopupExist(popup:String):Boolean
+			{
+				var isPopUpExist:Boolean=false;
+				var systemManager:SystemManager=FlexGlobals.topLevelApplication.systemManager;
+				//Returns a list of all children.
+				var childList:IChildList=systemManager.rawChildren;
+				for (var i:int=childList.numChildren - 1; i >= 0; i--)
+				{
+					var childObject:*=childList.getChildAt(i);
+					//If child object is Uicomponent.
+					if (childObject is UIComponent)
+					{
+						var uiComponent:UIComponent=childObject as UIComponent;
+						if (uiComponent.isPopUp && uiComponent.className == popup)
+						{
+							isPopUpExist=true;
+							break;
+						}
+					}
+				}
+				return isPopUpExist;
+			}
+			/**
+			 * @public
+			 * 
+			 * To intialize the video connection.
+			 * 
+			 * @return void
+			 */
+			public function initiateServerSwitching():void
+			{
+				//If administrator changed setting
+				if (alertServerSwitching == null)
+				{
+					alertServerSwitching=MessageBox.show("Administrator had changed the Server Settings.\n Please wait....", "Connection", MessageBox.MSG);
+				}
+				//If video is streaming, stop publishing the video
+				/* if (isVideoPublished)
+				{
+					resumePublishing=true;
+					stopPublish();
+				} */
+				//usersConnection.close();
+				//To close the netStream connection for video
+				/* for (var i:int=0; i < arrVideoConnections.length; i++)
+				{
+					arrVideoConnections[i].connection.isServerSwitchingDone=true;
+					arrVideoConnections[i].connection.ncVideo.close();
+				} */
+				//Get server details and restart the video connection
+				//videoServersData=classRoomList.slicingVideoServerData();
+				//createVideoConnection(videoServersData);
+				//If video codec is VP6, publish video after 13 seconds delay.
+				//Otherwise publish video after 8 seconds delay
+				if (ClassroomContext.aviewClass.videoCodec == "VP6" || ClassroomContext.aviewClass.isMultiBitrate == "Y")
+				{
+					enableVideoAfterServerSwitching=new Timer(13000, 1);
+				}
+				else
+				{
+					enableVideoAfterServerSwitching=new Timer(8000, 1);
+				}
+				enableVideoAfterServerSwitching.addEventListener(TimerEvent.TIMER_COMPLETE, resumePublishingAfterSwitching);
+				enableVideoAfterServerSwitching.start();
+				
+			}
+			/**
+			 * @public
+			 * 
+			 * To resume the video connection after reconnecting to the server
+			 * 
+			 * @param event of TimerEvent
+			 * @return void
+			 */
+			private function resumePublishingAfterSwitching(event:TimerEvent):void
+			{
+				PopUpManager.removePopUp(alertServerSwitching);
+				alertServerSwitching=null;
+				if (resumePublishing)
+				{
+					resumePublishing=false;
+					mainApp.publishVideo();
+				}
+			}
+			/**
+			 * @private
+			 * 
+			 * To get selected class details
+			 * Intialize net connection
+			 * Navigates to classroom
+			 * 
+			 * @return void
+			 */
+			public function gettingToClass():void
+			{
+				isClassRoomEnteredSuccess = true;
+				deviceDPI = new DeviceDPI();
+				slider = new LeftDrawer();
+				colbTools = new CollaborationTools();
+				if(mainApp.prepareLogin==null){
+					mainApp.intializePreLoginClass();
+				}
+				mainApp.userSoSyncStatus="NotSynced";
+				mainApp.initaliseClassroomView();
+				mainApp.adminInitialise();
+				mainApp.createUsersConnection();
+				mainApp.createUserList();
+				
+				mainApp.videoServersData=mainApp.sessionEntry.slicingVideoServerData();
+				mainApp.createVideoConnection(mainApp.videoServersData);
+				mainApp.addActionButtonsEventListener();
+				mainApp.checkStudentBWLimit();
+				navigator.pushView(views.ClassroomLayoutView);
+				stage3DWidth=stage.stageWidth;
+				stage3DHeight=stage.stageHeight;
+				chat = new ChatView();
+				chatComp = new ChatMobileComponent();
+				chatComp.init(mainApp,mainApp.classRoomModuleVO as ModuleRO);
+				
+				users = new UserListView();
+				videoComp = new VideoView();
+				doc = new DocumentView();
+				docComp = new DocMobileComponent();
+				wbComp = new WhiteboardMobileComp();
+				wbView = new WhiteBoardView();
+				viewer3DComp = new Viewer3DMobileComponent();
+				viewer3DComp.viewer3DSWC = new MobileViewer3DSWC();
+				sharing = new DesktopSharingView();
+				consolidated = new ConsolidatedView();
+				isClassroomLayoutIntialized=true;
+				sliderDrawer = new SliderDrawer();
+				questComponent = new QuestionComponentMobile();
+				questComponent.init(mainApp,mainApp.classRoomModuleVO as ModuleRO);
+			}
+			
+			
+			/**
+			 * @public
+			 *
+			 * To start HTTPService to get user details
+			 *
+			 * @param event of null
+			 * @return void
+			 */
+			public function getUserDetails():void
+			{
+				userDetailsHttpService=new HTTPService();
+				userDetailsHttpService.addEventListener(ResultEvent.RESULT, saveUserCredential);
+				userDetailsHttpService.addEventListener(FaultEvent.FAULT, faultHandler);
+				userDetailsHttpService.url=userDetailsFilePath;
+				userDetailsHttpService.resultFormat="e4x";
+				userDetailsHttpService.send();
+				mainApp.intializePreLoginClass();
+			}
+			/**
+			 * @private
+			 *
+			 * Result handler of userDetailsHttpService to get values from file
+			 *
+			 * @param event of ResultEvent
+			 * @return void
+			 */
+			private function saveUserCredential(event:ResultEvent):void
+			{
+				userXmldata=event.result as XML;
+				loginUserName = userXmldata.username.toString();
+				loginUserPassWord = userXmldata.password.toString();
+				loginUserVideoDriver = userXmldata.videoDriver.toString();
+				loginUserBandwidh = userXmldata.bandwidth.toString();
+				loginServerIP = userXmldata.serverIP.toString();
+				if(loginUserName != "" && loginUserPassWord != "" && loginServerIP != "")
+				{
+					mainApp.prepareLogin.userName = loginUserName;
+					mainApp.prepareLogin.password = loginUserPassWord;
+					mainApp.prepareLogin.selectedServerIP = loginServerIP;
+					initApp();
+				}
+				else
+				{
+					mainApp.prepareLogin.userName = "";//loginUserName;
+					mainApp.prepareLogin.password = "";//loginUserPassWord;
+					mainApp.prepareLogin.selectedServerIP = "";//loginServerIP;
+					mainApp.prepareLogin.logInButtonState=true;
+					initApp();
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * Fault handler of userDetailsHttpService
+			 *
+			 * @param event of FaultEvent
+			 * @return void
+			 */
+			private function faultHandler(event:FaultEvent):void
+			{
+				initApp();
+				trace(event.fault.message.toString());
+			}
+			/**
+			 * @public
+			 *
+			 * To check user credentials
+			 *
+			 * @param event of FaultEvent
+			 * @return void
+			 */
+			public function callLogin():void
+			{
+				if(loginUserName != "" && loginUserName != null && loginUserPassWord != "" && loginUserPassWord != null)
+					mainApp.prepareLogin.loginCheckfn(loginUserName,loginUserPassWord,loginServerIP,true);
+			}
+			/**
+			 * @private
+			 *
+			 * To save user details
+			 *
+			 * @param userName holds value of user name
+			 * @param passWord holds value of user password
+			 * @param videoDriver holds value of saved video driver name
+			 * @param bandWidth holds value of saved bandwidth
+			 * @return void 
+			 */
+			public function saveSettingsToFile(userName:String,passWord:String,videoDriver:String,bandWidth:String,serverIP:String):void
+			{
+				try
+				{
+					var userData:String="<user>"+
+						"\n<username>"+userName+"</username>" +
+						"\n<password>"+passWord+"</password>"+
+						"\n<videoDriver>"+videoDriver+"</videoDriver>" +
+						"\n<bandwidth>"+bandWidth+"</bandwidth>"+
+						"\n<serverIP>"+serverIP+"</serverIP>\n";
+					userData+="</user>";
+					
+					var userDetailsFile:File=new File(userDetailsFilePath);
+					var fileStream:FileStream=new FileStream();
+					fileStream.addEventListener(Event.CLOSE, userDetailsCompleteHandler);
+					fileStream.addEventListener(IOErrorEvent.IO_ERROR, userDetailsErrorHandler);
+					fileStream.openAsync(userDetailsFile, FileMode.WRITE);
+					fileStream.writeUTFBytes(userData);
+					fileStream.close();
+				}
+				catch (error:Error)
+				{
+					trace(error.toString());
+				}
+			}
+			/**
+			 * @private
+			 *
+			 *  File close event
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function userDetailsCompleteHandler(event:Event):void
+			{
+				trace(event.toString());
+			}
+			/**
+			 * @private
+			 *
+			 * IOError Event
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function userDetailsErrorHandler(event:IOErrorEvent):void
+			{
+				trace(event.toString());
+			}
+			/**
+			 * @public
+			 * 
+			 * To download and open Help document
+			 * 
+			 * @return void
+			 */
+			public function helpDocumentDownload():void
+			{
+				stream.addEventListener(Event.COMPLETE, onComplete);
+				stream.addEventListener(IOErrorEvent.IO_ERROR, onDownloadIoError);
+				stream.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onDownloadSecurityError);
+				request.url=serverUrl + fileName;
+				if (helpFile.exists)
+				{
+					navigateToURL(new URLRequest(helpFile.url));
+				}
+				else
+				{
+					stream.load(request);
+				}
+			}
+			/**
+			 * @private
+			 * 
+			 * Security error handler for help document download.
+			 * 
+			 * @param event of SecurityErrorEvent
+			 * @return void
+			 */
+			private function onDownloadSecurityError(event:SecurityErrorEvent):void
+			{
+				MessageBox.show(event.text.toString(), "Error", MessageBox.MB_OK, this, null, null, MessageBox.IC_INFO);
+			}
+			/**
+			 * @private
+			 * 
+			 * Io error handler for help document download.
+			 * 
+			 * @param event of IOErrorEvent
+			 * @return void
+			 */
+			private function onDownloadIoError(event:IOErrorEvent):void
+			{
+				MessageBox.show(event.text.toString(), "Error", MessageBox.MB_OK, this, null, null, MessageBox.IC_INFO);
+			}
+			/**
+			 * @private
+			 * 
+			 * To enable the viewPdf button after the PDF file is getting downloaded.
+			 * 
+			 * @param event of completeEvent
+			 * @return void
+			 */
+			private function onComplete(event:Event):void
+			{
+				var fileData:ByteArray=new ByteArray();
+				stream.readBytes(fileData, 0, stream.bytesAvailable);
+				var fileStream:FileStream=new FileStream();
+				fileStream.open(helpFile, FileMode.WRITE);
+				fileStream.writeBytes(fileData, 0, fileData.length);
+				fileStream.close();
+				navigateToURL(new URLRequest(helpFile.url));
+			}
+			/**
+			 * @private
+			 * 
+			 * Function invoked from server whenever presenter chnages the module
+			 * 
+			 * @param event of SyncEvent
+			 * @return void
+			 */
+			private function onSyncSelectedModule(event:SyncEvent):void
+			{
+				if (event.changeList[0].code == "clear")
+				{
+					if (mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+					{
+						var index:int;
+						if (selectedModuleSO.getData()["val"] == null)
+							index=0
+						else
+							index=selectedModuleSO.getData()["val"];
+						mainApp.usersConnection.netConnection.call("setSelectedModule", null, 99);
+						mainApp.usersConnection.netConnection.call("setSelectedModule", null, index);
+					}
+					return;
+				}
+				setActiveModule(false);
+			}
+			public function setActiveModule(calledFromModuleSync:Boolean, module:int=-1):void
+			{
+				if ((mainApp.classroomContextObj.userRole == Constants.VIEWER_ROLE && selectedModuleSO.getData()) || (calledFromModuleSync && selectedModuleSO.getData()))
+				{
+					var index:int;
+					if (calledFromModuleSync)
+					{
+						index=module;
+					}
+					else
+					{
+						index=selectedModuleSO.getData()["val"];
+					}
+					if (index == 0 && selectedIndex != 0)
+					{
+						selectedIndex=0;
+						selectedModuleIndex = 0;
+						moduleName=Constants.BTN_DOCUMENT;
+						if(screenTypes ==  Constants.SCREENTYPE_ALLINONE){
+							if(colbTools.actionBtnGrp.hasEventListener(MouseEvent.CLICK)){
+								colbTools.actionBtnGrp.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							}
+						}else{
+							colbTools.tabs.selectedIndex = 1;
+							colbTools.tabs.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+						}
+					}
+					else if (index == 1 && selectedIndex != 1)
+					{
+						//Set selectedIndex = 1 and navigates whiteboard, only when presenter exists in classroom.
+						if (ClassroomContext.currentPresenterName != "")
+						{
+							selectedIndex=1;
+							selectedModuleIndex = 1;
+							moduleName=Constants.BTN_WHITEBOARD;
+							if(screenTypes ==  Constants.SCREENTYPE_ALLINONE){
+								if(colbTools.actionBtnGrp.hasEventListener(MouseEvent.CLICK)){
+									colbTools.actionBtnGrp.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+									resizeModules();
+								}
+							}else{
+								colbTools.tabs.selectedIndex = 2;
+								colbTools.tabs.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+							}
+						}
+					}
+					else if(index == 2 && selectedIndex != 2)
+					{
+						selectedIndex=2;
+						selectedModuleIndex = 2;
+						moduleName=Constants.BTN_THREED;
+						if(screenTypes ==  Constants.SCREENTYPE_ALLINONE){
+							if(colbTools.actionBtnGrp.hasEventListener(MouseEvent.CLICK)){
+								colbTools.actionBtnGrp.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							}
+						}else{
+							colbTools.tabs.selectedIndex =4;
+							colbTools.tabs.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+						}
+					}
+					else if (index == 5 && selectedIndex != 5)
+					{
+						selectedIndex=5;
+						selectedModuleIndex = 3;
+						moduleName=Constants.BTN_DESKTOP_SHARING;
+						if(screenTypes ==  Constants.SCREENTYPE_ALLINONE){
+							if(colbTools.actionBtnGrp.hasEventListener(MouseEvent.CLICK)){
+								colbTools.actionBtnGrp.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							}
+						}else{
+							colbTools.tabs.selectedIndex = 3;
+							colbTools.tabs.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+						}
+					}else if (index == 6 && selectedIndex != 6 && isVideoPrefrenceON){
+						selectedIndex=6;
+						selectedModuleIndex = 6;
+						moduleName=Constants.BTN_VIDEO;
+						if(screenTypes ==  Constants.SCREENTYPE_INDIVIDUAL){
+							colbTools.tabs.selectedIndex = 0;
+							colbTools.tabs.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+						}else{
+							if(colbTools.actionBtnGrp.hasEventListener(MouseEvent.CLICK)){
+								colbTools.actionBtnGrp.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+							}
+						}
+					}else{
+						if(module == 22){
+							colbTools.tabs.selectedIndex = 5;
+							colbTools.tabs.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+						}
+					}
+				}
+			}
+			/**
+			 * @public
+			 * 
+			 * To set the selected module based on the index value comes from server .
+			 * 
+			 * @param index holds the value of selected module index
+			 * @return void
+			 */
+			public function setActiveWindowInSO(index:uint):void
+			{
+				if(screenTypes == Constants.SCREENTYPE_ALLINONE){
+					if (mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+					{
+						//if viewer switches to another module then  the teacher activate the window  again it 
+						//will not call the viewer side sync since we are setting the same value. 
+						if (mainApp.usersConnection)
+						{
+							mainApp.usersConnection.netConnection.call("setSelectedModule", null, 99);
+							mainApp.usersConnection.netConnection.call("setSelectedModule", null, index);
+							selectedModuleSO.lock();
+							selectedModuleSO.setValue("val",99);
+							selectedModuleSO.setValue("val",index);
+							selectedModuleSO.unlock();
+						}
+					}
+				}
+			}
+			/**
+			 * @private
+			 * 
+			 * To connect with FMS to get chat message.
+			 * 
+			 * @return void
+			 */
+			public function connectSelectedModule():void
+			{
+				if(screenTypes == Constants.SCREENTYPE_ALLINONE){
+					selectedModuleSO=ClassroomContext.collaborationService.connectCollaborationObject("selectedModule");
+					selectedModuleSO.setOnClear(onClearSelectedModule);
+					selectedModuleSO.setOnSync(OnSync_selectedModule);
+				}
+			}
+			public function onClearSelectedModule():void {
+				if(screenTypes == Constants.SCREENTYPE_ALLINONE){
+					if (mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE) {
+						var index:int;
+						if (selectedModuleSO.getData()["val"] == null) {
+							//ForMeeting:
+							if (ClassroomContext.aviewClass.classType == "Meeting") {
+								index = 6;
+								
+							} else {
+								index = 0;
+							}
+							
+						} else
+							index = selectedModuleSO.getData()["val"];
+						selectedModuleSO.setValue("val", 99);
+						selectedModuleSO.setValue("val", index);
+					}
+					setActiveModule(false);
+				}
+			}
+			public function OnSync_selectedModule(selectedModuleData:Object):void {
+				if(isAllowPresenter){
+					setActiveModule(false);
+				}else{
+					if(selectedModuleData.val == 5){
+						selectedModuleIndex = 3;
+					}else{
+						selectedModuleIndex = selectedModuleData.val;
+					}
+				}
+			}
+			/**
+			 * @public
+			 * 
+			 * To close connections and remove event listeners
+			 * 
+			 * @param userSelection holds user selected value from the menu
+			 * @return void
+			 */
+			public function exitClassRoom(userSelection:String):void
+			{
+				mainApp.stoppedStreamHandler();
+				mainApp.stopPlayingStreams();
+				mainApp.closeVideoConnections();0
+				mainApp.userSoSyncStatus="NotSynced";
+				mainApp.closeUserConnection();
+				clearInterval(mainApp.connectionTimeOut);
+				if (selectedModuleSO) {
+					selectedModuleSO.removeOnSync();
+					selectedModuleSO.removeOnClear();
+				}
+				if (mainApp.muiCollaborationObject) {
+					mainApp.muiCollaborationObject.removeOnClear();
+					mainApp.muiCollaborationObject.removeOnChange();
+					if (ClassroomContext.collaborationService != null) {
+						ClassroomContext.collaborationService.closeCollaborationObject("muiSharedObj");
+					}
+				}
+				
+				if(mainApp.adminConsoleCollabObject)
+					mainApp.adminConsoleCollabObject.removeOnSync();
+				if(mainApp.audioMuteColloaborationObject)
+					mainApp.audioMuteColloaborationObject.removeOnSync();
+				if(mainApp.usersCollaborationObject)
+					mainApp.usersCollaborationObject.removeOnSync();
+
+				//To close whiteboard connection
+				if (wbComp != null)
+				{
+					wbComp.resetWhiteboard();
+				}
+				//To close document sharing connection
+				if (docComp) {
+					docComp.removeEventHandlers();
+					docComp.closeDocumentCollaborationObject();
+					if (mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+						docComp.clearServer();
+				}
+				//Make collaboration components as null
+				videoComp = null;
+				wbComp = null;
+				docComp = null;
+				chatComp = null;
+				mainApp.lstUsers = null;
+				mainApp.actionButtons = null;
+				viewer3DComp = null;
+				users = null;
+				isFirstClick = false;
+				isUserEntered = false;
+				isDrawerCompleted = false;
+				isDrawerClicked = false;
+				screenTypes = Constants.SCREENTYPE_ALLINONE;
+				if(colbTools!= null){
+					colbTools.btnUserModule.enabled=true;
+					colbTools.btnVideoModule.enabled=true;
+					colbTools.btnWhiteBoardModule.enabled=true;
+					colbTools.btnDocumentModule.enabled=true;
+					colbTools.btnThreeDModule.enabled=true;
+				}
+				selectedIndex = -1;
+				//To navigates to classroomlist view if user selects Exit session
+				if(userSelection == Constants.MENU_EXIT_SESSION)
+				{
+					mainApp.logUtilObj.clearCache();
+					mainApp.logUtilObj.clear();
+					mainApp = null;
+					navigator.popView();
+					mainApp = new MainMobileApplication();
+				}
+				//To navigates to Login view if user selects Logout
+				else if(userSelection == Constants.MENU_LOGOUT)
+				{
+					mainApp.logUtilObj.clearCache();
+					mainApp.logUtilObj.clear();
+					mainApp.prepareLogin = null;
+					mainApp = null;
+					if(userDetailsHttpService)
+						userDetailsHttpService.disconnect();
+					if(loginUserVideoDriver != "" && loginUserBandwidh != "")
+					{
+						saveSettingsToFile("","",loginUserVideoDriver,loginUserBandwidh,"");
+					}
+					else
+					{
+						saveSettingsToFile("","","","","");
+					}
+					classRoomList = null;
+					navigator.popToFirstView();
+					mainApp = new MainMobileApplication();
+				}
+				else if(Constants.MENU_CLOSE)
+				{
+					mainApp.logUtilObj.clear();
+					mainApp.prepareLogin = null;
+					if(userDetailsHttpService)
+						userDetailsHttpService.disconnect();
+					NativeApplication.nativeApplication.exit();
+				}
+			}
+			/**
+			 * @public
+			 * 
+			 * To open pretest component and check device hardware condition.
+			 * 
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			public function startPreTesting(event:MouseEvent):void
+			{
+				if (videoComp.videoStartStopIcon == videoComp.playIcon || videoComp.videoStartStopIcon == null)
+				{
+					objPretesting=new PreTest();
+					objPretesting.width=videoComp.width;
+					objPretesting.x=this.width - videoComp.width;
+					objPretesting.y=actionBar.height;
+					objPretesting.height=videoComp.height; 
+					PopUpManager.addPopUp(objPretesting, this, true);
+					
+					//Add event listeners to change the pretest button icon after testing
+					objPretesting.addEventListener(PretestIconChangeEvent.PRETEST_PASS, pretestResultHandler)
+					objPretesting.addEventListener(PretestIconChangeEvent.PRETEST_FAIL, pretestResultHandler);
+					objPretesting.addEventListener(PretestIconChangeEvent.PRETEST_PARTIAL, pretestResultHandler);
+				}
+				else
+				{
+					MessageBox.show("Please stop the local video, if you want to start pretesting", "INFO", MessageBox.MB_OK, this, null, null, MessageBox.IC_INFO);
+				}
+			}
+			/**
+			 * @private
+			 * 
+			 * To change the icon of pretest button based on the pretesting result.
+			 * 
+			 * @param event of PretestIconChangeEvent holds result type
+			 * @return void
+			 */
+			private function pretestResultHandler(event:PretestIconChangeEvent):void
+			{
+				var preTestStatus:String=event.type;
+				PopUpManager.removePopUp(objPretesting);
+				if (preTestStatus == PretestIconChangeEvent.PRETEST_PASS)
+				{
+					videoComp.preTestIcon=videoComp.preTestPassedIcon;
+				}
+				else if (preTestStatus == PretestIconChangeEvent.PRETEST_FAIL)
+				{
+					videoComp.preTestIcon=videoComp.preTestFailedIcon;
+				}
+			}
+			//TODO: Add the functionlity of publish video
+			public function saveVideoSettingsToFile():void
+			{
+				setVideoAttributes();
+				try
+				{
+					var settingsData:String="<user>" +
+						"\n<username>"+mainApp.prepareLogin.userName+"</username>" +
+						"\n<password>"+mainApp.prepareLogin.password+"</password>" + 
+						"\n<videoDriver>" +sliderDrawer.audioSetting.selectedDriverName +"</videoDriver>" +
+						"\n<bandwidth>" + sliderDrawer.audioSetting.comboBandwidthList.selectedItem.index.toString()+ "</bandwidth>\n";
+					settingsData+="</user>";
+					
+					var settingDetailsFile:File=new File(FlexGlobals.topLevelApplication.userDetailsFilePath);
+					var fileStream:FileStream=new FileStream();
+					fileStream.addEventListener(Event.CLOSE, completeHandler);
+					fileStream.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+					fileStream.openAsync(settingDetailsFile, FileMode.WRITE);
+					fileStream.writeUTFBytes(settingsData);
+					fileStream.close();
+				}
+				catch (error:Error)
+				{
+					trace(error.toString());
+				}
+			}
+			public function resizeModules():void
+			{
+				if(selectedModuleIndex == 0)
+				{
+					if(screenTypes == Constants.SCREENTYPE_ALLINONE){
+						doc.documentTool.enabled = false;
+						doc.documentTool.visible=false;
+						doc.documentTool.includeInLayout=false;
+					}else{
+						doc.documentTool.enabled = true;
+						doc.documentTool.visible=true;
+						doc.documentTool.includeInLayout=true;
+						doc.documentTool.addElement(docTool);
+					}
+				}
+				else if(selectedModuleIndex == 1)
+				{
+					if(screenTypes == Constants.SCREENTYPE_ALLINONE){
+						wbView.whiteBoardToolSet.enabled=false;
+						wbView.whiteBoardToolSet.visible=false;
+						wbView.whiteBoardToolSet.includeInLayout=false;
+					}else{
+						wbView.whiteBoardToolSet.visible=true;
+						wbView.whiteBoardToolSet.includeInLayout=true;
+						wbView.whiteBoardToolSet.addElement(whiteBoardTools);
+					}
+				}
+				else if(selectedModuleIndex == 2)
+				{
+					if(screenTypes == Constants.SCREENTYPE_ALLINONE){
+						viewer3D.viewer3DContainer.enabled=false;
+						viewer3D.viewer3DContainer.visible=false;
+						viewer3D.viewer3DContainer.includeInLayout=false;
+					}else{
+						viewer3D.viewer3DContainer.enabled=true;
+						viewer3D.viewer3DContainer.visible=true;
+						viewer3D.viewer3DContainer.includeInLayout=true;
+						viewer3D.viewer3DContainer.addElement(viewer3DComp);
+					}
+				}
+			}
+
+			/**
+			 * @private
+			 *
+			 *  File close event
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function completeHandler(event:Event):void
+			{
+				trace("completeHandler"+ event.toString());
+			}
+			/**
+			 * @private
+			 *
+			 * IOError Event
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function errorHandler(event:Event):void
+			{
+				trace("errorHandler"+ event.toString());
+			}
+			/**
+			 * @private
+			 *
+			 * To check for streaming type
+			 * Select video and audio driver
+			 * Publish the video to server
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function setVideoAttributes():void
+			{
+				if(sliderDrawer.audioSetting!=null){
+					if (sliderDrawer.audioSetting.isAudioOnlyOptionSelected)
+					{
+						ClassroomContext.isAudioOnlyMode=true;
+						ClassroomContext.STREAMING_OPTION=sliderDrawer.audioSetting.toggleAVType.label.toString();
+					}
+					else
+					{
+						ClassroomContext.isAudioOnlyMode=false;
+						ClassroomContext.STREAMING_OPTION=sliderDrawer.audioSetting.toggleAVType.label.toString()
+					}
+					if (!sliderDrawer.audioSetting.isAudioOnlyOptionSelected)
+					{
+						mainApp.videoDeviceDrive=sliderDrawer.audioSetting.selectedDriverName;
+						mainApp.videoDeviceIndex = sliderDrawer.audioSetting.camIndex;
+					}
+					mainApp.selectedPublishingBWKbps=sliderDrawer.audioSetting.comboBandwidthList.selectedItem.index.toString();
+					if (ClassroomContext.userVO.role == Constants.STUDENT_TYPE)
+					{
+						trace("STUDENT_TYPE");
+						if (sliderDrawer.audioSetting.comboBandwidthList.selectedItem == null)
+						{
+							sliderDrawer.audioSetting.comboBandwidthList.selectedIndex=1;
+						}
+						else
+						{
+							ClassroomContext.publisherVideoQuality=sliderDrawer.audioSetting.comboBandwidthList.selectedItem.index;
+						}
+						if (ClassroomContext.aviewClass.isMultiBitrate == "Y")
+						{
+							ClassroomContext.subscriber_bandwidthQualityIndex=sliderDrawer.audioSetting.bandWidthQuality;
+							if (ClassroomContext.subscriber_bandwidthQualityIndex != ClassroomContext.subscriber_prev_bandwidthQualityIndex)
+							{
+								//mainApp.selection_change();
+							}
+						}
+					}
+					else if (ClassroomContext.userVO.role == Constants.TEACHER_TYPE && ClassroomContext.aviewClass.isMultiBitrate != "Y")
+					{
+						ClassroomContext.publisherVideoQuality=sliderDrawer.audioSetting.comboBandwidthList.selectedItem.index;
+					}
+					if (ClassroomContext.publisherVideoQuality != -1)
+					{
+						mainApp.setPublishingBandwidth();
+					}
+				}
+			}
+			
+			public function drawerCompleted():void{
+				isDrawerCompleted = true;
+				if(selectedModuleIndex == 2){
+					selectedIndex=2;
+					moduleName=Constants.BTN_THREED;
+					if(screenTypes ==  Constants.SCREENTYPE_ALLINONE){
+						if(colbTools.actionBtnGrp.hasEventListener(MouseEvent.CLICK)){
+							colbTools.actionBtnGrp.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						}
+					}else{
+						colbTools.tabs.selectedIndex =4;
+						colbTools.tabs.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+					}
+				}
+			}
+			
+			protected function initMainApp(event:FlexEvent):void
+			{
+				mainApp.logUtilObj.initLog();
+				var loglevel: int = 8; // ashwini: Error and above; this is set for production value
+				if (LOG_LEVEL >= 0){
+					//ashwini: FlexGlobal is the developer override. for development builds, the value is set to 0
+					loglevel = LOG_LEVEL;
+				}
+				
+				mainApp.logUtilObj.setLoggingLevel(loglevel);
+			}
+			public function sendMuiStatus():void{
+				if(colbTools.actionBtnGrp.hasEventListener(MouseEvent.CLICK)){
+					selectedModuleIndex == 10;
+					colbTools.actionBtnGrp.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+				}
+			}
+			public function reselectClassroomList():void{
+				if(!isClassRoomEnteredSuccess){
+					isUserEntered = false;
+					MessageBox.show("Couldnot connect to server, Please try again", "Server Error", MessageBox.MB_OK);
+				}
+			}
+		]]>
+	</fx:Script>
+</s:ViewNavigatorApplication>

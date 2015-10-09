@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: ScreenSharingComponent.mxml
+Module		: DesktopSharing
+Developer(s): Remya T
+Reviewer(s)	: Meena S
+
+This is the main desktop sharing component adding to the main application in Web version.
+Desktop sharing library is added in this component.
+
+-->
+<!-- Main container -->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="creationCompleteHandler()"
+				   xmlns:local="*"
+				   horizontalCenter="0"
+				   creationPolicy="all"
+				   borderStyle="inset"
+				   backgroundColor="#FFFFFF">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.audit.AuditContext;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.core.FlexGlobals;
+			
+			/**
+			 * Variable to store whether uninterrupted desktop sharing ON or OFF
+			 */
+			public var isDesktopSharingIntraction:Boolean=false;
+			
+			/**
+			 *
+			 * @private
+			 * The function is the CreationCompleteHandler
+			 * It is called after creation complete of the desktop sharing component
+			 *
+			 *
+			 * @return void
+			 *
+			 ***/
+			private function creationCompleteHandler():void
+			{
+				if (screenSharingContainerObj.isScreenSharingCompAdded == false)
+				{
+					assignValues();
+					screenSharingContainerObj.addDesktopSharingPlayer();
+				}
+			}
+			
+			/**
+			 *
+			 * @public
+			 * The function is used to assign values for the desktop sharing swc
+			 * It invoke after creation complete of the desktop sharing component
+			 *
+			 * @return void
+			 *
+			 ***/
+			public function assignValues():void
+			{
+				screenSharingContainerObj.userName=ClassroomContext.userVO.userName;
+				//In desktop version they were used stream as 'myScreen'. So we also changed.
+				screenSharingContainerObj.streamName="myScreen";
+				//Fix for issue #20391
+				if(ClassroomContext.aviewClass.classType=="Meeting")
+				{
+					screenSharingContainerObj.instanceName=ClassroomContext.lecture.lectureId.toString();
+				}
+				else
+				{
+					screenSharingContainerObj.instanceName=ClassroomContext.aviewClass.className;
+				}
+				screenSharingContainerObj.host=ClassroomContext.DESKTOP_SHARING_SERVER;
+				screenSharingContainerObj.port=Constants.FMS_SERVER_PORT.toString();
+				screenSharingContainerObj.PRESENTER_ROLE=Constants.PRESENTER_ROLE;
+				screenSharingContainerObj.VIEWER_ROLE=Constants.VIEWER_ROLE;
+				screenSharingContainerObj.MODERATOR_ROLE=Constants.MODERATOR_ROLE;
+				screenSharingContainerObj.MONITOR_TYPE=Constants.MONITOR_TYPE;
+				screenSharingContainerObj.userRole=FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole;
+				screenSharingContainerObj.isDesktopSharingEnabled=ClassroomContext.IS_DESKTOP_SHARING_ENABLED;
+				screenSharingContainerObj.isJavaEnabled=FlexGlobals.topLevelApplication.mainApp.mainContainerComp.isJavaEnabledFlag;
+			}
+			
+			/**
+			 *
+			 * @public
+			 * The function is used to set the status of uninterrupted desktop sharing to shared object.
+			 *
+			 * @return void
+			 *
+			 ***/
+			public function setUninterruptedDesktopSharingStatusToCollabObject():void
+			{
+				//Set the status of uninterrupted desktop sharing to shared object according to the toogle button
+				//Fix for issue #18037
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.prefSettings.prefDesk.chkBoxDesktopSharingInteraction.selected)
+				{
+					isDesktopSharingIntraction=true;
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopSharingCollabObject.setValue("unInterruptedDesktopSharing", "ON");
+				}
+				else
+				{
+					isDesktopSharingIntraction=false;
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.desktopSharingCollabObject.setValue("unInterruptedDesktopSharing", "OFF");
+				}
+				AuditContext.userAction.changePrefUninterruptedDesktopSharingEventLog(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.prefSettings.prefDesk.chkBoxDesktopSharingInteraction.selected ? "On" : "Off");
+			}
+		]]>
+	</fx:Script>
+	<!--Adding desktop sharing SWC-->
+	<local:screenSharingContainer id="screenSharingContainerObj"/>
+</s:BorderContainer>

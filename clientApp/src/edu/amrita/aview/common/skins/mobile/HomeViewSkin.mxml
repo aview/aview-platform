@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: HomeViewSkin.mxml
+Module		: Home
+Developer(s): Meena S
+Reviewer(s)	: Pradeesh
+
+HomeViewSkin skin component is used to open and close home component, with the help of button.
+-->
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		alpha.disabled="0.5"
+		color="0xFFFFFF"
+		minWidth="120"
+		minHeight="25">
+
+	<fx:Metadata>
+		[HostComponent("views.toolSets.home.HomeViewContainer")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * Set label for button
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				openButton.label=getStyle("label");
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:Resize id="open"
+				  widthFrom="10"
+				  widthTo="40"/>
+	</fx:Declarations>
+	<!-- states -->
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="opened"/>
+		<s:State name="disabled"/>
+	</s:states>
+
+	<!-- Border and background color-->
+	<s:Rect left="0"
+			right="0"
+			top="0"
+			bottom="0"
+			radiusX="6">
+		<s:fill>
+			<s:SolidColor color="#071124"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xFFFFFF"
+								weight="1"/>
+		</s:stroke>
+	</s:Rect>
+	<!--Button to open /close container-->
+	<s:Button id="openButton"
+			  left="0"
+			  top="0"
+			  width="200"
+			  height="25"
+			  horizontalCenter="0"
+			  color="0xFFFFFF"
+			  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin"
+			  click="open.play()"/>
+	<!--Container to hold component-->
+	<s:Group id="contentGroup"
+			 left="0"
+			 right="0"
+			 top="15"
+			 bottom="0"
+			 minWidth="0"
+			 minHeight="0"
+			 includeIn="opened"
+			 width="100">
+		<s:layout>
+			<s:BasicLayout/>
+		</s:layout>
+	</s:Group>
+</s:Skin>

@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ClassroomListView.mxml
+Module		: Classroom
+Developer(s): Salil George, Ganesan A, Jeevanantham N, Meena S
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+
+ClassroomListView component used to display list of registered class and lecture to enter into virtual classroom.
+
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		backgroundColor="#071124"
+		preinitialize="loadHelpContent(event)"
+		initialize="initClassView(event)"
+		title="Select course"
+		creationComplete="FlexGlobals.topLevelApplication.mainApp.initApp(event)">
+	
+	<fx:Script source="../views/toolSets/Icons.as"/>
+	<fx:Declarations>
+		<s:HTTPService id="helpConfigService"
+					   resultFormat="e4x"
+					   url="http://aview.in/help/config/info.xml"
+					   result="configResultHandler(event)"
+					   fault="configFaultHandler(event)"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.common.components.messageBox.MessageBox;
+			import edu.amrita.aview.common.components.messageBox.events.MessageBoxEvent;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.gclm.user.ChangePasswordCompMobile;
+			import edu.amrita.aview.core.gclm.vo.UserVO;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.PopUpEvent;
+			/**
+			 * Holds help file configuration
+			 */
+			[Bindable]
+			public var configXML:XMLList=new XMLList;
+			/**
+			 * To holds username
+			 */
+			[Bindable]
+			private var userName:String;
+			/**
+			 * To holds selected lecture details
+			 */
+			[Bindable]
+			public var selectedLecture:Object=new Object;
+			/**
+			 * This variable holds helpMessageBox instance
+			 */
+			private var helpCompMessageBox:MessageBox;
+			/**
+			 * This variable holds exitMessagebox instance
+			 */
+			private var exitMessageBox:MessageBox;
+			/**
+			 * This variable holds lohoutMessagebox instance
+			 */
+			private var logoutMessageBox:MessageBox;
+
+			/**
+			 * @private
+			 * 
+			 * To get the list of registered lectures
+			 * 
+			 * @param event of FlexEvent
+			 * @return void
+			 * 
+			 */
+			private function initClassView(event:Event):void
+			{
+				userName=ClassroomContext.userVO.fname + ClassroomContext.userVO.lname;
+				stage.addEventListener("keyDown", handleButtons, false, 1);
+			}
+
+			/**
+			 * @private
+			 * 
+			 * To enter into classroom, when user selects any class from the list
+			 * 
+			 * @param event type of Index change event
+			 * @return void
+			 * 
+			 */
+			private function selectedClass(event:IndexChangeEvent):void
+			{
+				selectedLecture=event.target.selectedItem;
+			}
+
+			/**
+			 * @private
+			 * 
+			 * To close the application
+			 * 
+			 * @param event type of mouse event
+			 * @return void
+			 * 
+			 */
+			protected function applicationExit(event:MouseEvent):void
+			{
+				NativeApplication.nativeApplication.exit();
+			}
+
+			/**
+			 * @private
+			 * 
+			 * To change the menu item and close the custom components (MessageBox and changePassword component), if it is opened.
+			 * 
+			 * @param event type of mouse event
+			 * @return void
+			 */
+			private function menuItemClickHandler(event:MouseEvent):void
+			{
+				//If help messagebox is opened, close the component
+				if (helpCompMessageBox && helpCompMessageBox.isPopUp){
+					PopUpManager.removePopUp(helpCompMessageBox);
+				}
+				//If exit messagebox is opened, close the component
+				if (exitMessageBox && exitMessageBox.isPopUp){
+					PopUpManager.removePopUp(exitMessageBox);
+				}
+				//If changePassowrd component is opened, close the component
+				if (FlexGlobals.topLevelApplication.changePasswordComp && FlexGlobals.topLevelApplication.changePasswordComp.isPopUp){
+					PopUpManager.removePopUp(FlexGlobals.topLevelApplication.changePasswordComp);
+				}
+				if(logoutMessageBox && logoutMessageBox.isPopUp){
+					PopUpManager.removePopUp(logoutMessageBox);
+				}
+				switch (event.target.label){
+					//If user clicks "Exit", display exit confirmation component
+					case "Exit":{
+						exitMessageBox=MessageBox.show("Are you sure want to exit?", "Confirmation", MessageBox.MB_YESNO, this, cloeseApp, cloeseApp, MessageBox.IC_INFO);
+						break;
+					}
+						
+					//If user clicks "Help", display confirmation component to show the help document
+					case "Help":{
+						helpCompMessageBox=MessageBox.show("Click OK to download help file.You may need PDF viewer to view the help content.", "Help Information", MessageBox.MB_OKCANCEL, this, downloadHandler, downloadHandler, MessageBox.IC_INFO);
+						break;
+					}
+						
+					//If user clicks "ChangePassword", open ChangePassword component to change password
+					case "ChangePassword":{
+						var user:UserVO=ClassroomContext.userVO;
+						if (user != null){
+							FlexGlobals.topLevelApplication.changePasswordComp=new ChangePasswordCompMobile;
+							FlexGlobals.topLevelApplication.changePasswordComp.open(this);
+							FlexGlobals.topLevelApplication.changePasswordComp.isPopUp=true;
+							PopUpManager.centerPopUp(FlexGlobals.topLevelApplication.changePasswordComp);
+							FlexGlobals.topLevelApplication.changePasswordComp.init(user);
+							break;
+						}
+					}
+					case "Logout":{
+						logoutMessageBox = MessageBox.show("Are you sure you want to logout","Confirmation",MessageBox.MB_YESNO, this, logoutConfirmHandler, logoutConfirmHandler, MessageBox.IC_INFO);
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To download and view the help document
+			 *
+			 * @param event of MessageBoxEvent
+			 * @return void
+			 */
+			private function downloadHandler(event:MessageBoxEvent):void
+			{
+				if (event.type == MessageBoxEvent.MESSAGEBOX_OK)
+				{
+					FlexGlobals.topLevelApplication.helpDocumentDownload();
+				}
+				lblWelcomeMsg.setFocus();
+			} 
+			/**
+			 * @protected
+			 *
+			 * To invoke help HTTP service
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function loadHelpContent(event:FlexEvent):void
+			{
+				helpConfigService.send();
+			}
+			/**
+			 * @private
+			 *
+			 * Result handler for the help pdf to get help document file path
+			 *
+			 * @param event of ResultEvent
+			 * @return void
+			 */
+			private function configResultHandler(event:ResultEvent):void
+			{
+				configXML=XMLList(event.result);
+				FlexGlobals.topLevelApplication.fileName=(configXML[0]..mobilehelp.@filename).toString();
+				FlexGlobals.topLevelApplication.serverUrl=(configXML[0]..mobilehelp.@serverURL).toString();
+				FlexGlobals.topLevelApplication.helpFile=File.documentsDirectory.resolvePath(FlexGlobals.topLevelApplication.fileName);
+			}
+			/**
+			 * @private
+			 *
+			 * Fault handler for the help pdf
+			 *
+			 * @param event of FaultEvent
+			 * @return void
+			 */
+			private function configFaultHandler(event:FaultEvent):void
+			{
+				var title:String=event.type + " (" + event.fault.faultCode + ")";
+				var text:String=event.fault.faultString;
+			}
+			/**
+			 * @private
+			 *
+			 * To close the application, when user clicks on exit menu
+			 *
+			 * @param event of MessageBoxEvent
+			 * @return void
+			 */
+			private function cloeseApp(event:MessageBoxEvent):void
+			{
+				if (event.type == MessageBoxEvent.MESSAGEBOX_YES)
+				{
+					NativeApplication.nativeApplication.exit();
+				}
+				lblWelcomeMsg.setFocus();
+			}
+			/**
+			 * @private
+			 *
+			 * To open/close menu and prevent application from navigates to back
+			 *
+			 * @param event of MessageBoxEvent
+			 * @return void
+			 */
+			private function handleButtons(event:KeyboardEvent):void
+			{
+				//True only if navigator object is not null
+				if (navigator != null)
+				{
+					//True only if view title is "Select course"
+					if (navigator.activeView.title == "Select course")
+					{
+						//If user click on back button, prevent application that navigates to previous view
+						if (event.keyCode == Keyboard.BACK)
+						{
+							if (FlexGlobals.topLevelApplication.viewMenuOpen)
+							{
+								FlexGlobals.topLevelApplication.viewMenuOpen=false;
+							}
+							event.preventDefault();
+						}
+						//If user click on menu button, close the menu if it already exist. Otherwise open the menu
+						if (event.keyCode == Keyboard.MENU)
+						{
+							if (!FlexGlobals.topLevelApplication.viewMenuOpen)
+							{
+								FlexGlobals.topLevelApplication.viewMenuOpen=true;
+							}
+							else
+							{
+								FlexGlobals.topLevelApplication.viewMenuOpen=false;
+							}
+							event.preventDefault();
+						}
+					}
+				}
+			}
+			
+			protected function selectClass(event:MouseEvent):void
+			{
+				if(!FlexGlobals.topLevelApplication.isUserEntered){
+					FlexGlobals.topLevelApplication.isUserEntered = true;
+					trace("ClassRoom Entered");
+					FlexGlobals.topLevelApplication.mainApp.lectureSelectedItem = lstLectures.selectedItem;
+					FlexGlobals.topLevelApplication.mainApp.joinToSession(event);
+					setTimeout(FlexGlobals.topLevelApplication.reselectClassroomList,20000);
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * Logout confirmation handler
+			 *
+			 * @param event of MessageBoxEvent
+			 * @return void
+			 */
+			private function logoutConfirmHandler(event:MessageBoxEvent):void{
+				if(event.type == MessageBoxEvent.MESSAGEBOX_YES){
+					FlexGlobals.topLevelApplication.exitClassRoom(Constants.MENU_LOGOUT);
+				}
+			}
+		]]>
+
+	</fx:Script>
+	<!--Menu items-->
+	<s:viewMenuItems>
+		<s:ViewMenuItem label="Help"
+						click="menuItemClickHandler(event)"
+						icon="{helpIcon}"/>
+
+		<s:ViewMenuItem label="ChangePassword"
+						click="menuItemClickHandler(event)"
+						icon="{changePassword}"/>
+
+		<s:ViewMenuItem label="Exit"
+						click="menuItemClickHandler(event)"
+						icon="{exitIcon}"/>
+		
+		<s:ViewMenuItem label="Logout"
+						click="menuItemClickHandler(event)"
+						icon="{exitIcon}"/>
+	</s:viewMenuItems>
+	<s:titleLayout>
+		<s:HorizontalLayout paddingLeft="0"
+							paddingRight="0"/>
+	</s:titleLayout>
+	<s:titleContent>
+		<!-- Header of the view, contains aview logo and module name-->
+		<s:Group id="titleContentBox"
+				 width="100%"
+				 height="100%">
+			<s:Rect x="0"
+					y="0"
+					width="100%"
+					height="100%">
+				<s:fill>
+					<s:BitmapFill source="@Embed('/views/assets/window_bg.jpg')" 
+								  fillMode="repeat" />
+				</s:fill>
+			</s:Rect>
+			<s:HGroup width="100%"
+					  height="100%"
+					  gap="-2"
+					  paddingTop="-3"
+					  verticalAlign="middle">
+				<s:Group width="25%"
+						 height="100%">
+					<s:VGroup width="100%"
+							  height="100%"
+							  horizontalAlign="center"
+							  verticalAlign="middle">
+						<s:Image source="{defaultBanner}"
+								 x="0"
+								 y="0"/>
+					</s:VGroup>
+				</s:Group>
+				<s:Spacer width="80%"
+						  height="100%">
+				</s:Spacer>
+				<s:Group width="30%"
+						 height="50%">
+					<s:Rect width="100%"
+							height="100%"
+							bottomLeftRadiusX="20"
+							bottomLeftRadiusY="20"
+							radiusX="0"
+							radiusY="0"
+							topLeftRadiusX="20"
+							topLeftRadiusY="20">
+						<s:fill>
+							<s:SolidColor alpha="0.8"
+										  color="#071124"/>
+						</s:fill>
+						<s:filters>
+							<s:GlowFilter alpha="1"
+										  blurX="7"
+										  blurY="7"
+										  color="0xFFFFFF"
+										  inner="true"
+										  strength="1"/>
+						</s:filters>
+					</s:Rect>
+					<s:Label width="100%"
+							 height="100%"
+							 color="#39f8ff"
+							 fontSize="18"
+							 text="Select Class"
+							 textAlign="center"
+							 verticalAlign="middle"/>
+				</s:Group>
+			</s:HGroup>
+		</s:Group>
+	</s:titleContent>
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	<!-- Title for class and lecture name -->
+	<s:HGroup width="100%"
+			  paddingTop="3">
+		<s:Label text="CLASS NAME"
+				 width="50%"
+				 height="30"
+				 color="#FFFFFF"
+				 fontWeight="bold"
+				 verticalAlign="middle"/>
+		<s:Label text="LECTURE NAME"
+				 width="50%"
+				 height="30"
+				 color="#FFFFFF"
+				 fontWeight="bold"
+				 verticalAlign="middle"/>
+	</s:HGroup>
+	<!-- List to display classes and lectures-->
+	<s:List width="100%"
+			height="100%"
+			alternatingItemColors="[0xFFFFFF,0xFFFFFF]"
+			color="0x000000"
+			contentBackgroundColor="0xFFFFFF"
+			selectionColor="0xDDF2FC"			
+			dataProvider="{FlexGlobals.topLevelApplication.mainApp.todaysLectures}"
+			verticalScrollPolicy="auto"
+			horizontalScrollPolicy="auto"
+			itemRenderer="views.customItemRendererer.ClassItemRenderer"
+			fontSize="20"
+			id="lstLectures"
+			click="selectClass(event)">
+	</s:List>
+	<!--Footer of the view, contains welcome and copy right message-->
+	<s:Group width="100%"
+			 height="10%"
+			 textAlign="right">
+		<s:Rect x="0"
+				y="0"
+				width="100%"
+				height="100%">
+			<s:fill>
+				<s:SolidColor color="#071124"/>
+			</s:fill>
+			<s:filters>
+				<s:GlowFilter alpha="0.3"
+							  blurX="0"
+							  blurY="40"
+							  color="0xFFFFFF"
+							  inner="true"
+							  strength="1"/>
+			</s:filters>
+		</s:Rect>
+		<s:HGroup height="100%"
+				  gap="0"
+				  width="100%">
+			<s:Label id="lblWelcomeMsg"
+					 width="30%"
+					 height="100%"
+					 maxDisplayedLines="1"
+					 fontSize="18"
+					 color="#cccccc"
+					 fontWeight="bold"
+					 paddingLeft="15"
+					 text="Welcome : {userName}"
+					 textAlign="left"
+					 verticalAlign="middle"/>
+			<s:Label text="{Constants.COPY_RIGHT_FOOTER}"
+					 color="#cccccc"
+					 textAlign="left"
+					 paddingLeft="50"
+					 fontWeight="bold"
+					 width="55%"
+					 height="100%"
+					 fontSize="10"
+					 verticalAlign="middle"/>
+		</s:HGroup>
+	</s:Group>
+</s:View>

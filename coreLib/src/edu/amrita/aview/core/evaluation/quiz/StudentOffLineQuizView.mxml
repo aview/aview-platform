@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: StudentOffLineQuizView.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to display the offline quiz
+Offline quiz is a way of conducting quiz on a particular date, at a particular time
+The user can login at the stipulated time , and take quiz.
+After submitting the quiz , the user can view result instantly
+-->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%"
+		   height="100%">
+    <fx:Script source="StudentOffLineQuizViewUIHandler.as"/>
+	<!-- Main vbox container -->
+	<mx:VBox width="100%"
+			 height="100%">
+		<!-- Datagrid to show student result -->
+		<s:DataGrid id="dgStudentResult"
+					width="100%"
+					dataProvider="{quizResult}"
+					doubleClick="viewStudentAnswerSheet()"
+					doubleClickEnabled="true"
+					toolTip="Double click a row to view Quiz">
+			<s:columns>
+				<s:ArrayList>
+					<!-- Datagrid column to show quiz name -->
+					<s:GridColumn dataField="quizName"
+								  headerText=" Quiz Name"/>
+					<!-- Datagrid column to show class name -->
+					<s:GridColumn dataField="className"
+								  headerText="Class Name"/>
+					<!-- Datagrid column to show No. of questions -->
+					<s:GridColumn dataField="countQuizQuestionId"
+								  headerText="No. of Questions"/>
+					<!-- Datagrid column to show total marks -->
+					<s:GridColumn dataField="totalMarks"
+								  headerText="TotalMarks"/>
+					<!-- Datagrid column to show time limit -->
+					<s:GridColumn dataField="durationSeconds"
+								  headerText="TimeLimit(Minutes)"/>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+	</mx:VBox>
+</mx:Canvas>

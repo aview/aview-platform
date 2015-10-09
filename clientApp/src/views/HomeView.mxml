@@ -1,0 +1,827 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: HomeView.mxml
+Module		: Home
+Developer(s): Salil George, Jeevanantham N, Meena S
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+HomeView component is used to enter lecture board, view help document, change password and view latest updates.
+
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		backgroundColor="#071124"
+		title="HomeView"
+		creationComplete="onViewCreate(event)"
+		xmlns:toolSets="views.toolSets.*"
+		preinitialize="loadHelpContent(event)"
+		xmlns:views="views.*"
+		xmlns:home="views.toolSets.home.*">
+	<fx:Declarations>
+		<s:HTTPService id="helpConfigService"
+					   resultFormat="e4x"
+					   url="http://aview.in/help/config/info.xml"
+					   result="configResultHandler(event)"
+					   fault="configFaultHandler(event)"/>
+	</fx:Declarations>
+	<fx:Script source="../views/toolSets/Icons.as"/>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.common.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.gclm.user.ChangePasswordCompMobile;
+			import edu.amrita.aview.core.gclm.vo.UserVO;
+			import edu.amrita.aview.core.shared.components.mobileComponents.messageBox.MobileMessageBox;
+			import edu.amrita.aview.core.shared.components.mobileComponents.messageBox.events.MessageBoxEvent;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.events.FlexMouseEvent;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.components.ViewMenuItem;
+			import spark.components.ViewNavigator;
+			import spark.events.PopUpEvent;
+			
+			import views.toolSets.home.HomeViewComponent;
+			/**
+			 * Holds help file configuration
+			 */
+			[Bindable]
+			public var configXML:XMLList=new XMLList;
+			/**
+			 * Holds user name
+			 */
+			[Bindable]
+			private var userName:String=ClassroomContext.userVO.fname + ClassroomContext.userVO.lname;
+			/**
+			 * Custom help components
+			 */
+			private var homeViewCmpntObj:HomeViewComponent=new HomeViewComponent();
+			/**
+			 * This variable holds helpMessagebox instance
+			 */
+			private var helpMessageBox:MobileMessageBox;
+			/**
+			 * This variable holds exitMessagebox instance
+			 */
+			private var closeAppMessageBox:MobileMessageBox;
+			
+			/**
+			 * @protected
+			 *
+			 * To add event listeners for listening keyboard and focus change event
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function onViewCreate(event:FlexEvent):void
+			{
+				stage.addEventListener("keyDown", handleButtons, false, 1);
+				stage.addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, hideHandler);
+			}
+			/**
+			 * @protected
+			 *
+			 * To navigate to Lecture view
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function pushSelectedView(event:MouseEvent):void
+			{
+				navigator.pushView(views.ClassroomListView);
+				//To intialize classroomListview component and remove event listener of keyDown event
+				stage.removeEventListener("keyDown", handleButtons, false);
+			}
+			/**
+			 * @private
+			 *
+			 * To open/close menu and prevent application navigates to back
+			 *
+			 * @param event of KeyboardEvent
+			 * @return void
+			 */
+			private function handleButtons(event:KeyboardEvent):void
+			{
+				//True only if navigator object is not null
+				if (navigator != null)
+				{
+					//True only if view title is "HomeView"
+					if (navigator.activeView.title == "HomeView")
+					{
+						//If user click on back button, prevent application that navigates to previous view
+						if (event.keyCode == Keyboard.BACK)
+						{
+							if (FlexGlobals.topLevelApplication.viewMenuOpen)
+							{
+								FlexGlobals.topLevelApplication.viewMenuOpen=false;
+							}
+							event.preventDefault();
+						}
+						//If user click on menu button, close the menu if it already exist. Otherwise open the menu
+						if (event.keyCode == Keyboard.MENU)
+						{
+							if (!FlexGlobals.topLevelApplication.viewMenuOpen)
+							{
+								createHomeViewMenu();
+							}
+							else
+							{
+								FlexGlobals.topLevelApplication.viewMenuOpen=false;
+							}
+							event.preventDefault();
+						}
+					}
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To open AboutUs component
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function openABoutUs(event:MouseEvent):void
+			{
+				btnAbout.opened=!btnAbout.opened;
+				hideTutorial();
+				hideUpdates();
+			}
+			/**
+			 * @private
+			 *
+			 * To open Tutorial component
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function openTutorials(event:MouseEvent):void
+			{
+				btnTutorials.opened=!btnTutorials.opened;
+				hideAboutus();
+				hideUpdates();
+
+			}
+			/**
+			 * @private
+			 *
+			 * To open Update component
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function openUpdates(event:MouseEvent):void
+			{
+				btnUpdates.opened=!btnUpdates.opened;
+				hideTutorial();
+				hideAboutus();
+			}
+			/**
+			 * @private
+			 *
+			 * To hide AboutUs component
+			 *
+			 * @return void
+			 */
+			private function hideAboutus():void
+			{
+				if (btnAbout.opened)
+				{
+					btnAbout.opened=!btnAbout.opened
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To hide Update component
+			 *
+			 * @return void
+			 */
+			private function hideUpdates():void
+			{
+				if (btnUpdates.opened)
+				{
+					btnUpdates.opened=!btnUpdates.opened
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To hide Tutorial component
+			 *
+			 * @return void
+			 */
+			private function hideTutorial():void
+			{
+				if (btnTutorials.opened)
+				{
+					btnTutorials.opened=!btnTutorials.opened
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To set the style for home component
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function setStyleName(event:FlexEvent):void
+			{
+				switch (event.target.id)
+				{
+					//if target id is "btnAbout", set style, label and add event listener
+					case "btnAbout":
+					{
+						btnAbout.setStyle("label", "About Us");
+						btnAbout.addElement(homeViewCmpntObj.groupAboutUs);
+						btnAbout.openButton.addEventListener(MouseEvent.CLICK, openABoutUs);
+						break;
+					}
+					//if target id is "btnTutorials", set style, label and add event listener
+					case "btnTutorials":
+					{
+						btnTutorials.setStyle("label", "Tutorials");
+						btnTutorials.openButton.addEventListener(MouseEvent.CLICK, openTutorials);
+						btnTutorials.addElement(homeViewCmpntObj.groupTutorials);
+						break;
+					}
+					//if target id is "btnUpdates", set style, label and add event listener
+					case "btnUpdates":
+					{
+						btnUpdates.setStyle("label", "Updates");
+						btnUpdates.openButton.addEventListener(MouseEvent.CLICK, openUpdates);
+						btnUpdates.addElement(homeViewCmpntObj.groupUpdates);
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+			/**
+			 * @public
+			 *
+			 * To show the menu items
+			 *
+			 * @return void
+			 */
+			public function createHomeViewMenu():void
+			{
+				FlexGlobals.topLevelApplication.viewMenuOpen=true;
+			}
+			/**
+			 * @private
+			 *
+			 * To change the menu item and close the custom components (MobileMessageBox and changePassword component), if it is opened.
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function onMenuItemClickHandler(event:MouseEvent):void
+			{
+				//If help messagebox is opened, close the component
+				if (helpMessageBox)
+				{
+					if (helpMessageBox.isPopUp)
+					{
+						PopUpManager.removePopUp(helpMessageBox);
+					}
+				}
+				//If exit messagebox is opened, close the component
+				if (closeAppMessageBox)
+				{
+					if (closeAppMessageBox.isPopUp)
+					{
+						PopUpManager.removePopUp(closeAppMessageBox);
+					}
+				}
+				//If changePassowrd component is opened, close the component
+				if (FlexGlobals.topLevelApplication.mainApp.changePasswordComp)
+				{
+					if (FlexGlobals.topLevelApplication.mainApp.changePasswordComp.isPopUp)
+					{
+						PopUpManager.removePopUp(FlexGlobals.topLevelApplication.mainApp.changePasswordComp);
+					}
+				}
+				switch (event.target.label)
+				{
+					//If user clicks "Exit", display exit confirmation component
+					case "Exit":
+					{
+						stage.removeEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, hideHandler);
+						closeAppMessageBox=MobileMessageBox.show("Are you sure want to exit?", "Confirmation", MobileMessageBox.MB_YESNO, this, cloeseApp, cloeseApp, MobileMessageBox.IC_INFO);
+						break;
+					}
+						
+					//If user clicks "Help", display confirmation component to show the help document
+					case "Help":
+					{
+						stage.removeEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, hideHandler);
+						helpMessageBox=MobileMessageBox.show("Click OK to download help file.You may need PDF viewer to view the help content.", "Help Information", MobileMessageBox.MB_OKCANCEL, this, downloadHandler, downloadHandler, MobileMessageBox.IC_INFO);
+						break;
+					}
+					//If user clicks "ChangePassword", open ChangePassword component to change password
+					case "ChangePassword":
+					{
+						stage.removeEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, hideHandler);
+						var user:UserVO=ClassroomContext.userVO;
+						if (user != null)
+						{
+							FlexGlobals.topLevelApplication.mainApp.changePasswordComp=new ChangePasswordCompMobile;
+							FlexGlobals.topLevelApplication.mainApp.changePasswordComp.open(this);
+							FlexGlobals.topLevelApplication.mainApp.changePasswordComp.isPopUp=true;
+							PopUpManager.centerPopUp(FlexGlobals.topLevelApplication.mainApp.changePasswordComp);
+							FlexGlobals.topLevelApplication.mainApp.changePasswordComp.init(user);
+							FlexGlobals.topLevelApplication.mainApp.changePasswordComp.addEventListener(PopUpEvent.CLOSE, closeChangePasswordComp);
+							break;
+						}
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To add focus event listener, after close the changePassword window
+			 *
+			 * @param event of PopUpEvent
+			 * @return void
+			 */
+			private function closeChangePasswordComp(event:PopUpEvent):void
+			{
+				stage.addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, hideHandler);
+			}
+			/**
+			 * @private
+			 *
+			 * To download and view the help document
+			 *
+			 * @param event of MessageBoxEvent
+			 * @return void
+			 */
+			private function downloadHandler(event:MessageBoxEvent):void
+			{
+				if (event.type == MessageBoxEvent.MESSAGEBOX_OK)
+				{
+					FlexGlobals.topLevelApplication.helpDocumentDownload();
+				}
+				stage.addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, hideHandler);
+				lblWelcomeMsg.setFocus();
+			}
+			/**
+			 * @protected
+			 *
+			 * To invoke help HTTP service
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function loadHelpContent(event:FlexEvent):void
+			{
+				helpConfigService.send();
+			}
+			/**
+			 * @private
+			 *
+			 * Result handler for the help pdf to get help document file path
+			 *
+			 * @param event of ResultEvent
+			 * @return void
+			 */
+			private function configResultHandler(event:ResultEvent):void
+			{
+				configXML=XMLList(event.result);
+				FlexGlobals.topLevelApplication.fileName=(configXML[0]..mobilehelp.@filename).toString();
+				FlexGlobals.topLevelApplication.serverUrl=(configXML[0]..mobilehelp.@serverURL).toString();
+				FlexGlobals.topLevelApplication.helpFile=File.documentsDirectory.resolvePath(FlexGlobals.topLevelApplication.fileName);
+			}
+			/**
+			 * @private
+			 *
+			 * Fault handler for the help pdf
+			 *
+			 * @param event of FaultEvent
+			 * @return void
+			 */
+			private function configFaultHandler(event:FaultEvent):void
+			{
+				var title:String=event.type + " (" + event.fault.faultCode + ")";
+				var text:String=event.fault.faultString;
+			}
+			/**
+			 * @private
+			 *
+			 * To close the application, when user clicks on Exit menu
+			 *
+			 * @param event of MessageBoxEvent
+			 * @return void
+			 */
+			private function cloeseApp(event:MessageBoxEvent):void
+			{
+				if (event.type == MessageBoxEvent.MESSAGEBOX_YES)
+				{
+					NativeApplication.nativeApplication.exit();
+				}
+				stage.addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, hideHandler);
+				lblWelcomeMsg.setFocus();
+			}
+			/**
+			 * @private
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function homeViewToolTipHandler(event:MouseEvent):void
+			{
+				var homePageToolTip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				homePageToolTip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			/**
+			 * @private
+			 *
+			 * To hide aboutUs, tutorial and updates components
+			 *
+			 * @param event of FocusEvent
+			 * @return void
+			 */
+			private function hideHandler(event:FocusEvent):void
+			{
+				//True only if navigator object is not null
+				if (navigator != null)
+				{
+					//True only if view title is "HomeView" 
+					if (navigator.activeView.title == "HomeView")
+					{
+						//True only if Messagebox is exist
+						if (!FlexGlobals.topLevelApplication.isPopupExist("MobileMessageBox"))
+						{
+							//If focus object is SkinnableContainerSkin or Button or ViewMenuItem, hide the home components.
+							//Otherwise change the focus to welcome message
+							if (event.relatedObject.name.indexOf("SkinnableContainerSkin") >= 0 || event.relatedObject.name.indexOf("Button") >= 0 || event.relatedObject.name.indexOf("ViewMenuItem") >= 0)
+							{
+								hideAboutus();
+								hideTutorial();
+								hideUpdates();
+							}
+						}
+						else
+						{
+							lblWelcomeMsg.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+						}
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	<!--Meni items-->
+	<s:viewMenuItems>
+		<s:ViewMenuItem label="Help"
+						click="onMenuItemClickHandler(event)"
+						icon="{helpIcon}"/>
+		<s:ViewMenuItem label="ChangePassword"
+						click="onMenuItemClickHandler(event)"
+						icon="{changePassword}"/>
+		<s:ViewMenuItem label="Exit"
+						click="onMenuItemClickHandler(event)"
+						icon="{exitIcon}"/>
+	</s:viewMenuItems>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		.Buttonstyle
+		{
+			/* chromeColor:#36383B;  */
+			color:#ffffff;	
+			iconPlacement:top;
+			fontFamily:_serif;
+			fontSize:14;
+			backgroundAlpha : 0;
+		}
+		
+	</fx:Style>
+	<s:titleLayout>
+		<s:HorizontalLayout paddingLeft="0"
+							paddingRight="0"/>
+	</s:titleLayout>
+	<s:titleContent>
+		<!-- Header of the view, contains aview logo and module name-->
+		<s:Group id="titleContentBox"
+				 width="100%"
+				 height="100%">
+			<s:Rect x="0"
+					y="0"
+					width="100%"
+					height="100%">
+				<s:fill>
+					<s:SolidColor color="#071124"/>
+				</s:fill>
+				<s:filters>
+					<s:GlowFilter alpha="0.4"
+								  blurX="0"
+								  blurY="{titleContentBox.height}"
+								  color="0xFFFFFF"
+								  inner="true"
+								  strength="1"/>
+				</s:filters>
+			</s:Rect>
+			<s:HGroup width="100%"
+					  height="100%"
+					  gap="-2"
+					  paddingTop="-3"
+					  verticalAlign="middle">
+				<s:Group width="25%"
+						 height="100%">
+					<s:VGroup width="100%"
+							  height="100%"
+							  horizontalAlign="center"
+							  verticalAlign="middle">
+						<s:Image source="{defaultBanner}"
+								 x="0"
+								 y="0"/>
+					</s:VGroup>
+				</s:Group>
+				<s:Spacer width="100%"
+						  height="100%">
+				</s:Spacer>
+				<s:Group width="45%"
+						 height="50%">
+					<s:Rect width="100%"
+							height="100%"
+							bottomLeftRadiusX="20"
+							bottomLeftRadiusY="20"
+							radiusX="0"
+							radiusY="0"
+							topLeftRadiusX="20"
+							topLeftRadiusY="20">
+						<s:fill>
+							<s:SolidColor alpha="0.8"
+										  color="#071124"/>
+						</s:fill>
+						<s:filters>
+							<s:GlowFilter alpha="1"
+										  blurX="7"
+										  blurY="7"
+										  color="0xFFFFFF"
+										  inner="true"
+										  strength="1"/>
+						</s:filters>
+					</s:Rect>
+					<s:Label width="100%"
+							 height="100%"
+							 color="#39f8ff"
+							 fontSize="18"
+							 text="Home"
+							 textAlign="center"
+							 verticalAlign="middle"/>
+				</s:Group>
+			</s:HGroup>
+		</s:Group>
+	</s:titleContent>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center"
+						  verticalAlign="middle"/>
+	</s:layout>
+
+	<s:HGroup width="80%"
+			  height="60%"
+			  horizontalAlign="center"
+			  paddingTop="10">
+		<!-- Classroom button-->
+		<s:Group height="50%"
+				 width="90%">
+			<s:Rect width="70%"
+					height="100%"
+					radiusX="5"
+					radiusY="5"
+					horizontalCenter="0">
+				<s:stroke>
+					<s:SolidColorStroke color="#FFFFFF"
+										weight="1"
+										alpha="1"/>
+				</s:stroke>
+			</s:Rect>
+			<s:Button width="70%"
+					  height="100%"
+					  id="btnClassRoom"
+					  horizontalCenter="0"
+					  click="pushSelectedView(event)"
+					  iconPlacement="top"
+					  color="0xFFFFFF"
+					  skinClass="edu.amrita.aview.common.skins.mobile.ClassroomButtonSkin"
+					  toolTip="Click here to view the list of sessions"
+					  rollOver="homeViewToolTipHandler(event)"
+					  mouseDown="homeViewToolTipHandler(event)">
+				<s:icon>
+					<s:MultiDPIBitmapSource source160dpi="@Embed('/views/assets/classroom_57.png')"
+											source240dpi="@Embed('/views/assets/classroom_48.png')"
+											source320dpi="@Embed('/views/assets/classroom_48.png')"/>
+				</s:icon>
+				<s:label>Go to classroom</s:label>
+			</s:Button>
+		</s:Group>
+		<!--Home and setup button-->
+		<s:VGroup width="50%"
+				  height="100%"
+				  visible="false"
+				  includeInLayout="false"
+				  horizontalAlign="right"
+				  paddingTop="30">
+			<s:Button width="90%"
+					  height="30%"
+					  fontFamily="Comic Sans MS"
+					  iconPlacement="top"
+					  enabled="false"
+					  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin">
+				<s:icon>
+					<s:MultiDPIBitmapSource source160dpi="@Embed('/views/assets/home_57.png')"
+											source240dpi="@Embed('/views/assets/home_48.png')"
+											source320dpi="@Embed('/views/assets/home_48.png')"/>
+				</s:icon>
+			</s:Button>
+
+			<s:Button width="90%"
+					  height="30%"
+					  color="#ffffff"
+					  iconPlacement="top"
+					  enabled="false"
+					  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin">
+				<s:icon>
+					<s:MultiDPIBitmapSource source160dpi="@Embed('/views/assets/setup_57.png')"
+											source240dpi="@Embed('/views/assets/setup_48.png')"
+											source320dpi="@Embed('/views/assets/setup_48.png')"/>
+				</s:icon>
+			</s:Button>
+			<s:Button width="90%"
+					  height="30%"
+					  fontFamily="Comic Sans MS"
+					  iconPlacement="top"
+					  enabled="false"
+					  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin">
+				<s:icon>
+					<s:MultiDPIBitmapSource source160dpi="@Embed('/views/assets/help_57.png')"
+											source240dpi="@Embed('/views/assets/help_48.png')"
+											source320dpi="@Embed('/views/assets/help_48.png')"/>
+				</s:icon>
+			</s:Button>
+		</s:VGroup>
+		<!-- Classroom, Library and Feedback buuton-->
+		<s:VGroup width="50%"
+				  height="100%"
+				  visible="false"
+				  includeInLayout="false"
+				  horizontalAlign="left"
+				  paddingTop="30">
+			<s:Group height="30%"
+					 width="90%">
+				<s:Rect width="100%"
+						height="100%"
+						radiusX="5"
+						radiusY="5">
+					<s:stroke>
+						<s:SolidColorStroke color="#FFFFFF"
+											weight="1"
+											alpha="1"/>
+					</s:stroke>
+				</s:Rect>
+				<s:Button width="100%"
+						  height="100%"
+						  click="pushSelectedView(event)"
+						  fontFamily="Comic Sans MS"
+						  iconPlacement="top"
+						  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin">
+					<s:icon>
+						<s:MultiDPIBitmapSource source160dpi="@Embed('/views/assets/classroom_57.png')"
+												source240dpi="@Embed('/views/assets/classroom_48.png')"
+												source320dpi="@Embed('/views/assets/classroom_48.png')"/>
+					</s:icon>
+				</s:Button>
+			</s:Group>
+			<s:Button width="90%"
+					  height="30%"
+					  fontFamily="Comic Sans MS"
+					  iconPlacement="top"
+					  visible="false"
+					  includeInLayout="false"
+					  enabled="false"
+					  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin">
+				<s:icon>
+					<s:MultiDPIBitmapSource source160dpi="@Embed('/views/assets/library_57.png')"
+											source240dpi="@Embed('/views/assets/library_48.png')"
+											source320dpi="@Embed('/views/assets/library_48.png')"/>
+				</s:icon>
+			</s:Button>
+			<s:Button width="90%"
+					  height="30%"
+					  iconPlacement="top"
+					  enabled="false"
+					  visible="false"
+					  includeInLayout="false"
+					  skinClass="edu.amrita.aview.common.skins.mobile.MobileButtonSkin">
+				<s:icon>
+					<s:MultiDPIBitmapSource source160dpi="@Embed('/views/assets/feedback_57.png')"
+											source240dpi="@Embed('/views/assets/feedback_48.png')"
+											source320dpi="@Embed('/views/assets/feedback_48.png')"/>
+				</s:icon>
+			</s:Button>
+		</s:VGroup>
+	</s:HGroup>
+	<!-- Container to display tutorial, updates and about components-->
+	<s:HGroup id="homeContentGroup"
+			  horizontalAlign="center"
+			  gap="10"
+			  verticalAlign="bottom"
+			  width="50%"
+			  height="30%"
+			  fontSize="12">
+		<s:HGroup bottom="10"
+				  verticalAlign="bottom">
+			<home:HomeViewContainer id="btnAbout"
+									skinClass="edu.amrita.aview.common.skins.mobile.HomeViewSkin"
+									creationComplete="setStyleName(event)"/>
+		</s:HGroup>
+		<s:HGroup bottom="0"
+				  verticalAlign="bottom">
+			<home:HomeViewContainer id="btnTutorials"
+									skinClass="edu.amrita.aview.common.skins.mobile.HomeViewSkin"
+									creationComplete="setStyleName(event)"/>
+		</s:HGroup>
+		<s:HGroup bottom="0"
+				  verticalAlign="bottom">
+			<home:HomeViewContainer id="btnUpdates"
+									skinClass="edu.amrita.aview.common.skins.mobile.HomeViewSkin"
+									creationComplete="setStyleName(event)"/>
+		</s:HGroup>
+	</s:HGroup>
+	<s:Spacer width="100%"
+			  height="5%"/>
+	<!--Footer of the view, contains welcome and copy right message-->
+	<s:Group width="100%"
+			 height="10%"
+			 textAlign="right"
+			 bottom="0">
+		<s:Rect x="0"
+				y="0"
+				width="100%"
+				height="100%">
+			<s:fill>
+				<s:SolidColor color="#071124"/>
+			</s:fill>
+			<s:filters>
+				<s:GlowFilter alpha="0.3"
+							  blurX="0"
+							  blurY="40"
+							  color="0xFFFFFF"
+							  inner="true"
+							  strength="1"/>
+			</s:filters>
+		</s:Rect>
+		<s:HGroup height="100%"
+				  gap="0"
+				  width="100%">
+			<s:Label id="lblWelcomeMsg"
+					 width="30%"
+					 height="100%"
+					 maxDisplayedLines="1"
+					 fontSize="18"
+					 color="#cccccc"
+					 fontWeight="bold"
+					 paddingLeft="15"
+					 text="Welcome : {userName}"
+					 textAlign="left"
+					 verticalAlign="middle"/>
+			<s:Label text="{Constants.COPY_RIGHT_FOOTER}"
+					 color="#cccccc"
+					 fontWeight="bold"
+					 width="65%"
+					 height="100%"
+					 fontSize="10"
+					 textAlign="left"
+					 paddingLeft="50"
+					 verticalAlign="middle"/>
+		</s:HGroup>
+	</s:Group>
+</s:View>

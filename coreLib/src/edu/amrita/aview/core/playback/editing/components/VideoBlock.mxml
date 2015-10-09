@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: VideoBlock.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains the UI for displaying video block for each Video tags.
+
+-->
+<!-- Canvas for creating the Video Block -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   borderStyle="solid" cornerRadius="2" horizontalScrollPolicy="off" mouseChildren="false"
+		   styleName="normalVideoBlock" textAlign="center" verticalCenter="0">
+	<!-- Displaying video name -->
+	<mx:Label horizontalCenter="0" text="{videoDisplayName}" verticalCenter="0"/>
+	<!-- Script to include handler -->
+	<mx:Script source="../scripts/VideoBlockScript.as"/>
+</mx:Canvas>

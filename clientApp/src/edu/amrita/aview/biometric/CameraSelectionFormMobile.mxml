@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CameraSelectionFormMobile.mxml
+Module		: Biometric Login
+Developer(s): Meena S
+Reviewer(s)	: Sivaram SK 
+
+CameraSelectionFormMobile component is used to select camera for login.
+
+-->
+
+<s:SkinnablePopUpContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+						   xmlns:s="library://ns.adobe.com/flex/spark"
+						   width="{parentApplication.width/2.5}"
+						   height="100%"
+						   creationComplete="init()">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.common.components.messageBox.MessageBox;
+			import edu.amrita.aview.common.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.login.PrepareLogin;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.core.FlexGlobals;
+			import mx.managers.CursorManager;
+			import mx.managers.PopUpManager;
+			import mx.preloaders.Preloader;
+			
+			import views.LoginView;
+			/**
+			 * Holds user selection
+			 */
+			public var selectionMode:String;
+			/**
+			 * Holds camera names
+			 */
+			[Bindable]
+			private var cameraNames:ArrayList=new ArrayList(Camera.names);
+
+			/**
+			 * @public
+			 *
+			 * To set camera list based on the number of camera connected to the device
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function init():void
+			{
+				selectionMode=null;
+				var camNames:Object=Camera.names;
+				if (camNames.length == 1)
+				{
+					cameraNames=new ArrayList([{name: "FrontCamera", index: 0}]);
+				}
+				else if (camNames.length == 2)
+				{
+					cameraNames=new ArrayList([{name: "Back Camera", index: 0}, {name: "FrontCamera", index: 1}]);
+				}
+			}
+
+			/**
+			 * @private
+			 *
+			 * To set camera name
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function setCameraName():void
+			{
+				if ((cameraList.selectedItem != null) && (cameraList.selectedItem != ""))
+				{
+					FlexGlobals.topLevelApplication.mainApp.preLogin.cameraIndex=cameraList.selectedItem.index.toString();
+					selectionMode="ok";
+					this.close();
+				}
+				else
+				{
+					MessageBox.show("Please select a valid camera.", "Device Error", null, null, null, null); //check variables count
+				}
+			}
+
+			/**
+			 * @public
+			 *
+			 * To close the camera selection window
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			public function cancelCameraSelection(event:Event):void
+			{
+				selectionMode="cancel";
+				this.close();
+			}
+			/**
+			 * @public
+			 *
+			 * To refresh the camera list
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function refreshCameraList():void
+			{
+				var camNames:Object=Camera.names;
+				for (var i:int=0; i < Camera.names.length; i++)
+				{
+					cameraNames.addItem(Camera.names[i])
+				}
+				if (camNames.length == 1)
+				{
+					cameraNames=new ArrayList([{name: "FrontCamera", index: 0}]);
+				}
+				else if (camNames.length == 2)
+				{
+					cameraNames=new ArrayList([{name: "Back Camera", index: 0}, {name: "FrontCamera", index: 1}]);
+				}
+			}
+
+			/**
+			 * @protected
+			 *
+			 * To show tool tip
+			 *
+			 * @param null
+			 * @return void
+			 */
+			protected function btnRefreshTooltipHandler(event:MouseEvent):void
+			{
+				var userModuleTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				userModuleTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+		]]>
+	</fx:Script>
+	<s:Group width="100%"
+			 height="100%">
+		<!--Create border-->
+		<s:Rect left="0"
+				right="0"
+				top="0"
+				bottom="0"
+				width="100%"
+				height="100%">
+			<s:fill>
+				<s:SolidColor color="0x071124"/>
+			</s:fill>
+			<s:stroke>
+				<s:LinearGradientStroke rotation="270"
+										weight="5">
+					<s:GradientEntry color="0x696969"/>
+					<s:GradientEntry color="0xB3B3B3"/>
+				</s:LinearGradientStroke>
+			</s:stroke>
+			<s:filters>
+				<s:GlowFilter alpha="0.3"
+							  blurX="0"
+							  blurY="40"
+							  color="0xFFFFFF"
+							  inner="true"
+							  strength="1"/>
+			</s:filters>
+		</s:Rect>
+		<s:Group width="100%"
+				 height="100%">
+			<s:VGroup width="100%"
+					  height="100%"
+					  horizontalAlign="center"
+					  paddingLeft="10"
+					  paddingRight="10"
+					  verticalAlign="middle">
+				<!--Title of the component-->
+				<s:VGroup width="100%"
+						  height="10%"
+						  horizontalAlign="center"
+						  paddingBottom="10"
+						  paddingTop="10"
+						  verticalAlign="middle">
+
+					<s:Label color="0xFFFFFF"
+							 fontWeight="bold"
+							 text="Camera Selection"/>
+					<s:Line width="90%">
+						<s:stroke>
+							<s:SolidColorStroke alpha="1"
+												color="0xFFFFFF"
+												weight="1"/>
+						</s:stroke>
+					</s:Line>
+				</s:VGroup>
+				
+				<!--Video driver and refresh button-->
+				<s:HGroup width="100%"
+						  height="80%"
+						  horizontalAlign="center"
+						  verticalAlign="middle">
+					<s:Label color="0xFFFFFF"
+							 fontSize="12"
+							 fontWeight="bold"
+							 text="Cameras:"/>
+					<s:SpinnerListContainer width="100%"
+											height="20%">
+						<s:SpinnerList id="cameraList"
+									   width="100%"
+									   height="100%"
+									   dataProvider="{cameraNames}"
+									   fontSize="12"
+									   labelField="name"/>
+					</s:SpinnerListContainer>
+					<s:Button id="btnRefresh"
+							  width="35%"
+							  height="50%"
+							  click="refreshCameraList()"
+							  icon="@Embed(source='assets/images/refresh.png')"
+							  mouseOver="btnRefreshTooltipHandler(event)"
+							  rollOver="btnRefreshTooltipHandler(event)"
+							  toolTip="Refresh Camera List"/>
+				</s:HGroup>
+				<!--Control buttons-->
+				<s:HGroup width="100%"
+						  height="100%"
+						  horizontalAlign="center"
+						  verticalAlign="middle">
+
+					<s:Button id="btnOk"
+							  width="35%"
+							  height="50%"
+							  label="Ok"
+							  click="setCameraName()"
+							  color="0xFFFFFF"
+							  fontWeight="bold"/>
+					<s:Button id="btnCancel"
+							  width="35%"
+							  height="50%"
+							  label="Cancel"
+							  click="cancelCameraSelection(event)"
+							  color="0xFFFFFF"
+							  fontWeight="bold"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:Group>
+	</s:Group>
+</s:SkinnablePopUpContainer>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" clipAndEnableScrolling="true"
+				height="35" width="100%">
+	<s:layout>
+		<s:HorizontalLayout paddingBottom="5" paddingLeft="20" paddingRight="20" paddingTop="5"
+							verticalAlign="middle"/>
+	</s:layout>
+	<fx:Declarations>
+		<mx:DateFormatter id="timeFormatter"
+						  formatString="LL:NN A"
+						  />
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			override public function set data(value:Object):void 
+			{
+				super.data=value;
+				
+				
+			}
+		]]>
+	</fx:Script>
+	<s:Label id="startTime" color="#000000" maxDisplayedLines="1"
+			 text="{timeFormatter.format(data.lecture.startTime)}"/>
+	
+</s:GridItemRenderer>

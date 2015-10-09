@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ChatMobileComponent.mxml
+Module		: Chat
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Sivaram SK 
+
+ChatMobileComponent component is main component for chat and it is used to implement chat functionalities.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 creationComplete="onChatCreate(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			public function enableStyle():void{
+				if(this.messageArea.textDisplay!=null){
+					setTimeout(changeStyle,10);
+				}
+			}
+			private function changeStyle(event:Event = null):void{
+				StyleableTextField(this.messageArea.textDisplay).htmlText = chatMessages;
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<fx:Script source="ChatHandler.as"/>
+
+	<s:Rect width="100%"
+			height="100%">
+		<s:fill>
+			<s:SolidColor color="#071124"/>
+		</s:fill>
+	</s:Rect>
+	<!--Chat container to hold chat message(s)-->
+	<s:VGroup id="chatContainer"
+			  height="100%"
+			  y="0"
+			  x="0"
+			  horizontalAlign="center"
+			  verticalAlign="middle"
+			  paddingLeft="3">
+		<s:TextArea width="100%"
+					height="100%"
+					id="messageArea"
+					editable="false"
+					contentBackgroundColor="#FFFFFF"
+					color="#040404"
+					borderVisible="false"
+					creationComplete="changeStyle(event)"
+					updateComplete="messageArea.appendText('');"
+					skinClass="spark.skins.mobile.TextAreaSkin"/>
+	</s:VGroup>
+</s:Group>

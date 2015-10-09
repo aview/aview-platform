@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File		: InstituteApprovalComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	: Swati, Abhirami, Sivaram SK
+
+This component is used to approve the newly created institute by user through website
+while performing user registration. In the website, when the user tries to regster, and
+if they cannot see their institute details, they can add a new institute which will be
+pending state. Master admin need to activate so that the registration process is successful
+
+Master Admin: Approve institute created by user during registration
+
+Others: This window is not available
+
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 xmlns:autoComplete="edu.amrita.aview.core.shared.components.autoComplete.*"
+						 xmlns:xt="library://ns.tink.ws/flex/mx"
+						 backgroundColor="#e0effb"
+						 borderVisible="true"
+						 color="#0653B3"
+						 width="900"
+						 height="498"
+						 dropShadowVisible="false"
+						 fontFamily="Arial"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 title="Institute Approval"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+>
+
+	<fx:Script source="InstituteApprovalCompUIHandler.as"/>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<!-- Institute approval container -->
+	<mx:Canvas x="4"
+			   y="0"
+			   width="99%"
+			   height="465"
+			   borderColor="#A3D7FF"
+			   borderStyle="solid"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- Label to show institute -->
+		<s:Label left="10"
+				 top="26.5"
+				 text="Institute :"/>
+		<!-- Text input to accepts institute -->
+		<s:TextInput id="txtInpInstitute"
+					 right="425"
+					 top="20"
+					 width="400"/>
+		<!-- Button for search pending approvals -->
+		<components:ImageButton right="320"
+				  top="20"
+				  label="Search"
+				  click="searchPendingApprovals();"
+				  color="#000000"
+				  cornerRadius="3"/>
+		<!-- Button for reset data -->
+		<components:ImageButton right="230"
+				  top="20"
+				  label="Reset"
+				  click="resetData();"
+				  color="#000000"
+				  cornerRadius="3"/>
+		<!-- Checkbox for select all pending institutes -->
+		<s:CheckBox id="chkSelectAllPendingInstitutes"
+					right="10"
+					top="64"
+					width="80"
+					label="Select All"
+					click="toggleAllPendingInstitutesSelection()"/>
+		<!-- DataGrid -->
+		<mx:DataGrid left="10"
+					 right="10"
+					 top="90"
+					 bottom="50"
+					 click="toggleCheckSelectAllPendingInstitutes()"
+					 dataProvider="{approvalPendingInstitutes}">
+			<mx:columns>
+				<!-- Data Grid Column for institute id -->
+				<mx:DataGridColumn dataField="instituteId"
+								   headerText="Institute Id"
+								   width="100"/>
+				<!-- Data Grid Column for institute name -->
+				<mx:DataGridColumn dataField="instituteName"
+								   headerText="Institute Name"
+								   width="300"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteName')}"/>
+				<!-- Data Grid Column for parent institute Name -->
+				<mx:DataGridColumn dataField="parentInstituteName"
+								   headerText="Parent Institute Name"
+								   width="250"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('parentInstituteName')}"/>
+				<!-- Data Grid Column for institute category -->
+				<mx:DataGridColumn dataField="instituteCategory"
+								   headerText="Institute Category"
+								   width="190"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('instituteCategory')}"/>
+				<!-- Data Grid Column for city -->
+				<mx:DataGridColumn dataField="city"
+								   headerText="City"
+								   width="150"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('city')}"/>
+				<!-- Data Grid Column for state name -->
+				<mx:DataGridColumn dataField="stateName"
+								   headerText="State"
+								   width="150"
+								   sortCompareFunction="{AViewStringUtil.caselessSortForField('stateName')}"/>
+				<!-- Data Grid Column for select institute approval -->
+				<mx:DataGridColumn id="chkSelectInstituteApproval"
+								   dataField="status"
+								   headerText="Select"
+								   width="60"
+								   editable="true"
+								   editorDataField="selected"
+								   rendererIsEditor="true"
+								   itemRenderer="edu.amrita.aview.core.shared.components.checkBox.CheckBoxItemRenderer"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<!-- Button for save institute approval -->
+		<components:ImageButton bottom="11"
+				  label="Approve"
+				  click="saveInstituteApprovals()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="-90"/>
+		<!-- Button for prepare deletion -->
+		<components:ImageButton bottom="11"
+				  label="Delete"
+				  click="prepareForDeletion()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="0"/>
+		<!-- Button for cancel -->
+		<components:ImageButton bottom="11"
+				  label="Cancel"
+				  click="closeInstituteApprovalComp();"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="90"/>
+
+
+	</mx:Canvas>
+	<!-- Icon to close institute approval component -->
+	<components:WindowCloseImage right="5"
+			 top="-25"
+			 id="imgClose"
+			 click="closeInstituteApprovalComp()"/>
+</components:InsidePanel>

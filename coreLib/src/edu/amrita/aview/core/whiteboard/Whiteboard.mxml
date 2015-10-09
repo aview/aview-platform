@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   ******************************************************************************************************************************************************************************************
+   *  Authors: Sachin S Kumar, Chitra S Pai, Anu P																																			*
+   *																																														*
+   *  This program is used to open White board in multiple window mode																														*
+   *																																														*
+   * 																																														*
+   *  Revisions made.                                                       																												*
+   ******************************************************************************************************************************************************************************************
+-->
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  minWidth="920" minHeight="680" backgroundColor="#e0effb" close="close_wb()"
+		  creationComplete="init()" skinClass="edu.amrita.aview.core.shared.skins.CustomWindowSkin"
+		  status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+		  systemChrome="standard" type="normal"
+		  windowActivate="whiteboardMWwindowActivateHandler(event)"
+		  windowDeactivate="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.multipleWindowDeactivateHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			
+			import mx.core.FlexGlobals;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			
+			import spark.components.TextArea;
+			
+			/**Platform specific imports*/
+			applicationType::desktop
+			{
+				import mx.events.AIREvent;
+			}
+			
+			public var wbComp:WhiteboardComp;
+			[Bindable]
+			public var presenterName:String;
+			public var classname:String;
+			public var lecturename:String;
+			public var course_startDate:String;
+			public var Semno:String;
+			public var de:String;
+			public var txt_area1:TextArea;
+			/**
+			 * For Log API
+			 */
+			private var log:ILogger=Log.getLogger("aview.whiteboard.Whiteboard.mxml");
+			
+			/** Initialize the white board in multipple mode
+			 */
+			private function init():void
+			{
+				applicationType::desktop
+				{
+					//PNCR: #BugFix: 15002. Since the own property change, removed the flexglobel call. 
+					//if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW)
+					//	FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.whiteboardMW.title="Whiteboard (A-VIEW Classroom - " + ClassroomContext.aviewClass.className + ")";
+					this.title="Whiteboard (A-VIEW - " + ClassroomContext.aviewClass.className + ")";
+				}
+				
+				wbComp.percentWidth=100;
+				wbComp.percentHeight=100;
+				
+				wbBox.addElement(wbComp);
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, wbComp.handleKeyboardShortcut);
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.keyDown_track);
+				//Bug #16582. Not need to change to active module at the time of popout.
+				//FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setActiveModule(false);
+			}
+			
+			/**
+			 * This function is called when user close the white board window
+			 */
+			public function close_wb():void
+			{
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedModulle=99;
+				if(this.closed)
+				{
+					wbComp.isPopOut=true;
+				}
+				wbComp.popOutWhiteboardWindow();
+				//This MAy not be using
+				//START--------------------------------------------------------------
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.flag_openwin_WB == 1)
+				{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.open_winWB.label="v";
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.opencurrentinWindow("Conso_Whiteboard");
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.flag_openwin_WB=0;
+					if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.openall_flag_wb == 1)
+					{
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.flag_openwin_WB=1;
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.openall_flag_wb=0;
+					}
+					
+				}
+				//END--------------------------------------------------
+				else
+				{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.WhiteboardIcon=FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.Whiteboard_unclicked;
+					//wbComp.close_wb();
+				}
+			
+			}
+			/**
+			 * Flaf to indiate whether white board window is in minimized state
+			 * min_flag = 1 means it is in the minimize state
+			 */
+			//WARNING : Can use Boolean
+			public var min_flag:int=0;
+			
+			/**
+			 * This function is called  when user resizes the white board window
+			 */
+			public function onResize1():void
+			{
+				try
+				{
+					wbBox.width=(this.width) - 10;
+					wbBox.height=(this.height) - 10;
+				}
+				catch (err:Error) {
+					if(Log.isError()) log.error("Error in onResize1 method:"+ err.getStackTrace());
+				}
+				//Check the window is minimized
+				//WARNING: This is not a standard way to find whether the window is in minimized state
+				if (this.width == 160)
+				{
+					min_flag=1;
+				}
+			
+			
+			}
+			
+			/**
+			 * This function is called  when the Hbox hoding the whiteboard componnent resizes.
+			 */
+			public function onResize():void
+			{
+				try
+				{
+					wbComp.width=wbBox.width;
+					wbComp.height=wbBox.height;
+				}
+				catch (err:Error){
+					if(Log.isError()) log.error("Error in onResize method:"+ err.getStackTrace());
+				}
+			}
+			
+			applicationType::desktop
+			{
+				public function whiteboardMWwindowActivateHandler(event:AIREvent):void
+				{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.multipleWindowActivateHandler("whiteboardMW");
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:BorderContainer id="wbBox" x="0" y="0" top="0" bottom="0" width="100%" height="100%"
+					   borderColor="#5C5C5C" cornerRadius="0" resize="onResize()">
+		<s:layout>
+			<s:HorizontalLayout/>
+		</s:layout>
+	</s:BorderContainer>
+</s:Window>
+

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CategorySummary.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Narayanasamy S, Sivaram SK
+
+This component displays all the categories in the question bank
+
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:as="edu.amrita.aview.quiz.components.Extended.*"
+		   width="100%"
+		   height="100%"
+		   focusColor="#A9F9A0"
+		   initialize="initializeHandler()"
+		   xmlns:s="library://ns.adobe.com/flex/spark">
+
+	<!--script to include handler-->
+	<mx:Script source="CategorySummaryUIHandler.as"/>
+	<!--Date formatter-->
+	<mx:DateFormatter id="dateFormatter"
+					  formatString="DD MMM YYYY H:N:S"/>
+	<!--Datagrid to show quiz categories-->
+	<s:DataGrid
+				width="100%"
+				height="100%"
+				selectionMode="multipleRows"
+				dataProvider="{ClassroomContext.quizCategories}"
+				focusEnabled="false"
+				textAlign="left">
+		<s:columns>
+			<s:ArrayList>
+				<!--Fix for Bug#14821, Bug#11218-->
+				<s:GridColumn width="45"
+							  headerText="S.No."
+							  dataField="displayIndex"/>
+				<s:GridColumn minWidth="200"
+							  dataField="qbCategoryName"
+							  headerText="Category Name"
+							  sortCompareFunction="{AViewStringUtil.caselessSortForField('qbCategoryName')}"/>
+				<s:GridColumn minWidth="45"
+							  dataField="totalQuestions"
+							  headerText="Total Questions"/>
+				<s:GridColumn minWidth="50"
+							  dataField="createdByUserName"
+							  headerText="Created By"
+							  showDataTips="true"/>
+				<s:GridColumn minWidth="50"
+							  dataField="createdDate"
+							  headerText="Created Date"
+							  labelFunction="formatCreatedDate"
+							  showDataTips="true"/>
+				<s:GridColumn minWidth="50"
+							  dataField="modifiedByUserName"
+							  headerText="Modified By"
+							  showDataTips="true"/>
+				<s:GridColumn minWidth="50"
+							  dataField="modifiedDate"
+							  headerText="Modified Date"
+							  labelFunction="formatModifiedDate"
+							  showDataTips="true"/>
+			</s:ArrayList>
+		</s:columns>
+
+	</s:DataGrid>
+
+</mx:Canvas>

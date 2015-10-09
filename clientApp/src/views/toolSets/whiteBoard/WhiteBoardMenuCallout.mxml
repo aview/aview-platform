@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: WhiteboardMenuCallout.mxml
+Module		: WhiteBoard
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+WhiteboardMenuCallout component is used to,
+
+	1.Change thickness of whiteboard shapes.
+	2.Change shapes/text color.
+	3.Change whiteboard collaboartion.
+	4.Show/Hide mouse pointer.
+	5.Paste the copied text
+-->
+
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="250"
+		   height="100%"
+		   creationComplete="upDateList();">
+
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.events.mobileCustomEvents.WhiteBoardActionEvent;
+			
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			/**
+			 * Holds icon for pointer share button
+			 */
+			[Bindable]
+			public var wbPointerIcon:Class;
+			/**
+			 * Used to set thickness icon for size button
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/thikness_4.png")]
+			public var shapeSizeIcon:Class;
+			/**
+			 * Holds selected tool object
+			 */
+			private var data:Object;
+			/**
+			 * Used to set color icon for color button
+			 */
+			[Embed(source="/views/assets/colour-picker-30X30.png")]
+			public var colorCompIcon:Class;
+			/**
+			 * Used to set show pointer icon for pointer button
+			 */
+			[Embed(source="/views/assets/docicons/show_pointer.png")]
+			[Bindable]
+			private var showMobilePointerIcon:Class;
+			/**
+			 * Used to set remove pointer icon for pointer button
+			 */
+			[Embed(source="/views/assets/docicons/removepointer.png")]
+			[Bindable]
+			private var removeMobilePointerIcon:Class;
+			/**
+			 * Static constants for menu items
+			 */
+			private static const SHOW_PONITER:String="Show Pointer";
+			private static const REMOVE_POINTER:String="Remove Pointer";
+			private static const SHAPE_THICKNESS:String="Shape Thickness";
+			private static const PENCIL_THICKNESS:String="Pencil Thickness";
+			private static const SHOW_COLLABORATOR:String="Show Colloborators";
+			private static const HIDE_COLLABORATOR:String="Hide Collaborators";
+			private static const COLOR:String="Color";
+			private static const PASTE:String="Paste";
+			private static const COLOR_BTN_ID:String="btnColorPalatte";
+			private static const SIZE_BTN_ID:String="btnSize";
+			private static const FREE_HAND_TOOL:String="fh"
+			private static const TEXT_TOOL:String="txt"
+				
+			/**
+			 * Holds presenter menu list items
+			 */
+			private var wbMenuForPresenter:ArrayCollection=new ArrayCollection([{label: REMOVE_POINTER, icon: removeMobilePointerIcon}, {label: SHAPE_THICKNESS, icon: shapeSizeIcon}, {label: COLOR, icon: colorCompIcon}, {label: SHOW_COLLABORATOR, icon: null}, {label: PASTE, icon: null}]);
+			/**
+			 * Holds viewer menu list items
+			 */
+			[Bindable]
+			private var wbMenuForViewer:ArrayCollection=new ArrayCollection([{label: SHAPE_THICKNESS, icon: shapeSizeIcon}, {label: COLOR, icon: colorCompIcon}]);
+
+			/**
+			 * @private
+			 *
+			 * To Add event listener and set menu items based on the user type
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function upDateList():void
+			{
+				this.addEventListener(WhiteBoardActionEvent.WHITE_BOARD_ACTION, FlexGlobals.topLevelApplication.wbComp.selectWBTools);
+				//If user role is presenter
+				if (FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+				{
+					//If user selects freehand tool, set menu item label as "PENCIL_THICKNESS"
+					//Otherwise set menu item label as "SHAPE_THICKNESS"
+					if (FlexGlobals.topLevelApplication.wbComp.toolName == FREE_HAND_TOOL)
+					{
+						wbMenuForPresenter[1].label=PENCIL_THICKNESS;
+					}
+					else if (FlexGlobals.topLevelApplication.wbComp.toolName != TEXT_TOOL)
+					{
+						wbMenuForPresenter[1].label=SHAPE_THICKNESS;
+					}
+					wbMenuForPresenter.refresh();
+					wbMenuList.dataProvider=wbMenuForPresenter;
+					wbMenuList.height=300;
+				}
+				else//If user role is viewer
+				{
+					//If user selects freehand tool, set menu item label as "PENCIL_THICKNESS"
+					//Otherwise set menu item label as "SHAPE_THICKNESS"
+					if (FlexGlobals.topLevelApplication.wbComp.toolName == FREE_HAND_TOOL)
+					{
+						wbMenuForViewer[0].label=PENCIL_THICKNESS;
+					}
+					else if (FlexGlobals.topLevelApplication.wbComp.toolName != TEXT_TOOL)
+					{
+						wbMenuForViewer[0].label=SHAPE_THICKNESS;
+					}
+					wbMenuForViewer.refresh();
+					wbMenuList.dataProvider=wbMenuForViewer;
+					wbMenuList.height=120;
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To change the menu item
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function wbMenuListChangeHandler(event:MouseEvent):void
+			{
+				switch (event.currentTarget.selectedItem.label)
+				{
+					//If user selected item is "", open shape color component
+					case COLOR:
+					{
+						data=new Object();
+						data.btnId=COLOR_BTN_ID;
+						data.x=this.x;
+						data.y=FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE ? this.y + 60 : this.y + 5;
+						dispatchEvent(new WhiteBoardActionEvent(WhiteBoardActionEvent.WHITE_BOARD_ACTION, data));
+						break;
+					}
+						//If user selected item is "", open shape thickness component
+					case SHAPE_THICKNESS:
+					{
+						data=new Object();
+						data.btnId=SIZE_BTN_ID;
+						data.x=this.x;
+						data.y=FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE ? this.y + 40 : this.y - 15;
+						dispatchEvent(new WhiteBoardActionEvent(WhiteBoardActionEvent.WHITE_BOARD_ACTION, data));
+						break;
+					}
+						//If user selected item is "PENCIL_THICKNESS", open pencil thickness component
+					case PENCIL_THICKNESS:
+					{
+						data=new Object();
+						data.btnId=SIZE_BTN_ID;
+						data.x=this.x;
+						data.y=FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE ? this.y + 40 : this.y - 15;
+						dispatchEvent(new WhiteBoardActionEvent(WhiteBoardActionEvent.WHITE_BOARD_ACTION, data));
+						break;
+					}
+						//If user selected item is "SHOW_COLLABORATOR", to show the whiteboard at all user end
+					case SHOW_COLLABORATOR:
+					{
+						if (!FlexGlobals.topLevelApplication.wbComp.showCollaborator && FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+						{
+							FlexGlobals.topLevelApplication.wbComp.showCollaborator=true;
+							wbMenuForPresenter[3].label=HIDE_COLLABORATOR;
+							wbMenuForPresenter.refresh();
+							FlexGlobals.topLevelApplication.wbComp.showCollaboratorNames();
+						}
+						break;
+					}
+						//If user selected item is "HIDE_COLLABORATOR", to hide the whiteboard at all user end
+					case HIDE_COLLABORATOR:
+					{
+						if (FlexGlobals.topLevelApplication.wbComp.showCollaborator && FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+						{
+							FlexGlobals.topLevelApplication.wbComp.showCollaborator=false;
+							wbMenuForPresenter[3].label=SHOW_COLLABORATOR;
+							wbMenuForPresenter.refresh();
+							FlexGlobals.topLevelApplication.wbComp.hideCollaboratorNames();
+						}
+						break;
+					}
+						//If user selected item is "SHOW_PONITER", share the mouse pointer to all user
+					case SHOW_PONITER:
+					{
+						if (FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+						{
+							wbMenuForPresenter[0].icon=removeMobilePointerIcon;
+							wbMenuForPresenter[0].label=REMOVE_POINTER;
+							wbMenuForPresenter.refresh();
+							FlexGlobals.topLevelApplication.whiteBoardTools.mobilePointerIcon=FlexGlobals.topLevelApplication.wbComp.removeMobilePointerIcon;
+							break;
+						}
+					}
+						//If user selected item is "REMOVE_POINTER", remove the share poiter
+					case REMOVE_POINTER:
+					{
+						if (FlexGlobals.topLevelApplication.mainApp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)
+						{
+							wbMenuForPresenter[0].icon=showMobilePointerIcon;
+							wbMenuForPresenter[0].label=SHOW_PONITER;
+							wbMenuForPresenter.refresh();
+							FlexGlobals.topLevelApplication.whiteBoardTools.mobilePointerIcon=FlexGlobals.topLevelApplication.wbComp.showMobilePointerIcon;
+							break;
+						}
+					}
+						//If user selected item is "PASTE", open MobileTextTool component to paste the copied text
+					case PASTE:
+					{
+						FlexGlobals.topLevelApplication.wbComp.pasteText();
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle"
+						  horizontalAlign="center"/>
+	</s:layout>
+	<s:VGroup width="100%"
+			  height="100%"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+		<!--Whiteboard menu list-->
+		
+		<s:List id="wbMenuList"
+				left="0"
+				right="0"
+				top="0"
+				bottom="0"
+				verticalScrollPolicy="off"
+				horizontalScrollPolicy="off"
+				borderVisible="false"
+				alternatingItemColors="[#071124, #071124]"
+				color="#ffffff"
+				click="wbMenuListChangeHandler(event)"
+				contentBackgroundColor="#071124"
+				selectionColor="#5c6269"
+				fontSize="14"
+				fontWeight="bold"
+				width="100%"
+				height="100%">
+			<s:itemRenderer>
+				<fx:Component>
+					<s:IconItemRenderer iconField="icon"
+										height="60"
+										mouseOver="this.alpha=1.0"
+										mouseOut="this.alpha=.7"
+										alpha=".7"/>
+				</fx:Component>
+			</s:itemRenderer>
+		</s:List>
+		
+	</s:VGroup>
+</s:Callout>

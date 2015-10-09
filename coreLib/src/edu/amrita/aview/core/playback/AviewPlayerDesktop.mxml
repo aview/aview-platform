@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: AviewPlayer.mxml
+Module		: PlayBack
+Developer(s): Haridas, Anu
+Reviewer(s)	: Remya T
+
+AviewPlayer.mxml class for to make playback session as Sepperate window from Aview main class
+-->
+<!--Main window-->
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" xmlns:mx="library://ns.adobe.com/flex/mx"
+		  close="aviewPlayerComp.closePlayback()" creationComplete="init(event)" status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}" title="A-VIEW Player">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			/**
+			 * Refers for AviewPlayer class
+			 */
+			public var aviewPlayerComp:AviewPlayer=new AviewPlayer();			
+			
+			/**
+			 * @protected
+			 * For adding the AviewPlayer component to main window
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			protected function init(event:FlexEvent):void
+			{
+				this.addElement(aviewPlayerComp);
+				aviewPlayerComp.percentHeight=100;
+				aviewPlayerComp.percentWidth=100;
+			}
+		]]>
+	</fx:Script>
+</s:Window>

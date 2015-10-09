@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+ xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:MultipleViewerInteraction="edu.amrita.aview.core.video.*" 
+ width="100%" height="100%" creationComplete="init()" 
+ implements="edu.amrita.aview.core.video.IVideoWallLayout">
+	<fx:Declarations>
+		<s:Resize id="expand" duration="200" target="{btnControls}" widthFrom="10" widthTo="84"/>
+		<s:Resize id="colapse" duration="200" target="{btnControls}" widthFrom="84" widthTo="10"/>
+	</fx:Declarations>
+	<fx:Script source="VideoWallHandler.as"/>
+	<s:BorderContainer id="baseContainer" borderVisible="false" horizontalCenter="0"
+					   verticalCenter="0">
+		<MultipleViewerInteraction:VideoStreamDisplay id="bigScreenDisplay"/>
+	</s:BorderContainer>
+	<mx:HBox id="btnControls" right="1" top="1" width="84" height="29" backgroundColor="#343233" borderColor="#343233" cornerRadius="3" horizontalAlign="right" horizontalGap="1"
+			 paddingBottom="3" visible="false" paddingLeft="1" paddingRight="3" paddingTop="3" verticalAlign="middle">
+		<mx:HBox id="hboxControl" horizontalAlign="right" horizontalGap="1">
+			<!--For Web: Made full screen button invisible-->
+			<mx:Button id="popOutBtn" width="22" height="20" click="popOutVideoWallWindow()" toolTip="Pop Out"
+					   visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+					   includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"/>
+			<mx:Button id="btnFullScreen" width="22" height="20" click="fullScreenSelected()"/>
+			<mx:Button id="btnClose" width="22" height="20" click="close_clickHandler(event)"
+					   icon="@Embed(source='assets/images/video-close.png')"
+					   toolTip="Close Video-wall"/>
+		</mx:HBox>
+
+	</mx:HBox>
+	<mx:Image visible="false" id="btnShow" right="{btnControls.right+(btnControls.width-8)}" top="9" buttonMode="true" click="showHide_clickHandler(event)" source="{hideIcon}" toolTip="Hide" useHandCursor="true"/>
+
+</s:BorderContainer>

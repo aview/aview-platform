@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+						   xmlns:s="library://ns.adobe.com/flex/spark" 
+						   width="100%" 
+						   height="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Rect width="100%" 
+			height="100%" 
+			x="0" 
+			y="0">
+		<s:fill>
+			<s:SolidColor color="0xFFFFFF" />
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke color="0xDDF2FC" weight="2"/>
+		</s:stroke>
+	</s:Rect>
+	<s:HGroup width="100%"
+			  height="100%"
+			  horizontalAlign="center"
+			  horizontalCenter="0"
+			  verticalAlign="middle"
+			  paddingRight="10"
+			  paddingLeft="10"
+			  paddingTop="10"
+			  paddingBottom="10">
+		
+		<!--<s:HGroup width="100%"
+				  height="100%"
+				  horizontalAlign="center"
+				  horizontalCenter="0"
+				  verticalAlign="middle"
+				  paddingRight="10"
+				  paddingTop="30">
+		
+				<s:SWFLoader id="swfBusyLoader"
+							 verticalAlign="middle"
+							 verticalCenter="0"
+							 horizontalAlign="center"
+							 cacheAsBitmap="true"
+							 source="/assets/flash/video_busyCur.swf"/>
+		
+		</s:HGroup>-->
+		<s:Label text="Loading.....Please wait"
+				 fontWeight="bold"
+				 id="lblLoader"
+				 textAlign="center"
+				 verticalAlign="middle"
+				 verticalCenter="0"/>
+	</s:HGroup>
+</s:SkinnableContainer>

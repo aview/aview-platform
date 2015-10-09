@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: EditingToolContainer.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File deals with initiating the drawing of ruler scale and ribbon blocks in Video Editing component
+
+-->
+<!-- Main Canvas -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:components="modules.editing.components.*"
+		   width="100%" height="100%" borderColor="#AAACCC" borderStyle="solid" resize="resizeEditingToolContainer()">
+
+
+
+	<!-- Including the CSS file which holds the Style of Editing components-->
+	<mx:Style source="../assets/styles/Editing.css"/>
+
+	<mx:Script source="../scripts/EditingToolContainerScript.as"/>
+</mx:Canvas>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: UploadHelper.mxml
+Module		: 2DViewer
+Developer(s): Manjith CM, Deepu Diwakar, Jayakrishnan R
+Reviewer(s)	: Pradeesh
+
+Adding UploadHelperHandler.as script to check the swf file is supported in 2Dviewer before uploading to server.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 height="0"
+		 width="0">
+	<fx:Metadata>
+		[Event(type="edu.amrita.aview.twoDSharing.V2DEvent",name="SuppportedFile")]
+	</fx:Metadata>
+	<fx:Script source="UploadHelperHandler.as"/>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:MovieClipSWFLoader id="swfLoad"
+						  visible="false"
+						  complete="swCompleteHandler(event)"
+						  ioError="swfLoad_ioErrorHandler(event)"/>
+</s:Group>

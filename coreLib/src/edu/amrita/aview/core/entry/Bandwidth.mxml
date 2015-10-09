@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+*
+* File			: Bandwidth.mxml
+* Module		: Bandwidth
+* Developer(s)	: Vijayakumar.R
+* Reviewer(s)	: 
+*
+* For checking the bandwidth of the classroom
+*
+*-->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="400" height="300" backgroundColor="#E0EFFB" borderColor="#2A5EA4"
+			   close="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.closeBandwidthWindow();PopUpManager.removePopUp(this);"
+			   cornerRadius="6"
+			   move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+			   preinitialize="initurl()" title="Check Bandwidth" keyDown="exitOnEscape(event)">
+	
+	<fx:Script source="BandwidthHandler.as"/>
+	<fx:Declarations>
+		<mx:HTTPService id="urlFetcher" fault="getSpeedTestURLFaultHandler(event)"
+						result="getSpeedTestURLResultHandler(event)" url="config/SpeedtestURL.xml"/>
+	</fx:Declarations>
+	<s:Label visible="{ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE?true:false}"
+			 width="398" height="21"
+			 includeInLayout="{ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE?true:false}"
+			 maxDisplayedLines="1" paddingLeft="5" paddingRight="5" text="{serverName}"
+			 verticalAlign="middle"/>
+	<mx:HTML left="0" top="{ClassroomContext.userVO.role == Constants.MASTER_ADMIN_TYPE?20:0}"
+			 width="100%" height="100%" location="{toolTipLnk}"/>
+</s:TitleWindow>

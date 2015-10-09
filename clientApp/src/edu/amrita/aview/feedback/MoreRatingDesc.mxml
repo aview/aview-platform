@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: MoreRatingDesc.mxml
+Module			: Feedback
+Developer(s)	: Vijayakumar.R
+Reviewer(s)		: Deepika CP
+
+For getting the feedback about the class, video, audio, interaction, from the viewer
+This component is used to enter more details about the rating
+-->
+<mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="400"
+		  height="216"
+		  backgroundColor="#E0EFFB"
+		  show="txtComment.setFocus()"
+		  layout="absolute"
+		  creationComplete="txtComment.setFocus();init(event)"
+		  move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+		  title="{titleName}">
+	<!--Script to include handler  -->
+	<fx:Script source="MoreRatingDescHandler.as"/>
+	<!-- More comments -->
+	<mx:TextArea id="txtComment"
+				 left="10"
+				 right="10"
+				 top="10"
+				 bottom="32"
+				 borderColor="#848484"
+				 maxChars="256"
+				 text="{comment}"/>
+	<mx:HBox x="0"
+			 bottom="5"
+			 width="100%"
+			 horizontalAlign="center"
+			 verticalAlign="middle">
+		<!-- Save Button -->
+		<mx:Button id="btnSave"
+				   enabled="{txtComment.text!=null?true:false}"
+				   label="OK"
+				   chromeColor="#E0EFFB"
+				   cornerRadius="3"
+				   click="saveComments(event)"/>
+		<!-- Cancel Button -->
+		<mx:Button label="Cancel"
+				   chromeColor="#E0EFFB"
+				   cornerRadius="3"
+				   click="close()"/>
+	</mx:HBox>
+
+</mx:Panel>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Tile xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" implements="edu.amrita.aview.core.video.IVideoWallLayout" >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassRoomSgl;
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.containers.HBox;
+			import mx.core.FlexGlobals;
+			import mx.core.UIComponent;
+			
+			private var parentComponent:UIComponent;
+			// Interface implementation
+			
+			public function setFullScreenVideo():Boolean
+			{
+				return true;
+			}
+			public function closeFullScreenVideo():Boolean
+			{
+				return true;
+			}
+			//parent can be either regular container or popout container
+			public function initializeComponent(parent:UIComponent, controlBar:ButtonContainer):void
+			{
+				parentComponent = parent;
+				// ashwini: #15246 : Why is document sharing being set during module change?
+				//Ashish: Reverting the commented code since isDuringModuleChange is being declared in video_scriptcode.as
+	
+				if(!FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isDuringModuleChange){
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setActiveWindowInSO(0);
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.click_Conso_doc();
+				}
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isDuringModuleChange = false;	
+			}
+			
+			applicationType::desktop{
+				//parent can be either regular container or popout container
+				public function setPopOutLayout(newParent:VideoWallPopOut):void
+				{
+					
+				}
+			}
+			
+			public function setParentLayout():void
+			{
+			}
+			//Fix for issue #17990
+			applicationType::web{
+				public function resizeBaseContainer():void{
+					
+				}
+			}
+			
+			public function removeVideoDisplay (userName:String):void
+			{
+				var selectedViewerArray:Array=null;
+				selectedViewerArray=this.getChildren();
+				
+				var i:int=0;
+				for (i=0; i < selectedViewerArray.length; i++){
+					if (selectedViewerArray[i].id == userName + Constants.VIEWER_APPEND_NAME){
+						this.removeChildAt(i);
+						break;
+					}
+				}
+			}
+			public function addPresenterDisplay (presenterDisplay:VideoStreamDisplay):void
+			{
+				if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole != Constants.PRESENTER_ROLE){
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.controlvidbox.addChildAt(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher, 0);
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.setViewersPresenterPanelDimensions();
+				}
+				else{
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.controlvidbox.addChildAt(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher, 0);
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher.includeInLayout=false;
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher.visible=false;
+				}
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.resetPresenterDisplay();
+			}
+			public function addViewerDisplay (viewerStreamDisplay:VideoStreamDisplay):void
+			{
+				viewerStreamDisplay.resizeFactor=viewerStreamDisplay.RESIZE_FACTOR_SW;
+				this.addChild(viewerStreamDisplay);
+				viewerStreamDisplay.resizable=false;
+				viewerStreamDisplay.percentWidth=90;
+			}
+			public function closeLayout(bool:Boolean):void
+			{
+				if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.controlvidbox.contains(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher))
+					FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.controlvidbox.removeChild(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher);
+				for (var i:int=0; i < FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedViewerDisplays.length; i++)
+				{
+					if (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewersTile.numChildren > 0)
+						FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.viewersTile.removeChild(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.selectedViewerDisplays[i]);
+				}
+			}
+			public function getPresenterVideoStreamDisplay():VideoStreamDisplay
+			{
+				return FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomComponentSgl.pnlTeacher;
+			}
+			
+			public function getViewerVideoStreamDisplay(viewerDisplay:VideoStreamDisplay):VideoStreamDisplay
+			{
+				viewerDisplay.percentWidth=90;
+				return viewerDisplay;
+			}
+			
+			public function resizeVideoStreamDisplay():void
+			{
+				
+			}
+			
+			public function removePresenterDisplay():void
+			{
+				
+			}
+			
+			public function removeViewerDisplay(videoDisplay:VideoStreamDisplay):void
+			{
+				
+			}
+			
+			public function changeMainVideoInVideoWall(userName:String, streamName:String):void
+			{
+				
+			}
+			applicationType::desktop{
+				public function initializePopOutComponent(parent:UIComponent, controlBar:ButtonContainer, popOutComponent:VideoWallPopOut):void
+				{
+					
+				}
+			}
+			
+			public function removeOldPresenterFromBigScreenInVideoWall(oldPresenter:String, newPresenter:String):void
+			{
+			}
+			public function getMainDisplay():VideoStreamDisplay
+			{
+				return null;
+			}
+			/////////////////////////////
+
+		]]>
+	</fx:Script>
+</mx:Tile>

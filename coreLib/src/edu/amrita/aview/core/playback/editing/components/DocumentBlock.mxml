@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: DocumentBlock.mxml
+Module		: Video Editing
+Developer(s): Vimal Mahendran, Sreelekshmi, Ashish Pillai
+Reviewer(s)	: Remya T
+
+File used for creating the document block in Video Editing component.
+
+-->
+
+<!-- Canvas for displaying the document block -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   borderStyle="solid" cornerRadius="5" horizontalScrollPolicy="off">
+
+	<mx:Script source="../scripts/DocumentBlockScript.as"/>
+	<!-- Label displays the document name -->
+	<mx:Label horizontalCenter="0" text="{documentName}" verticalCenter="0"/>
+</mx:Canvas>

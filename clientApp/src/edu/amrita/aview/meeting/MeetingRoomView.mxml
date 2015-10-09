@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark"  
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 creationComplete="creationCompleteHandler(event)"
+		 width="100%" height="100%" xmlns:meeting="edu.amrita.aview.meeting.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="MeetingRoomViewHandler.as">
+	</fx:Script>
+	<s:VGroup id="vgrpMeetingRoom" width="100%" height="100%" gap="0">
+		<s:HGroup width="100%"
+				  height="48"
+				  verticalAlign="middle"
+				  paddingLeft="16"
+				  gap="0">
+			<s:Label color="#026293"
+					 fontSize="18"
+					 fontWeight="normal"
+					 id="lblTitle"
+					 text="{this.meetingRoomModel.meetingTitlePrefix}"/>
+			
+			<s:Label id="meetingTitleLbl"
+					 color="#026293"
+					 fontSize="18"
+					 fontWeight="normal"
+					 text="{this.meetingRoomModel.meetingTitle}"
+					 toolTip="{this.meetingRoomModel.meetingTitle}"
+					 width="100%"
+					 maxDisplayedLines="1"/>
+			
+			
+			<mx:HBox height="100%"
+					 horizontalAlign="right"
+					 paddingLeft="10"
+					 paddingRight="10"
+					 paddingTop="0"
+					 verticalAlign="middle">
+				<s:Image smooth="true"
+						 id="meetNowBtn"
+						 click="meetNowHandler(event)"
+						 useHandCursor="true"
+						 buttonMode="true"
+						 toolTip="Meet Now"
+						 visible="{meetingRoomModel.meetingServersAllocated &amp;&amp; ClassroomContext.aviewClass.classId==0}"
+						 includeInLayout="{meetingRoomModel.meetingServersAllocated &amp;&amp;  ClassroomContext.aviewClass.classId==0}"
+						 source="@Embed('assets/images/meetNow.png')"/>
+				<s:Image smooth="true"
+						 id="meetLaterBtn"
+						 click="meetLaterHandler(event)"
+						 useHandCursor="true"
+						 buttonMode="true"
+						 toolTip="Schedule Meeting"
+						 visible="{meetingRoomModel.meetingServersAllocated &amp;&amp;  ClassroomContext.aviewClass.classId==0}"
+						 includeInLayout="{meetingRoomModel.meetingServersAllocated &amp;&amp;  ClassroomContext.aviewClass.classId==0}"
+						 source="@Embed('assets/images/meetLater.png')"/>
+			</mx:HBox>
+			
+		</s:HGroup>
+		<s:BorderContainer width="100%"
+						   height="66"
+						   borderVisible="false"
+						   borderWeight="0">
+			<s:Rect width="100%"
+					height="100%">
+				<s:fill>
+					<s:BitmapFill source="@Embed('/edu/amrita/aview/common/assets/images/background.jpg')"
+								  fillMode="repeat"/>
+				</s:fill>
+			</s:Rect>
+			<s:HGroup width="100%"
+					  height="66"
+					  paddingLeft="10"
+					  verticalAlign="middle">
+				
+				<mx:HBox y="8"
+						 height="40"
+						 verticalAlign="bottom"
+						 id="meetingContactTabCont">
+					<mx:Canvas verticalScrollPolicy="off"
+							   horizontalScrollPolicy="off">
+						<mx:Canvas borderColor="#cccccc"
+								   cornerRadius="3"
+								   borderVisible="true"
+								   borderStyle="solid">
+							<s:HGroup gap="-1">
+								<s:BorderContainer width="90"
+												   id="meetingContainer"
+												   height="28"
+												   cornerRadius="3"
+												   borderVisible="false"
+												   backgroundColor="#F0F0F0">
+									<s:layout>
+										<s:HorizontalLayout verticalAlign="middle"
+															horizontalAlign="center"
+															paddingBottom="2"
+															paddingLeft="2"
+															paddingRight="2"
+															paddingTop="2"/>
+									</s:layout>
+									<s:RadioButton id="contactRadioBtn"
+												   label="Contacts"
+												   click="changeTabSelection()"
+												   fontWeight="bold"
+												   groupName="allMeetingRadioBtnGroup"
+												   selected="false"
+												   enabled="{meetingRoomModel.meetingRoomName!=MeetingRoomListModel.ALL_MEETINGS}"/>								
+									
+									
+									
+								</s:BorderContainer>
+								<mx:VRule width="2"
+										  height="28"
+										  chromeColor="#cfcfcf"/>
+								<s:BorderContainer id="contactContainer"
+												   width="90"
+												   height="28"
+												   borderColor="#7f97b0"
+												   cornerRadius="3"
+												   borderVisible="false">
+									<s:layout>
+										<s:HorizontalLayout verticalAlign="middle"
+															horizontalAlign="center"
+															paddingBottom="2"
+															paddingLeft="2"
+															paddingRight="2"
+															paddingTop="2"
+															gap="0"/>
+									</s:layout>
+									<s:RadioButton id="meetingsRadioBtn"
+												   label="Meetings"
+												   click="changeTabSelection()"
+												   fontWeight="bold"
+												   groupName="allMeetingRadioBtnGroup"
+												   selected="true"/>
+								</s:BorderContainer>
+							</s:HGroup>
+							
+						</mx:Canvas>
+						<mx:Image left="40"
+								  top="29"
+								  visible="{contactRadioBtn.selected}"
+								  source="@Embed('assets/images/selectionArrow.png')"/>
+						<mx:Image left="130"
+								  top="29"
+								  visible="{meetingsRadioBtn.selected}"
+								  source="@Embed('assets/images/selectionArrow.png')"/>
+					</mx:Canvas>
+				</mx:HBox>
+				<s:BorderContainer height="30"
+								   borderColor="#A7A7A7"
+								   borderWeight="0"
+								   cornerRadius="5">
+					<s:layout>
+						<s:HorizontalLayout gap="2"
+											paddingBottom="1"
+											paddingLeft="3"
+											paddingRight="2"
+											paddingTop="1"
+											verticalAlign="middle"/>
+					</s:layout>
+					<s:TextInput id="searchContacts" x="27" width="175" height="26"
+								 borderVisible="false" change="search(event)"
+								 click="clearClick()" color="#939393"
+								 focusIn="clearClick()"
+								 focusOut="focusOutContactsText()" fontFamily="Arial"
+								 fontStyle="italic"
+								 skinClass="edu.amrita.aview.common.skins.CustomTextInputSkin"
+								 styleName="searchTxtBox" text="Filter Contacts"/>
+				</s:BorderContainer>
+				
+				<s:Image width="30"
+						 height="29"
+						 id="imgEditMeet"
+						 toolTip="Edit"
+						 source="{edit_Meet}"
+						 useHandCursor="true"
+						 buttonMode="true"
+						 visible="true"
+						 click="editScheduledMeeting(event)"
+						 includeInLayout="true"/>
+				
+				<s:Image width="30"
+						 height="29"
+						 id="imgAddPpl"
+						 source="{addPeopleIcon}"
+						 useHandCursor="true"
+						 buttonMode="true"
+						 click="addPeopleToMeeting(event)"
+						 toolTip="Add People"
+						 visible="false"
+						 includeInLayout="false"/>
+				<s:Image width="30"
+						 height="29"
+						 id="imgDeleteUsers"
+						 click="deleteClickHandler()"
+						 useHandCursor="true"
+						 buttonMode="true"
+						 source="{delete_user}"
+						 toolTip="Delete"/>	
+				
+				
+				
+				<s:HGroup right="5"
+						  width="100%"
+						  height="100%"
+						  gap="3"
+						  horizontalAlign="right"
+						  paddingRight="10"
+						  verticalAlign="middle">
+					
+					<s:Label id="lblcontactsCount"
+							 color="#808080"
+							 fontFamily="Verdana"
+							 fontSize="11"
+							 fontWeight="bold"
+							 text="(Showing"
+							 textDecoration="none"/>
+					<s:Label visible="{contactRadioBtn.selected}"
+							 color="#D60000"
+							 fontFamily="Verdana"
+							 fontSize="11"
+							 fontWeight="bold"
+							 includeInLayout="{contactRadioBtn.selected}"
+							 text="{this.meetingRoomModel.membersCount}"
+							 textDecoration="none"/>
+					<s:Label visible="{contactRadioBtn.selected}"
+							 color="#808080"
+							 fontFamily="Verdana"
+							 fontSize="11"
+							 fontWeight="bold"
+							 includeInLayout="{contactRadioBtn.selected}"
+							 text="Contacts)"
+							 textDecoration="none"/>
+					<s:Label visible="{meetingsRadioBtn.selected}"
+							 color="#D60000"
+							 fontFamily="Verdana"
+							 fontSize="11"
+							 fontWeight="bold"
+							 includeInLayout="{meetingsRadioBtn.selected}"
+							 text="{this.meetingRoomModel.meetingsCount}"
+							 textDecoration="none"/>
+					<s:Label id="lblMeetingCount"
+							 visible="{meetingsRadioBtn.selected}"
+							 color="#808080"
+							 fontFamily="Verdana"
+							 fontSize="11"
+							 fontWeight="bold"
+							 includeInLayout="{meetingsRadioBtn.selected}"
+							 text="Meetings)"
+							 textDecoration="none"/>
+					
+				</s:HGroup>
+			</s:HGroup>
+		</s:BorderContainer>
+		
+	
+	<mx:ViewStack id="vskMeetings"
+				  width="100%"
+				  height="100%">
+		
+		<s:NavigatorContent	id="navMeetingsList"
+			               width="100%"
+							height="100%">										
+		</s:NavigatorContent>
+		
+		<s:NavigatorContent id="navContacts"
+							width="100%"
+							height="100%">			
+		</s:NavigatorContent>
+	</mx:ViewStack>
+	</s:VGroup>
+</s:Group>

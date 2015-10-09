@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: DesktopViewer.mxml
+Module		: DesktopSharing
+Developer(s): Ajith Kumar R,Remya T, Sneha I
+Reviewer(s)	: 
+
+This file is the custom component for viewing desktop stream.
+
+-->
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   width="100%" 
+				   height="100%"
+				   borderColor="#2a5ea4"
+				   borderVisible="false"
+				   backgroundColor="#FFFFFF"
+				   horizontalCenter="0"
+				   verticalCenter="0"
+				   creationComplete="desktopViewerCreationCompleteHandler(event)"
+				   resize="calculatePlayerSize()">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.AVCEnvironment;
+			
+			import mx.events.FlexEvent;
+			
+			protected function desktopViewerCreationCompleteHandler(event:FlexEvent):void{
+				if(isDesktopPlayerCreated){
+					refreshDesktopPlayer();
+				}
+			}
+			private function setScreenPlayerPosition():void{
+				if(FlexGlobals.topLevelApplication.screenTypes == Constants.SCREENTYPE_ALLINONE){
+					if(screenPlayer.width > 0){
+						if(((FlexGlobals.topLevelApplication.width/100)*60) > screenPlayer.width){
+							screenPlayer.x=(((FlexGlobals.topLevelApplication.width/100)*60) - screenPlayer.width)/2;
+						}else{
+							screenPlayer.x=10;
+						}
+						screenPlayer.x=(((FlexGlobals.topLevelApplication.width/100)*60) - screenPlayer.width)/2;
+					}else{
+						screenPlayer.x=10;
+					}
+				}else{
+					screenPlayer.x=(((FlexGlobals.topLevelApplication.width/100)*90) - screenPlayer.width)/2;
+				}
+				screenPlayer.y = 0;
+				screenPlayer.processContainerInfo(screenPlayer.width + "_" + screenPlayer.height + "_0_0");
+			}
+		]]>
+	</fx:Script>
+	<fx:Script source="DesktopViewerHandler.as"/>
+	<s:HGroup width="100%"
+			  height="100%">
+		
+		<s:Scroller width="90%" 
+					height="100%"
+					top="0"
+					horizontalCenter="0"
+					verticalCenter="0"
+					id="scclrPlayer"
+					horizontalScrollPolicy="auto"
+					verticalScrollPolicy="auto">
+			<!-- player is added to  this scroll group -->
+			<s:Group id="scrlgroup"
+					 verticalCenter="0"
+					 horizontalCenter="0"
+					 width="100%"
+					 height="100%"
+					 resize="calculatePlayerSize()">
+				<s:Label id="lblLoadingMessage"
+						 text="Loading Desktop Player..."
+						 fontSize="12"
+						 fontWeight="bold"
+						 verticalCenter="0"
+						 horizontalCenter="0"
+						 color="#ff0000"
+						 visible="false"/>
+			</s:Group>
+			<!-- player is added to scroll group -->
+		</s:Scroller>
+		<s:SkinnableContainer id="hboxControl"
+							  top="0"
+							  right="0"
+							  width="10%"
+							  height="100%"
+							  backgroundColor="#071124"
+							  horizontalCenter="0">
+			
+			<s:VGroup horizontalAlign="center" 
+					  id="hgoxControl"
+					  top="0"
+					  gap="0"
+					  width="100%"
+					  height="100%"
+					  contentBackgroundColor="#071124">
+				<s:Button id="btnPanScreen"
+						  useHandCursor="true"
+						  click="btnPanning_clickHandler(event)"
+						  width="100%"
+						  height="100%"
+						  minHeight="45"
+						  icon="{panScreenIcon}" 
+						  toolTip="Panning"
+						  enabled="false"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="toolTipHandler(event)"
+						  mouseDown="toolTipHandler(event)"/>
+				<s:Button id="btnRefresh" 
+						  width="100%"
+						  height="100%"
+						  minHeight="45"
+						  toolTip="Refresh"  
+						  useHandCursor="true"
+						  click="refreshDesktopPlayer()" 
+						  icon="{refreshIcon}"
+						  enabled="true"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="toolTipHandler(event)"
+						  mouseDown="toolTipHandler(event)"/>
+				<s:Button id="btnFullScreen"  
+						  icon="{fullScreenIcon}" 
+						  toolTip="Full Screen"
+						  width="100%"
+						  height="100%"
+						  minHeight="45"
+						  enabled="false"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  click="createFullScreen()"
+						  rollOver="toolTipHandler(event)"
+						  mouseDown="toolTipHandler(event)"/>
+			</s:VGroup>
+		</s:SkinnableContainer>
+	</s:HGroup>
+	<s:Label id="lblSharingMessage"
+			 text="Presenter is not sharing his/her desktop now"
+			 fontSize="16"
+			 fontWeight="bold"
+			 verticalCenter="0"
+			 visible="false"
+			 width="90%"
+			 textAlign="center"
+			 color="#ff0000"/>
+</s:BorderContainer>

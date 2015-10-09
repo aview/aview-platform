@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: YoutubeLiveSettings.mxml
+Module		: YoutubeLiveStreaming
+Developer(s): Ajith Kumar R
+Reviewer(s)	: Sivaram SK
+
+This file is the custom popup component for accepting live
+youtube streaming details (RTMPURL,Stream name ).
+
+-->
+<!--- Main Titlewindow Container -->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				layout="vertical"
+				title="Youtube  Live settings"
+				width="500"
+				height="130"
+				headerHeight="30"
+				creationComplete="init()"
+				showCloseButton="false"
+				close="titleWindowCloseHandler()"
+				horizontalAlign="center"
+				verticalAlign="middle"
+				cornerRadius="5"
+				verticalGap="3"
+				borderColor="#ABA7A7"
+				borderVisible="true"
+				chromeColor="#C1DEF5"
+				backgroundColor="#E0EFFB">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			
+			/**
+			 * @private
+			 * The function for creating the YoutubeLiveSettings popup.
+			 *
+			 *
+			 * @return void
+			 */
+			private function init():void
+			{
+				PopUpManager.centerPopUp(this);
+				txtRTMPURL.setFocus();
+			}
+			
+			/**
+			 * @private
+			 * CloseEvent handler function for YoutubeLiveSettings popup.
+			 *
+			 *
+			 * @return void
+			 */
+			private function titleWindowCloseHandler():void
+			{
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.isYoutubeLivePopupCreated=false;
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:HBox horizontalCenter="-1">
+		<mx:Label text="Youtube URL:"/>
+		<!--- Text input for accepting the RTMP URL for live youtube streaming -->
+		<mx:TextInput id="txtRTMPURL"
+					  width="360"/>
+	</mx:HBox>
+	<mx:HBox horizontalCenter="-1">
+		<mx:Label text="Stream Name:"/>
+		<!--- Text input for accepting the stream name for live youtube streaming -->
+		<mx:TextInput id="txtStreamName"
+					  width="360"/>
+	</mx:HBox>
+	<mx:HBox horizontalCenter="-1">
+		<!--- OK button for applying the selection -->
+		<mx:Button label="OK"
+				   click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.publishToYoutubeLive()"/>
+		<!--- Cancel button for closing the popup -->
+		<mx:Button label="CANCEL"
+				   click="titleWindowCloseHandler()"/>
+	</mx:HBox>
+</mx:TitleWindow>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ChatView.mxml
+Module		: Chat
+Developer(s): Salil George, Ganesan A, Jeevanantham N
+Reviewer(s)	: Pradeesh ,Jayakrishnan R
+
+A default wrapper component to load chat container and chat control buttons.
+
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		backgroundColor="#071124"
+		xmlns:views="views.*"
+		creationComplete="initChat(event)">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+
+			/**
+			 * @protected
+			 * 
+			 * To add chat components
+			 * 
+			 * @param event type of flex event
+			 * @return void
+			 * 
+			 */
+			protected function initChat(event:FlexEvent):void
+			{
+				chatContainer.addElement(FlexGlobals.topLevelApplication.chatComp);
+				chatToolSet.addElement(FlexGlobals.topLevelApplication.chatToolBox);
+				chatClearTool.addElement(FlexGlobals.topLevelApplication.chatClearTool);
+			}
+		]]>
+	</fx:Script>
+
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<s:HGroup width="100%"
+			  height="100%"
+			  gap="-1">
+		<!--Container to display chat message(s) and control button(send chat)-->
+		<s:VGroup width="100%"
+				  height="100%">
+			<s:Group id="chatContainer"
+					 width="100%"
+					 height="100%">
+			</s:Group>
+			<s:Group id="chatToolSet"
+					 width="100%"
+					 height="10%">
+				<s:Rect width="100%"
+						height="10%">
+					<s:fill>
+						<s:SolidColor color="#071124"/>
+					</s:fill>
+				</s:Rect>
+			</s:Group>
+		</s:VGroup>
+		<!--Clear chat button-->
+		<s:Group id="chatClearTool"
+				 width="10%"
+				 height="100%"
+				 includeInLayout="{ClassroomContext.isModerator}">
+			<s:Rect width="10%"
+					height="100%">
+				<s:fill>
+					<s:SolidColor color="#071124"/>
+				</s:fill>
+			</s:Rect>
+		</s:Group>
+	</s:HGroup>
+</s:View>

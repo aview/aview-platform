@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: DocMobileComponent.mxml
+Module		: Document Sharing
+Developer(s): Salil George, Ganesan A, Jeevanantham N
+Reviewer(s)	: Sivaram SK 
+
+DocMobileComponent component is main component for document and it is used to implement document functionalities.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:ann="components.AnnotationTool.*"
+		 width="100%"
+		 height="100%"
+		 creationComplete="initDocument(event)"
+		 xmlns:MobileComponents="edu.amrita.aview.core.documentSharing.components.*"
+		 xmlns:toolSets="views.toolSets.*"
+		 xmlns:document="views.toolSets.document.*">
+	
+	<fx:Script source="DocumentHandler.as"/>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.shared.events.mobileCustomEvents.DocumentActionEvent;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.EffectEvent;
+			import mx.events.FlexEvent;
+
+			/**
+			 * Holds horizontal scroller value
+			 */
+			private var hScrollValue:Number;
+			/**
+			 * Holds vertical scroller value
+			 */
+			private var vScrollValue:Number;
+			/**
+			 * Set to true, when user clicks on document
+			 */
+			private var isMouseDown:Boolean=false;
+			
+			/**
+			 * @public
+			 *
+			 * To open the fileManager call-out
+			 *
+			 * @param event of DocumentActionEvent
+			 * @return void
+			 */
+			public function documentListHandler(event:DocumentActionEvent):void
+			{
+				fileManager=null;
+				showFileList();
+				fileManager.open(event.target.valueOf());
+				if (userRole == Constants.PRESENTER_ROLE)
+				{
+					FlexGlobals.topLevelApplication.docTool.btnDocument.enabled=false;
+				}
+				else
+				{
+					FlexGlobals.topLevelApplication.docTool.btnViewerDocument.enabled=false;
+				}
+
+			}
+			/**
+			 * @protected
+			 *
+			 * Get scaleX and scaleY, when user zoom the document
+			 *
+			 * @param event of TransformGestureEvent
+			 * @return void
+			 */
+			protected function p2fContainerZoomHandler(event:TransformGestureEvent):void
+			{
+				if(event.scaleX <= 3 && event.scaleY <= 3 && event.scaleX >= 0.1 && event.scaleY >= 0.1 && p2fContainer.scaleX <=6 && p2fContainer.scaleY <=6){
+					Multitouch.inputMode=MultitouchInputMode.GESTURE;
+					p2fContainer.scaleX*=event.scaleX;
+					p2fContainer.scaleY*=event.scaleY;
+					FlexGlobals.topLevelApplication.docTool.btnDocumentActualsize.enabled = true;
+				}else{
+					p2fContainer.scaleX = 6;
+					p2fContainer.scaleY = 6;
+				}
+			}
+			/**
+			 * @public
+			 *
+			 * To resize the document to actual size of document
+			 *
+			 * @param event of DocumentActionEvent
+			 * @return void
+			 */
+			public function restoreActualSize(event:DocumentActionEvent):void
+			{
+				//To resize document to actual size, only for viewer
+				if (userRole == Constants.VIEWER_ROLE && p2fContainer.content != null)
+				{
+					teacherZoomFactorX=documentCollaborationObject.getData()[DOCZOOM].zoomFactorX
+					teacherZoomFactorY=documentCollaborationObject.getData()[DOCZOOM].zoomFactorY - .0035
+					p2fWidthTeacher=parseFloat(documentCollaborationObject.getData()[DOCZOOM].p2fWidthTeacher);
+					p2fHeightTeacher=parseFloat(documentCollaborationObject.getData()[DOCZOOM].p2fHeightTeacher);
+					//True only if new page is loaded
+					if (isPageLoaded)
+					{
+						scaleDocument(teacherZoomFactorX, teacherZoomFactorY, p2fWidth, p2fHeight, p2fWidthTeacher, p2fHeightTeacher)
+					}
+					//if user clicks on the document, set scroller value
+					if (isMouseDown)
+					{
+						docScroller.horizontalScrollBar.value=hScrollValue;
+						docScroller.verticalScrollBar.value=vScrollValue;
+						isMouseDown=false;
+					}
+					else
+					{
+						//Set document verticalScrollPosition, if scrollDirction is "vertical"
+						if (scrollDirction == "vertical")
+						{
+							docCanvas.verticalScrollPosition=scrollPosition;
+						}
+						//Set document horizontalScrollPosition, if scrollDirction is "horizontal"
+						else if (scrollDirction == "horizontal")
+						{
+							docCanvas.horizontalScrollPosition=scrollPosition;
+						}
+					}
+					FlexGlobals.topLevelApplication.docTool.btnDocumentActualsize.enabled = false;
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To open document information call-out
+			 *
+			 * @param event of DocumentActionEvent
+			 * @return void
+			 */
+			private function showInfoCallout(event:DocumentActionEvent):void
+			{
+				if (p2fContainer.content != null && p2fContainer.visible == true)
+				{
+					//If user role is presenter, set visibilty if enter page and page navigation control
+					//Otherwise set visibility as false
+					if (userRole == Constants.PRESENTER_ROLE)
+					{
+						informationCallout.open(FlexGlobals.topLevelApplication.docTool.btnPresenterDocumentDetails);
+						informationCallout.horizontalPosition="after";
+						FlexGlobals.topLevelApplication.docTool.btnPresenterDocumentDetails.enabled=false;
+						informationCallout.txtEnterPage.text=currentPage.toString();
+						informationCallout.lblTotalPage.text='/ ' + totalPages.toString();
+					}
+					else
+					{
+						informationCallout.open(FlexGlobals.topLevelApplication.docTool.btnViewerDocumentDetails);
+						informationCallout.horizontalPosition="before";
+						FlexGlobals.topLevelApplication.docTool.btnViewerDocumentDetails.enabled=false;
+						informationCallout.lblCurrentPage.text=currentPage.toString() + ' / ' + totalPages.toString();
+					}
+					informationCallout.lblFileName.text=remoteFileName;
+				}
+
+			}
+			/**
+			 * @private
+			 *
+			 * Add eventlisteners for document tools
+			 *
+			 * @param event of FlexEvent
+			 * @return void
+			 */
+			private function initDocument(event:FlexEvent):void
+			{
+				//For Presenter tools
+				FlexGlobals.topLevelApplication.docTool.btnDocument.addEventListener(DocumentActionEvent.MY_DOCUMENTS, documentListHandler);
+				FlexGlobals.topLevelApplication.docTool.btnPresenterRefresh.addEventListener(DocumentActionEvent.TEACHER_DOCUMENT_REFRESH, refreshDocument);
+				FlexGlobals.topLevelApplication.docTool.btnEnableMousePointer.addEventListener(DocumentActionEvent.ENABLE_MOUSE_POINTER, teacherMouseShare);
+				FlexGlobals.topLevelApplication.docTool.btnRotate.addEventListener(DocumentActionEvent.DOCUMENT_ROTATE, rotateNew);
+				FlexGlobals.topLevelApplication.docTool.btnPresenterDocumentDetails.addEventListener(DocumentActionEvent.TEACHER_DOCUMENT_DETAILS, showInfoCallout);
+				//For Viewer tools
+				FlexGlobals.topLevelApplication.docTool.btnViewerDocument.addEventListener(DocumentActionEvent.MY_DOCUMENTS, documentListHandler);
+				FlexGlobals.topLevelApplication.docTool.btnViewerRefresh.addEventListener(DocumentActionEvent.STUDENT_DOCUMENT_REFRESH, refreshConnection);
+				FlexGlobals.topLevelApplication.docTool.btnDocumentActualsize.addEventListener(DocumentActionEvent.DOCUMENT_ACTUAL_SIZE, restoreActualSize);
+				FlexGlobals.topLevelApplication.docTool.btnViewerDocumentDetails.addEventListener(DocumentActionEvent.STUDENT_DOCUMENT_DETAILS, showInfoCallout);
+				FlexGlobals.topLevelApplication.docComp.initializeDocumentCollaborationObject();
+				//MOBILE_ISPRING:stageWebView.url = "http://" + FlexGlobals.topLevelApplication.mainApp.prepareLogin.ISPRING_SERVER + ":" + ClassroomContext.portWAMP + "/webISpring";
+			}
+			
+			/**
+			 * @private
+			 *
+			 * To get scroller position, when user clicks on document
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function getScrollerpostion(event:MouseEvent):void
+			{
+				if (!isMouseDown)
+				{
+					hScrollValue=docScroller.horizontalScrollBar.value;
+					vScrollValue=docScroller.verticalScrollBar.value;
+					isMouseDown=true;
+				}
+
+			}
+			/**
+			 * @public
+			 *
+			 * To close document information call-out
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function closeInfoCallout():void
+			{
+				if (informationCallout.isOpen)
+				{
+					informationCallout.close();
+				}
+				if (FlexGlobals.topLevelApplication.docTool.docMenuComp.isOpen)
+				{
+					FlexGlobals.topLevelApplication.docTool.docMenuComp.close();
+				}
+				if (p2fContainer != null && p2fContainer.content != null && p2fContainer.visible == true)
+				{
+					if (userRole == Constants.PRESENTER_ROLE)
+					{
+						FlexGlobals.topLevelApplication.docTool.btnPresenterDocumentDetails.enabled=true;
+						FlexGlobals.topLevelApplication.docTool.btnPresenterMenu.enabled=true;
+					}
+					else
+					{
+						FlexGlobals.topLevelApplication.docTool.btnViewerDocumentDetails.enabled=true;
+						//FlexGlobals.topLevelApplication.docTool.btnViewerMenu.enabled=true;
+					}
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tooltip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function navigationBtnTooltipHandler(event:MouseEvent):void
+			{
+				var docCompTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				docCompTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			
+			private function refreshConnection(event:DocumentActionEvent):void
+			{
+				// TODO Auto Generated method stub
+			}
+			//MOBILE_ISPRING:
+			/* public function hideStage():void{
+				stageWebView.snapshotMode = true;
+			}
+			public function showStage():void{
+				stageWebView.snapshotMode = false;
+			} */
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<MobileComponents:DocInformationCallout id="informationCallout"
+										mouseDownOutside="closeInfoCallout()"/>
+	</fx:Declarations>
+	<s:Group id="containerStack"
+			 visible="true"
+			 width="100%"
+			 height="100%"
+			 horizontalCenter="0"
+			 verticalCenter="0">
+		<!--Document outer container-->
+		<s:Group id="p2fCanvas"
+				 width="100%"
+				 height="100%"
+				 horizontalCenter="0"
+				 verticalCenter="0"
+				 creationComplete="onDocResize()">
+			
+			<s:BorderContainer id="documentBorder"
+								width="{p2fWidth+2}" 
+							 	height="{p2fHeight+2}" 
+							    borderColor="#A2A2A2"  
+							    verticalCenter="0" 
+							    horizontalCenter="0">
+				<!--Scroll component-->
+				<s:Scroller id="docScroller"
+							width="{p2fWidth}" 
+							height="{p2fHeight}"
+							skinClass="edu.amrita.aview.core.shared.skins.mobile.ScrollerSkin"
+							verticalCenter="0"
+							horizontalCenter="0"
+							measuredSizeIncludesScrollBars="true">
+					
+					<!--Document inner container-->
+					<s:VGroup id="docCanvas"
+							 width="{p2fWidth}"
+							 height="{p2fHeight}"
+							 horizontalAlign="center"
+							 horizontalCenter="0"
+							 verticalCenter="0">
+						
+						<s:SWFLoader id="p2fContainer"
+									 maintainAspectRatio="true"
+									 horizontalAlign="center"
+									 verticalAlign="middle"
+									 horizontalCenter="0"
+									 verticalCenter="0"
+									 bottom="1"
+									 mouseDown="getScrollerpostion(event)"
+									 gestureZoom="p2fContainerZoomHandler(event)"/>
+					</s:VGroup>
+				</s:Scroller>
+			</s:BorderContainer>
+		</s:Group>
+		<!--MOBILE_ISPRING:-->
+		<!--<s:Group id="iSpringContainer"
+				 width="{iSpringWidth}"
+				 height="{iSpringHeight}"
+				 visible="false"
+				 includeInLayout="false"
+				 horizontalCenter="0">
+			<s:Rect width="100%"
+					height="100%">
+				<s:fill>
+					<s:SolidColor color="#000000"/>
+				</s:fill>
+				<s:stroke>
+					<s:SolidColorStroke color="#FF00FF" weight="3"/>
+				</s:stroke>
+			</s:Rect>
+			<documentSharing:StageWebViewComponent id="stageWebView"/>
+		</s:Group>-->
+	</s:Group>
+	<!--Page navigation control buttons-->
+	<s:HGroup width="100%"
+			  height="15%"
+			  verticalAlign="middle"
+			  horizontalCenter="0"
+			  verticalCenter="0"
+			  id="navigationControl"
+			  visible="false">
+		<s:Button id="prevBtn"
+				  width="10%"
+				  click="getPreviousPage()"
+				  left="0"
+				  icon="@Embed(source='assets/images/left_arrow_30.png')"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  toolTip="Previous Page"
+				  rollOver="navigationBtnTooltipHandler(event)"
+				  mouseDown="navigationBtnTooltipHandler(event)"
+				  visible="{userRole == Constants.PRESENTER_ROLE &amp;&amp;p2fContainer.visible == true}"
+				  includeInLayout="{userRole == Constants.PRESENTER_ROLE &amp;&amp;p2fContainer.visible == true}"/>
+		<s:Spacer width="80%"/>
+		<s:Button id="nextBtn"
+				  width="10%"
+				  click="getNextPage()"
+				  right="0"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  icon="@Embed(source='assets/images/right_arrow_30.png')"
+				  toolTip="Next Page"
+				  rollOver="navigationBtnTooltipHandler(event)"
+				  mouseDown="navigationBtnTooltipHandler(event)"
+				  visible="{userRole == Constants.PRESENTER_ROLE &amp;&amp;p2fContainer.visible == true}"
+				  includeInLayout="{userRole == Constants.PRESENTER_ROLE &amp;&amp;p2fContainer.visible == true}"/>
+	</s:HGroup>
+</s:Group>

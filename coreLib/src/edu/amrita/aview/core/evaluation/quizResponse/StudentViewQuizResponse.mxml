@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StudentViewQuizResponse.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Thirumalai murugan
+
+StudentViewQuizResponse.mxml component is used to display the response of the user as pie chart .
+-->
+<!--Base container-->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%"
+		   height="100%"
+		   initialize="initStudentViewQuizResponse()"
+		   focusColor="#A9F9A0"
+		   currentState="allQuizResult">
+	<!--Script file-->
+	<fx:Script source="StudentViewQuizResponseUIHandler.as"/>
+	<fx:Declarations>
+		<mx:SolidColor id="sc2"
+					   color="green"
+					   alpha=".8"/>
+		<mx:SolidColor id="sc3"
+					   color="red"
+					   alpha=".8"/>
+	</fx:Declarations>
+	<mx:states>
+		<s:State name="liveQuizResult"/>
+		<s:State name="allQuizResult"/>
+	</mx:states>
+	<mx:VBox width="100%"
+			 height="100%"
+			 horizontalAlign="center" includeIn="liveQuizResult,allQuizResult">
+		<!--Datagrid to show quiz results-->
+		<!--Fix for Bug #10947-->
+		<s:DataGrid id="studentResultDg"
+					width="100%"
+					dataProvider="{quizResult}"
+					doubleClick="viewStudentAnswerSheet(event)"
+					doubleClickEnabled="true"
+					rollOverColor="#AACBF1"
+					toolTip="Double click a row to view answersheet">
+			<s:columns>
+				<s:ArrayList>
+					<!--Fix for Bug #15245-->
+					<s:GridColumn labelFunction="getQuizId"
+								  headerText="Quiz Id" visible="false"/>
+					<s:GridColumn labelFunction="getQuizName"
+								  headerText=" Quiz Name"/>
+					<s:GridColumn labelFunction="getCourseName"
+								  headerText="Course Name"/>
+					<s:GridColumn labelFunction="getClassName"
+								  headerText="Class Name"/>
+					<s:GridColumn dataField="userName"
+								  headerText="Student Name" visible="{!fromLiveQuiz}"/>
+					<s:GridColumn dataField="countQuizQuestionId"
+								  headerText="No. of Questions" visible="{!fromLiveQuiz}"/>
+					<s:GridColumn dataField="totalScore"
+								  headerText="Total Marks" visible="{!fromLiveQuiz}"/>
+					<s:GridColumn dataField="score"
+								  headerText="Score"
+								  labelFunction="getMarks" visible="{!fromLiveQuiz}"/>
+					<s:GridColumn dataField="percentage"
+								  headerText="Percentage" visible="{!fromLiveQuiz}"/>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
+		<mx:HBox width="100%" horizontalAlign="center">
+			
+		<mx:Box width="80%" horizontalAlign="center">
+		<mx:PieChart id="pieChartForStudentResult"
+					 dataProvider="{quizResultForPieChart}"
+					 dataTipFunction="pieChartToolTipFunction"
+					 rollOver="onRollOverOfPieChart(event);"
+					 rollOut="onRollOutOfPieChart(event);">
+<!--					 width="70%"
+					 height="100%"-->
+			<mx:series>
+				<mx:PieSeries displayName="Student Answers"
+							  field="fraction"
+							  nameField="label"
+							  fills="{[sc2, sc3]}"
+							  explodeRadius=".15"/>
+			</mx:series>
+		</mx:PieChart>		
+		<mx:Legend x="3" dataProvider="{pieChartForStudentResult}" focusColor="#0653B3"
+				   fontWeight="bold" horizontalAlign="center"
+				   color.allQuizResult="#000000"/>
+				   <!--width="95%" height="63"-->
+		</mx:Box>	
+			
+		<s:VGroup id="vBoxForLabel" excludeFrom="allQuizResult">
+			<s:Spacer height="50%"/>
+			<s:HGroup>				
+				<mx:DataGrid dataProvider="{quizResultForLiveQuiz}" showHeaders="false" width="250" verticalGridLines="false">
+					<mx:columns>
+							<mx:DataGridColumn dataField="label"/>
+							<mx:DataGridColumn dataField="value"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<s:Spacer width="10"/>
+			</s:HGroup>
+		</s:VGroup>
+		</mx:HBox>
+	</mx:VBox>
+</mx:Canvas>

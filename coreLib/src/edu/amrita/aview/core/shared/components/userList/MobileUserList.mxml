@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: MobileUserList.mxml
+Module		: User
+Developer(s): Salil George, Ganesan A
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+MobileUserList component is used to display users in a list.
+
+-->
+
+<s:List xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		itemRenderer="edu.amrita.aview.core.shared.components.mobileComponents.UserItemRenderer"
+		width="100%"
+		height="100%"
+		alternatingItemColors="[0xFFFFFF,0xFFFFFF]"
+		color="0x000000"
+		contentBackgroundColor="0xFFFFFF"
+		labelField="label"
+		itemRollOver="lastRollOverIndex =this.selectedIndex"
+		fontSize="12"
+		rollOverColor="0xDDF2FC"
+		selectionColor="0xDDF2FC"
+		verticalScrollPolicy="auto"
+		horizontalScrollPolicy="auto"
+		creationComplete="creationCompleteHandler(event)">
+	<fx:Script source="UserListHandler.as"/>
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			
+			/**
+			 * @private
+			 *
+			 * To change the userAction buttons, when user clicks on user list.
+			 *
+			 *@return void
+			 */
+			/* private function onClick():void
+			{
+				if (this.selectedItem)
+				{
+					FlexGlobals.topLevelApplication.selectedUserName=this.selectedItem.id.toString();
+					FlexGlobals.topLevelApplication.setupUserActionButtonsOnSelection();
+					trace('userlist selected ' + this.selectedItem.toString() + ' in' + this.selectedIndex.toString() + ' id' + this.selectedItem.id.toString());
+				}
+			} */
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				this.addEventListener(ItemClickEvent.ITEM_CLICK, itemClickHandler);
+			}
+			
+			private function itemClickHandler(event:ItemClickEvent):void
+			{
+				if (this.selectedItem)
+				{
+					createlist();
+					if(valuesArray!=null && (classRoomComp.getUserSO(selectedUserName).userRole == Constants.PRESENTER_ROLE || classRoomComp.getUserSO(selectedUserName).isModerator) && ClassroomContext.userVO.userName != selectedUserName)
+					{
+						selectedUserName=this.selectedItem.id.toString();
+						actionButtons.setupUserActionButtonsOnSelection();
+						userlistIndex=this.selectedIndex;
+						if(Log.isDebug()) log.debug('userlist selected ' + this.selectedItem.toString() + ' in' + this.selectedIndex.toString() + ' id' + this.selectedItem.id.toString());
+						menuOptionsList = new MenuOptionsList();
+						menuOptionsList.open(this,true);
+						menuOptionsList.handleMenuPosition(event.currentTarget as DisplayObject);
+						var arrayLen:int = valuesArray.length;
+						menuOptionsList.height = 25*arrayLen;
+					}
+					
+				}
+				hideMenu();
+			}
+			
+		]]>
+	</fx:Script>
+</s:List>

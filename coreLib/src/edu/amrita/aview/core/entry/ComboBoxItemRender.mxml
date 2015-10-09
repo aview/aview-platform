@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				autoDrawBackground="true">
+	<s:layout>
+		<s:HorizontalLayout gap="15" verticalAlign="middle"/>
+	</s:layout>
+
+	<s:Label width="85" height="20" fontSize="11" maxDisplayedLines="1" paddingLeft="8" paddingRight="8" text="{data.sortOpt}" toolTip="{data.sortOpt}" verticalAlign="middle"/>
+
+</s:ItemRenderer>

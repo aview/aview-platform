@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: Choice.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Narayanasamy S, Sivaram SK
+
+UI component for adding answer choice to question bank question.
+-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="225"
+		   height="95"
+		   borderColor="#FFFFFF"
+		   borderStyle="solid"
+		   creationComplete="creationCompleteHandler()"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*">
+
+	<mx:Metadata>
+		[Event (name="removeChoice", type = "flash.events.Event")]
+		[Event (name="radioButtonChange", type = "flash.events.Event")]
+		[Event (name="choiceTextChange", type = "flash.events.Event")]
+	</mx:Metadata>
+	<!-- Script to include handler -->
+	<mx:Script source="ChoiceUIHandler.as"/>
+	<s:HGroup id="hGroupForChoiceLabel"
+		width="100%"
+			  horizontalAlign="center"
+			  verticalAlign="middle"
+			  >
+		<s:Label width="100%" color="#000000" fontFamily="Arial" fontSize="12" fontWeight="normal"
+				 text="Choice {choiceNum}" textAlign="center"/>
+	</s:HGroup>
+	<mx:HBox width="100%"
+			 y="{hGroupForChoiceLabel.y + hGroupForChoiceLabel.height}"
+			 horizontalAlign="center"
+			 verticalAlign="middle">
+		<!--Radio button-->
+		<s:RadioButton id="answerChoiceForMC" visible="{!fromClassroomPolling}" height="59"
+					   change="onChange()" chromeColor="#E0EFFB" focusEnabled="false"
+					   fontFamily="Arial" fontSize="12" fontWeight="normal"
+					   includeInLayout="{!fromClassroomPolling}"
+					   selected="{choiceItem.fraction == 1}"/>
+		<!--checkbox to select item-->
+		<s:CheckBox id="answerChoiceForMR" change="onChange()" chromeColor="#E0EFFB"
+					fontFamily="Arial" fontSize="12" fontWeight="normal"
+					selected="{choiceItem.fraction == 1}"/>
+		<!-- Fix for Bug #11129
+		maxChars for answerText is set as 200.
+		Limit of Choice text in data base is 256 charecters,but from UI it is given only 200 so as to hold the delete appender when deleting -->
+		<!--Text for answer-->
+		<!--Fix for Bug#15709,15710 : Change Focusout event to change event-->
+		<s:TextInput id="answerText" width="80%" height="45" change="choiceTextChangeHandler()"
+					 color="#000000"
+					 enabled="{(choiceItem.questionTypeId == QuizContext.TRUE_OR_FALSE_QUESTION_TYPE_ID)?false:true}"
+					 fontFamily="Arial" maxChars="200"
+					 skinClass="edu.amrita.aview.core.shared.skins.CustomTextInputSkin"
+					 text="{StringUtil.trim(choiceItem.choiceText)}" textAlign="left"/>
+		<!-- Delete button-->
+		<!--Fix for Bug#16124-->
+		<components:ImageButton right="10"
+								bottom="5"
+								width="14"
+								height="12"
+								id="deleteButton"
+								click="deleteClickHandler()"
+								cornerRadius="12"
+								icon="@Embed(source='assets/images/delete_choice.png')"
+								toolTip="Remove Choice"
+								focusEnabled="false"/>
+	</mx:HBox>
+</mx:Canvas>

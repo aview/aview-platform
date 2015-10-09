@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuickNoteComponent.mxml
+Module		: Quicknote
+Developer(s): Ajith Kumar R
+Reviewer(s)	: Remya T
+
+QuickNoteComponent is the custom quicknote component with all the option buttons.
+-->
+<!-- Main custom titlewindow Container -->
+<quickNotes:CustomTitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+							  minWidth="30"
+							  minHeight="10"
+							  width="600"
+							  height="500"
+							  paddingLeft="2"
+							  paddingRight="2"
+							  paddingBottom="2"
+							  paddingTop="2"
+							  backgroundColor="#e0effb"
+							  borderColor="#1AB1F7"
+							  showCloseButton="true"
+							  verticalAlign="middle"
+							  horizontalAlign="center"
+							  title="{'Quick Note  -  '+savedFileName.substring(0,savedFileName.indexOf('.'))}"
+							  horizontalScrollPolicy="off"
+							  creationComplete="init()"
+							  resize="quickNoteMoveHandler(event)"
+							  move="quickNoteMoveHandler(event)"
+							  xmlns:components="edu.amrita.aview.common.components.*"
+							  xmlns:quickNotes="edu.amrita.aview.quickNotes.*">
+	<mx:VBox width="100%"
+			 height="100%"
+			 horizontalScrollPolicy="off"
+			 id="quickNoteVBox"
+			 resize="resizeHandler()">
+		<!-- Included script file -->
+		<mx:Script source="QuickNoteComponentHandler.as"/>
+		<!-- RichTextEditor component for formatting the text input -->
+		<mx:RichTextEditor width="100%"
+						   height="100%"
+						   id="richTxt"
+						   headerHeight="0"
+						   color="#000000"
+						   fontWeight="normal"
+						   showControlBar="false"
+						   chromeColor="#e0effb"
+						   backgroundColor="#e0effb"
+						   creationComplete="creationCompleteHandler()"
+						   valueCommit="valueCommitHandler()"/>
+		<mx:HBox width="125"
+				 horizontalAlign="center"
+				 horizontalScrollPolicy="off"
+				 id="controlBoxContainer">
+			<!-- Button for creating new file -->
+			<components:MxImageButton width="22"
+					   height="23"
+					   icon="@Embed(source='assets/images/medium_New_File.png')"
+					   click="newFile()"
+					   toolTip="New File"/>
+			<!-- Button for opening saved file -->
+			<components:MxImageButton width="22"
+					   height="23"
+					   click="read()"
+					   icon="@Embed(source='assets/images/medium_file_open.png')"
+					   toolTip="Open File"/>
+			<!-- Button for saving file -->
+			<components:MxImageButton width="22"
+					   height="23"
+					   icon="@Embed(source='assets/images/medium_save.png')"
+					   click="save()"
+					   toolTip="Save File"/>
+			<!-- Button for clearing contents -->
+			<components:MxImageButton width="22"
+					   height="23"
+					   click="clear()"
+					   icon="@Embed(source='assets/images/medium_text_clear.png')"
+					   toolTip="Clear"
+					   enabled="{richTxt.text!= ''?true:false}"/>
+		</mx:HBox>
+	</mx:VBox>
+</quickNotes:CustomTitleWindow>

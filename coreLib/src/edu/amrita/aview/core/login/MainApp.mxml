@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:lms="*"
+				   xmlns:xt="library://ns.tink.ws/flex/mx"
+				   xmlns:entry="edu.amrita.aview.core.entry.*"
+				   xmlns:components="edu.amrita.aview.core.shared.components.*"
+				   left="0" right="0" top="0" bottom="0" width="100%" height="100%"
+				   backgroundAlpha="0" backgroundColor="#e0effb" borderVisible="false"
+				   click="application_clickHandler(event)"
+				   creationComplete="appCreationCompleteHandler()" creationPolicy="all"
+				   currentState="LoginState" frameRate="7" initialize="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:HTTPService id="getsaveduserdet"/>
+		<mx:HTTPService id="getservervalue"/>
+
+		<mx:HTTPService id="getvalue"/>
+		<mx:HTTPService id="getUpdateServerIP"/>
+		<mx:HTTPService id="httpDataService" fault="biometricFaultHandler(event)" method="POST"
+						result="biometricResultHandler(event)" showBusyCursor="true"
+						useProxy="false"/>
+		
+		<mx:Fade id="dissolveOn" alphaFrom="1.0" alphaTo="0.0" duration="1000"/>
+		
+		<mx:Fade id="dissolveOff" alphaFrom="0.0" alphaTo="1.0" duration="1000"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.login.boilerplate.Strings;
+			import edu.amrita.aview.core.shared.util.StringUtility;
+			
+
+		]]>
+	</fx:Script>
+	
+		
+	<fx:Style source="../entry/assets/styles/styles.css"/>
+
+	<fx:Script source="boilerplate/Icons.as"/>
+	<fx:Script source="AutoUpdates.as"/>
+	<fx:Script source="InstallationCheck.as"/>
+	<fx:Script source="PrepareClass.as"/>
+	<fx:Script source="MainHandler.as"/>
+	<fx:Metadata>
+		[ResourceBundle("myResource")]		
+	</fx:Metadata>
+
+	<s:states>
+		<s:State name="mainapp">
+		</s:State>
+		<s:State name="LoginState">
+		</s:State>
+	</s:states>
+
+
+	<!--**************************** Login state starts *****************************-->
+	<!-- SVRS- Issue no #202 Changed the title and color of title in login page-->
+	<entry:MyTitleWindow id="loginWin" includeIn="LoginState" width="600" height="270" alpha="1.0"
+						 backgroundAlpha="0.5" borderStyle="inset" close="closeApp()"
+						 color="#ffffff" defaultButton="{btn_login}" horizontalAlign="center"
+						 horizontalScrollPolicy="off" layout="absolute"
+						 mouseMove="mainWindowMouseMove()"
+						 mouseDown="cmbServerType_focusOutHandler()" showCloseButton="true"
+						 styleName="logTitleWindow" title="A-VIEW" titleStyleName="loginTitle"
+						 verticalAlign="middle" verticalScrollPolicy="off">
+		<s:VGroup left="287" right="6" top="39" bottom="15" gap="10" paddingBottom="0"
+				  paddingLeft="5" paddingTop="0" verticalAlign="middle">
+			<s:HGroup id="serverContainer" width="100%" horizontalAlign="left" verticalAlign="middle">
+				<mx:Label id="lblServerType" width="76" color="#373835" fontSize="11"
+						  fontWeight="bold" text="Server" textAlign="right"/>
+				<s:ComboBox id="cmbServerType" width="206" height="28" maxWidth="150"
+							borderColor="#373835" chromeColor="#e0effb"
+							click="cmbServerType_clickHandler(event)" color="#B6B6B6"
+							cornerRadius="3" dataProvider="{loginServerTypearr}"
+							focusIn="cmbServerType_focusInHandler(event)"
+							focusOut="cmbServerType_focusOutHandler(event)" fontWeight="bold"
+							change="cmbServerType_changeHandler(event)"
+							keyDown="cmbServerType_keyDownHandler(event)" labelField="name"
+							paddingBottom="2" prompt="{Strings.PROMPT_SERVER_DROPDOWN}"
+							restrict="0-9a-zA-Z.:" rollOverColor="#e0effb" selectionColor="#99d0ff"
+							tabIndex="0" toolTip="Select a server or type in an IP address/domain"/>
+				<s:Image id="imgStatus" visible="false" includeInLayout="false" smooth="true"
+						 source="{secure_Icon}" toolTip="Secure server connection"/>
+				
+			</s:HGroup>
+			<s:HGroup id="usernameContainer" width="100%" horizontalAlign="left"
+					  verticalAlign="middle">
+				<mx:Label id="lblUserName" right="218" top="75" width="76" color="#000000"
+						  fontSize="11" fontWeight="bold" text="Username" textAlign="right"/>
+				<mx:TextInput id="txtLoginUser" right="35" top="70" width="206" height="28"
+							  borderStyle="solid" color="#000000" contentBackgroundAlpha="1.0"
+							  fontSize="12" fontStyle="normal" fontWeight="bold"
+							  text="{prepareLogin.userName}"/>
+				
+			</s:HGroup>
+			<s:BorderContainer width="295" backgroundColor="#EBF6FA" borderColor="#BFD3DE"
+							   cornerRadius="3">
+				<s:layout>
+					<s:VerticalLayout gap="10" horizontalAlign="center" paddingBottom="10"
+									  paddingLeft="5" paddingRight="5" paddingTop="10"/>
+				</s:layout>
+				<s:HGroup id="loginTypeContainer" x="12" y="3" width="100%" horizontalAlign="left"
+						  verticalAlign="middle">
+					<mx:Label id="lblLoginType" width="70" color="#373835" fontSize="11"
+							  fontWeight="bold" text="Login Type" textAlign="right"/>
+					<mx:Canvas borderColor="#799EBD" borderStyle="solid" borderVisible="true"
+							   chromeColor="#B5B5B5" cornerRadius="3">
+						<mx:RadioButtonGroup id="loginTypeRadioGroup"/>
+						<s:HGroup gap="-1">
+							
+							<s:BorderContainer id="loginTypeNormalContainer" width="103" height="28"
+											   backgroundColor="#C2DDF2" borderVisible="false"
+											   cornerRadius="3">
+								<s:layout>
+									<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+														paddingLeft="2" paddingRight="2"
+														paddingTop="1" verticalAlign="middle"/>
+								</s:layout>
+								
+								<mx:RadioButton id="loginTypeNormal" left="0" top="25" label="Normal"
+												chromeColor="#E0EFFB" click="changeSelection()"
+												color="#373835" fontSize="11" fontWeight="bold"
+												groupName="loginTypeRadioGroup" selected="true"
+												symbolColor="#2F7818" tabIndex="2"
+												toolTip="Login with your password"/>
+								<s:Image id="imgKeyboard" smooth="true" source="{keyboard}"/>
+							</s:BorderContainer>
+							<mx:VRule width="2" height="28" chromeColor="#799EBD"/>
+							<s:BorderContainer id="loginTypeCameraContainer" width="102" height="28"
+											   backgroundColor="#FFFFFF" borderVisible="false"
+											   cornerRadius="3">
+								<s:layout>
+									<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+														paddingLeft="2" paddingRight="2"
+														paddingTop="1" verticalAlign="middle"/>
+								</s:layout>
+								
+								<mx:RadioButton id="loginTypeCamera" top="25" label="Camera"
+												chromeColor="#E0EFFB" click="changeSelection()"
+												color="#373835"
+												enabled="{cmbServerType.selectedIndex==0?true:false}"
+												fontSize="11" fontWeight="bold"
+												groupName="loginTypeRadioGroup"
+												symbolColor="#2F7818" tabIndex="3"
+												toolTip="Focus the camera on your face"/>
+								<s:Image smooth="true" source="{webcam}"
+										 toolTip="Focus the camera on your face"/>
+							</s:BorderContainer>
+							
+						</s:HGroup>
+					
+				</mx:Canvas>
+				<!--<mx:HBox id="hbxBiometric"
+				height="30"
+				horizontalAlign="left"
+				paddingLeft="0"
+				verticalAlign="middle"
+				horizontalGap="3">
+				<mx:ComboBox id="cmbAuthType"
+				width="150"
+				height="25"
+				color="#000000"
+				cornerRadius="4"
+				dataProvider="{loginTypearr}"
+				fontWeight="bold"
+				rollOverColor="#e0effb"
+				paddingBottom="2"
+				selectionColor="#99d0ff"
+				enter="login_checkfn()"
+				change="changeLoginType(event)"/>
+				<mx:Button id="btnSettings"
+				buttonMode="true"
+				x="10"
+				height="22"
+				width="22"
+				visible="false"
+				icon="{settings}"
+				click="cameraSettings()"
+				toolTip="Camera Settings"
+				useHandCursor="true"
+				downSkin="mx.skins.halo.ButtonSkin"
+				mouseChildren="false"
+				overSkin="mx.skins.halo.ButtonSkin"
+				skin="mx.skins.halo.ButtonSkin"
+				upSkin="mx.skins.halo.ButtonSkin"/>
+				</mx:HBox>-->
+			</s:HGroup>
+			<s:HGroup id="passwordContainer" width="100%" horizontalAlign="left"
+					  verticalAlign="middle">
+				<mx:Label id="lblPassword" right="217" top="115" width="71" color="#000000"
+						  fontSize="11" fontWeight="bold" text="Password" textAlign="right"/>
+				<mx:TextInput id="txtLoginPass" right="35" top="110" width="206" height="28"
+							  borderStyle="solid" color="#000000" contentBackgroundAlpha="1.0"
+							  contentBackgroundColor="#F9FAFB" displayAsPassword="true"
+							  fontSize="12" fontWeight="bold" text="{prepareLogin.password}"/>
+			</s:HGroup>
+				
+				<s:HGroup id="cameraContainer" visible="{loginTypeCamera.selected}" width="100%"
+						  horizontalAlign="left" includeInLayout="{loginTypeCamera.selected}"
+						  verticalAlign="middle">
+					<mx:Label id="lblCamera" width="70" color="#373835" fontSize="11"
+							  fontWeight="bold" text="Camera" textAlign="right"/>
+					<mx:ComboBox id="cameraList" width="176" height="28"
+								 change="cameraListChangeHandler(event)" color="#000000"
+								 dataProvider="{cameraNames}" fontWeight="normal" paddingBottom="0"
+								 prompt="Select Camera" tabIndex="5" textAlign="left"/>
+					<s:Image buttonMode="true" click="refreshCameraList()" smooth="true"
+							 source="{captcha_refresh}" tabIndex="6" useHandCursor="true"/>
+				</s:HGroup>
+			<!-- enter="(prepareLogin.loginCheckfn(txtLoginUser.text,txtLoginPass.text,cmbServerType.textInput.text.toString()))"
+				<s:HGroup width="100%" horizontalAlign="left" verticalAlign="middle" id="serverContainer">
+				<mx:Label id="lblServerType"
+						  visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}" right="218"
+						  top="153" width="125" color="#000000" fontSize="11" fontWeight="bold"
+						  includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+						  text="Server" textAlign="right"/>
+				<xt:FilterComboBox id="cmbServerType" right="60" top="153" width="150" height="25"
+								   maxWidth="150" caseSensitive="false"
+								   change="cmbServerType_changeHandler(event)"
+								   click="cmbServerType_clickHandler(event)" color="#000000"
+								   cornerRadius="4" dataProvider="{loginServerTypearr}"
+								   enter="(prepareLogin.loginCheckfn(txtLoginUser.text,txtLoginPass.text,cmbServerType.selectedLabel.toString()))"
+								   focusOut="cmbServerType_focusOutHandler(event)" fontWeight="normal"
+								   keyDown="cmbServerType_keyDownHandler(event)" labelField="name"
+								   paddingBottom="2" prompt="" removeFilterOnSelection="true"
+								   removeInputOnFocusOut="false" rollOverColor="#e0effb"
+								   selectionColor="#99d0ff"
+								   visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+								   includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"/>
+			</s:HGroup>-->
+			<!--<s:HGroup id="loginTypeContainer" width="100%" horizontalAlign="left" verticalAlign="middle">
+				<mx:Label id="lblLoginType"  width="125" color="#000000"
+						  fontSize="11" fontWeight="bold" text="Authentication " textAlign="right"/>
+				<mx:HBox id="hbxBiometric" right="2" top="190" height="30" horizontalAlign="left"
+						 paddingLeft="0" verticalAlign="middle">
+					<mx:ComboBox id="loginType" width="150" height="25" change="changeLoginType(event)"
+								 color="#000000" cornerRadius="4" dataProvider="{loginTypearr}"
+								 enter="(prepareLogin.loginCheckfn(txtLoginUser.text,txtLoginPass.text,cmbServerType.selectedLabel.toString()))"
+								 fontWeight="bold" paddingBottom="2" rollOverColor="#e0effb"
+								 selectedIndex="{prepareLogin.loginTypeIndex}" selectionColor="#99d0ff"/>
+					<components:MxImageButton id="btnSettings" visible="false" x="10" width="25" height="25"
+											  buttonMode="true" click="cameraSettings()"
+											  downSkin="mx.skins.halo.ButtonSkin"
+											  icon="{settings}" mouseChildren="false"
+											  overSkin="mx.skins.halo.ButtonSkin" skin="mx.skins.halo.ButtonSkin"
+											  toolTip="Camera Settings" upSkin="mx.skins.halo.ButtonSkin"
+											  useHandCursor="true"/>
+				</mx:HBox>
+			</s:HGroup>-->
+			<s:VGroup id="captchaContainer" visible="false" y="161" width="100%" height="50" gap="4"
+					  includeInLayout="false">
+				
+				
+				<s:HGroup id="ca" width="280" height="14" gap="0" horizontalAlign="right"
+						  verticalAlign="top">
+					<s:HGroup height="14" verticalAlign="bottom">
+						<s:Label color="#070707" fontSize="11" fontWeight="bold"
+								 text="Type the characters shown in the below image"/>
+					</s:HGroup>
+					<mx:Image scaleContent="false" source="{captcha_help.png}"
+							  toolTip="This is to verify that you are a human"/>
+					
+				</s:HGroup>
+				
+				<s:HGroup left="5" width="100%" paddingLeft="5" verticalAlign="middle">
+					<mx:Canvas id="captchaImage"/>
+					<mx:Image buttonMode="true" click="loadCaptcha()" source="{captcha_refresh}"
+							  toolTip="Refresh" useHandCursor="true"/>
+					<mx:TextInput id="txtCaptcha" width="150" color="#000000"/>
+				</s:HGroup>
+			</s:VGroup>
+			</s:BorderContainer>
+			<s:HGroup id="loginBtnContainer" width="100%" gap="2" horizontalAlign="left"
+					  verticalAlign="middle">
+				<mx:CheckBox id="chk_saveuser" visible="false" width="72" label="Remember Me"
+							 fontSize="11" selected="{prepareLogin.saveUserSelect}"/>
+				<!--Fix for Bug #18593,18586-->
+				<mx:LinkButton id="btn_ForgotPassword" top="225" width="104" height="25"
+							   label="Forgot Password?" buttonMode="true" click="resetPassword(cmbServerType.textInput.text.toString())"
+							   color="#000000" fontSize="10" horizontalCenter="54"
+							   mouseChildren="false" paddingLeft="1" paddingRight="1"
+							   textDecoration="underline" useHandCursor="true" enabled="false"/>
+				<components:ImageButton id="btn_login" top="225" width="52" height="25" label="Login"
+										buttonMode="true" chromeColor="#1177C5"
+										click="(prepareLogin.loginCheckfn(txtLoginUser.text,txtLoginPass.text,cmbServerType.textInput.text.toString()))"
+										color="#FFFFFF" cornerRadius="3"
+										enabled="{prepareLogin.logInButtonState}" fontFamily="Arial"
+										fontSize="11" fontWeight="bold" horizontalCenter="150"
+										mouseChildren="false" useHandCursor="true"/>
+				<!--Fix for Bug #15476 start-->
+				<!--<mx:LinkButton id="lblPlayOffline"
+							   visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}" right="9"
+							   top="209" label="Play Offline" buttonMode="true"
+							   click="lblPlayOffline_clickHandler(event)" color="#000000" fontSize="10"
+							   includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+							   paddingLeft="1" paddingRight="1" textDecoration="underline"
+							   useHandCursor="true"/>-->
+				<!--Fix for Bug #15476 end -->
+			</s:HGroup>
+		</s:VGroup>
+		<!--SVRS- Issue no #202 Changed the color of all the labels and controls in login page to black so that the title is seen in white and the other controls are seen in black-->
+		
+
+		
+
+		
+		<!--For Web: Made server type label invisible-->
+		
+
+		
+		
+
+		
+		<!--For Web: Made server type comboBox invisible-->
+		<!--<mx:ComboBox id="cmbServerType" right="35" top="152" width="175" height="25" color="#000000"
+		cornerRadius="4" dataProvider="{loginTypearr}" fontWeight="bold" rollOverColor="#e0effb"
+		paddingBottom="2" selectionColor="#99d0ff" enter="login_checkfn()" change="changeLoginType(event)"/>
+		-->
+		
+		<mx:Label y="255" width="100%" height="13.50" color="#FFFFFF" fontFamily="Arial" fontSize="9"
+				  fontWeight="bold" horizontalCenter="-3" text="{COPY_RIGHT_FOOTER}"
+				  textAlign="center"/>
+		
+	<!--	<mx:Label x="0" y="254" width="100%" height="13.50" color="#FFFFFF" fontFamily="Arial"
+				  fontSize="9" fontWeight="bold" horizontalCenter="0"
+				  text="{Constants.COPY_RIGHT_FOOTER}" textAlign="center"/>-->
+		
+		<!--<mx:Label y="255" width="100%" height="13.50" color="#FFFFFF" fontFamily="Arial"
+				  fontSize="9" fontWeight="bold" horizontalCenter="-4" text="{COPY_RIGHT_FOOTER}"
+				  textAlign="center"/>-->
+
+		<!--***********************************************************************-->
+
+		<!--SVRS-Issue no #202 Change the image of A-VIEW in login page-->
+		<mx:Image id="iconImage" left="11" top="42" source="{aview_classroom}"/>
+		<!--*************************************************************-->
+		<mx:VideoDisplay id="videoDisplay" visible="false" left="11" top="42" width="275"
+						 height="221"/>
+		<!--<mx:VideoDisplay id="videoDisplay" visible="false" left="12" top="42" width="274"
+						 height="210"/>-->
+		
+
+		
+	</entry:MyTitleWindow>
+
+	<!--**************************** Login state ends ******************************-->
+
+	<mx:Canvas id="mainOuterContainer" excludeFrom="LoginState" width="100%" height="100%"
+			   backgroundAlpha="0" backgroundColor="#2a5ea4" creationPolicy="all"
+			   resize="windowActivateAndResizeHandler()" styleName="appContainer">
+
+		<!-- The Window Header -->
+		<s:BorderContainer id="mainWindowHeader" left="0" right="0" width="63" borderVisible="false"
+						   creationPolicy="all" doubleClick="toggleMaximize()"
+						   doubleClickEnabled="true"
+						   mouseDown="mainWindowHeaderMouseDownHandler(event)">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:BitmapFill fillMode="repeat"
+								  source="@Embed('/edu/amrita/aview/core/login/boilerplate/assets/images/window_bg.jpg')"/>
+				</s:fill>
+			</s:Rect>
+			<mx:Image id="Aviewbanner" x="5" y="0" source="{defaultBanner}"/>
+			<mx:Label left="70" styleName="appTitle" text="" verticalCenter="10"/>
+			<components:MxImageButton id="btnMinimize"
+									  visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+									  right="76" click="appMinimizeHandler(event)"
+									  includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+									  styleName="iconMinimize" toolTip="Minimize window"
+									  verticalCenter="0"/>
+			<components:MxImageButton id="maximum_btn"
+									  visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+									  right="48" click="toggleMaximize()"
+									  includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+									  styleName="iconMaximize" toolTip="Maximize window"
+									  verticalCenter="0"/>
+			<components:MxImageButton id="btnClose"
+									  visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+									  right="20" click="showExitPopupWindow()"
+									  includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+									  styleName="iconClose" toolTip="Close window"
+									  verticalCenter="0"/>
+			<!--<mx:Image x="16"
+			y="8"
+			source="assets/images/avc_titlebar_icon.png"
+			width="50"
+			height="40"/>-->
+		</s:BorderContainer>
+
+		<mx:Canvas id="mainComponentContainer" top="62" width="100%" height="100%"
+				   backgroundAlpha="0" backgroundColor="#e0effb" borderColor="red"
+				   borderVisible="true"/>
+		
+		<!--Fix for issue #16716, #19175,#18456 and #18390-->
+		<s:BorderContainer left="0" right="0" bottom="0" height="24" backgroundImage="{footerBG}"
+						   backgroundImageFillMode="repeat" borderVisible="false"
+						   creationComplete="" id="bottomContainer">
+			<s:layout>
+				<s:HorizontalLayout  paddingLeft="5"
+									paddingRight="0"  verticalAlign="middle" horizontalAlign="center"/>
+			</s:layout>
+			<mx:Label id="label1" color="#000000" fontSize="11" fontWeight="bold"
+					  horizontalCenter="0" text="{COPY_RIGHT_FOOTER}"/>
+			<s:Spacer width="100%"/>
+			<s:Label visible="{classRoomFlag}"
+					 text="{StringUtility.trimString(ClassroomContext.lecture.displayName,40)}"/>
+			<s:BorderContainer id="connectionStatusContainer" visible="{classRoomFlag}" width="118"
+							   height="18" backgroundColor="#FFFFFF" borderColor="#7D817D"
+							   cornerRadius="3" fontSize="12" includeInLayout="{classRoomFlag}">
+				<s:layout>
+					<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
+				</s:layout>
+				<s:Label id="connectionStatus" buttonMode="true"
+						 click="notificationStatusContainer.visible=true;startTimer();" color="#066E06"
+						 fontSize="11" fontWeight="bold" text="" textAlign="center"
+						 useHandCursor="true" verticalAlign="middle"/>
+				<s:Image width="25" height="18" buttonMode="true" id="connectionIcon"
+						 click="notificationStatusContainer.visible=true;startTimer();"
+						 source="{connectionStatusIcon}"
+						 useHandCursor="true"/>
+			</s:BorderContainer>
+			<s:HGroup height="100%" horizontalAlign="right" verticalAlign="bottom">
+				<mx:Image id="imgResize" visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+						  right="8" bottom="8"
+						  includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+						  mouseDown="imgResizeMouseDownHandler(event)" rollOut="rollOutHandler(event)" rollOver="rollOverHandler(event)" source="{icon_grip}"/>
+			</s:HGroup>
+		</s:BorderContainer>
+	</mx:Canvas>
+	<mx:Canvas id="notificationStatusContainer" includeIn="mainapp" visible="false" 
+			   width="219" height="71" backgroundAlpha="0.0" hideEffect="{dissolveOn}"
+			   showEffect="{dissolveOff}"
+			   right="32" bottom="24">
+
+		<s:BorderContainer x="0" bottom="6" width="100%" height="65" backgroundColor="#FFFFFF"
+						   borderAlpha="1.0" borderColor="#acb0b5" cornerRadius="5"
+						   dropShadowVisible="true">
+			<s:layout>
+				<s:VerticalLayout paddingBottom="10" paddingLeft="5" paddingRight="5"
+								  paddingTop="6"/>
+			</s:layout>
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Image source="{videoConnectionStatusIcon}" smooth="true" smoothingQuality="high" width="31" height="23"/>
+				<s:Label id="videoStatus" color="#068506" fontWeight="bold" text="Video connected"/>
+			</s:HGroup>
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Image smooth="true" smoothingQuality="high" width="31" height="23"
+						 source="{colabarationConnectionStatusIcon}"/>
+				<s:Label id="usersStatus" fontWeight="bold" color="#068506" text="Collaboration connected"/>
+			</s:HGroup>
+		</s:BorderContainer>
+		<s:Image right="6" bottom="0"
+				 source="@Embed('edu/amrita/aview/core/login/boilerplate/assets/images/popuparrow.png')"/>
+		<s:Image right="6" top="6" buttonMode="true"
+				 click="notificationStatusContainer.visible=false;"
+				 source="@Embed('edu/amrita/aview/core/login/boilerplate/assets/images/close.png')"
+				 toolTip="Close" useHandCursor="true"
+				 smoothingQuality.mainapp="high"
+				 smooth.mainapp="true"
+				 source.mainapp="@Embed('edu/amrita/aview/core/login/boilerplate/assets/images/close.png')"/>
+	</mx:Canvas>
+</s:BorderContainer>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: Viewer3DComponent.mxml
+Module		: 3DViewer
+Developer(s): Jayakrishnan R, Arun V
+Reviewer(s)	: Pradeesh,Remya T
+
+Viewer3DComponent.mxml is the main 3Dviewer component adding to the main application.
+In this componet we adding the 3Dviewer library and pop-out button.
+
+-->
+
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="100%"
+				   height="100%"
+				   backgroundAlpha="0"
+				   borderAlpha="0"
+				   borderStyle="solid"
+				   creationComplete="init()"
+				   xmlns:local="*"
+				   enabled="{ClassroomContext.IS_3D_ENABLED}">
+	<fx:Script source="FileHandler3D.as"/>
+	<fx:Script source="Viewer3DComponentHandler.as"/>
+	<!-- Adding the 3Dviewer library-->
+	<local:Viewer3DSWC id="viewer3DSWC"
+					   initialize="viewer3DSWC_initializeHandler(event)"/>
+	
+</s:BorderContainer>

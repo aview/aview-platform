@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="414" height="487" 
+			   backgroundColor="#E0EFFB"
+			   creationComplete="init()">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script source="MeetingRoomManagerViewHandler.as"/>
+		<s:VGroup width="100%"
+				  gap="0"
+				  paddingBottom="0"
+				  paddingLeft="20"
+				  paddingRight="20"
+				  paddingTop="20">
+			<s:Label fontWeight="bold"
+					 text="Room Name"
+					 visible="{meetingRoomManagerModel.isRoomNameVisible()}"
+					 includeInLayout="{meetingRoomManagerModel.isRoomNameVisible()}"/>
+			<s:TextInput width="100%" id="txtRoomName" 
+						 text="{meetingRoomManagerModel.roomName}" 
+						 maxChars="50"
+						 visible="{meetingRoomManagerModel.isRoomNameVisible()}"
+						 includeInLayout="{meetingRoomManagerModel.isRoomNameVisible()}"/>
+			<s:Label visible="{meetingRoomManagerModel.isAddContactsGuests()}" height="41"
+					 fontWeight="bold"
+					 includeInLayout="{meetingRoomManagerModel.isAddContactsGuests()}"
+					 width="383"
+					 text="Sends invitation to all users and then starts the meeting(Multiple Email ID's can be seperated by comma',')"/>
+			
+			<s:TextInput id="guestEmail" x="27" width="372" height="26" borderVisible="false"
+						 click="clearGuestTxtClick()" color="#949494"
+						 focusIn="clearGuestTxtClick()" focusOut="focusOutGuestText()"
+						 fontFamily="Arial" fontStyle="italic"
+						 visible="{meetingRoomManagerModel.isAddContactsGuests()}"
+						 includeInLayout="{meetingRoomManagerModel.isAddContactsGuests()}"
+						 text="Enter guest email address"
+						 skinClass="edu.amrita.aview.meeting.assets.skin.CustomTextInputSkin" 
+						 styleName="searchTxtBox"/>
+			<s:Spacer height="20"/>
+			<s:Label 	id="lblAddPeople"
+						fontWeight="bold"
+					 	text="Add People"
+						visible="{!meetingRoomManagerModel.isAddPeople()}"/>
+			<s:Spacer height="5"/>
+		
+		<s:BorderContainer width="100%"  height="100%" id="contactsSelectionView"
+						   backgroundColor="#F0F8FC"
+						   borderColor="#B8C4CC">
+		</s:BorderContainer>
+		<s:HGroup width="100%"
+				  height="55"
+				  horizontalAlign="center"
+				  verticalAlign="middle">
+			<s:Button id="btnOk"
+					  label="OK"
+					  chromeColor="#E0EFFB"
+					  cornerRadius="3"
+					  click="createOrUpdateRoom()"/>
+			<s:Button label="Cancel"
+					  chromeColor="#E0EFFB" 
+					  click="closeWindow(event)"
+					  cornerRadius="3"/>
+		</s:HGroup>
+		</s:VGroup>
+</s:Panel>

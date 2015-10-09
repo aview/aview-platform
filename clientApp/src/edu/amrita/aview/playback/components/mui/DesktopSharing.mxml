@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: DesktopSharing.mxml
+Module		: PlayBack
+Developer(s): Haridas, Anu
+Reviewer(s)	: Remya T
+
+DesktopSharing.mxml  is the content holder of desktopsharing play back
+-->
+<!--Main window-->
+<!--VVCR: Documentation on components used is missing. Please mention what they do here -->
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:vd="edu.amrita.aview.playback.MUIComponents.*"
+			   width="400" height="300" chromeColor="#8AC4FF" close="closeHandler(event)"
+			   dropShadowVisible="true"
+			   skinClass="edu.amrita.aview.playback.skins.DesktopTitleWindowSkin"
+			   title="Desktopsharing">
+	<fx:Script source="DesktopSharingHandler.as"/>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<!--Resize effect added-->
+		<s:Resize id="dektopMinmize" heightFrom="300" heightTo="0">
+
+		</s:Resize>
+		<!--Move effect added-->
+		
+		<s:Move id="retainPos" xFrom="{this.x}" xTo="{defaultPosition}" yFrom="{this.y}" yTo="15">
+
+		</s:Move>
+		<s:Resize id="dektopMaxmize" heightFrom="0" heightTo="300">
+
+		</s:Resize>
+	</fx:Declarations>
+	<s:BorderContainer id="desktopPlayerContainer" width="100%" height="100%" borderColor="red">
+	</s:BorderContainer>
+</s:TitleWindow>

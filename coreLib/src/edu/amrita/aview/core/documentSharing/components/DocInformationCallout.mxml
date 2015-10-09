@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: DocInformationCallout.mxml
+Module		: Document Sharing
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh, Jayakrishnan R 
+
+DocInformationCallout component is used to,
+
+	1. Navigate between previous/next page
+	2. Display document name.
+
+-->
+
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="100%"
+		   height="60%">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			
+			import mx.core.FlexGlobals;
+
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function entPageTooltipHandler(event:MouseEvent):void
+			{
+				var docInfoTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				docInfoTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+		]]>
+	</fx:Script>
+	<s:VGroup height="100%"
+			  width="100%"
+			  paddingTop="10"
+			  paddingBottom="10"
+			  paddingLeft="10"
+			  paddingRight="10"
+			  verticalAlign="middle"
+			  horizontalAlign="center">
+		<!--To display file name-->
+		<s:Label id="lblFileName"
+				 fontFamily="Arial"
+				 color="#000000"
+				 width="100%"
+				 textAlign="center"
+				 fontWeight="bold"/>
+
+		<s:HGroup height="80%"
+				  width="100%"
+				  horizontalAlign="center"
+				  verticalAlign="middle">
+			<!--To display current page number-->
+			<s:Label id="lblCurrentPage"
+					 visible="{FlexGlobals.topLevelApplication.docComp.userRole == Constants.VIEWER_ROLE}"
+					 color="#000000"
+					 fontSize="11"
+					 fontWeight="bold"
+					 includeInLayout="{FlexGlobals.topLevelApplication.docComp.userRole == Constants.VIEWER_ROLE}"
+					 textAlign="center"
+					 verticalAlign="top"/>
+			<!--Enter page number-->
+			<s:TextInput id="txtEnterPage"
+						 visible="{FlexGlobals.topLevelApplication.docComp.userRole == Constants.PRESENTER_ROLE}"
+						 width="15%"
+						 height="100%"
+						 color="#030303"
+						 editable="true"
+						 enter="FlexGlobals.topLevelApplication.docComp.enterPage()"
+						 fontSize="16"
+						 fontWeight="normal"
+						 includeInLayout="{FlexGlobals.topLevelApplication.docComp.userRole == Constants.PRESENTER_ROLE}"
+						 maxChars="4"
+						 needsSoftKeyboard="true"
+						 restrict="0,1,2,3,4,5,6,7,8,9"
+						 returnKeyLabel="done"
+						 skinClass="spark.skins.spark.TextInputSkin"
+						 softKeyboardDeactivate="FlexGlobals.topLevelApplication.docComp.pageChanged(txtEnterPage.text.toString())"
+						 softKeyboardType="number"
+						 textAlign="center"
+						 rollOver="entPageTooltipHandler(event)"
+						 toolTip="Enter Page number"/>
+			<!--To diplay total page-->
+			<s:Label id="lblTotalPage"
+					 height="100%"
+					 fontSize="19"
+					 fontWeight="normal"
+					 color="#000000"
+					 textAlign="center"
+					 text="{'/ '+FlexGlobals.topLevelApplication.docComp.totalPages.toString()}"
+					 verticalAlign="middle"
+					 visible="{FlexGlobals.topLevelApplication.docComp.userRole == Constants.PRESENTER_ROLE}"
+					 includeInLayout="{FlexGlobals.topLevelApplication.docComp.userRole == Constants.PRESENTER_ROLE}"/>
+
+		</s:HGroup>
+	</s:VGroup>
+</s:Callout>

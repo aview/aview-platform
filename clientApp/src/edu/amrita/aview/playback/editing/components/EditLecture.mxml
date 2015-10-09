@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: EditLecture.mxml
+Module		: Video Editing
+Developer(s): Ashish
+Reviewer(s)	: Remya T
+
+File contians all the UI components for editing the recorded lecture.
+
+-->
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+				width="500" height="130" close="PopUpManager.removePopUp(this)"
+				creationComplete="editLectureCreationCompleteEvent()" horizontalAlign="center"
+				horizontalCenter="0" horizontalScrollPolicy="off" layout="absolute"
+				showCloseButton="true" title="Cut your recorded lecture">
+	<!-- Script to include handler -->
+	<mx:Script source="../scripts/EditLectureScript.as"/>
+
+
+	<!--Validator -->
+	<mx:NumberValidator id="startTimeMinValidator" allowNegative="false" domain="int" property="text"
+						source="{ txtStartTimeMin }" trigger="{ txtStartTimeMin }" triggerEvent="change"/>
+	<mx:NumberValidator id="startTimeSecValidator" allowNegative="false" domain="int" maxValue="59"
+						property="text" source="{ txtStartTimeSec }" trigger="{ txtStartTimeSec }" triggerEvent="change"/>
+	<mx:NumberValidator id="endTimeMinValidator" allowNegative="false" domain="int" property="text"
+						source="{ txtEndTimeMin }" trigger="{ txtEndTimeMin }" triggerEvent="change"/>
+	<mx:NumberValidator id="endTimeSecValidator" allowNegative="false" domain="int" maxValue="59"
+						property="text" source="{ txtEndTimeSec }" trigger="{ txtEndTimeSec }" triggerEvent="change"/>
+	<mx:Label id="lblTimeIndication" x="0" y="10" color="#000000" text="Selected portion from "/>
+	<mx:TextInput id="txtStartTimeMin" x="{lblTimeIndication.x+lblTimeIndication.width}" y="10" width="50" height="20" change="onTextChange(event)" click="onClickTextBox(event)"
+				  color="#000000" focusOut="onTextBoxLoseFocus(event)" maxChars="2" paddingTop="0" restrict="0-9" text="00"/>
+	<mx:Label id="lblFirstColon" x="{txtStartTimeMin.x+txtStartTimeMin.width}" y="10" width="20" color="#000000" text="  : "/>
+	<mx:TextInput id="txtStartTimeSec" x="{lblFirstColon.x+lblFirstColon.width}" y="10" width="50" height="20" change="onTextChange(event)" click="onClickTextBox(event)"
+				  color="#000000" focusOut="onTextBoxLoseFocus(event)" maxChars="2" paddingTop="0" restrict="0-9" text="00"/>
+	<mx:Label id="lblTo" x="{txtStartTimeSec.x+txtStartTimeSec.width}" y="10" width="25" color="#000000" text=" To "/>
+	<!-- End time in minutes-->
+	<mx:TextInput id="txtEndTimeMin" x="{lblTo.x+lblTo.width}" y="10" width="50" height="20" change="onTextChange(event)" click="onClickTextBox(event)" color="#000000"
+				  focusOut="onTextBoxLoseFocus(event)" maxChars="2" paddingTop="0" restrict="0-9" text="00"/>
+	<mx:Label id="lblSecondColon" x="{txtEndTimeMin.x+txtEndTimeMin.width}" y="10" width="20"
+			  color="#000000" text="  : "/>
+	<!--End time in seconds-->
+	<mx:TextInput id="txtEndTimeSec" x="{lblSecondColon.x+lblSecondColon.width}" y="10" width="50" height="20" change="onTextChange(event)" click="onClickTextBox(event)"
+				  color="#000000" focusOut="onTextBoxLoseFocus(event)" maxChars="2" paddingTop="0" restrict="0-9" text="00"/>
+
+	<mx:Label x="{txtEndTimeSec.x+txtEndTimeSec.width}" y="10" color="#000000" text="will be removed"/>
+	<!-- Save button -->
+	<mx:Button id="btnOk" x="{100}" y="45" width="{ this.width / 3 + 5 }" label="Remove and Save" buttonMode="true" chromeColor="#e0effb" click="saveChanges()" color="#000000"
+			   cornerRadius="3" keyDown="if (event.keyCode == Keyboard.ENTER) saveChanges()" styleName="ButtonStyle"/>
+	<!-- Cancel button -->
+	<mx:Button id="btnCancel" x="{300}" y="45" width="{ 100 }" label="Cancel" buttonMode="true" chromeColor="#e0effb" click="cancel()" color="#000000" cornerRadius="3"
+			   keyDown="if (event.keyCode == Keyboard.ENTER) cancel()" styleName="ButtonStyle"/>
+</mx:TitleWindow>

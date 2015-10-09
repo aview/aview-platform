@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuizQuestionAnswer.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to display question-answer in live quiz
+-->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:quiz="edu.amrita.aview.core.evaluation.quiz.*"
+		  width="100%" height="100%" color="#000000" gap="10">
+
+	<fx:Script source="QuizQuestionAnswerUIHandler.as"/>
+
+	<fx:Declarations>
+		<!-- Radiobutton group to group question answer choices -->
+		<s:RadioButtonGroup id="rbgAnswer"/>
+	</fx:Declarations>
+	<s:HGroup id="hbQ" width="100%" verticalAlign="middle">
+		<!-- Customized text area for question -->
+		<quiz:DynamicTextArea id="dTxtAreaQuestion" width="85%" height="100%" borderVisible="false"
+							  color="#000000" contentBackgroundAlpha="0.0" editable="false"
+							  fontFamily="Arial" fontWeight="bold"
+							  text="{quizQuestion.questionText}"/>
+		<s:Spacer width="1%"
+				  includeInLayout="{!isPolling}"
+				  visible="{!isPolling}"/>
+		<!-- Label for mark -->
+		<s:Label visible="{!isPolling}" width="14%" color="#000000" fontFamily="Arial"
+				 fontWeight="bold" includeInLayout="{!isPolling}"
+				 text="{' [marks: ' + quizQuestion.marks + ']'}"/>
+	</s:HGroup>
+
+	<!-- Data group for quiz answer choices -->
+	<s:DataGroup y="{hbQ.height}"
+				 dataProvider="{quizQuestion.quizAnswerChoices}"
+				 creationComplete="dataGroupCreationCompleteHandler(event)"
+				 width="100%"
+				 height="50%">
+		<s:itemRenderer>
+			<fx:Component>
+				<!-- Item renderer for showing quiz answer choices -->
+				<s:ItemRenderer width="99%"
+								height="20%"
+								autoDrawBackground="false">
+					<fx:Script>
+						<![CDATA[
+							import edu.amrita.aview.core.entry.ClassroomContext;
+							import edu.amrita.aview.core.evaluation.QuizContext;
+						]]>
+					</fx:Script>
+					<s:Group width="100%">
+						<s:Spacer width="0%"
+								  height="2%"
+								  includeInLayout="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole != Constants.MODERATOR_ROLE}"/>
+						<!-- Fix for Bug #10462								  includeInLayout="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.VIEWER_ROLE}"/>	-->
+						<!-- Radio button and check box for user to select answer choice -->
+						<s:RadioButton visible="{((ClassroomContext.userVO.role != Constants.MODERATOR_ROLE)&amp;&amp;(outerDocument.quizQuestion.questionTypeName.indexOf(QuizContext.MULTIPLECHOICE)!= -1 ) || (outerDocument.quizQuestion.questionTypeName.indexOf(QuizContext.POLLING)!= -1)|| (outerDocument.quizQuestion.questionTypeName.indexOf(QuizContext.TRUE_OR_FALSE)!= -1) )}"
+									   left="0"
+									   change="{radiobutton1_changeHandler(data as QuizAnswerChoiceVO,event)}"
+									   chromeColor="#E0EFFB" group="{data.group}"
+									   includeInLayout="{(outerDocument.quizQuestion.questionTypeName.indexOf(QuizContext.MULTIPLECHOICE)!= -1 ) || (outerDocument.quizQuestion.questionTypeName.indexOf(QuizContext.POLLING)!= -1) || (outerDocument.quizQuestion.questionTypeName.indexOf(QuizContext.TRUE_OR_FALSE)!= -1)}"
+									   keyDown="{radiobutton1_changeHandler(data as QuizAnswerChoiceVO,event)}"
+									   selected="{data.studentAnsFraction == 1}"/>
+						<s:CheckBox left="0" chromeColor="#E0EFFB"
+									visible="{ClassroomContext.userVO.role != Constants.MODERATOR_ROLE &amp;&amp; (outerDocument.quizQuestion.questionTypeName.indexOf(QuizContext.MULTIPLERESPONSE)!=-1)}"
+									includeInLayout="{outerDocument.quizQuestion.questionTypeName.indexOf(QuizContext.MULTIPLERESPONSE)!=-1}"
+									change="{radiobutton1_changeHandler(data as QuizAnswerChoiceVO,event)}"
+									selected="{data.studentAnsFraction == 1}"
+									keyDown="{radiobutton1_changeHandler(data as QuizAnswerChoiceVO,event)}"/>
+						<!-- Customized text area for answer choice -->
+						<quiz:DynamicTextArea contentBackgroundAlpha="0.0"
+											  text="{'('+String.fromCharCode(itemIndex + 97) +')'+' '+data.choiceText}"
+											  width="100%"
+											  height="100%" color="#000000"
+											  visible="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole != Constants.MODERATOR_ROLE}"
+											  includeInLayout="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole != Constants.MODERATOR_ROLE}"
+											  borderVisible="false"
+											  editable="false"/>
+						<s:layout>
+							<s:HorizontalLayout horizontalAlign="left"/>
+						</s:layout>
+					</s:Group>
+					<fx:Script source="QuizQuestionAnswerItemRendererUIHandler.as"/>
+				</s:ItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+	</s:DataGroup>
+
+	<fx:Metadata>
+		[Event (name="radioButtonClick", type = "edu.amrita.aview.core.evaluation.event.SendAnswerResponseEvent")]
+		[Event(name="checkBoxClick", type="edu.amrita.aview.core.evaluation.event.SendAnswerResponseEvent")]
+	</fx:Metadata>
+
+</s:VGroup>

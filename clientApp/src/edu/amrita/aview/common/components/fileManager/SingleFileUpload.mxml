@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: SingleFileUpload.mxml
+Module			: Common
+Developer(s)	: Haridasan
+Reviewer(s)	    : Veena Gopal K.V
+
+-->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="530"
+		   height="72"
+		   chromeColor="#CCCCCC"
+		   fontFamily="Arial"
+		   fontSize="12"
+		   fontWeight="normal"
+		   textAlign="left">
+	<fx:Metadata>
+		[Event(name="onUploadCompleted", type="edu.amrita.aview.common.components.fileManager.asfiles.UploadCompletedEvent")]
+	</fx:Metadata>
+	<fx:Script source="SingleFileUploadAS.as"/>
+	<fx:Declarations>
+		<mx:HTTPService id="checkFileExistanceService"/>
+	</fx:Declarations>
+
+	<!--TextInput for displaying the selected file name by user for uploading -->
+	<mx:TextInput id="uploadFileName"
+				  right="275"
+				  top="5"
+				  width="250"
+				  height="25"
+				  enabled="false"
+				  editable="false"
+				  text="{uploadFile}"/>
+	<mx:Button id="browse"
+			   right="185"
+			   top="5"
+			   width="80"
+			   height="25"
+			   label="Browse"
+			   chromeColor="#E0EFFB"
+			   click="initializeUpload()"
+			   color="#000000"
+			   cornerRadius="3"/>
+	<mx:Button id="reset"
+			   right="5"
+			   top="5"
+			   width="80"
+			   height="25"
+			   label="Reset"
+			   chromeColor="#E0EFFB"
+			   click="resetUpload()"
+			   color="#000000"
+			   cornerRadius="3"/>
+	<mx:Button id="upload"
+			   right="95"
+			   top="5"
+			   width="80"
+			   height="25"
+			   label="Upload"
+			   chromeColor="#E0EFFB"
+			   click="startUpload()"
+			   color="#000000"
+			   cornerRadius="3"/>
+	<mx:ProgressBar id="progressBar"
+					visible="false"
+					bottom="15"
+					width="327"
+					height="20"
+					horizontalCenter="0"
+					minimum="0"
+					maximum="100"
+					label="Loading %3%%"
+					mode="manual"/>
+
+</mx:Canvas>

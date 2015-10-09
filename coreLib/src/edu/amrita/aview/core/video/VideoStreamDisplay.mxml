@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+// 1.Authors      : Ajith Kumar R, Ashish Pillai
+// 2.Description  : Custom component of video display and related data
+// 3.Dependencies : Video_ScriptCode.as,main.mxml,VideoModule.mxml,VideoConnection.as
+-->
+
+<MultipleViewerInteraction:ResizableTitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+												width="258"
+												height="132"
+												layout="absolute"
+												mouseDown="mouseDownHandler(event);"
+												toolTip="{this.title}"
+												title="{this.title}"
+												backgroundColor="#030303"
+												borderColor="#878484"
+												chromeColor="#ded5d5"
+												color="#000000"
+												alpha="1.0"
+												creationComplete="init()"
+												resizable="false"
+												showCloseButton="false"
+												headerHeight="0"
+												close="titleWindow_close(event)"
+												cornerRadius="0"
+												xmlns:MultipleViewerInteraction="edu.amrita.aview.core.video.*"
+												xmlns:components="edu.amrita.aview.core.shared.components.*"
+												rightClick="checkViewVideo()"
+												click="hideMenu()"
+												borderVisible="true"
+												dropShadowVisible="false"
+												horizontalScrollPolicy="off"
+												verticalScrollPolicy="off" 
+												resize="resizabletitlewindow1_resizeHandler()" xmlns:s="library://ns.adobe.com/flex/spark">
+
+	<mx:Style>
+		.videoPauseStyle
+		{
+			font-family: Georgia;
+			font-size: 12;
+			color: #f11515;
+			font-weight: bold;
+		}
+	</mx:Style>
+	<mx:Script source="VideoStreamDisplayHandler.as"/>
+
+	<mx:Binding destination="updateToolBar"
+				source="{this.width}"/>
+	<mx:Canvas id="videoBox"
+			   verticalScrollPolicy="off"
+			   horizontalScrollPolicy="off"
+			   width="100%"
+			   height="100%"
+			   backgroundColor="#030303">
+		<mx:VideoDisplay id="vidDispObj"
+						 width="100%"
+						 height="100%"
+						 horizontalCenter="0"
+						 verticalCenter="0"
+						 maintainAspectRatio="true"
+						 live="true"
+						 source="{path}"
+						 autoPlay="true"
+						 click="hideMenu()"
+						 creationComplete="vidDispObj_creationCompleteHandler(event)"
+						 resize="setVideoSize()"
+						 doubleClick="createFullScreenWindow()"/>
+		<mx:VBox width="100%" horizontalAlign="center" horizontalCenter="0" verticalAlign="middle"
+				 verticalCenter="0" verticalGap="0">
+		
+		<mx:Label id="labelFullScreen"
+				  visible="false"
+				  text="Video in Fullscreen"
+				  verticalCenter="0"
+				  horizontalCenter="0"
+				  color="#f11515" width="500"
+				  fontFamily="Verdana"
+				  textAlign="center" fontSize="{getFontSizeForLabel(this.width)}"
+				  fontWeight="bold" includeInLayout="{labelFullScreen.visible}">
+
+		</mx:Label>
+
+		<mx:Label id="labelVideoToggleNotification" visible="false" width="500" color="#f11515"
+				  fontFamily="Verdana" fontSize="{getFontSizeForLabel(this.width)}" fontWeight="bold" horizontalCenter="0" textAlign="center"
+				  includeInLayout="{labelVideoToggleNotification.visible}" verticalCenter="0">
+
+		</mx:Label>
+		<mx:Label id="labelAudioOnlyNotification"
+				  visible="false"
+				  text="Audio only mode"
+				  verticalCenter="0"  width="500"
+				  horizontalCenter="0"
+				  color="#f11515" fontSize="{getFontSizeForLabel(this.width)}"
+				  fontFamily="Verdana" textAlign="center"
+				  fontWeight="bold" includeInLayout="{labelAudioOnlyNotification.visible}">
+
+		</mx:Label>
+		<mx:Label id="labelBigScreenNotification"
+				  visible="false" width="500"
+				  text="Video in BigScreen"
+				  verticalCenter="0"
+				  horizontalCenter="0" textAlign="center"
+				  color="#f11515"
+				  fontFamily="Verdana" fontSize="{getFontSizeForLabel(this.width)}"
+				  fontWeight="bold" includeInLayout="{labelBigScreenNotification.visible}">
+
+		</mx:Label>
+		<mx:Label id="LabelHideAudioVideo" 
+				  visible="false" width="500" 
+				  color="#f11515" 
+				  fontFamily="Verdana"
+				  textAlign="center"
+				  fontWeight="bold" 
+				  horizontalCenter="10"  fontSize="{getFontSizeForLabel(this.width)}"
+				  verticalCenter="10" includeInLayout="{LabelHideAudioVideo.visible}">
+		</mx:Label>
+			
+		</mx:VBox>
+			<mx:HBox top="-1"
+					 left="-2"
+					 minWidth="10"
+					 cornerRadius="4"
+					 height="20"
+					 width="{usrName.width+3}"
+					 backgroundColor="#000000"
+					 alpha="0.85"
+					 horizontalScrollPolicy="off"
+					 verticalScrollPolicy="off"/>
+
+		<mx:Label paddingLeft="5"
+				  id="usrName"
+				  paddingRight="2"
+				  top="-1"
+				  left="-2"
+				  text="{this.title}"
+				  toolTip="{this.originalTitle}"
+				  color="#FFFFFF"
+				  fontWeight="bold"/>
+
+
+		<mx:ProgressBar id="prgBarAudioSignal"
+						left="0"
+						bottom="0"
+						width="100%"
+						label=""
+						height="{getProgressbarHeight(this.width)}"
+						trackSkin="edu.amrita.aview.core.video.CustomProgressbarSkin"
+						labelPlacement="center"
+						alpha="1"
+						chromeColor="#33AA00"
+						creationComplete="prgBar_creationCompleteHandler(event)"
+						doubleClickEnabled="false"
+						visible="{!isViewVideo}"
+						includeInLayout="{!isViewVideo}"
+						maximum="{prgAudioMax}"
+						mode="manual"/>
+		<mx:Image source="@Embed(source='assets/images/menuIcon.png')"
+				  left="0"
+				  id="menuBtn"
+				  bottom="0"
+				  rollOver="menuBtn_rollOverHandler(event)"
+				  rollOut="menuBtn_rollOutHandler(event)"
+				  doubleClickEnabled="false"
+				  visible="false"
+				  includeInLayout="{!isViewVideo}"/>
+		
+		<mx:HBox verticalAlign="middle"
+				 rollOver="btnControls_mouseOverHandler(event)"
+				 rollOut="btnControls_mouseOutHandler(event)"
+				 horizontalAlign="center"
+				 width="100%"
+				 height="{this.height/2}"
+				 left="{(menuBtn.width+menuBtn.left)-5}"
+				 id="btnControls"
+				 bottom="{hboxControlButtonsForSmallWindow.bottom+hboxControlButtonsForSmallWindow.height}"
+				 backgroundColor="#000000"
+				 doubleClickEnabled="false"
+				 visible="false"
+				 includeInLayout="{!isViewVideo}"
+				 alpha="0.85">
+		</mx:HBox>
+		<mx:HBox verticalAlign="middle"
+				 horizontalAlign="center"
+				 rollOver="btnControls_mouseOverHandler(event)"
+				 rollOut="btnControls_mouseOutHandler(event)"
+				 width="100%"
+				 height="{this.height/2}"
+				 left="{(menuBtn.width+menuBtn.left)-5}"
+				 id="hboxControlButtonsForSmallWindow"
+				 bottom="{(menuBtn.height+menuBtn.bottom)-5}"
+				 backgroundColor="#000000"
+				 doubleClickEnabled="false"
+				 visible="false"
+				 includeInLayout="{!isViewVideo}"
+				 alpha="0.85">
+		</mx:HBox>
+		<mx:HBox verticalAlign="middle"
+				 horizontalAlign="center"
+				 width="100%"
+				 height="30"
+				 left="0" verticalGap="1" horizontalGap="1"
+				 id="hboxControlButtons"
+				 bottom="0"
+				 backgroundColor="#000000"
+				 doubleClickEnabled="false"
+				 visible="false"
+				 includeInLayout="{!isViewVideo}"
+				 alpha="1">
+		</mx:HBox>
+		<mx:HBox id="hBoxWaterMark"
+				 doubleClickEnabled="false" 
+				 right="5" 
+				 width="100%" 
+				 horizontalAlign="right"
+				 horizontalGap="0"
+				 doubleClick="createFullScreenWindow(event)"
+				 top ="5">
+			<mx:Label text=""
+					  width="{getwidthforCopyright(this.width)}"
+					  height="100%"
+					  fontSize="{getFontSizeforCopyright(this.width)}"
+					  fontWeight="bold"
+					  alpha="0.1"
+					  color="#000000"
+					  mouseChildren="true"/>
+
+			<mx:Label verticalCenter="0"
+					  id="lblWaterMark"
+					  fontWeight="bold"
+					  fontSize="{getFontSize(this.width)}"
+					  textAlign="center"
+					  alpha="0.1"
+					  color="#000000"
+					  mouseChildren="true"
+					  text="A-VIEW"/>
+			
+		</mx:HBox>
+		<components:WindowCloseImage id="btnClose" visible="{videoCloseButtonStatus}"
+									 click="titleWindow_close(event)" doubleClickEnabled="false" top="2" right="1"/>
+	</mx:Canvas>
+	
+	<mx:Canvas id="disableCanvas"
+			   visible="false"
+			   width="100%"
+			   height="100%"
+			   borderColor="#3c0b11"
+			   includeInLayout="false">
+		<mx:Label text="{Constants.VIDEO_MODULE_DISABLE_MSG}"
+				  fontSize="18"
+				  color="#E6E5E1"
+				  verticalCenter="0"
+				  horizontalCenter="0"/>
+	</mx:Canvas>
+	
+
+</MultipleViewerInteraction:ResizableTitleWindow>

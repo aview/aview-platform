@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StudentWiseResult.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Thirumalai murugan
+
+StudentWiseResult.mxml component displays the response of users as datagrid.
+On double clicking an entry in the datagrid , the answer sheet of the user can be viewed .
+-->
+<!--Base container-->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   width="100%"
+		   height="100%"
+		   creationComplete="creationCompleteHandler()"
+		   xmlns:components="edu.amrita.aview.core.shared.components.*">
+	<!--Script file-->
+	<mx:Script source="StudentWiseResultUIHandler.as"/>
+	<!--Label to display user wise result-->
+	<s:Label top="10"
+			 color="#000000"
+			 fontFamily="Arial"
+			 fontSize="15"
+			 fontWeight="bold"
+			 text="User Wise Result"
+			 horizontalCenter="0"/>
+	<!--Custom datagrid to show reslut-->
+	<components:RowColorDataGrid id="teacherResultDg" x="0" top="40" width="100%" height="100%"
+								 chromeColor="#E0EFFB" color="#000000" dataProvider="{quizResult}"
+								 doubleClick="viewStudentAnswerSheet()" doubleClickEnabled="true"
+								 fontFamily="Arial" itemRollOut="removeTooltip()"
+								 itemRollOver="addTooltip()" wordWrap="true">
+		<components:columns>
+			<mx:DataGridColumn width="42"
+							   headerText="S.No."
+							   labelFunction="getSlNo"/>
+			<mx:DataGridColumn dataField="userName"
+							   headerText="User Name"/>
+			<mx:DataGridColumn dataField="countQuizQuestionId"
+							   headerText="Total Questions"/>
+			<mx:DataGridColumn dataField="attemptedQuestions"
+							   headerText="Attempted Questions"/>
+			<mx:DataGridColumn labelFunction="getUnattemptedQuestions"
+							   headerText="Unattempted Questions"/>
+			<mx:DataGridColumn dataField="fraction"
+							   headerText="Correct Answers"/>
+			<mx:DataGridColumn labelFunction="getWrongAnswer"
+							   headerText="Wrong Answers"
+							   dataField="wrongAnswerCount"/>
+			<mx:DataGridColumn headerText="Marks Obtained"
+							   labelFunction="getMarks"
+							   dataField="score"/>
+			<mx:DataGridColumn dataField="totalScore"
+							   headerText="Max Marks"/>
+			<mx:DataGridColumn dataField="percentage"
+							   headerText="Percentage"/>
+		</components:columns>
+	</components:RowColorDataGrid>
+	<mx:HBox width="100%">
+		<mx:Spacer width="27%"/>
+	</mx:HBox>
+</mx:Canvas>

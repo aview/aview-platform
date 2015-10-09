@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+* Name of Authors : Chitra S Pai, Radha Miss, Ajith Kumar , Vivek, Anu, Saju, Jayahari, Ashish Pillai.
+*
+* The main file is where all the modules like chat, Document Sharing, Whiteboard and Audio/Video gets initialized.
+* Also the user interface of the application either consolidated or multiple, gets invoked from here.
+*
+* Revisions made.
+*/
+-->
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   showStatusBar="false"
+					   creationPolicy="all"
+					   backgroundAlpha="0"
+					   backgroundColor="#e0effb"
+					   initialize="init(event)"
+					   height="268"
+					   windowActivate="mainApp.windowActivateAndResizeHandler()"
+					   close="mainApp.app_closeHandler(event)"
+					   windowResize="windowResizeHandler(event)"
+					   xmlns:updater="http://updater.riaspace.com/">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexNativeWindowBoundsEvent;
+			import edu.amrita.aview.core.userPreference.ConfigFileReader;
+			applicationType::desktop{
+				//PNCR:API. changed to core entry 
+				import edu.amrita.aview.core.login.MainApp;
+				import mx.events.FlexEvent;
+//				import userPreference.RemoteServerPreferenceFac;
+				var config:ConfigFileReader = new ConfigFileReader();
+				public var mainApp:MainApp = new MainApp();
+				public var applicationModuleHandler:ApplicationModuleHandler = new ApplicationModuleHandler;
+				public var applicationWidth:int;
+				public var applicationHeight:int;
+				// ashwini: the following line will be changed by the build script, and value will be set to 8 for production 
+				// please do not remove
+				public var LOG_LEVEL : int = 0; 
+				
+				protected function init(event:FlexEvent):void
+				{
+					mainApp.updater=this.updater;
+					mainApp.windowApp=this as WindowedApplication;
+					this.addElement(mainApp);
+					unInstallAVIEWClassroom();
+				}
+//				public var serverInfo:RemoteServerPreferenceFac = new RemoteServerPreferenceFac();
+//				FlexGlobals.topLevelApplication.mainApp.serverInfo.checkServers(myServers);
+			}
+			
+			protected function unInstallAVIEWClassroom():void
+			{
+				if (Capabilities.os.toLowerCase().indexOf("win")  > -1)
+				{
+					var nativeProcessStartupInfo:NativeProcessStartupInfo = new NativeProcessStartupInfo();
+					
+					var desktopPath:String = File.desktopDirectory.nativePath;
+					var driveletter:String = desktopPath.substr(0,2);
+					var cmdExe:File = new File(driveletter+"\\WINDOWS\\system32\\cmd.exe")
+					//var cmdExe:File = new File("C:\\Windows\\System32\\cmd.exe");
+					
+					if (cmdExe && cmdExe.exists)
+					{
+						var processArgs = new Vector.<String>();
+						var currentInstallationPath:String = File.applicationDirectory.nativePath.toString();
+						var AVIEWClassroomUninstaller:String = currentInstallationPath+" Classroom\\unins000.exe";
+						var classroomUninstallerFile:File = new File(AVIEWClassroomUninstaller);
+						if(classroomUninstallerFile.exists)
+						{
+							processArgs.push("/c");
+							//processArgs.push("C:\\Program Files (x86)\\A-VIEW Classroom\\unins000.exe");
+							processArgs.push(AVIEWClassroomUninstaller);
+							processArgs.push("/SILENT");
+							nativeProcessStartupInfo.executable = cmdExe;
+							nativeProcessStartupInfo.arguments = processArgs;
+							
+							var process:NativeProcess = new NativeProcess(); 
+							process.start(nativeProcessStartupInfo);
+						}
+					}
+				}
+			}
+			
+			
+			protected function windowResizeHandler(event:FlexNativeWindowBoundsEvent):void
+			{
+				applicationWidth = this.width;
+				applicationHeight = this.height;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<updater:NativeApplicationUpdater id="updater"
+										  isNewerVersionFunction="{mainApp.isLatestVersionInstalled}"
+										  initialized="mainApp.updaterInitializedHandler(event)"
+										  updateStatus="mainApp.updaterUpdateStatusHandler(event)"
+										  error="mainApp.updaterErrorHandler(event)"
+										  downloadError="mainApp.updaterErrorHandler(event)"
+										  updateError="mainApp.updaterErrorHandler(event)"/>
+	</fx:Declarations>
+	<fx:Style source="assets/styles/styles.css"/>
+	<fx:Style source="assets/styles/skinClass.css"/>
+</s:WindowedApplication>

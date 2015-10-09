@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   right="1" top="1" width="100%" creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:Resize id="expand" duration="200" target="{btnControls}" widthFrom="4" widthTo="40"/>
+		<s:Resize id="colapse" duration="200" target="{btnControls}" widthFrom="40" widthTo="4"/>
+	</fx:Declarations>
+	<fx:Binding destination="setWidth"
+				source="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole}"/> 
+	<mx:HBox width="100%" horizontalAlign="right">
+		<mx:HBox backgroundColor="#343233" borderColor="#343233" cornerRadius="3"
+				 horizontalAlign="right" horizontalGap="0" paddingLeft="2" verticalAlign="middle">
+			
+		
+			<mx:Image id="btnShow" top="9" buttonMode="true" click="showHide_clickHandler()"
+					  toolTip="Hide" useHandCursor="true"/>
+		
+			<mx:HBox id="btnControls" height="29" backgroundColor="#343233" borderColor="#343233"
+					 cornerRadius="3" horizontalAlign="right" horizontalGap="1" paddingRight="1"
+					 paddingTop="4">
+				
+				<mx:HBox id="hboxControl" horizontalAlign="right" horizontalGap="1">
+					<mx:Button id="btnVideoLayout"
+							   visible="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName}"
+							   width="22" height="20" click="switchVideoLayout()"
+							   icon="@Embed('/edu/amrita/aview/core/video/assets/images/videoLayout.png')"
+							   includeInLayout="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName}"
+							   toolTip="Video Layout"/>
+					<mx:Button id="popOutBtn"
+							   visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+							   width="22" height="20"
+							   includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+							   toolTip="Pop Out"/>
+					<mx:Button id="btnFullScreen" width="22" height="20" toolTip="Full Screen"/>
+					<mx:Button id="btnClose" width="22" height="20"  visible="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}" includeInLayout="{ClassroomContext.userVO.role!=Constants.MONITOR_TYPE}"
+							   icon="@Embed(source='assets/images/video-close.png')"
+							   toolTip="Close Video-wall"/>
+				</mx:HBox>
+				
+			</mx:HBox>
+		</mx:HBox>
+	</mx:HBox>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.AVCEnvironment;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			
+			import mx.core.FlexGlobals;
+			[Bindable]
+			[Embed(source="assets/images/fulll-screen.png")]
+			public var fullScreenIcon:Class;
+			[Bindable]
+			[Embed(source="assets/images/exitFull-Screen.png")]
+			public var exitFullScreenIcon:Class;
+			
+			[Bindable]
+			[Embed(source="assets/images/pop-out.png")]
+			public var popoutIcon:Class;
+			[Bindable]
+			[Embed(source="assets/images/pop-in.png")]
+			public var popinIcon:Class;
+			
+			[Bindable]
+			[Embed(source="assets/images/showarrow.png")]
+			public var showIcon:Class;
+			[Bindable]
+			[Embed(source="assets/images/hidearrow.png")]
+			public var hideIcon:Class;
+			
+			public var isFullscreenPresent:Boolean = false;
+			public var isPopoutPresent:Boolean = false;
+			private var isHideButtonControls:Boolean = true;
+			
+			private function init():void
+			{
+				btnFullScreen.setStyle("icon", fullScreenIcon);
+				btnFullScreen.toolTip="Full Screen";
+				popOutBtn.setStyle("icon", popoutIcon);
+				popOutBtn.toolTip="Pop-Out";
+				btnShow.source = hideIcon;
+				btnShow.toolTip="Hide";
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.initilaizeVideoWallButtonComp();
+				applicationType::web{
+					//Fix for issue #19270
+					//Fix for issue #17982
+					/* if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE){
+						//Fix for issue #16726: Increased btnControls width and hide popout button
+						setVideoWallFullScreenButtonVisibility(true);
+					}
+					else{ */
+						setVideoWallFullScreenButtonVisibility(false);
+					//}
+					popOutBtn.visible = false;
+					popOutBtn.includeInLayout = false;
+				}
+				applicationType::desktop{
+					if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName)
+					{
+						btnControls.width = 93;
+						expand.widthTo = 93;
+						colapse.widthFrom = 93;
+					}
+					else
+					{
+						btnControls.width = 75;
+						expand.widthTo = 75;
+						colapse.widthFrom = 75;
+					}
+					if(ClassroomContext.userVO.role == Constants.MONITOR_TYPE)
+					{
+						btnControls.width = 53;
+						expand.widthTo = 53;
+						colapse.widthFrom = 53;
+					}
+				}
+				//Fix for issue #19796
+				applicationType::web{
+					if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName){
+						btnControls.width = 50;
+						expand.widthTo = 50;
+						colapse.widthFrom = 50;
+						
+					}else{
+						btnControls.width = 28;
+						expand.widthTo = 28;
+						colapse.widthFrom = 28;
+					}
+				}
+			}
+			
+			public function fullScreen():void
+			{
+				if(isFullscreenPresent)
+				{
+					btnFullScreen.setStyle("icon", fullScreenIcon);
+					btnFullScreen.toolTip="Full Screen";
+					isFullscreenPresent = false;
+					//Fix for issue #16726: Increased btnControls width
+					applicationType::web{
+						//Fix for issue #19565
+						if(ClassroomContext.userVO.role == Constants.MONITOR_TYPE)
+						{
+							btnControls.width = 28;
+						}
+						else
+						{
+							//Fix for issue #18960
+							btnControls.width = 72;
+							expand.widthTo = 72;
+							colapse.widthFrom = 72;
+						}
+					}
+					applicationType::desktop{
+						if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName)
+							btnControls.width=93;
+						else
+							btnControls.width=75;
+						if(ClassroomContext.userVO.role == Constants.MONITOR_TYPE)
+						{
+							btnControls.width = 53;
+						}
+					}
+					setFullScreenButtonVisibility(true);
+					
+				}
+				else
+				{
+					btnFullScreen.setStyle('icon', exitFullScreenIcon);
+					btnFullScreen.toolTip="Exit Full Screen";
+					isFullscreenPresent = true;
+					btnControls.width=28;
+					setFullScreenButtonVisibility(false)
+					
+				}
+			}
+			
+			public function popOutWindow(isPopOut:Boolean):void
+			{
+				if(isPopOut)
+				{
+					btnControls.width=28;
+					popOutBtn.setStyle("icon", popinIcon);
+					popOutBtn.toolTip="Pop-In";
+					setPopOutButtonVisibility(false);
+				}
+				else
+				{
+					if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName)
+						btnControls.width=93;
+					else
+						btnControls.width=75;
+					popOutBtn.setStyle("icon", popoutIcon);
+					popOutBtn.toolTip="Pop-Out";
+					setPopOutButtonVisibility(true);
+				}
+				
+			}
+			
+			private function setPopOutButtonVisibility(bool:Boolean):void
+			{
+				btnFullScreen.visible=bool;
+				btnFullScreen.includeInLayout=bool;
+				if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName)
+				{
+					btnVideoLayout.visible = bool;
+					btnVideoLayout.includeInLayout = bool;
+				}
+				btnShow.visible=bool;
+				btnShow.includeInLayout=bool;
+				if(ClassroomContext.userVO.role != Constants.MONITOR_TYPE)
+				{
+				btnClose.visible=bool;
+				btnClose.includeInLayout=bool;
+				}
+			}
+			
+		
+			
+			private function setFullScreenButtonVisibility(bool:Boolean):void
+			{
+				//Fix for issue #16726: Hide popout button
+				applicationType::web{
+					popOutBtn.visible=false;
+					popOutBtn.includeInLayout=false;
+				}
+				applicationType::desktop{
+					popOutBtn.visible=bool;
+					popOutBtn.includeInLayout=bool;
+				}
+				btnShow.visible=bool;
+				btnShow.includeInLayout=bool;
+				if(ClassroomContext.userVO.role != Constants.MONITOR_TYPE)
+				{
+				btnClose.visible=bool;
+				btnClose.includeInLayout=bool;
+				}
+				if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName)
+				{
+					btnVideoLayout.visible = bool;
+					btnVideoLayout.includeInLayout = bool;
+				}
+			}
+			
+			private function showHide_clickHandler():void
+			{
+				if(isHideButtonControls)
+				{
+					isHideButtonControls = false;
+					btnControls.width = 1;
+					btnShow.source = showIcon;
+					btnShow.toolTip="Show";
+					hboxControl.visible=false;
+					//hboxControl.enabled=false;
+					colapse.play();
+					expand.stop(); 
+				}
+				else
+				{
+					btnShow.source = hideIcon;
+					btnShow.toolTip="Hide";
+					applicationType::desktop{
+						if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName)
+						{
+							btnControls.width = 93;
+							expand.widthTo = 93;
+							colapse.widthFrom = 93;	
+						}
+						else
+						{
+							btnControls.width = 75;
+							expand.widthTo = 75;
+							colapse.widthFrom = 75;	
+						}
+						if(ClassroomContext.userVO.role == Constants.MONITOR_TYPE)
+						{
+							btnControls.width = 53;
+							expand.widthTo = 53;
+							colapse.widthFrom = 53;
+						}
+					}
+					applicationType::web{
+						//Fix for issue #19796
+						if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName){
+							btnControls.width = 50;
+							expand.widthTo = 50;
+							colapse.widthFrom = 50;
+						 }
+						 else{
+								//Fix for issue #18961
+								btnControls.width = 28;
+						 }
+					}
+					expand.play();
+					colapse.stop(); 
+					hboxControl.visible=true;
+					isHideButtonControls = true;
+				}
+			}
+			
+			//Fix for issue #17982 
+			applicationType::web{
+				public function setVideoWallFullScreenButtonVisibility(value:Boolean):void{
+					//Fix for issue #19621,#19625 ,#19619 and #19796
+					if(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName)
+					{
+						//Fix for issue #19621,#19625 and #19619
+						btnControls.width = 50;
+						expand.widthTo = 50;
+						colapse.widthFrom = 50;
+						btnFullScreen.visible=value;
+						btnFullScreen.includeInLayout=value;
+					}
+					else
+					{ 
+						//Fix for issue #19565
+						if(ClassroomContext.userVO.role == Constants.MONITOR_TYPE)
+						{
+							btnControls.width = 28;
+							expand.widthTo = 28;
+							colapse.widthFrom = 28;
+							btnFullScreen.visible=!value;
+							btnFullScreen.includeInLayout=!value;
+						}
+						else
+						{
+							//Fix for issue #18961
+							btnControls.width = 28;
+							expand.widthTo = 28;
+							colapse.widthFrom = 28;
+							//Fix for issue #19565
+							btnFullScreen.visible=value;
+							btnFullScreen.includeInLayout=value;
+						}
+					}
+				}
+			}
+			private function set setWidth(value:*):void
+			{
+				if(value == Constants.PRESENTER_ROLE || ClassroomContext.userVO.userName == ClassroomContext.moderatorName)
+				{
+					if(isHideButtonControls==true)
+					{
+						//Fix for issue #19796
+						applicationType::desktop{
+							btnControls.width = 93;
+						}
+						applicationType::web{
+							btnControls.width = 50;
+						}
+					}
+					/* expand.widthTo = 93;
+					colapse.widthFrom = 93; */
+				}
+				else
+				{
+					if(isHideButtonControls==true)
+					{
+						//Fix for issue #19796
+						applicationType::desktop{
+							btnControls.width = 75;
+						}
+						applicationType::web{
+							btnControls.width = 28;
+						}
+					}
+					/* expand.widthTo = 75;
+					colapse.widthFrom = 75; */
+				}
+			}
+			private function switchVideoLayout():void
+			{
+				FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.showSettingsMenu("video");
+			}
+			
+			
+		]]>
+	</fx:Script>
+</mx:Canvas>

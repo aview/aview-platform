@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="622" height="406" backgroundColor="#E0EFFB" borderColor="#2A5EA4"
+			   close="closePretesting()" cornerRadius="6" creationComplete="initializePretesting()"
+			   move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+			   title="Check Audio/Video">
+	<s:layout>
+		<s:HorizontalLayout paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+	</s:layout>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="PretestingScript.as"/>
+	<s:VGroup width="100%" height="100%">
+		<s:HGroup width="100%" paddingTop="2">
+			<s:Label fontSize="20" fontWeight="bold" text="Check your Audio &amp; Video"/>
+			<s:Spacer width="100%"/>
+			<!--Fix for issue #18986-->
+			<s:Image id="btnRefreshMicDriverList" buttonMode="true" click="refreshDriverList(true)"
+					 smooth="true" smoothingQuality="high"
+					 source="@Embed('/edu/amrita/aview/core/video/assets/images/refreshBtn.png')"
+					 useHandCursor="true"
+					 enabled="{FlexGlobals.topLevelApplication.mainApp.scanHardwareEnableFlag}"/>
+		</s:HGroup>
+		<s:HGroup width="100%" height="100%">
+			<s:VGroup width="100%" height="100%" paddingBottom="2" paddingLeft="2" paddingRight="2"
+					  paddingTop="2">
+				<s:BorderContainer width="100%" height="100%" borderColor="#D4D4D4" cornerRadius="3">
+					<s:layout>
+						<s:VerticalLayout horizontalAlign="center" paddingBottom="10"
+										  paddingLeft="20" paddingRight="20" paddingTop="10"/>
+					</s:layout>
+					<s:VGroup width="100%" height="100%" horizontalAlign="center" paddingBottom="5"
+							  paddingLeft="5" paddingRight="5" paddingTop="5" verticalAlign="middle">
+						<s:HGroup width="100%" paddingLeft="2" paddingRight="2"
+								  verticalAlign="middle">
+							<s:Image smooth="true" smoothingQuality="high"
+									 source="@Embed('/edu/amrita/aview/core/video/assets/images/audio.png')"/>
+							<s:VGroup y="-3" width="100%" gap="3" verticalAlign="middle">
+								<s:Label color="#145BA8" fontSize="18" fontWeight="bold"
+										 text="Speakers"/>
+								<s:Label color="#606B7B" text="Can you hear the Test Sound ?"/>
+							</s:VGroup>
+						</s:HGroup>
+						<s:HGroup width="100%" height="51" paddingLeft="2" paddingRight="2"
+								  verticalAlign="top">
+							<s:ComboBox id="cmbAVAudio" width="35" visible="false"/>
+							<s:Image id="btnStartStop" buttonMode="true"
+									 click="startStopSpeakerTesting();"
+									 
+									 smooth="true" smoothingQuality="high" source="{speakerTestStart}"
+									 toolTip="Play test sound" useHandCursor="true"/>	
+							
+						</s:HGroup>
+					</s:VGroup>
+				</s:BorderContainer>
+				<s:BorderContainer width="100%" height="100%" borderColor="#D4D4D4" cornerRadius="3">
+					<s:layout>
+						<s:VerticalLayout horizontalAlign="center" paddingBottom="10"
+										  paddingLeft="20" paddingRight="20" paddingTop="10"/>
+					</s:layout>
+					<s:VGroup width="100%" height="100%" horizontalAlign="center" paddingBottom="5"
+							  paddingLeft="5" paddingRight="5" paddingTop="5" verticalAlign="middle">
+						<s:HGroup width="100%" paddingLeft="2" paddingRight="2"
+								  verticalAlign="middle">
+							<s:Image smooth="true" smoothingQuality="high"
+									 source="@Embed('/edu/amrita/aview/core/video/assets/images/microphone.png')"/>
+							<s:VGroup width="100%" gap="3">
+								<s:Label color="#145BA8" fontSize="18" fontWeight="bold"
+										 text="Microphone"/>
+								<s:Label color="#606B7B" text="Can your voice be heard?"/>
+							</s:VGroup>
+						</s:HGroup>
+						<s:HGroup y="52" width="100%" height="33" paddingLeft="2" paddingRight="2"
+								  verticalAlign="middle">
+							<!--Fix for issue #19721-->
+							<s:BorderContainer id="bcMicrophone" height="{cmbMicrophoneDrivers.height}" borderVisible="false">
+								<s:ComboBox id="cmbMicrophoneDrivers" width="192"/>
+							</s:BorderContainer>
+							<s:Image id="btnRecord" buttonMode="true" click="initializeMicTesting()"
+									 enabled="{cmbMicrophoneDrivers.selectedIndex!=-1?true:false}"
+									 smooth="true" smoothingQuality="high" source="{recordAudio}"
+									 toolTip="Speak on your microphone and look for audio signal" useHandCursor="true"/>	
+							
+						</s:HGroup>
+						<mx:Canvas id="micLevelCanvas" width="240" height="10"/>
+					</s:VGroup>
+				</s:BorderContainer>
+			</s:VGroup>
+			<s:VGroup width="100%" height="100%" paddingBottom="2" paddingLeft="2" paddingRight="2"
+					  paddingTop="2">
+				<s:BorderContainer width="100%" height="100%" borderColor="#D4D4D4" cornerRadius="3">
+					<s:VGroup width="100%" height="100%" horizontalAlign="center" paddingBottom="10"
+							  paddingLeft="20" paddingRight="20" paddingTop="10"
+							  verticalAlign="middle">
+						<s:HGroup width="100%" paddingLeft="2" paddingRight="2"
+								  verticalAlign="middle">
+							<s:Image smooth="true" smoothingQuality="high"
+									 source="@Embed('/edu/amrita/aview/core/video/assets/images/video.png')"/>
+							<s:VGroup width="100%" gap="3">
+								<s:Label color="#145BA8" fontSize="18" fontWeight="bold" text="Video"/>
+								<s:Label color="#606B7B" text="Can you see yourself?"/>
+							</s:VGroup>
+						</s:HGroup>
+						<s:HGroup y="52" width="100%" height="33" paddingLeft="2" paddingRight="2"
+								  verticalAlign="middle">
+							<s:ComboBox id="cmbAVVideo" width="246" change="startCameraTesting()"/>
+						</s:HGroup>
+						<s:HGroup id="vdAVPlaying1">
+							<s:VideoDisplay id="vdAVPlaying" width="247" height="160" autoPlay="true"
+											chromeColor="#000000" scaleMode="letterbox"/>
+						</s:HGroup>
+						
+					</s:VGroup>
+					
+				</s:BorderContainer>
+			</s:VGroup>
+		</s:HGroup>
+		<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
+			<s:Button label="Save" chromeColor="#E0EFFB" click="getDriverDetails()" cornerRadius="3"
+					  toolTip="Save"/>
+			<s:Button label="Cancel" chromeColor="#E0EFFB" click="closePretesting()" cornerRadius="3"
+					  toolTip="Cancel"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+	
+
+	
+	
+</s:TitleWindow>

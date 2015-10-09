@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StudentMobileViewQuizResponse.mxml
+Module		: Quiz
+Developer(s): Jeevanantham N
+Reviewer(s)	: Sivaram SK 
+
+StudentMobileViewQuizResponse component is used to view quiz results.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 initialize="init()"
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.evaluation.helper.QuizHelper;
+			import edu.amrita.aview.core.evaluation.vo.QuizVO;
+			import edu.amrita.aview.core.shared.components.messageBox.MessageBox;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+
+			/**
+			 * Instance of quiz object to get user id
+			 */
+			[Bindable]
+			public var quizVO:QuizVO=new QuizVO();
+			/**
+			 * Holds student name
+			 */
+			[Bindable]
+			public var studentName:String="";
+			/**
+			 * Holds count of questions
+			 */
+			[Bindable]
+			public var questionCount:String="";
+			/**
+			 * Holds total marks
+			 */
+			[Bindable]
+			public var totalMarks:String="";
+			/**
+			 * Holds quiz score
+			 */
+			[Bindable]
+			public var studentScore:String="";
+			/**
+			 * Holds percentage
+			 */
+			[Bindable]
+			public var studentPercentage:String="";
+			/**
+			 * Holds quiz name
+			 */
+			[Bindable]
+			public var quizName:String="";
+			/**
+			 * Holds quiz id
+			 */
+			[Bindable]
+			public var quizId:String="";
+			/**
+			 * Instance of QuizHelper to get result
+			 */
+			private var quizHelper:QuizHelper;
+
+			/**
+			 * @public
+			 *
+			 * To get quiz result based on the user
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function init():void
+			{
+				quizHelper=new QuizHelper();
+				var userId:Number=ClassroomContext.userVO.userId;
+				FlexGlobals.topLevelApplication.mainApp.studentLiveQuizView.studentLiveQuizResultComp.btnViewAnswer.enabled = false;
+				quizHelper.getQuizResultForStudent(quizVO.quizId, userId,getQuizStudentResultResultHandler);
+			}
+
+			/**
+			 * @public
+			 *
+			 * Result handler for quiz response to get score, quiz count, percentage, total marks and student name.
+			 *
+			 * @param result holds values of quiz details
+			 * @return void
+			 */
+			public function getQuizStudentResultResultHandler(result:ArrayCollection):void
+			{
+				if ((result != null) && (result.length != 0))
+				{
+					studentName=result.getItemAt(0).userName;
+					questionCount=result.getItemAt(0).countQuizQuestionId;
+					totalMarks=result.getItemAt(0).totalScore;
+					studentScore=String(Math.round(result[0].score * 100) / 100);
+					studentPercentage=result.getItemAt(0).percentage;
+					quizId=result.getItemAt(0).quizId;
+					FlexGlobals.topLevelApplication.mainApp.studentLiveQuizView.studentLiveQuizResultComp.btnViewAnswer.enabled = true;
+				}
+				else
+				{
+					MessageBox.show("No result available", "Quiz Student Result", MessageBox.MB_OK, this, null, null, MessageBox.IC_INFO);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Rect width="100%"
+			height="100%">
+		<s:fill>
+			<s:SolidColor color="0x071124"/>
+		</s:fill>
+	</s:Rect>
+	<s:Scroller width="100%"
+				height="100%">
+		<s:VGroup width="100%"
+				  height="100%"
+				  top="10"
+				  paddingBottom="10"
+				  paddingTop="10"
+				  paddingLeft="10"
+				  paddingRight="10"
+				  verticalAlign="middle"
+				  horizontalAlign="center"
+				  color="0xFFFFFF">
+
+			<!--QUIZ ID-->
+			<s:HGroup width="100%"
+					  height="20%">
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label text="Quiz Id"/>
+				</s:Group>
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label id="lblQuizId"
+							 fontWeight="bold"
+							 text="{': '+quizId}"/>
+				</s:Group>
+			</s:HGroup>
+			<!--QUIZ NAME-->
+			<s:HGroup width="100%"
+					  height="20%">
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label text="Quiz Name"/>
+				</s:Group>
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label id="lblQuizName"
+							 fontWeight="bold"
+							 text="{': '+quizName}"/>
+				</s:Group>
+			</s:HGroup>
+			<!--STUDENT NAME-->
+			<s:HGroup width="100%"
+					  height="20%">
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label text="Student Name"/>
+				</s:Group>
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label id="lblQuizStudentName"
+							 fontWeight="bold"
+							 text="{': '+studentName}"/>
+				</s:Group>
+			</s:HGroup>
+			<!--QUESTION(S) COUNT-->
+			<s:HGroup width="100%"
+					  height="20%">
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label text="No.of Questions"/>
+				</s:Group>
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label id="lblQuizQuestionCount"
+							 fontWeight="bold"
+							 text="{': '+questionCount}"/>
+				</s:Group>
+			</s:HGroup>
+			<!--TOTAL MARKS-->
+			<s:HGroup width="100%"
+					  height="20%">
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label text="Total Marks"/>
+				</s:Group>
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label id="lblQuizTotalMark"
+							 fontWeight="bold"
+							 text="{': '+totalMarks}"/>
+				</s:Group>
+			</s:HGroup>
+			<!--SCORE-->
+			<s:HGroup width="100%"
+					  height="20%">
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label text="Marks obtained"/>
+				</s:Group>
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label id="lblQuizScore"
+							 fontWeight="bold"
+							 text="{': '+studentScore}"/>
+				</s:Group>
+			</s:HGroup>
+			<!--PERCENTAGE-->
+			<s:HGroup width="100%"
+					  height="20%">
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label text="Percentage"/>
+				</s:Group>
+				<s:Group width="50%"
+						 height="100%">
+					<s:Label id="lblQuizPercentage"
+							 fontWeight="bold"
+							 text="{': '+studentPercentage}"/>
+				</s:Group>
+			</s:HGroup>
+
+		</s:VGroup>
+	</s:Scroller>
+</s:Group>

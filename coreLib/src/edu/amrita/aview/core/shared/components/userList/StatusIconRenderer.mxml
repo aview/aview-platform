@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: StatusIconRenderer.mxml
+Module		: Common
+Developer(s): Ravi Sankar 
+Reviewer(s)	: Veena Gopal K.V
+
+-->
+<!--
+VGCR:-Function Description  
+VGCR:-Comment for each section
+-->
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%" borderStyle="solid" borderVisible="false"
+		 creationComplete="getQuestions()" dataChange="changeICon()" horizontalAlign="center"
+		 horizontalGap="0" paddingBottom="0" paddingLeft="0" paddingRight="2" paddingTop="0"
+		 verticalAlign="middle">
+	<mx:Script source="StatusIconRendererHandler.as"/>
+	<!--<mx:Image id="iconLoader" source="{status_icon_source}"/>
+	<s:Image id="iconSeperator" height="100%" smooth="true" smoothingQuality="high"
+			 source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/seperator.jpg')"/>-->
+	<s:Image id="iconQuestion" buttonMode="true" click="showQuestionInterface()" smooth="true"
+			 smoothingQuality="high" source="{question_icon_source}" useHandCursor="true" toolTip=""/>
+</mx:HBox>

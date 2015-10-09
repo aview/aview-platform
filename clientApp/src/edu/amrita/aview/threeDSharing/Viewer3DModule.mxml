@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: Viewer3DModule.mxml
+Module		: 3DViewer
+Developer(s): Jayakrishnan R, Arun V
+Reviewer(s)	: Pradeesh,Remya T
+
+Viewer3DModule.mxml for creating window for 3Dviewer pop-out in desktop version.
+
+-->
+
+<s:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   minWidth="920"
+		   minHeight="680"
+		   backgroundAlpha="0"
+		   creationComplete="init()"
+		   close="closeViewer3D()"
+		   
+		   skinClass="edu.amrita.aview.threeDSharing.SparkSkin"
+		   status="{FlexGlobals.topLevelApplication.mainApp.COPY_RIGHT_FOOTER}"
+		   windowActivate="multippleWwindowActivateHandler(event)"
+		   windowDeactivate="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.multipleWindowDeactivateHandler(event)" renderMode="direct">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="Viewer3DModuleHandler.as"/>
+	<!--For adding the viewer3D component-->
+	<mx:Canvas id="viewer3DCanvas"
+			   x="0"
+			   y="0"
+			   width="100%"
+			   height="100%"
+			   resize="onReSize()"
+			   top="0"
+			   bottom="20">
+	</mx:Canvas>
+</s:Window>

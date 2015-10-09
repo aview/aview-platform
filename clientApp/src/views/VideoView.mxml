@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: VideoView.mxml
+Module		: Video
+Developer(s): Salil George, Ganesan A, Jeevanantham N
+Reviewer(s)	: Pradeesh, Jayakrishnan R
+
+This component is used to,
+
+	1. View presenter/selected viewer video
+	2. Start/stop video publish
+	3. Choose different selected viewer video from selected viewer list
+	4. Check device hardware condition
+	5. Stop/play video of selected viewer video
+	6. Open/close local video call-out.
+
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		backgroundColor="#071124"
+		creationComplete="initVidModule()"
+		viewDeactivate="localVideo.close()"
+		xmlns:views="views.*"
+		backgroundAlpha="1"
+		xmlns:toolSets="views.toolSets.*" 
+		xmlns:customComboBox="views.components.customComboBox.*" xmlns:dropDownList="views.components.customComboBox.dropDownList.*">
+	
+	<fx:Style source="/views/assets/css/mobilestyles.css"/>
+	<fx:Script source="../views/toolSets/Icons.as"/>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.common.components.messageBox.MessageBox;
+			import edu.amrita.aview.core.entry.ClassroomContext;
+			import edu.amrita.aview.core.entry.Constants;
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin;
+			
+			import flash.utils.clearTimeout;
+			import flash.utils.setTimeout;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexMouseEvent;
+			
+			import spark.components.VideoDisplay;
+			import spark.events.IndexChangeEvent;
+			import spark.events.PopUpEvent;
+
+			/**
+			 * Set to true when user starts/stops video
+			 */
+			public var isUserTriggerVideoBtn:Boolean = false;
+
+			/**
+			 * Holds selected viewer stream name
+			 */
+			[Bindable]
+			public var viewerVideoTitle:String="";
+			/**
+			 * Holds presenter stream name
+			 */
+			[Bindable]
+			public var presenterVideoTitle:String="";
+			/**
+			 * Set to true, when user streams his/her video/audio
+			 */
+			public var videoPublishStatus:Boolean=false;
+			/**
+			 * Set to true, when user opens video setting call-out
+			 */
+			private var isSetting:Boolean=false;
+			/**
+			 * Set to true, If local video call-out is opened
+			 */
+			private var isLocalVideoON:Boolean=false;
+			/**
+			 * Set to true, whenever user gets presenter control
+			 */
+			private var presenterControl:Boolean=false;
+			/**
+			 * Used to set VideoReceive icon for Video pause/play button.
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/video_receive.png")]
+			public var mobileVideoReceiveIcon:Class;
+			/**
+			 * Used to set VideoNotReceive icon for Video pause/play button.
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/video_notreceive.png")]
+			public var mobileVideoNotReceiveIcon:Class;
+			/**
+			 * Used to set VideoFade icon for Video pause/play button.
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/video_receive.png")]
+			public var mobileVideoFadeIcon:Class;
+			/**
+			 * Holds icon for selected viewer Video pause/play button.
+			 */
+			[Bindable]
+			public var mobileStudentVideoReceive:Class;
+			/**
+			 * Holds icon for presenter Video pause/play button.
+			 */
+			[Bindable]
+			public var mobileVideoReceive:Class;
+			/**
+			 * Used to set playIcon icon for Video start/stop button.
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/play_25.png")]
+			public var playIcon:Class;
+			/**
+			 * Used to set stopVideo icon for Video start/stop button.
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/stop_25.png")]
+			public var stopVideoIcon:Class;
+			/**
+			 * Holds icon for Video start/stop button.
+			 */
+			[Bindable]
+			public var videoStartStopIcon:Class;
+			/**
+			 * To watch the changes of studentContainer
+			 */
+			public var studentWidthWatcher:ChangeWatcher=null;
+			/**
+			 * To watch the changes of presenterContainer
+			 */
+			public var presenterWidthWatcher:ChangeWatcher=null;
+			/**
+			 * Holds x position of video setting
+			 */
+			private var videoSettingX:Number=0;
+			/**
+			 * Holds y position of video setting
+			 */
+			private var videoSettingY:Number=0;
+			/**
+			 * Used to call HTTP service to load saved setting details
+			 */
+			private var isSettingopenAtFirstTime:Boolean = false;
+			private var selectedViewerArrarCol:ArrayCollection = new ArrayCollection();
+			/**
+			 *  selectedViewerName is used to store currently selected viewer name.
+			 */
+			public var selectedViewerName:String;
+			/**
+			 * @private
+			 *
+			 * To initialize the video module
+			 *
+			 * @param null
+			 * @return void
+			 */
+			private function initVidModule():void
+			{
+				videoStartStopIcon=playIcon;
+				if (presenterControl)
+				{
+					layoutChange(true);
+				}
+				else
+				{
+					layoutChange(false);
+				}
+				preTestIcon=preTestNormalIcon;
+				if (studentWidthWatcher == null)
+					studentWidthWatcher=BindingUtils.bindSetter(setStudentWidth, studentVideoContainer, "width");
+				if (presenterWidthWatcher == null)
+					presenterWidthWatcher=BindingUtils.bindSetter(setPresenterWidth, teacherVideoContainer, "width"); 
+			}
+			/**
+			 * @public
+			 *
+			 * To set studentVideo width
+			 *
+			 * @param value holds the width of studentvideo
+			 * @return void
+			 */
+			public function setStudentWidth(value:Number):void
+			{
+				FlexGlobals.topLevelApplication.mainApp.studentVideoChange(studentVideoContainer.width,studentVideoContainer.height);
+			}
+			/**
+			 * @public
+			 *
+			 * To set presenterVideo width
+			 *
+			 * @param value holds the width of presenterVideo
+			 * @return void
+			 */
+			public function setPresenterWidth(value:Number):void
+			{
+				FlexGlobals.topLevelApplication.mainApp.presenterVideoChange(teacherVideoContainer.width,teacherVideoContainer.height);
+			}
+			/**
+			 * @private
+			 *
+			 * To open local video call-out
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function localVideoDisplay():void
+			{
+				if (isLocalVideoON == false)
+				{
+					var selectedCameraIndex:int=FlexGlobals.topLevelApplication.mainApp.videoDeviceIndex;
+					localVideo.createLocalVideoDisplay(Camera.getCamera(selectedCameraIndex.toString()));
+					localVideo.open(btnLocalVideo);
+					isLocalVideoON=true;
+					videoStartStopIcon=stopVideoIcon;
+					btnLocalVideo.toolTip="Stop your video";
+				}
+				btnLocalVideo.enabled=false;
+			}
+			private function startVideo(event:Event):void
+			{
+				//if MUI status is ON and tablet user tries to start the video, display the alert message
+				//Otherwise stop the video
+				if (FlexGlobals.topLevelApplication.mainApp.isMUISelected && ClassroomContext.moderatorName != "" && FlexGlobals.topLevelApplication.mainApp.getUserSO(ClassroomContext.userVO.userName).userRole == Constants.VIEWER_ROLE)
+				{
+					//If videoStartStopIcon is playIcon, display the alert message
+					//Otherwsie stop publish the video to serevr
+					if (videoStartStopIcon == playIcon)
+					{
+						MessageBox.show("Your video cannot be started as the presenter has turned on Multiple User Interaction(MUI) feature.Once the presenter turns off MUI, you can start your video.", "Info - CPU usage optimization", MessageBox.MB_OK, this, null, null, MessageBox.IC_INFO);
+						btnLocalVideo.enabled=true;
+					}
+					else
+					{
+						btnLocalVideo.enabled=true;
+						FlexGlobals.topLevelApplication.mainApp.stopPublish();
+						videoStartStopIcon=playIcon;
+						videoPublishStatus=true;
+						btnLocalVideo.toolTip="Start your video";
+						//True only if user not able to interact with presenter
+						if (FlexGlobals.topLevelApplication.mainApp.isRestrictionAdded)
+						{
+							FlexGlobals.topLevelApplication.mainApp.isRestrictionAdded=false;
+							videoPublishStatus=false;
+							isSetting=false;
+						}
+					}
+					
+				}
+				else
+				{
+					//If  user not started his video, open video setting call-out to publish video
+					//Otherwise stop the video
+					if (videoPublishStatus )
+					{
+						videoPublishStatus=false;
+						FlexGlobals.topLevelApplication.mainApp.stopPublish();
+						videoStartStopIcon=playIcon;
+						btnLocalVideo.toolTip="Start your video";
+						btnLocalVideo.enabled=true;
+						FlexGlobals.topLevelApplication.isVideoON=false;
+					}
+					else
+					{
+						FlexGlobals.topLevelApplication.mainApp.setStreamingStatus();
+						FlexGlobals.topLevelApplication.mainApp.publishVideo();
+						localVideoDisplay();
+						FlexGlobals.topLevelApplication.isVideoON=true;
+						videoPublishStatus=true;
+					}
+				}
+				isUserTriggerVideoBtn = true;
+			}
+			/**
+			 * @private
+			 *
+			 * To open SelectedviewerList call-out
+			 *
+			 * @param event of Event
+			 * @return void
+			 */
+			private function selectViewerVideo(event:Event):void
+			{
+				selectedViewer.open(btnSelectViewerVideo);
+				selectedViewer.dataProvider=FlexGlobals.topLevelApplication.mainApp.userAudioStrength;
+				selectedViewer.updateList();
+				selectedViewer.selectedViewerList.addEventListener(MouseEvent.CLICK, addUserToVideoComponent);
+				btnSelectViewerVideo.enabled=false;
+
+			}
+			/**
+			 * @protected
+			 *
+			 * Set value isLocalVideoON as false, when local video call-out is getting closed
+			 *
+			 * @param event of PopUpEvent
+			 * @return void
+			 */
+			protected function localVideoCloseHandler(event:PopUpEvent):void
+			{
+				isLocalVideoON=false;
+			}
+			/**
+			 * @protected
+			 *
+			 * Set value isSetting as false, when setting call-out is getting closed
+			 *
+			 * @param event of PopUpEvent
+			 * @return void
+			 */
+			protected function settingCloseOutHandler(event:PopUpEvent):void
+			{
+				isSetting=false;
+			}
+			/**
+			 * @public
+			 *
+			 * To open video setting call-out and publish/unpublish the video
+			 *
+			 * @param null
+			 * @return void
+			 */
+			public function videoSettings():void
+			{
+				//To open video setting call-out
+				if (FlexGlobals.topLevelApplication.colbTools.btnVideoModule.visible == true)
+				{
+					isSetting=true;
+					setting.open(btnSetting);
+					setting.visible=true;
+					setting.includeInLayout=true;
+					setting.comboBandwidthList.visible=true;
+					setting.toggleCamera.visible=true;
+					if(isSettingopenAtFirstTime)
+					{
+						setting.prePopulateSettings();
+					}
+					setting.btnSave.addEventListener(MouseEvent.CLICK, settingCloseHandler);
+					var tempArrBW:ArrayList=new ArrayList(FlexGlobals.topLevelApplication.mainApp.arrBW);
+					setting.bandWidthList=tempArrBW;
+					btnSetting.enabled=false;
+					isSettingopenAtFirstTime = true;
+					//To set position of setting call-out
+					if (videoSettingX == 0)
+					{
+						videoSettingX=setting.x;
+						videoSettingY=setting.y;
+					}
+					else
+					{
+						setting.x=videoSettingX;
+						setting.y=videoSettingY;
+					}
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To close video setting and change icon
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function settingCloseHandler(event:MouseEvent):void
+			{
+				//if video streaming option is audion only, disable local video button.
+				//Otherwise enable local video button.
+				if (setting.rbgAudioOption.selection == setting.rbAudioOnly)
+				{
+					btnLocalVideo.enabled=false;
+				}
+				else
+				{
+					btnLocalVideo.enabled=true;
+				}
+				btnSetting.enabled=true;
+				setting.close();
+				setting.visible=false;
+				setting.includeInLayout=false;
+				videoPublishStatus = false;
+				isSetting = false;
+				this.removeEventListener(MouseEvent.CLICK, settingCloseHandler);
+			}
+			/**
+			 * @private
+			 *
+			 * To change UI based on the user type
+			 *
+			 * @param isPresenter holds the value of whether user is presenter or not
+			 * @return void
+			 */
+			private function layoutChange(isPresenter:Boolean):void
+			{
+				//It the user is presenter, disable presenter video container and add viewer video
+				//Otherwise enable video container and add video of both presenter and viewer
+				if (isPresenter)
+				{
+					mobileStudentVideoReceive=mobileVideoFadeIcon;
+					studentVideoContainer.percentWidth=100;
+					teacherVideoContainer.includeInLayout=false;
+					teacherVideoContainer.visible=false;
+					container.includeInLayout=false;
+					container.visible=false;
+					FlexGlobals.topLevelApplication.mainApp.addSelectedViewerVideoToPanel(FlexGlobals.topLevelApplication.mainApp.viewerStreamName.slice(0, FlexGlobals.topLevelApplication.mainApp.viewerStreamName.lastIndexOf("_")), false);
+				}
+				else
+				{
+					mobileVideoReceive=mobileVideoReceiveIcon;
+					mobileStudentVideoReceive=mobileVideoFadeIcon;
+					teacherVideoContainer.includeInLayout=true;
+					teacherVideoContainer.visible=true;
+					container.includeInLayout=true;
+					container.visible=true;
+					teacherVideoContainer.percentWidth=50;
+					studentVideoContainer.percentWidth=50;
+//					FlexGlobals.topLevelApplication.mainApp.startPresentersStream();
+//					FlexGlobals.topLevelApplication.mainApp.addSelectedViewerVideoToPanel(FlexGlobals.topLevelApplication.mainApp.viewerStreamName.slice(0, FlexGlobals.topLevelApplication.mainApp.viewerStreamName.lastIndexOf("_")), false);
+				}
+			}
+			/**
+			 * @public
+			 *
+			 * To remove videoDisplay from video container
+			 *
+			 * @param isPresenter holds the value of whetheruser is presenter or not
+			 * @return void
+			 */
+			public function updateControls(isPresenter:Boolean):void
+			{
+				presenterControl=isPresenter;
+				//If user is presenter, remove studentVideoDisplay from pnlStudentVideo
+				//Otherwise remove teacherVideoDisplay from pnlTeacherVideo
+				if (isPresenter)
+				{
+					try
+					{
+						pnlStudentVideo.removeElement(pnlTeacherVideoDisplay);
+					}
+					catch (err:Error)
+					{
+					}
+
+				}
+				else
+				{
+					try
+					{
+						pnlTeacherVideo.removeElement(pnlStudentVideoDisplay);
+					}
+					catch (err:Error)
+					{
+					}
+				}
+				//To change the layout
+				if (this.initialized)
+				{
+					layoutChange(presenterControl);
+				}
+			}
+			/**
+			 * @private
+			 *
+			 * To add video of selected viewer to video container and close SelectedviewerList call-out.
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function addUserToVideoComponent(event:MouseEvent):void
+			{
+				selectedViewer.close();
+				btnSelectViewerVideo.enabled=true;
+				var selectedViewerName:String=selectedViewer.selectedViewerList.selectedItem.selectedViewerName.toString();
+				selectedViewerName=selectedViewerName.slice(0, selectedViewerName.lastIndexOf("_"));
+				FlexGlobals.topLevelApplication.mainApp.addSelectedViewerVideoToPanel(selectedViewerName, true);
+			}
+			/**
+			 * @private
+			 * To close video setting call-out, if it is opened
+			 *
+			 * @param event of FlexMouseEvent
+			 * @return void
+			 */
+			private function closeVideoSettingComponent(event:FlexMouseEvent):void
+			{
+				if (setting.isOpen)
+				{
+					setting.close();
+					btnSetting.enabled=true
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function videoModuleTolltipOpenHandler(event:MouseEvent):void
+			{
+				var videoModuleTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				videoModuleTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			/**
+			 * @protected
+			 *
+			 * To close local video call-out component
+			 *
+			 * @param event of FlexMouseEvent
+			 * @return void
+			 */
+			protected function closeLocalVideoComponent(event:FlexMouseEvent):void
+			{
+				localVideo.close();
+				btnLocalVideo.enabled = true;
+			}
+			
+			public function selectedViewerType_changeHandler():void
+			{
+				if(dropdownSelectedViewerType.selectedItem !=null && dropdownSelectedViewerType.visible == true){
+					selectedViewerName = dropdownSelectedViewerType.selectedItem.userName;
+					FlexGlobals.topLevelApplication.mainApp.addSelectedViewerVideoToPanel(selectedViewerName, true);
+				}else{
+					FlexGlobals.topLevelApplication.mainApp.addSelectedViewerVideoToPanel(null, false);
+				}
+				FlexGlobals.topLevelApplication.mainApp.VIDEO_PAUSE_LABEL_STUDENT.text = "";
+				FlexGlobals.topLevelApplication.mainApp.studentVideoChange(FlexGlobals.topLevelApplication.videoComp.studentVideoContainer.width,FlexGlobals.topLevelApplication.videoComp.studentVideoContainer.height);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!--Localvideo display component-->
+		<customComboBox:LocalVideoDisplay id="localVideo"
+											verticalPosition="start"
+											mouseDownOutside="closeLocalVideoComponent(event)"
+											close="localVideoCloseHandler(event);"/>
+		
+		<!--Video setting Component-->
+		<customComboBox:MobileVideoSetting id="setting"
+											 mouseDownOutside="closeVideoSettingComponent(event)"
+											 close="settingCloseOutHandler(event);"/>
+		<!--Selected viewer list component-->
+		<toolSets:SelectedViewerList id="selectedViewer"
+									 width="300"
+									 height="300"
+									 verticalPosition="start"
+									 mouseDownOutside="selectedViewer.close();btnSelectViewerVideo.enabled = true;"/>
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<s:actionContent>
+		<s:Button icon="@Embed('/views/assets/home_48.png')"/>
+	</s:actionContent>
+	<s:Group width="100%"
+			 height="100%">
+		<s:HGroup id="videoContainer"
+				  width="100%"
+				  height="100%"
+				  paddingLeft="3"
+				  paddingRight="3">
+			<!--Presenter video container contains title, video container and control button-->
+			<s:VGroup id="teacherVideoContainer"
+					  width="50%"
+					  height="100%"
+					  gap="1"
+					  horizontalAlign="center"
+					  horizontalCenter="0">
+				<s:Label id="teacherVideoTitle"
+						 text="{presenterVideoTitle}"
+						 verticalAlign="middle"
+						 fontSize="18"
+						 height="8%"
+						 width="100%"
+						 color="White"
+						 textAlign="center"
+						 maxDisplayedLines="1"
+						 backgroundColor="#202734"/>
+				<s:Group width="100%"
+						 height="88%"
+						 horizontalCenter="0">
+					<s:Rect id="vidBorder"
+							width="100%"
+							height="100%">
+						<s:fill>
+							<s:SolidColor color="#000000"/>
+						</s:fill>
+					</s:Rect>
+					<s:Group width="100%"
+							 height="100%"
+							 id="pnlTeacherVideo"
+							 y="{vidBorder.y}"
+							 x="{vidBorder.x}"
+							 horizontalCenter="0">
+							<s:VideoDisplay width="100%"
+											 height="100%"
+											 id="pnlTeacherVideoDisplay"
+											 y="{vidBorder.y}"
+											 x="{vidBorder.x}"
+											 horizontalCenter="0"/>
+					</s:Group>
+				</s:Group>
+
+				<s:Group height="10%"
+						 width="100%"
+						 id="presenterActionGroup">
+					<s:Rect height="100%"
+							width="100%">
+						<s:fill>
+							<s:SolidColor color="#202734"/>
+						</s:fill>
+					</s:Rect>
+					<s:HGroup height="100%"
+							  horizontalAlign="center"
+							  width="100%">
+						<s:Button icon="{mobileVideoReceive}"
+								  id="btnVideoReceive"
+								  width="40%"
+								  height="100%"
+								  click="FlexGlobals.topLevelApplication.mainApp.startStopPresenterVideo()"
+								  fontWeight="normal"
+								  enabled="false"
+								  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+								  toolTip="Stop Viewing Video"
+								  rollOver="videoModuleTolltipOpenHandler(event)"
+								  mouseDown="videoModuleTolltipOpenHandler(event)"/>
+					</s:HGroup>
+				</s:Group>
+
+			</s:VGroup>
+			<!--Viewer video container contains title, video container and control button-->
+			<s:VGroup id="container"
+					  verticalAlign="middle"
+					  width="4"
+					  height="100%">
+				<s:Group width="100%"
+						 height="40">
+					<s:Rect width="100%"
+							height="100%">
+						<s:fill>
+							<s:SolidColor color="0xFFFFFF"/>
+						</s:fill>
+						<s:filters>
+							<s:GlowFilter alpha="1"
+										  blurX="3"
+										  blurY="200"
+										  color="0xFFFFFF"
+										  knockout="true"
+										  strength="1"/>
+						</s:filters>
+					</s:Rect>
+				</s:Group>
+			</s:VGroup>
+			<s:VGroup id="studentVideoContainer"
+					  x="{container.x+container.width}"
+					  width="50%"
+					  height="100%"
+					  gap="1"
+					  horizontalAlign="center"
+					  horizontalCenter="0">
+				<s:Label id="studentVideoTitle"
+						 text="{viewerVideoTitle}"
+						 maxDisplayedLines="1"
+						 verticalAlign="middle"
+						 fontSize="18"
+						 height="8%"
+						 width="100%"
+						 color="White"
+						 textAlign="center"
+						 backgroundColor="#202734"/>
+				<dropDownList:DropDownList id="dropdownSelectedViewerType"
+										   selectedIndex="0"
+										   dataProvider="{FlexGlobals.topLevelApplication.mainApp.selectedViewersData}"
+										   fontSize="12"
+										   width="50%"
+										   height="8%"
+										   popUpWidth="100"
+										   labelField="userName"
+										   verticalScrollPolicy="auto"
+										   change="selectedViewerType_changeHandler()"
+										   styleName="customComboBox"
+										   visible="false"
+										   includeInLayout="false"/>
+				<s:Group height="88%"
+						 width="100%"
+						 horizontalCenter="0">
+					<s:Rect width="100%"
+							height="100%"
+							id="sVidBorder">
+						<s:fill>
+							<s:SolidColor color="#000000"/>
+						</s:fill>
+					</s:Rect>
+					<s:Group height="100%"
+							 width="100%"
+							 id="pnlStudentVideo"
+							 x="{sVidBorder.x}"
+							 y="{sVidBorder.y}"
+							 left="0">
+						<s:VideoDisplay width="100%"
+										 height="100%"
+										 id="pnlStudentVideoDisplay"
+										 y="{sVidBorder.y}"
+										 x="{sVidBorder.x}"/>
+					</s:Group>
+				</s:Group>
+				<s:Group height="10%"
+						 width="100%"
+						 id="studentActionGroup">
+					<s:Rect height="100%"
+							width="100%">
+						<s:fill>
+							<s:SolidColor color="#202734"/>
+						</s:fill>
+					</s:Rect>
+					<s:HGroup height="100%"
+							  horizontalAlign="center"
+							  width="100%">
+						<s:Button id="btnStudentVideoReceive"
+								  width="40%"
+								  height="100%"
+								  icon="{mobileStudentVideoReceive}"
+								  click="FlexGlobals.topLevelApplication.mainApp.startStopViewerVideo(true)"
+								  fontWeight="normal"
+								  enabled="false"
+								  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+								  toolTip="Stop Viewing Video"
+								  rollOver="videoModuleTolltipOpenHandler(event)"
+								  mouseDown="videoModuleTolltipOpenHandler(event)"/>
+					</s:HGroup>
+				</s:Group>
+			</s:VGroup>
+		</s:HGroup>
+		<!--Video action buttons-->
+		<s:VGroup width="10%"
+				  gap="-1"
+				  height="100%"
+				  right="0"
+				  visible="false"
+				  includeInLayout="false">
+			<s:Button id="btnLocalVideo"
+					  visible="false"
+					  includeInLayout="false"
+					  icon="{videoStartStopIcon}"
+					  width="100%"
+					  height="100%"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  click="startVideo(event)"
+					  toolTip="Start your video"
+					  rollOver="videoModuleTolltipOpenHandler(event)"
+					  mouseDown="videoModuleTolltipOpenHandler(event)"/>
+			<s:Button id="btnSetting"
+					  visible="false"
+					  includeInLayout="false"
+					  icon="/views/assets/video_settings_30x30.png"
+					  width="100%"
+					  height="100%"
+					  click="videoSettings()"
+					  fontWeight="normal"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  toolTip="Video settings"
+					  rollOver="videoModuleTolltipOpenHandler(event)"
+					  mouseDown="videoModuleTolltipOpenHandler(event)"/>
+			<s:Button id="btnSelectViewerVideo"
+					  visible="false"
+					  includeInLayout="false"
+					  width="100%"
+					  height="100%"
+					  click="selectViewerVideo(event)"
+					  fontWeight="normal"
+					  icon="/views/assets/selectedViewer.png"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  toolTip="Selected viewer List"
+					  rollOver="videoModuleTolltipOpenHandler(event)"
+					  mouseDown="videoModuleTolltipOpenHandler(event)"/>
+			<s:Button id="btnPreTest"
+					  visible="false"
+					  includeInLayout="false"
+					  width="100%"
+					  height="100%"
+					  click="FlexGlobals.topLevelApplication.startPreTesting(event)"
+					  icon="{preTestIcon}"
+					  iconPlacement="left"
+					  color="0xFFFFFF"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  toolTip="Pretesting"
+					  rollOver="videoModuleTolltipOpenHandler(event)"
+					  mouseDown="videoModuleTolltipOpenHandler(event)"/>
+			<s:Button id="btnRefresh"
+					  visible="false"
+					  includeInLayout="false"
+					  width="100%"
+					  height="100%"
+					  click="FlexGlobals.topLevelApplication.mainApp.refreshVideo()"
+					  icon="/views/assets/refreshx30.png"
+					  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+					  toolTip="Refresh incoming video"
+					  rollOver="videoModuleTolltipOpenHandler(event)"
+					  mouseDown="videoModuleTolltipOpenHandler(event)"/>
+		</s:VGroup>
+	</s:Group>
+</s:View>

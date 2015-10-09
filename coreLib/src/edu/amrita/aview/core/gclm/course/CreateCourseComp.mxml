@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+File		: CreateCourseComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to create/update a course
+
+Based on the logged in user credentials this component behaves as follows:
+Master Admin: Can create course for any institutes
+
+Institute Administrators: Can create course for only those institutes under their limitation
+
+Others: No privilege to create course
+-->
+<components1:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						 xmlns:s="library://ns.adobe.com/flex/spark"
+						 xmlns:mx="library://ns.adobe.com/flex/mx"
+						 xmlns:xt="library://ns.tink.ws/flex/mx"
+						 xmlns:components="edu.amrita.aview.core.shared.components.*"
+						 width="478"
+						 height="252"
+						 backgroundColor="#e0effb"
+						 color="#0653B3"
+						 dropShadowVisible="false"
+						 fontSize="15"
+						 fontWeight="bold"
+						 textAlign="center"
+						 xmlns:components1="edu.amrita.aview.core.shared.components.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="CreateCourseCompUIHandler.as"/>
+	<!-- Container -->
+	<mx:Canvas left="5"
+			   right="5"
+			   top="5"
+			   bottom="5"
+			   borderColor="#A3D7FF"
+			   borderStyle="solid"
+			   chromeColor="#CCCCCC"
+			   fontFamily="Arial"
+			   fontSize="12"
+			   fontWeight="normal"
+			   textAlign="left">
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="10"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show course name -->
+		<s:Label left="20"
+				 top="10"
+				 height="21"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Course Name :"/>
+		<!-- Text input to accepts course name -->
+		<s:TextInput right="20"
+					 top="10"
+					 width="304"
+					 height="25"
+					 id="courseNameText"
+					 maxChars="99"
+					 restrict="{GCLMContext.allowedCharactersForName}"/>
+		<!--restrict="a-zA-Z0-9_ " -->
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="45"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show course code -->
+		<s:Label left="20"
+				 top="45"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Course Code :"/>
+		<!-- text input to accepts course code -->
+		<s:TextInput right="20"
+					 top="45"
+					 width="304"
+					 height="25"
+					 id="courseCodeText"
+					 maxChars="99"
+					 restrict="a-zA-Z0-9_ "/>
+		<!-- Label to show * -->
+		<s:Label left="10"
+				 top="80"
+				 width="12"
+				 height="18"
+				 color="#ED3814"
+				 fontFamily="Times New Roman"
+				 fontSize="13"
+				 fontWeight="bold"
+				 text="*"/>
+		<!-- Label to show Institute Name -->
+		<s:Label left="19"
+				 top="80"
+				 fontFamily="Arial"
+				 fontSize="12"
+				 fontWeight="normal"
+				 paddingLeft="0"
+				 text="Institute Name :"/>
+		<!--<Sparkcontrols:AutoComplete id="cmbInstitute"  right="20" top="80" width="304" height="25"
+		dataProvider="{institutesAC}" labelField="instituteName"/>-->
+		<!-- Filter combo box for institute name -->
+		<xt:FilterComboBox id="cmbInstitute"
+						   right="20"
+						   top="80"
+						   width="304"
+						   height="25"
+						   dataProvider="{GCLMContext.allInstitutesAC}"
+						   labelField="instituteName"
+						   dropdownFactory="{GCLMContext.dropdownFactory}"
+						   selectSingleMatch="true"
+						   prompt=""
+						   removeFilterOnSelection="true"/>
+		<!-- Save button -->
+		<components:ImageButton id="saveCourseButton"
+				  bottom="20"
+				  width="83"
+				  label="Save"
+				  chromeColor="#E0EFFB"
+				  click="createCourse()"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="-60"/>
+		<!-- Cancel button -->
+		<components:ImageButton id="cancelButton"
+				  bottom="20"
+				  width="83"
+				  label="Cancel"
+				  chromeColor="#E0EFFB"
+				  click="closeCreateCourseComp();"
+				  color="#000000"
+				  cornerRadius="3"
+				  horizontalCenter="60"/>
+	</mx:Canvas>
+	<!-- Icon to close create course component -->
+	<components:WindowCloseImage right="5"
+			 top="-25"
+			 id="imgClose"
+			 click="closeCreateCourseComp()"/>
+</components1:InsidePanel>

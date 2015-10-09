@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: InsidePanel.mxml
+Module		: Common
+Developer(s): Ramesh G
+Reviewer(s)	: Monisha Mohanan,Veena Gopal K.V
+
+-->
+
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 cornerRadius="10"
+		 move="insidePanelMoveHandler(event)">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.MoveEvent;
+			
+			/**
+			 * @protected
+			 * for moving this component using the mouse move property
+			 * @param event of Move
+			 * @return void
+			 */
+			protected function insidePanelMoveHandler(event:MoveEvent):void
+			{
+				var appW:Number=FlexGlobals.topLevelApplication.mainApp.width;
+				var appH:Number=FlexGlobals.topLevelApplication.mainApp.height;
+				if (this.x + this.width > appW)
+				{
+					this.x=appW - this.width;
+				}
+				if (this.x < 0)
+				{
+					this.x=0;
+				}
+				if (this.y + this.height > appH)
+				{
+					this.y=appH - this.height;
+				}
+				if (this.y < 0)
+				{
+					this.y=0;
+				}
+			}
+		]]>
+	</fx:Script>
+</s:Panel>

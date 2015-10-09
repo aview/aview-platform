@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+File			: ReportIssue.mxml
+Module			: Feedback
+Developer(s)	: Vijayakumar.R
+Reviewer(s)		: Deepika CP
+This item render is used to generate the other report issue component
+-->
+
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				height="274"
+				autoDrawBackground="true"
+				xmlns:components="edu.amrita.aview.common.components.*"
+				creationComplete="creationCompleteHandler(event)">
+	<s:layout>
+		<s:VerticalLayout gap="3"
+						  paddingBottom="3"
+						  paddingLeft="12"
+						  paddingRight="12"
+						  paddingTop="3"/>
+	</s:layout>
+	<!--script to include handler-->
+	<fx:Script source="ReportIssueHandler.as"/>
+
+	<s:HGroup paddingLeft="1"
+			  paddingRight="1"
+			  verticalAlign="middle">
+		<!--Module name listing -->
+		<s:Label width="110"
+				 text="Affected Module"/>
+		<components:CustomComboBox id="cmbModuleName"
+								   height="24"
+								   change="cmbModuleChangeHandler()"
+								   contentBackgroundColor="#FFFFFF"
+								   tabIndex="0"
+								   click="cmbModuleName.setFocus()"
+								   dataProvider="{arrModuleList}"
+								   labelField="moduleName"
+								   prompt="Select Module"
+								   value="{data.ModuleName}"/>
+	</s:HGroup>
+	<s:HGroup width="100%"
+			  paddingLeft="1"
+			  paddingRight="1"
+			  verticalAlign="middle">
+		<!--Issue title-->
+		<s:Label width="110"
+				 text="Issue:"/>
+
+		<s:TextInput id="txtIssue"
+					 width="100%"
+					 keyDown="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp.viewer3DSWC.removeFocus()}"
+					 text="{data.Issue}"
+					 tabIndex="1"
+					 change="txtIssueChangeHandler()"
+					 maxChars="256"
+					 contentBackgroundColor="#FFFFFF"/>
+	</s:HGroup>
+	<s:VGroup width="100%"
+			  paddingLeft="1"
+			  paddingRight="1"
+			  verticalAlign="middle">
+		<!--issue description -->
+		<s:Label width="110"
+				 text="Description:"/>
+
+		<mx:TextArea id="txtDesc"
+					 maxChars="4000"
+					 width="100%"
+					 keyDown="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp.viewer3DSWC.removeFocus()}"
+					 text="{data.Desc}"
+					 tabIndex="2"
+					 height="150"
+					 change="txtDescChangeHandler()"
+					 contentBackgroundColor="#FFFFFF"/>
+	</s:VGroup>
+	<mx:HBox width="100%"
+			 horizontalAlign="right"
+			 paddingBottom="2"
+			 paddingRight="2">
+		<!--add issue button -->
+		<s:Button id="btnAddIssue"
+				  label="Add another issue"
+				  chromeColor="#E0EFFB"
+				  click="addReportIssue(event)"
+				  visible="{data.showAddButton}"
+				  includeInLayout="{data.showAddButton}"
+				  tabIndex="3"
+				  cornerRadius="3"/>
+		<!--remove issue button -->
+		<s:Button id="btnRemoveIssue"
+				  label="Remove issue"
+				  chromeColor="#E0EFFB"
+				  visible="{data.showRemoveButton}"
+				  includeInLayout="{data.showRemoveButton}"
+				  click="removeReportIssue(event)"
+				  tabIndex="4"
+				  cornerRadius="3"/>
+	</mx:HBox>
+	<s:VGroup id="ruler"
+			  width="100%"
+			  height="20"
+			  horizontalAlign="center"
+			  paddingLeft="1"
+			  paddingRight="1"
+			  visible="false"
+			  includeInLayout="false"
+			  verticalAlign="middle">
+		<mx:HRule width="100%"/>
+	</s:VGroup>
+</s:ItemRenderer>

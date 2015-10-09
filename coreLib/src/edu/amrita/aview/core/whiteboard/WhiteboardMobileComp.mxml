@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: WhiteboardMobileComp.mxml
+Module		: Whiteboard
+Developer(s): Salil George, Ganesan A, Jeevanantham N
+Reviewer(s)	: Sivaram SK 
+
+This component is main component for whiteboard and it is used to implement whiteboard functionalities.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%"
+		 creationComplete="init()"
+		 xmlns:mobileTools="edu.amrita.aview.core.whiteboard.mobileTools.*">
+	<fx:Declarations>
+		<mobileTools:EraserSizeCallout id="eraserCallout"
+									  mouseDownOutside="eraserCallout.close();FlexGlobals.topLevelApplication.whiteBoardTools.btnEraser.enabled = true;"/>
+		<mobileTools:ColorPalatteCallout id="colorPalatteCallout"
+										mouseDownOutside="colorPalatteCallout.close();FlexGlobals.topLevelApplication.whiteBoardTools.btnMenu.enabled = true;"/>
+		<mobileTools:CollaborativeModeCallout id="collaborationCallout"
+											 mouseDownOutside="collaborationCallout.close();FlexGlobals.topLevelApplication.whiteBoardTools.btnCollaboration.enabled = true;"/>
+		<mobileTools:SizeCallout id="sizeCallout"
+								mouseDownOutside="sizeCallout.close();FlexGlobals.topLevelApplication.whiteBoardTools.btnMenu.enabled = true;"/>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="WhiteBoardHandler.as"/>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.shared.events.mobileCustomEvents.WhiteBoardActionEvent;
+			
+			import mx.graphics.SolidColor;
+			
+			[Bindable]
+			public var currentColor:SolidColor = new SolidColor();
+			/**
+			 * @public
+			 *
+			 * To open the whiteboard component, based on the user selection
+			 *
+			 * @param event of WhiteBoardActionEvent
+			 * @return void
+			 */
+			public function selectWBTools(event:WhiteBoardActionEvent):void
+			{
+				var eventTargetId:String=event.data.btnId;
+				var x:Number=event.data.x;
+				switch (eventTargetId)
+				{
+					//Open collaboration component
+					case "btnCollaboration":
+						eraserCallout.close();
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						FlexGlobals.topLevelApplication.whiteBoardTools.wbMenuComp.close();
+						collaborationCallout.open(FlexGlobals.topLevelApplication.whiteBoardTools.btnCollaboration);
+						collaborationCallout.collaborationList.dataProvider=collaborationListDataProvider;
+						collaborationCallout.collaborationList.selectedIndex=collaborationSelectedIndex;
+						FlexGlobals.topLevelApplication.whiteBoardTools.btnCollaboration.enabled=false;
+
+						var collaborationTooltip:MobileToolTip=MobileToolTip.open(event.data.eventTarget.toolTip.toString(), event.data.eventTarget as DisplayObject);
+						collaborationTooltip.handleToolTipPosition(event.data.eventTarget as DisplayObject);
+						break;
+					//To share the mouse pointer
+					case "showPointer":
+						eraserCallout.close();
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						enableDisablePointer();
+						break;
+					//To clear the whiteboard
+					case "clearBtn":
+						eraserCallout.close();
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						clearScratchPad();
+						break;
+					//To restore the whiteboard drawings
+					case "restorBtn":
+						eraserCallout.close();
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						restoreLastClear();
+						break;
+					//Open whiteboard menu
+					case "wbToolBox":
+						FlexGlobals.topLevelApplication.whiteBoardTools.wbMenuComp.close();
+						eraserCallout.close();
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+
+						var shapesToolTip:MobileToolTip=MobileToolTip.open(event.data.eventTarget.toolTip.toString(), event.data.eventTarget as DisplayObject);
+						shapesToolTip.handleToolTipPosition(event.data.eventTarget as DisplayObject);
+						break;
+					//To draw on whiteboard
+					case "btnFreehand":
+						closeTextTool();
+						lineThickness=sizeCallout.shapeThickNess;
+						eraserCallout.close();
+						isEraserButtonEnabled=true;
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						setFreehandTool();
+						break;
+					//To draw rectangle
+					case "btnRectangle":
+						closeTextTool();
+						lineThickness=sizeCallout.shapeThickNess;
+						eraserCallout.close();
+						isEraserButtonEnabled=true;
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						setRectTool(event);
+						break;
+					//Open eraser component
+					case "btnEraser":
+						FlexGlobals.topLevelApplication.whiteBoardTools.wbMenuComp.close();
+						eraserCallout.open(FlexGlobals.topLevelApplication.whiteBoardTools.btnEraser);
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						setEraserTool(event);
+
+						var eraserTooltip:MobileToolTip=MobileToolTip.open(event.data.eventTarget.toolTip.toString(), event.data.eventTarget as DisplayObject);
+						eraserTooltip.handleToolTipPosition(event.data.eventTarget as DisplayObject);
+						break;
+					//To draw circle
+					case "btnCircle":
+						closeTextTool();
+						lineThickness=sizeCallout.shapeThickNess;
+						eraserCallout.close();
+						isEraserButtonEnabled=true;
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						setCircleTool(event);
+						break;
+					//To draw line
+					case "btnLine":
+						closeTextTool();
+						lineThickness=sizeCallout.shapeThickNess;
+						eraserCallout.close();
+						isEraserButtonEnabled=true;
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						setlineTool();
+						break;
+					//Open color component
+					case "btnColorPalatte":
+						eraserCallout.close();
+						collaborationCallout.close();
+						colorPalatteCallout.open(this);
+						colorPalatteCallout.addEventListener(PopUpEvent.CLOSE, colorChanged);
+						x=x - (colorPalatteCallout.width+FlexGlobals.topLevelApplication.whiteBoardTools.wbMenuComp.arrow.width);
+						colorPalatteCallout.move(x, event.data.y);
+						break;
+					//Open MobiletextTool component
+					case "btnTextTool":
+						eraserCallout.close();
+						isEraserButtonEnabled=true;
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						setCurrentTool("txt");
+						break;
+					//Open size component
+					case "btnSize":
+						eraserCallout.close();
+						collaborationCallout.close();
+						colorPalatteCallout.close();
+						sizeCallout.open(this);
+						x=x - (sizeCallout.width+FlexGlobals.topLevelApplication.whiteBoardTools.wbMenuComp.arrow.width);
+						sizeCallout.move(x, event.data.y);
+						//To display thickness value
+						sizeCallout.txtThickness.text=sizeCallout.shapeThickNess.toString();
+				}
+				trace("Executing....!!!! ::  :: " + eventTargetId);
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tooltip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function whiteBoardTooltipHandler(event:MouseEvent):void
+			{
+				var whiteBoardTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				whiteBoardTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			private function colorChanged(event:PopUpEvent):void {
+				if(event.data != null) {
+					currentColor.color=SolidColor(event.data).color;
+					lineColor = currentColor.color.toString();
+					dispatchEvent(new Event(Event.CHANGE));
+				}
+			}
+			private function enableWhiteboardControls():void{
+				FlexGlobals.topLevelApplication.whiteBoardTools.btnRectangle.enabled=true;
+				FlexGlobals.topLevelApplication.whiteBoardTools.btnCircle.enabled=true;
+				FlexGlobals.topLevelApplication.whiteBoardTools.btnLine.enabled=true;
+				FlexGlobals.topLevelApplication.whiteBoardTools.btnEraser.enabled=true;
+				FlexGlobals.topLevelApplication.whiteBoardTools.btnFreehand.enabled=true;
+				FlexGlobals.topLevelApplication.whiteBoardTools.btnTextTool.enabled=true;
+			}
+			private function closeTextTool():void{
+				if(textComp!=null && textComp.isOpen){
+					textComp.close(true, "");
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:HGroup width="100%"
+			  height="100%">
+			<s:VGroup 
+					 width="100%"
+					 height="100%"
+					 top="0">
+				<s:BorderContainer width="100%" 
+								   height="4%" 
+								   backgroundColor="#E1F0FB"
+								   borderVisible="false">
+						<s:HGroup width="100%"
+								  height="100%"
+								  verticalAlign="middle"
+								  horizontalAlign="right">
+							<!--Page number of the whiteboard file-->
+							<s:Label id="pageNoTxt"
+									 left="3"
+									 height="100%"
+									 fontSize="12"
+									 fontWeight="bold"
+									 color="#045098"
+									 textAlign="justify"
+									 verticalAlign="middle"
+									 text="Page No: {pageNumber}"/>
+							
+							<s:BorderContainer width="100%" 
+											   backgroundAlpha="0.0"
+											   borderColor="#1B94E9" 
+											   borderVisible="false">
+								<s:layout>
+									<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center" />
+								</s:layout>
+								<!--Collaboration mode-->
+								<s:Label id="lblCollaborationModeBottom"
+										 text="Whiteboard"
+										 horizontalCenter="0"
+										 bottom="0"
+										 right="5"
+										 width="80%"
+										 textAlign="center"
+										 color="#045098"
+										 fontWeight="bold"
+										 fontSize="12"/>
+							</s:BorderContainer>
+							<!--Navigation control buttons-->
+							<s:Button id="previousBtn"
+									  click="{navigateToPreviousPage();}"
+									  icon="@Embed(source='assets/mobile/left_arrow_30.png')"
+									  toolTip="Previous Page"
+									  visible="false"
+									  height="12%"
+									  width="8%"
+									  enabled="false"
+									  includeInLayout="false"
+									  left="0"
+									  bottom="5"
+									  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+									  rollOver="whiteBoardTooltipHandler(event)"
+									  mouseDown="whiteBoardTooltipHandler(event)"/>
+							<s:Button id="nextBtn"
+									  x="{previousBtn.width+previousBtn.x}"
+									  toolTip="Next Page"
+									  click="{navigateToNextPage();}"
+									  icon="@Embed(source='assets/mobile/right_arrow_30.png')"
+									  visible="false"
+									  height="12%"
+									  width="8%"
+									  enabled="false"
+									  right="3"
+									  bottom="5"
+									  includeInLayout="false"
+									  rollOver="whiteBoardTooltipHandler(event)"
+									  mouseDown="whiteBoardTooltipHandler(event)"
+									  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"/>
+						</s:HGroup>
+				</s:BorderContainer>
+				<!--Inner white board container-->
+				<s:BorderContainer id="whiteboardBaseCanvas" 
+								   width="780" 
+								   height="540"
+								   borderColor="#5C5C5C" 
+								   borderStyle="solid" 
+								   borderVisible="false"
+								   creationPolicy="all" 
+								   resize="whiteboardBaseCanvas_resizeHandler(event)">
+					<s:BorderContainer id="wbCanvas" 
+									   width="100%" 
+									   height="100%"
+									   backgroundColor="#ffffff" 
+									   borderColor="#337BB7" 
+									   borderStyle="solid"
+									   borderVisible="false" 
+									   dropShadowVisible="false" 
+									   fontSize="11"
+									   verticalCenter="0">
+					</s:BorderContainer>
+				</s:BorderContainer>
+			</s:VGroup>
+				
+	</s:HGroup>
+</s:Group>

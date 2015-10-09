@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: ChatComponent.mxml
+Module		: Chat
+Developer(s): Ravishankar
+Reviewer(s)	: Vishnupreethi K 
+
+The default skin to create an interactive forum to facilitate Chat in a live classroom session.
+The chat messages (public) are propagated to all attendees during the live session.
+
+-->
+<s:Group xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:tl="http://ns.adobe.com/textLayout/2008"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 left="0"
+		 width="250"
+		 top="0"
+		 bottom="0" xmlns:components="edu.amrita.aview.common.components.*">
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.AVCEnvironment;
+		]]>
+	</fx:Script>
+	<!--	SRS
+	1) Hbox added to include features - i) Clear Chat Area 		ii) Variable Text Size in Message Area
+	2) fontSize feature implemented in TextArea
+	SRS -->
+	<s:VGroup width="100%"
+			  height="100%"
+			  y="0"
+			  x="0"
+			  horizontalAlign="center"
+			  verticalAlign="middle"
+			  paddingLeft="3">
+
+		<s:HGroup width="100%" gap="10" horizontalAlign="center" paddingTop="3"
+				  verticalAlign="middle">
+			<!-- Button to clear chat message-area to remove all logged chat messages -->
+			<s:Button id="clearChatButton"
+					  visible="{ClassroomContext.isModerator}"
+					  width="30"
+					  includeInLayout="{ClassroomContext.isModerator}"
+					  click="clearChatArea()"
+					  skinClass="edu.amrita.aview.common.skins.CustomTransparentButtonSkin"
+					  icon="@Embed('assets/images/clearChat_msgs.png')"
+					  toolTip="Clear all chat messages"
+					  useHandCursor="true"
+					  buttonMode="true"/>
+			<s:HGroup width="100%" gap="5" horizontalAlign="right" paddingRight="3"
+					  verticalAlign="middle">
+				<s:Label fontSize="12"
+						 fontWeight="bold"
+						 text="Font Size"
+						 paddingTop="9"/>
+				<!--	Draggable slider to adjust the font size in jumps of 5	-->
+				<s:HSlider id="zoomSize"
+						   width="85"
+						   enabled="true"
+						   liveDragging="true"
+						   maximum="100"
+						   minimum="12"
+						   snapInterval="5"
+						   value="12"
+						   changeEnd="zoomSize_ChangeHandler(event)"
+						   change="{zoomSize_ChangeHandler(event)}"/>				
+				<!--<s:Spacer width="95%" />-->
+				<components:MxImageButton width="25"
+										  height="25"
+										  icon="@Embed(source='assets/images/medium_save.png')"
+										  click="saveChatText()"
+										  toolTip="Save chat"/>				
+				<!--Fix for issue #16796-->
+				<s:Button id="popOutBtn"
+						  width="25" height="25"
+						  visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+						  includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}"
+						  bottom="38"
+						  right="2"
+						  click="popChatWindow()"
+						  icon="{popoutIcon}"
+						  toolTip="Pop out chat module"/>
+			</s:HGroup>
+		</s:HGroup>		
+		<s:DataGrid id="messageArea" 
+					dataProvider="{chatMessages}"
+					variableRowHeight="true"
+					horizontalScrollPolicy="off"
+					height="100%"
+					width="95%"
+					borderColor="#040404"					
+					verticalScrollPolicy="on"					
+					initialize="messageArea.columnHeaderGroup.visible =
+					messageArea.columnHeaderGroup.includeInLayout = false"					
+					>   
+			<s:columns>
+				<s:ArrayList>
+					<s:GridColumn dataField="Message" itemRenderer="edu.amrita.aview.chat.itemRenderers.ChatMessageRenderer"/>				
+				</s:ArrayList>
+			</s:columns>       
+		</s:DataGrid>
+
+		<s:HGroup
+				  width="100%"
+				  verticalAlign="top"
+				  left="0"
+				  paddingLeft="0">
+			<!--	Text input box for user to type-in the chat text message 	-->
+			<s:TextInput id="chatMessageInput"
+						 width="97%"
+						 height="30"
+						 borderColor="#000000"
+						 color="#090A0A"
+						 enter="sendChatMessage()"
+						 text="{resourceManager.getString('myResource','chatmode.hellotext')}"
+						 keyDown="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp.viewer3DSWC.removeFocus()}" 
+						 maxChars="300"/>
+			<!--	Button to send the chat text	-->
+			<s:Button id="sendButton"
+					  width="30"
+					  height="30"
+					  skinClass="edu.amrita.aview.common.skins.CustomTransparentButtonSkin"
+					  click="sendChatMessage()"
+					  color="#040404"
+					  enabled="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.usersConnection.netConnection.connected}"
+					  icon="@Embed('assets/images/sendChat_msg.png')"
+					  toolTip="{resourceManager.getString('myResource','chatmode.sendchat')}"
+					  useHandCursor="true"
+					  buttonMode="true"/>
+		</s:HGroup>
+
+	</s:VGroup>
+	<!--	Button to pop out the chat area to full screen mode	-->
+	
+
+	<!-- Script to include handler -->
+	<fx:Script source="ChatHandler.as"/>
+
+</s:Group>
+

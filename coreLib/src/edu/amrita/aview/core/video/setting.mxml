@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+// 1.Authors      : Chitra S Pai, Ajith Kumar R,Aneesh P.S,Ashish Pillai
+// 2.Description  : Settings is a custom component file for choosing audio driver,video driver and bandwidth value for publishing stream to FMS.
+This is a pop-up component in the AVIEW main window for selecting drivers.
+// 3.Dependencies : main.mxml,Video_ScriptCode.as.
+
+-->
+
+<!--SVRS-issue no 66,Chnaged the canvas width to carry the contents -->
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:components="edu.amrita.aview.core.shared.components.*"
+		  width="598"
+		  height="{110+mainvbox.height}" backgroundColor="#e0effb" borderStyle="solid"
+		  creationComplete="init()" creationPolicy="all" horizontalScrollPolicy="off"
+		  layout="absolute" mouseMove="Mouse.show()"
+		  move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)"
+		  resize="settingsResizeHandler()"
+		  show="{ClassroomContext.aviewClass.videoCodec == 'VP6' || ClassroomContext.aviewClass.isMultiBitrate == 'Y'?this.width=436:this.width=368}"
+		  title="My Settings" verticalScrollPolicy="off">
+	<mx:Script source="SettingHandler.as"/>
+	<mx:HTTPService id="tooltipFetcher" fault="getSpeedTestURLFaultHandler(event)"
+					result="getSpeedTestURLResultHandler(event)" url="config/SpeedtestURL.xml"/>
+	
+	<s:Resize id="showAdvance" duration="300" target="{this}" widthFrom="{this.width}" widthTo="598"/>
+	<s:Resize id="hideAdvance" duration="300" target="{this}" widthFrom="598"
+			  widthTo="{previousWidth}"/>
+	<mx:Fade id="dissolveOn" alphaFrom="1.0" alphaTo="0.0" duration="100"/>
+	
+	<mx:Fade id="dissolveOff" alphaFrom="0.0" alphaTo="1.0" duration="100"/>
+	<!--<mx:ApplicationControlBar id="appControlBar" width="100%" color="#000000" fillAlphas="[1.0, 1.0]" fillColors="[#99d0ff, #ffffff]" top="0" left="0">
+	<mx:Label text="Settings" color="#060606" fontSize="12" fontWeight="bold"/>
+	</mx:ApplicationControlBar>-->
+		<mx:VBox id="mainvbox" left="0" right="0" top="76" backgroundAlpha="1.0" horizontalCenter="0" horizontalAlign="center" verticalAlign="middle"
+				  paddingLeft="0" paddingRight="0" paddingTop="10" verticalGap="3">
+			<!--<mx:HBox id="hBoxStreamingOption"
+			backgroundColor="#E0EFFB"
+			chromeColor="#E0EFFB"
+			contentBackgroundAlpha="1.0"
+			contentBackgroundColor="#E0EFFB"
+			dropShadowVisible="false"
+			horizontalGap="25">
+			<mx:Label fontSize="12"
+			fontWeight="bold"
+			text="Streaming Option :"/>
+			<mx:RadioButtonGroup id="rbgAudioOption"
+			change="streamingOptionChange()"/>
+			<mx:RadioButton id="rbAudioOnly"
+			label="Audio only"
+			chromeColor="#E0EFFB"
+			groupName="rbgAudioOption"/>
+			<mx:RadioButton id="rbAudioVideo"
+			label="Audio and Video"
+			chromeColor="#E0EFFB"
+			groupName="rbgAudioOption"/>
+			</mx:HBox>-->
+			<mx:HBox width="100%" verticalAlign="top" paddingLeft="10" paddingRight="10">
+			<mx:VBox >
+				
+			
+				<mx:VBox id="selectcamcanvas" width="100%" height="168" backgroundColor="#E0EFFB"
+						 chromeColor="#E0EFFB" contentBackgroundAlpha="1.0"
+						 contentBackgroundColor="#E0EFFB" horizontalScrollPolicy="off"
+						 verticalAlign="top" verticalGap="10" verticalScrollPolicy="off">
+					<!--<mx:Label id="lbl_userSettings"
+					left="0"
+					top="0"
+					color="#3D444A"
+					fontSize="14"
+					fontWeight="bold"
+					/>-->
+					<mx:HBox width="100%" verticalAlign="middle">
+						<s:Label id="lblselectcam" left="0" top="7.5" width="136" color="#000000"
+								 fontFamily="Arial" fontSize="12" text="Camera"/>
+						<s:DropDownList id="camSelect" left="145" top="4" width="175" height="24"
+										chromeColor="#F2FAFF" color="#000000"
+										contentBackgroundColor="#F2FAFF" cornerRadius="3"
+										rollOverColor="#e0effb" selectionColor="#99d0ff" tabIndex="4"
+										textAlign="left" toolTip="Select video driver"
+										change="camSelectChangeHandler()"/>
+					</mx:HBox>
+					<mx:HBox width="100%" verticalAlign="middle" visible="{bandwidthSelect.visible}" includeInLayout="{bandwidthSelect.visible}">
+						
+						
+						
+						<mx:Label id="lbl_vidQuality" left="0" top="39" width="136" color="#000000"
+								  fontFamily="Arial" fontSize="12" text="Audio/Video Bandwidth"/>
+						<s:ComboBox id="bandwidthSelect" left="144" top="39" width="135"
+									change="setCamResolutionValue()" color="#000000"
+									contentBackgroundColor="#F2FAFF" cornerRadius="3"
+									dataProvider="{publishingBWArr}" labelField="index" maxChars="4"
+									restrict="0-9" rollOverColor="#99D0FF" selectionColor="#99d0ff"
+									tabIndex="6" toolTip="Select Bandwidth"/>
+						
+						<mx:Label visible="{bandwidthSelect.visible}" left="288" top="40.5" width="36"
+								  color="#000000" fontSize="12" text="Kbps" textAlign="left"/>
+					</mx:HBox>
+					<mx:HBox width="100%" verticalAlign="middle">
+						<s:Label id="lblselectmic" left="0" top="83"
+								 width="136" color="#000000" fontFamily="Arial" fontSize="12"
+								 text="Microphone"/>
+						<s:DropDownList id="micSelect" left="144"
+										top="75" width="176"
+										height="24" chromeColor="#F2FAFF" color="#000000"
+										contentBackgroundColor="#F2FAFF" cornerRadius="3"
+										rollOverColor="#e0effb" selectionColor="#99d0ff" tabIndex="7"
+										textAlign="left" toolTip="Select audio driver"/>
+					</mx:HBox>
+					
+					<mx:HBox width="100%" horizontalAlign="left" horizontalGap="2" 
+							 verticalAlign="middle">
+						<mx:Label id="lblselectmic0" width="73" color="#000000"
+								  toolTip="Enabling this setting will improve video quality but may introduce some delay. This setting is recommended for classrooms with minimal interaction"
+								  fontFamily="Arial" fontSize="12" text="Video mode"
+								  />
+						<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off">
+							<mx:Canvas borderColor="#b5b5b5" borderStyle="solid" borderVisible="true"
+									   chromeColor="#B5B5B5" cornerRadius="3">
+								<s:HGroup gap="-1" id="hboxVideoModeContainer" enabled="{ (Capabilities.os.toLowerCase().indexOf('win') > -1) &amp;&amp; ClassroomContext.aviewClass.isMultiBitrate != 'Y' &amp;&amp; ClassroomContext.aviewClass.classType!='Meeting' &amp;&amp; (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)}">
+									<s:BorderContainer id="videoModeDelayContainer" width="97" height="28"
+													   backgroundColor="#FFFFFF" borderVisible="false"
+													   cornerRadius="3">
+										<s:layout>
+											<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+																paddingLeft="2" paddingRight="2"
+																paddingTop="1" verticalAlign="middle"/>
+										</s:layout>
+										
+										<mx:RadioButton id="rbVideoModeDelay" label="Less Delay"
+														chromeColor="#E0EFFB"
+														click="changeSelection('videoMode');toggleCheckFmle(event)"
+														color="#026293" fontFamily="Arial"
+														fontSize="12" fontWeight="bold"
+														groupName="rbgVideoQualityOption"
+														selected="true" tabIndex="0"
+														toolTip="Recommended for interactive sessions (Less Delay)"/>
+									</s:BorderContainer>
+									<mx:VRule width="2" height="28" chromeColor="#cfcfcf"/>
+									<s:BorderContainer id="VideoModeQualityContainer" width="146" height="28"
+													   borderColor="#7f97b0" borderVisible="false"
+													   backgroundColor="#F0F0F0"
+													   cornerRadius="3">
+										<s:layout>
+											<s:HorizontalLayout gap="0" horizontalAlign="center"
+																paddingBottom="2" paddingLeft="2"
+																paddingRight="2" paddingTop="1"
+																verticalAlign="middle"/>
+										</s:layout>
+										
+										<mx:RadioButton id="rbVideoModeQuality" label="Higher Video Quality"
+														chromeColor="#E0EFFB" toolTip="Recommended for presentation-only sessions (Higher Video Quality)"
+														click="changeSelection('videoMode');toggleCheckFmle(event)"
+														color="#000000" fontFamily="Arial"
+														fontSize="12" fontWeight="bold"
+														groupName="rbgVideoQualityOption"
+														selected="false" tabIndex="1"/>
+									</s:BorderContainer>
+								</s:HGroup>
+								
+							</mx:Canvas>
+						</mx:Canvas>
+						<!--<s:Label id="lblSettings" width="124" buttonMode="true" click="showHideSettings()"
+						color="#3D444A" fontWeight="bold" text=" Settings &gt;&gt;" textAlign="right"
+						useHandCursor="true"/>-->
+						
+					</mx:HBox>
+					<mx:HBox width="100%" horizontalAlign="right" verticalAlign="middle" visible="{ClassroomContext.aviewClass.isMultiBitrate != 'Y'?true:false}">
+						<!--	<mx:CheckBox id="chkboxUseFMLE" change="toggleCheckFmle(event)"
+									 chromeColor="#e0effb"
+									 enabled="{ ClassroomContext.aviewClass.isMultiBitrate != 'Y' &amp;&amp; (FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.classroomContextObj.userRole == Constants.PRESENTER_ROLE)}"
+									 toolTip="Enabling this setting will improve video quality but may introduce some delay. This setting is recommended for classrooms with minimal interaction"/>-->
+						<mx:Button id="lblSettings" label="Advanced" chromeColor="#e0effb" toolTip="Advance Settings"
+								   click="showHideSettings()" cornerRadius="3" fontSize="12"
+								   fontWeight="bold"/>
+					</mx:HBox>
+					<s:Label id="lbl_userSettings" left="0" top="0" color="#3D444A" fontSize="14" visible="false"
+							 fontWeight="bold" text="My Video Settings (Sending)"/>
+					
+					
+					
+					
+					<!--<mx:Label id="lblselectVideoDeviceType" left="0" top="69.5" width="120"
+					color="#000000" fontFamily="Arial" fontSize="12" text="Camera Type"/>
+					<s:DropDownList id="cmbVideoDeviceType" left="120" top="69" width="200" height="24"
+					change="setCamResolutionDataProvider()" chromeColor="#F2FAFF"
+					color="#000000" contentBackgroundColor="#F2FAFF" cornerRadius="3"
+					dataProvider="{Constants.cameraDeviceType}" labelField="value"
+					rollOverColor="#e0effb" selectedIndex="0" selectionColor="#99d0ff"
+					tabIndex="5" textAlign="left" toolTip="Select Camera Type"/>-->
+					
+					<!--<mx:Label left="120" top="92.5" width="200" color="#000000" fontSize="9"
+					text="{cmbVideoDeviceType.selectedItem.desc}" textAlign="left"/>-->
+					
+				</mx:VBox>
+				<!--<mx:Canvas width="300"
+				height="{selectcamcanvas.height + 20}"
+				borderStyle="solid"
+				borderColor="#000000">
+				<mx:CheckBox left="20"
+				label="Advanced Settings"
+				fontSize="12"
+				id="chkAdvncedSetting"
+				fontWeight="bold"
+				click="checkbox1_clickHandler(event)"/>
+				
+				<mx:Label id="lblResolution"
+				left="5"
+				top="32.5"
+				width="100"
+				color="#000000"
+				text="Cam Resolution"/>
+				<mx:ComboBox id="cmbResolution"
+				left="130"
+				top="30"
+				width="100"
+				height="22"
+				color="#000000"
+				itemRenderer="mx.controls.Label"
+				rollOverColor="#e0effb"
+				selectionColor="#99d0ff"
+				toolTip="Select Camera Resolution">
+				</mx:ComboBox>
+				<mx:Label id="lblH264Profile"
+				left="5"
+				top="137.5"
+				width="100"
+				color="#000000"
+				text="H264Profile"/>
+				<mx:ComboBox id="cmbH264Profile"
+				left="130"
+				top="135"
+				width="100"
+				height="22"
+				color="#000000"
+				itemRenderer="mx.controls.Label"
+				dataProvider="{Constants.h264Profiles}"
+				rollOverColor="#e0effb"
+				selectionColor="#99d0ff"
+				toolTip="Select H264Profile">
+				</mx:ComboBox>
+				<mx:ComboBox id="cmbH264ProfilerValues"
+				left="240"
+				top="135"
+				width="50"
+				height="22"
+				color="#000000"
+				toolTip="Select Video Device"
+				dataProvider="{Constants.AR_H264_PROFILER_VALUES}"/>
+				
+				
+				<mx:Label id="lblQuality"
+				left="5"
+				top="67.5"
+				width="120"
+				color="#000000"
+				text="Select Video Quality"/>
+				<mx:ComboBox id="cmbQuality"
+				left="130"
+				top="65"
+				width="100"
+				height="22"
+				color="#000000"
+				dataProvider="{Constants.videoQuality}"
+				labelField="value"
+				toolTip="Select Video Device">
+				</mx:ComboBox>
+				
+				<mx:Label id="lblFPS"
+				left="5"
+				top="102.5"
+				width="120"
+				color="#000000"
+				text="FPS"/>
+				<mx:ComboBox id="cmbFPS"
+				left="130"
+				top="100"
+				width="50"
+				height="22"
+				toolTip="Select FPS"
+				dataProvider="{Constants.AR_FPS_VALUES}"
+				color="#000000"/>
+				
+				
+				</mx:Canvas>-->
+			</mx:VBox>	
+				<mx:Canvas id="cnvAdvancedSettings" visible="{this.width==598?true:false}"
+						   includeInLayout="{this.width==598?true:false}"
+						   left="342" top="0" width="242"
+						   backgroundColor="#D5DFE3" borderColor="#ABBED4" borderStyle="solid"
+						   borderVisible="true" chromeColor="#ABBED4" cornerRadius="5"
+						   hideEffect="{dissolveOn}" horizontalScrollPolicy="off"
+						   showEffect="{dissolveOff}" verticalScrollPolicy="off">
+					<mx:Label left="8" top="3" width="190" fontFamily="Arial" fontSize="12"
+							  fontWeight="bold" text="Advanced Settings" textAlign="left"/>
+					<mx:VBox x="0" top="25" width="100%" backgroundColor="#E0EFFB"
+							 borderVisible="false" cornerRadius="3" paddingBottom="5"
+							 paddingLeft="3" paddingRight="3" paddingTop="6" verticalGap="5">
+						<mx:VBox width="100%" borderColor="#ABBED4" borderStyle="solid"
+								 borderVisible="true" cornerRadius="3" paddingBottom="5"
+								 paddingLeft="5" paddingRight="5" paddingTop="5" visible="true" includeInLayout="true">
+							<mx:HBox width="100%" horizontalGap="4" visible="true" includeInLayout="true">
+								<mx:Label id="lblResolution" left="5" top="32.5" width="104"
+										  color="#000000" fontSize="12" text="Cam Resolution" visible="true" includeInLayout="true"/>
+								<s:DropDownList id="cmbResolution" left="130" top="30" width="120"
+												chromeColor="#F2FAFF" color="#000000"
+												contentBackgroundColor="#F2FAFF" cornerRadius="3"
+												labelField="value" rollOverColor="#99D0FF"
+												selectedIndex="0" selectionColor="#99d0ff" tabIndex="9"
+												textAlign="left" toolTip="Select Camera Resolution" visible="true" includeInLayout="true"/>
+								<!--<mx:Label id="lblQuality" width="43" color="#000000" fontSize="12"
+								text="Quality"/>
+								<s:DropDownList id="cmbQuality" width="65" chromeColor="#F2FAFF"
+								color="#000000" contentBackgroundColor="#F2FAFF"
+								cornerRadius="3" dataProvider="{Constants.videoQuality}"
+								labelField="value" rollOverColor="#99D0FF"
+								selectedIndex="0" tabIndex="10" textAlign="left"
+								toolTip="Select Quality"/>-->
+								
+							</mx:HBox>
+							<mx:HBox width="100%" horizontalGap="4">
+							<mx:Label id="lblselectVideoDeviceType"  width="104"
+							color="#000000" fontFamily="Arial" fontSize="12" text="Camera Type"/>
+							<mx:VBox verticalGap="0">
+							<s:DropDownList id="cmbVideoDeviceType" width="120"
+											change="videoDeviceTypeChangeHandler()"
+											chromeColor="#F2FAFF" color="#000000"
+											contentBackgroundColor="#F2FAFF" cornerRadius="3"
+											dataProvider="{Constants.cameraDeviceType}"
+											labelField="value" prompt="Default"
+											rollOverColor="#e0effb" selectedIndex="0"
+											selectionColor="#99d0ff" tabIndex="5" textAlign="left"
+											toolTip="Select Camera Type"/>
+							</mx:VBox>
+							</mx:HBox>
+						</mx:VBox>
+						
+						<mx:HBox width="100%" horizontalGap="4" paddingLeft="6" paddingRight="6">
+							<mx:Label id="lblKeyframe" width="104" color="#000000" fontSize="12"
+									  text="Keyframe"/>
+							<s:DropDownList id="cmbKeyframe" width="120" chromeColor="#F2FAFF"
+											color="#000000" contentBackgroundColor="#F2FAFF"
+											cornerRadius="3"
+											dataProvider="{Constants.AR_KEY_FRAME_VALUES}"
+											labelField="value" rollOverColor="#99D0FF"
+											selectedIndex="11" tabIndex="11"
+											toolTip="Select Keyframe"/>
+							
+							
+							
+						</mx:HBox>
+						<mx:HBox width="100%" height="24" horizontalGap="4" horizontalAlign="left" verticalAlign="middle" paddingLeft="6" paddingRight="6">
+							<mx:Label id="lblFPS" width="104" color="#000000" fontSize="12" text="FPS"
+									  textAlign="left"/>
+							<s:DropDownList id="cmbFPS" width="120" chromeColor="#F2FAFF"
+											color="#000000" contentBackgroundColor="#F2FAFF"
+											cornerRadius="3"
+											dataProvider="{Constants.AR_FPS_VALUES}"
+											labelField="value" rollOverColor="#99D0FF"
+											selectedIndex="5" tabIndex="12" textAlign="left"
+											toolTip="Select FPS"/>
+						</mx:HBox>
+						<!--<mx:HBox width="100%" horizontalGap="4" paddingLeft="6" paddingRight="6">
+						<mx:Label id="lblH264Profile" width="104" color="#000000" fontSize="12"
+						text="H264Profile"/>
+						<s:DropDownList id="cmbH264Profile" width="149" chromeColor="#F2FAFF"
+						color="#000000" contentBackgroundColor="#F2FAFF"
+						cornerRadius="3" dataProvider="{Constants.h264Profiles}"
+						labelField="value" rollOverColor="#99D0FF"
+						selectedIndex="0" selectionColor="#99d0ff" tabIndex="13"
+						textAlign="left" toolTip="Select H264Profile"/>
+						
+						<s:DropDownList id="cmbH264ProfilerValues" width="65"
+						chromeColor="#F2FAFF" color="#000000"
+						contentBackgroundColor="#F2FAFF" cornerRadius="3"
+						dataProvider="{Constants.AR_H264_PROFILER_VALUES}"
+						labelField="value" rollOverColor="#99D0FF"
+						selectedIndex="2" tabIndex="14" textAlign="left"
+						toolTip="Select Video Device"/>
+						
+						</mx:HBox>-->
+						<mx:HBox width="100%" horizontalGap="4" paddingLeft="6"
+								 verticalAlign="middle" visible="false" includeInLayout="false">
+							<mx:Label id="lblH0" width="104" color="#000000" fontSize="12"/>
+							<mx:Label id="lblH1" width="83" color="#000000" fontSize="12"/>
+						</mx:HBox>
+						
+					</mx:VBox>
+				</mx:Canvas>
+			</mx:HBox>
+			
+			<!--For Web: Since there is no record feature, we don't make the Record settings visible-->
+			<mx:Canvas id="recordsettingscan" left="10"
+					   visible="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}" width="97%"
+					   includeInLayout="{AVCEnvironment.runTime==AVCEnvironment.STAND_ALONE}">
+				
+				<s:Label id="recordsettingslbl" left="0" top="3" color="#3D444A" fontSize="14"
+						 fontWeight="bold" text="Recording Settings"/>
+				<mx:CheckBox id="chkrecordsession" left="0" top="24" change="disableVideoQuality()"
+							 chromeColor="#E0EFFB" selected="true" tabIndex="15"/>
+				
+				<mx:Label left="15" top="22" width="118" color="#0D628C" fontSize="12" fontWeight="bold"
+						  text="Record Session"/>
+				
+				<s:Label id="lblCourseName" left="15" top="54" width="120" text="Course"/>
+				<s:Label id="lblCourse" left="150" top="51"/>
+				<s:Label id="lbllecturetopic" y="82" left="15" width="120" text="Lecture Topic"/>
+				<s:Label id="lectureTopicValue" left="150" top="78" width="160"/>
+				<!--<s:TextInput id="txtlecturetopic"
+				left="150"
+				top="100"
+				height="25"
+				maxWidth="160"
+				enabled="{chkrecordsession.selected}"
+				maxChars="100"
+				restrict="0-9a-zA-Z_.()\-\s"/>-->
+				<s:Label id="lblkeyword" y="112" left="15" width="120" text="Keywords"/>
+				<s:TextInput id="txtkeywords" left="150" top="105" height="25" maxWidth="160"
+							 enabled="true" maxChars="200" tabIndex="16" toolTip="Specify keywords to associate with the recording for easy search"/>
+				
+				
+				<mx:Canvas id="recordChoiceMultiQuality" left="0" top="135" width="100%" height="52" includeInLayout="false" visible="false">
+					<mx:Label id="lbl_RecordQuality" x="0" top="0" width="120" color="#0D628C" 
+							  enabled="false" fontSize="12" fontWeight="bold"
+							  text="Select Presenter Quality"/>
+					<mx:RadioButtonGroup id="rbgRecordBandQuality" change="bitRateQualitySelection()"/>
+					<mx:Canvas x="0" y="22" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+						
+						<mx:Canvas borderColor="#b5b5b5" borderStyle="solid" borderVisible="true"
+								   chromeColor="#B5B5B5" cornerRadius="3">
+							<s:HGroup gap="-1">
+								<s:BorderContainer id="lowQualityRecordContainer" width="88" height="28"
+												   backgroundColor="#FFFFFF" borderVisible="false"
+												   cornerRadius="3">
+									<s:layout>
+										<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+															paddingLeft="2" paddingRight="2"
+															paddingTop="1" verticalAlign="middle"/>
+									</s:layout>
+									
+									<mx:RadioButton id="rb_RecordLowQuality"
+													x="{lbl_RecordQuality.x}" top="25"
+													label="Low" chromeColor="#E0EFFB"
+													click="changeSelection('recordQuality')"
+													color="#026293" enabled="false" fontSize="12"
+													fontWeight="bold"
+													groupName="rbgRecordBandQuality" selected="true"
+													tabIndex="17"/>
+								</s:BorderContainer>
+								<mx:VRule width="2" height="28" chromeColor="#cfcfcf"/>
+								<s:BorderContainer id="mediumQualityRecordContainer" width="88"
+												   height="28" backgroundColor="#F0F0F0"
+												   borderVisible="false" cornerRadius="3">
+									<s:layout>
+										<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+															paddingLeft="2" paddingRight="2"
+															paddingTop="1" verticalAlign="middle"/>
+									</s:layout>
+									
+									<mx:RadioButton id="rb_RecordMedQuality"
+													x="{rb_RecordLowQuality.x+rb_RecordLowQuality.width+10}"
+													top="25" label="Medium"
+													chromeColor="#E0EFFB"
+													click="changeSelection('recordQuality')"
+													enabled="false" fontSize="12" fontWeight="bold"
+													groupName="rbgRecordBandQuality" tabIndex="18"/>
+								</s:BorderContainer>
+								<mx:VRule width="2" height="28" chromeColor="#cfcfcf"/>
+								<s:BorderContainer id="highQualityRecordContainer" width="88"
+												   height="28" backgroundColor="#F0F0F0"
+												   borderVisible="false" cornerRadius="3">
+									<s:layout>
+										<s:HorizontalLayout gap="0" horizontalAlign="center"
+															paddingBottom="2" paddingLeft="2"
+															paddingRight="2" paddingTop="1"
+															verticalAlign="middle"/>
+									</s:layout>
+									
+									<mx:RadioButton id="rb_RecordHighQuality"
+													x="{rb_RecordMedQuality.x+rb_RecordMedQuality.width+10}"
+													top="25" label="High"
+													chromeColor="#E0EFFB"
+													click="changeSelection('recordQuality')"
+													enabled="false" fontSize="12" fontWeight="bold"
+													groupName="rbgRecordBandQuality" tabIndex="19"/>
+								</s:BorderContainer>
+							</s:HGroup>
+							
+						</mx:Canvas>
+					</mx:Canvas>
+				</mx:Canvas>
+				<!--<mx:Canvas id="recordChoiceMultiQuality"
+				left="0"
+				top="170">
+				<mx:Label id="lbl_RecordQuality"
+				top="0"
+				width="120"
+				enabled="false"
+				text="Select Video Quality"/>
+				<mx:RadioButtonGroup id="rbgRecordBandQuality"
+				change="bitRateQualitySelection()"/>
+				<mx:RadioButton id="rb_RecordLowQuality"
+				x="{lbl_RecordQuality.x}"
+				top="25"
+				label="Low Quality"
+				chromeColor="#E0EFFB"
+				enabled="false"
+				groupName="rbgRecordBandQuality"
+				selected="true"/>
+				<mx:RadioButton id="rb_RecordMedQuality"
+				x="{rb_RecordLowQuality.x+rb_RecordLowQuality.width+10}"
+				top="25"
+				label="Medium Quality"
+				chromeColor="#E0EFFB"
+				enabled="false"
+				groupName="rbgRecordBandQuality"/>
+				<mx:RadioButton id="rb_RecordHighQuality"
+				x="{rb_RecordMedQuality.x+rb_RecordMedQuality.width+10}"
+				top="25"
+				label="High Quality"
+				chromeColor="#E0EFFB"
+				enabled="false"
+				groupName="rbgRecordBandQuality"/>
+				</mx:Canvas>-->
+				<s:Label left="2" top="81" width="13" height="14" color="#ED3814"
+						 fontFamily="Times New Roman" fontSize="13" fontWeight="bold" text="*"/>
+				<s:Label left="2" top="111" width="13" height="14" color="#ED3814"
+						 fontFamily="Times New Roman" fontSize="13" fontWeight="bold" text="*"/>
+				<mx:HRule x="0" y="18" width="100%" height="1" chromeColor="#ADC8DB"/>
+				<s:Image right="0" top="18" smooth="true" smoothingQuality="high"
+						 source="@Embed('edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
+			</mx:Canvas>
+			<mx:Canvas id="stdVideoSettings" width="97%" backgroundColor="#E0EFFB" chromeColor="#E0EFFB"
+					   contentBackgroundAlpha="1.0" contentBackgroundColor="#E0EFFB">
+				
+				<s:Label id="lbl_bandSelection" visible="false" left="0" top="65" includeInLayout="false"
+						 text="Bandwidth Selection"
+						 toolTip="Teacher video quality will depend on your network bandwidth availablity. The bandwidth selection can be either manually or automatically adjusted by the system."/>
+				
+				<mx:RadioButtonGroup id="rbg_dynmcSelection" change="bitRateModeSelection()"/>
+				<mx:RadioButton id="rb_manual" visible="false" x="26" y="{lbl_bandSelection.y+20}"
+								label="Manual" chromeColor="#E0EFFB" groupName="rbg_dynmcSelection"
+								includeInLayout="false" selected="true"
+								toolTip="Click this to choose a specific video quality"/>
+				<mx:RadioButton id="rb_automatic" visible="false" x="{rb_medQuality.x}"
+								y="{lbl_bandSelection.y+20}" label="Automatic" chromeColor="#E0EFFB"
+								groupName="rbg_dynmcSelection" includeInLayout="false"
+								toolTip="Click this to allow the system to choose according to available bandwidth"/>
+				
+				<mx:Label id="lbl_videoQuality" x="2" y="6" width="140" fontSize="12" fontWeight="normal"
+						  text="Presenter video quality:"/>
+				<mx:Canvas id="canvas_Quality" left="150" top="2">
+					
+					<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off">
+						<mx:RadioButtonGroup id="rbg_bandQuality"/>
+						<mx:Canvas borderColor="#b5b5b5" borderStyle="solid" borderVisible="true"
+								   chromeColor="#B5B5B5" cornerRadius="3">
+							<s:HGroup gap="-1">
+								<s:BorderContainer id="lowQualityContainer" width="88" height="28"
+												   backgroundColor="#FFFFFF" borderVisible="false"
+												   cornerRadius="3">
+									<s:layout>
+										<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+															paddingLeft="2" paddingRight="2"
+															paddingTop="1" verticalAlign="middle"/>
+									</s:layout>
+									
+									<mx:RadioButton id="rb_louQuality" left="0" top="25" label="Low"
+													chromeColor="#E0EFFB"
+													click="changeSelection('quality')"
+													color="#026293" fontFamily="Arial" fontSize="12"
+													fontWeight="bold" groupName="rbg_bandQuality"
+													selected="true" tabIndex="20"
+													toolTip="{getBandwidthLabel(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.videoServersData[0].bandWidth)}"/>
+								</s:BorderContainer>
+								<mx:VRule width="2" height="28" chromeColor="#cfcfcf"/>
+								<s:BorderContainer id="mediumQualityContainer" width="88" height="28"
+												   backgroundColor="#F0F0F0" borderVisible="false"
+												   cornerRadius="3">
+									<s:layout>
+										<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+															paddingLeft="2" paddingRight="2"
+															paddingTop="1" verticalAlign="middle"/>
+									</s:layout>
+									
+									<mx:RadioButton id="rb_medQuality" top="25" label="Medium"
+													chromeColor="#E0EFFB"
+													click="changeSelection('record')"
+													fontFamily="Arial" fontSize="12"
+													fontWeight="bold" groupName="rbg_bandQuality"
+													tabIndex="21"
+													toolTip="{getBandwidthLabel(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.videoServersData[1].bandWidth)}"/>
+								</s:BorderContainer>
+								<mx:VRule width="2" height="28" chromeColor="#cfcfcf"/>
+								<s:BorderContainer id="highQualityContainer" width="88" height="28"
+												   backgroundColor="#F0F0F0" borderVisible="false"
+												   cornerRadius="3">
+									<s:layout>
+										<s:HorizontalLayout gap="0" horizontalAlign="center"
+															paddingBottom="2" paddingLeft="2"
+															paddingRight="2" paddingTop="1"
+															verticalAlign="middle"/>
+									</s:layout>
+									
+									<mx:RadioButton id="rb_highQuality"
+													x="{rb_medQuality.x+rb_medQuality.width+10}"
+													top="25" label="High" chromeColor="#E0EFFB"
+													click="changeSelection('quality')"
+													fontFamily="Arial" fontSize="12"
+													fontWeight="bold" groupName="rbg_bandQuality"
+													tabIndex="22"
+													toolTip="{getBandwidthLabel(FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.videoServersData[2].bandWidth)}"/>
+								</s:BorderContainer>
+							</s:HGroup>
+							
+						</mx:Canvas>
+					</mx:Canvas>
+					
+					<!--<mx:RadioButtonGroup id="rbg_bandQuality"
+					change="bitRateQualitySelection()"/>
+					<mx:RadioButton id="rb_louQuality"
+					left="0"
+					top="25"
+					label="Low Quality"
+					chromeColor="#E0EFFB"
+					groupName="rbg_bandQuality"
+					selected="true"/>
+					<mx:RadioButton id="rb_medQuality"
+					x="{rb_louQuality.x+rb_louQuality.width+10}"
+					top="25"
+					label="Medium Quality"
+					chromeColor="#E0EFFB"
+					groupName="rbg_bandQuality"/>
+					<mx:RadioButton id="rb_highQuality"
+					x="{rb_medQuality.x+rb_medQuality.width+10}"
+					top="25"
+					label="High Quality"
+					chromeColor="#E0EFFB"
+					groupName="rbg_bandQuality"/>-->
+				</mx:Canvas>
+			</mx:Canvas>
+			<mx:Canvas width="97%">
+				<mx:HRule y="2" width="100%" height="1" chromeColor="#ADC8DB" horizontalCenter="0"/>
+				
+				<s:Image right="1" top="2" smooth="true" smoothingQuality="high"
+						 source="@Embed('edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
+				<mx:HBox x="0" y="3" width="100%" height="40" horizontalAlign="center"
+						 paddingLeft="10" paddingRight="10" verticalAlign="middle">
+					
+					<components:MxImageButton id="btnChkBandwidth" x="184" width="143" height="22"
+											  label="Check bandwidth" buttonMode="true"
+											  chromeColor="#e0effb" click="initurl()" cornerRadius="3"
+											  fontSize="11" fontWeight="bold"
+											  icon="@Embed('/edu/amrita/aview/core/video/assets/images/bandwidth.png')"
+											  mouseChildren="false" toolTip="Check your bandwidth"
+											  useHandCursor="true" verticalGap="10"/>
+					
+					<components:MxImageButton id="btnViewDesktop0" x="324" width="160" height="22"
+											  label="Check Audio/Video" buttonMode="true"
+											  chromeColor="#e0effb"
+											  click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.pretestingDevices();AuditContext.userAction.pretestingLaunchEventLog('Settings')"
+											  cornerRadius="3" fontSize="11" fontWeight="bold"
+											  icon="@Embed('/edu/amrita/aview/core/shared/assets/images/pretesting.png')"
+											  mouseChildren="false" tabIndex="3"
+											  toolTip="Check your local audio/video devices"
+											  useHandCursor="true" verticalGap="10"/>
+				</mx:HBox>
+			</mx:Canvas>
+			<mx:HBox id="hbx_btn" x="0" y="560" width="100%" height="42" backgroundColor="#D5DFE3"
+					 horizontalAlign="center" verticalAlign="middle">
+				<components:MxImageButton id="btnStart" width="80" label="Start"
+										  chromeColor="#e0effb" click="onStart()" color="#000000"
+										  cornerRadius="3" fontWeight="bold" tabIndex="24"
+										  toolTip="Start Video"/>
+				<components:MxImageButton id="btnReStart" visible="false" width="80" label="Restart"
+										  chromeColor="#e0effb" fontWeight="bold" click="onReStart()" color="#000000"
+										  cornerRadius="3" includeInLayout="false" tabIndex="24"
+										  toolTip="Restart Video"/>
+				
+				<components:MxImageButton id="btnRefreshDriver" width="80" label="Reload"
+										  chromeColor="#e0effb" click="refreshList()"
+										  color="#000000" cornerRadius="3"
+										  enabled="{FlexGlobals.topLevelApplication.mainApp.scanHardwareEnableFlag}"
+										  fontWeight="bold" tabIndex="23"
+										  toolTip="Reload Microphone/Camera driver list"/>
+				<components:MxImageButton id="btnSave" width="80" label="Save"
+										  chromeColor="#e0effb" click="onSave()"
+										  color="#000000" cornerRadius="3" fontWeight="bold"
+										  tabIndex="25" toolTip="Save Selected Devices"/>
+				<components:MxImageButton id="btnCancel" width="80" label="Cancel"
+										  chromeColor="#e0effb" click="onCancel()" color="#000000"
+										  cornerRadius="3" fontWeight="bold" tabIndex="26"
+										  toolTip="Cancel"/>
+			</mx:HBox>
+		</mx:VBox>
+		
+		<mx:HBox x="0" y="34" width="100%" height="44" backgroundColor="#D5DFE3" paddingLeft="10"
+				 paddingRight="10" paddingTop="0" verticalAlign="middle" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+			<!--<mx:VBox id="hBoxStreamingOption" verticalGap="-1">-->
+			<mx:Label y="11" height="27" color="#3D444A" fontSize="12" fontWeight="bold"
+					  text="Streaming Option:"/>
+			<mx:RadioButtonGroup id="rbgAudioOption" change="streamingOptionChange()"/>
+			<mx:RadioButtonGroup id="rbgVideoQualityOption" />
+			<mx:HBox height="40" verticalAlign="top">
+				<mx:Canvas height="40" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+					<mx:Canvas borderColor="#b5b5b5" borderStyle="solid" borderVisible="true"
+							   chromeColor="#B5B5B5" cornerRadius="3">
+						<s:HGroup gap="-1">
+							<s:BorderContainer id="audioOnlyContainer" width="90" height="28"
+											   backgroundColor="#F0F0F0" borderVisible="false"
+											   cornerRadius="3">
+								<s:layout>
+									<s:HorizontalLayout horizontalAlign="center" paddingBottom="2"
+														paddingLeft="2" paddingRight="2"
+														paddingTop="1" verticalAlign="middle"/>
+								</s:layout>
+								
+								<mx:RadioButton id="rbAudioOnly" label="Audio only"
+												chromeColor="#E0EFFB"
+												click="changeSelection('AudioVideo')"
+												fontFamily="Arial" fontSize="12" fontWeight="bold"
+												groupName="rbgAudioOption" tabIndex="0"/>
+								
+								
+								
+								
+								
+							</s:BorderContainer>
+							<mx:VRule width="2" height="28" chromeColor="#cfcfcf"/>
+							<s:BorderContainer id="audioVideoContainer" width="116" height="28"
+											   borderColor="#7f97b0" borderVisible="false"
+											   cornerRadius="3">
+								<s:layout>
+									<s:HorizontalLayout gap="0" horizontalAlign="center"
+														paddingBottom="2" paddingLeft="2"
+														paddingRight="2" paddingTop="1"
+														verticalAlign="middle"/>
+								</s:layout>
+								
+								<mx:RadioButton id="rbAudioVideo" label="Audio &amp; Video"
+												chromeColor="#E0EFFB"
+												click="changeSelection('AudioVideo')"
+												color="#026293" fontFamily="Arial" fontSize="12"
+												fontWeight="bold" groupName="rbgAudioOption"
+												selected="true" tabIndex="1"/>
+							</s:BorderContainer>
+						</s:HGroup>
+						
+					</mx:Canvas>
+					<mx:Image visible="{rbAudioOnly.selected}" left="40" top="29"
+							  scaleContent="false"
+							  source="@Embed('/edu/amrita/aview/core/shared/assets/images/selectionArrow.png')"/>
+					<mx:Image visible="{rbAudioVideo.selected}" left="144" top="29"
+							  source="@Embed('/edu/amrita/aview/core/shared/assets/images/selectionArrow.png')"/>
+				</mx:Canvas>
+			</mx:HBox>
+			
+			<!--</mx:VBox>-->
+			<s:Spacer width="100%"/>
+			<mx:VBox visible="false" horizontalAlign="right"
+					 >
+				<mx:LinkButton height="22" label="Check bandwidth" buttonMode="true" click="initurl()"
+							   color="#206FAB" cornerRadius="3" fontSize="12" fontWeight="bold"
+							   mouseChildren="false" paddingLeft="0" paddingRight="0" tabIndex="2"
+							   textAlign="center" textDecoration="underline"
+							   toolTip="Check your bandwidth" useHandCursor="true" verticalGap="10"/>
+				
+				<components:MxImageButton width="100" height="22" label="Pretesting" buttonMode="true"
+										  chromeColor="#e0effb"
+										  click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.pretestingDevices();AuditContext.userAction.pretestingLaunchEventLog('Settings')"
+										  cornerRadius="3" fontSize="11" fontWeight="bold"
+										  icon="@Embed('/edu/amrita/aview/core/shared/assets/images/pretesting.png')"
+										  mouseChildren="false" tabIndex="3" id="btnPreTesting"
+										  toolTip="Check your local audio/video devices"
+										  useHandCursor="true" verticalGap="10"/>
+			</mx:VBox>
+			
+		</mx:HBox>
+		<s:Label x="16" y="9" color="#3D444A" fontSize="14" fontWeight="bold" text="Audio/Video Settings"/>
+		<mx:HRule y="25" width="95%" height="1" chromeColor="#ADC8DB" horizontalCenter="0"/>
+		<s:Image right="9" top="25" smooth="true" smoothingQuality="high"
+				 source="@Embed('edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
+		
+		<!--<components:MxImageButton id="btnViewDesktop0" visible="{this.width==368?false:true}"
+								  width="100" height="22" label="Pretesting" buttonMode="true"
+								  chromeColor="#e0effb"
+								  click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.pretestingDevices();AuditContext.userAction.pretestingLaunchEventLog('Settings')"
+								  cornerRadius="3" fontSize="11" fontWeight="bold"
+								  icon="@Embed('/edu/amrita/aview/core/shared/assets/images/pretesting.png')"
+								  includeInLayout="{this.width==368?false:true}"
+								  mouseChildren="false" tabIndex="3"
+								  toolTip="Check your local audio/video devices"
+								  useHandCursor="true" verticalGap="10"/>
+
+	<s:Label id="lblSettings" left="213" top="{bandwidthSelect.visible==false?204:235}" width="124" buttonMode="true"
+			 click="showHideSettings()" color="#3D444A" fontWeight="bold" fontSize="11"
+			 text="Advanced Settings &gt;&gt;" textAlign="right" useHandCursor="true"/>-->
+</mx:Panel>

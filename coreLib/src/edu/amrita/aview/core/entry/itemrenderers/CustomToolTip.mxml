@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 backgroundAlpha="1.0" backgroundColor="#F2F6C5" borderColor="#B6B9BC" borderStyle="solid"
+		 borderVisible="true" cornerRadius="3"
+		 move="FlexGlobals.topLevelApplication.mainApp.popupWindow_moveHandler(this)" 
+		 paddingBottom="12"
+		 paddingLeft="12" 
+		 paddingRight="12" 
+		 paddingTop="12" 
+		 verticalGap="12">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			[Bindable]
+			public var selectedObject:Object=new Object();
+		]]>
+	</fx:Script>
+	<mx:VBox width="100%"
+			 verticalGap="3">
+		<s:Label color="#535354"
+				 fontWeight="bold"
+				 text="Moderator:"/>
+		<s:Label color="#535354"
+				 text="{selectedObject.moderatorName}"/>
+	</mx:VBox>
+	<mx:VBox width="100%"
+			 verticalGap="3"
+			 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?true:false}"
+			 visible="{selectedObject.aviewClass.classType=='Meeting'?true:false}">
+		<s:Label color="#535354"
+				 text="Meeting Title:"
+				 fontWeight="bold"
+				 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?true:false}"
+				 visible="{selectedObject.aviewClass.classType=='Meeting'?true:false}"/>
+		<s:Label color="#535354"
+				 text="{selectedObject.lecture.displayName}"
+				 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?true:false}"
+				 visible="{selectedObject.aviewClass.classType=='Meeting'?true:false}"/>
+	</mx:VBox>
+	<mx:VBox width="100%"
+			 verticalGap="3"
+			 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?false:true}"
+			 visible="{selectedObject.aviewClass.classType=='Meeting'?false:true}">
+		<s:Label color="#535354"
+				 fontWeight="bold"
+				 text="Lecture:"/>
+		<s:Label color="#535354"
+				 text="{selectedObject.lecture.displayName}"
+				 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?false:true}"
+				 visible="{selectedObject.aviewClass.classType=='Meeting'?false:true}"/>
+	</mx:VBox>
+	<mx:VBox width="100%"
+			 verticalGap="3"
+			 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?false:true}"
+			 visible="{selectedObject.aviewClass.classType=='Meeting'?false:true}">
+		<s:Label color="#535354"
+				 text="Class:"
+				 fontWeight="bold"
+				 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?false:true}"
+				 visible="{selectedObject.aviewClass.classType=='Meeting'?false:true}"/>
+		<s:Label color="#535354"
+				 text="{selectedObject.aviewClass.className}"
+				 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?false:true}"
+				 visible="{selectedObject.aviewClass.classType=='Meeting'?false:true}"/>
+	</mx:VBox>
+	<mx:VBox width="100%"
+			 verticalGap="3"
+			 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?false:true}"
+			 visible="{selectedObject.aviewClass.classType=='Meeting'?false:true}">
+		<s:Label color="#535354"
+				 text="Course:"
+				 fontWeight="bold"
+				 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?false:true}"
+				 visible="{selectedObject.aviewClass.classType=='Meeting'?false:true}"/>
+		<s:Label color="#535354"
+				 text="{selectedObject.aviewClass.courseName}"
+				 includeInLayout="{selectedObject.aviewClass.classType=='Meeting'?false:true}"
+				 visible="{selectedObject.aviewClass.classType=='Meeting'?false:true}"/>
+	</mx:VBox>
+</mx:VBox>

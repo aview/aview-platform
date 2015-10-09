@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   width="330" height="166" borderColor="#3E3D3D" cornerRadius="3"
+				   creationComplete="createCaptcha(true)" defaultButton="{btnSubmit}">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+						
+			import edu.amrita.aview.core.shared.components.alert.CustomAlert;
+			
+			import mx.managers.PopUpManager;
+
+			private var captcha:Captcha=null;
+
+			private function createCaptcha(flag:Boolean):void
+			{
+				//Make the captcha container visible
+				//and the login type container in visible
+
+				txtCaptcha.text="";
+				if (flag)
+				{
+					loadCaptcha();
+				}
+			}
+
+			protected function loadCaptcha():void
+			{
+				if (captcha != null)
+				{
+					captchaImage.removeChild(captcha);
+				}
+				captcha=new Captcha("alphaCharsnum", 4);
+				captchaImage.addChild(captcha);
+				txtCaptcha.text="";
+			}
+
+			private function checkCaptcha():void
+			{
+
+				if (txtCaptcha.text == "")
+				{
+					CustomAlert.info("Please enter the characters as shown in the image");
+					return;
+				}
+				else if (captcha.securitycode.localeCompare(txtCaptcha.text) == 0)
+				{
+					PopUpManager.removePopUp(this);
+				}
+				else
+				{
+					txtCaptcha.text="";
+					CustomAlert.error("Please retry with the correct characters shown in the image");
+					loadCaptcha();
+					return;
+				}
+
+			}
+		]]>
+	</fx:Script>
+	<s:HGroup paddingBottom="10"
+			  paddingLeft="20"
+			  paddingRight="20"
+			  paddingTop="10"
+			  verticalAlign="top"
+			  width="100%" height="100%" >
+		
+
+	<s:VGroup id="captchaContainer"
+			  width="100%"
+			  height="112"
+			  gap="4">
+		<s:HGroup width="100%"
+				  height="36"
+				  gap="3"
+				  horizontalAlign="left"
+				  id="ca"
+				  verticalAlign="middle">
+			<mx:Image scaleContent="false" source="@Embed('/edu/amrita/aview/core/shared/assets/images/error.png')"
+					  toolTip="This is to verify that you are a human"/>
+			<s:Label y="6" width="167" height="20" color="#C90000" fontWeight="bold" paddingTop="1"
+					 text="Invalid username/password" verticalAlign="middle"/>
+				
+		</s:HGroup>
+			
+		<s:HGroup width="100%"
+				  height="32"
+				  gap="0"
+				  horizontalAlign="left"
+				  
+				  verticalAlign="middle">
+			<s:HGroup 
+				verticalAlign="bottom">
+				<s:Label y="-2" width="222" height="26" color="#070707" fontSize="11"
+						 fontWeight="bold"
+						 text="To try again, please type the characters shown in the below image"/>
+			</s:HGroup>
+			
+		</s:HGroup>
+
+		<s:HGroup left="5"
+				  width="100%"
+				  paddingLeft="5"
+				  verticalAlign="middle">
+			<mx:Canvas id="captchaImage"
+					   fontWeight="bold"/>
+			<mx:Image source="@Embed('/edu/amrita/aview/core/entry/assets/images/captchaRefresh.png')"
+					  toolTip="Change the captcha code"
+					  click="loadCaptcha()"
+					  useHandCursor="true"
+					  buttonMode="true"/>
+			<s:TextInput id="txtCaptcha"
+						  width="150" maxChars="4"
+						  color="#000000"/>
+		</s:HGroup>
+		<s:HGroup left="5"
+				  width="100%"
+				  height="32"
+				  horizontalAlign="center"
+				  paddingLeft="5"
+				  verticalAlign="middle">
+			<s:Button id="btnSubmit" x="138" y="5" width="50" label="OK" chromeColor="#E0EFFB"
+					  click="checkCaptcha()" cornerRadius="3"/>
+		</s:HGroup>
+	</s:VGroup>
+	
+	</s:HGroup>
+	<mx:Image x="168" y="64" scaleContent="false" source="@Embed('/edu/amrita/aview/core/shared/assets/images/captchaHelp.png')"
+			  toolTip="This is to verify that you are a human"/>
+</s:BorderContainer>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuestionPaperPreview.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Vinod Kumar P
+
+This component is used to preview the question paper
+-->
+<components:InsidePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+						xmlns:s="library://ns.adobe.com/flex/spark"
+						xmlns:mx="library://ns.adobe.com/flex/mx"
+						xmlns:questionPaper="edu.amrita.aview.core.evaluation.questionPaper.*"
+						xmlns:components="edu.amrita.aview.core.shared.components.*"
+						width="331" backgroundColor="#E0EFFB" 
+						borderVisible="true" color="#FFFFFF"
+						
+						creationComplete="{creationCompleteQPPreview()}" dropShadowVisible="false"
+						focusColor="#A9F9A0" fontFamily="Arial" fontSize="15" textAlign="center"
+						title="Question Paper Preview">
+	<components:layout><s:BasicLayout/></components:layout>
+	<!-- The script handler -->
+	<fx:Script source="QuestionPaperPreviewUIHandler.as"/>
+
+	<mx:VBox left="5"
+			 width="97%"
+			 top="5"
+			 bottom="5"
+			 borderColor="#A3D7FF"
+			 borderStyle="solid"
+			 chromeColor="#CCCCCC">
+		<mx:Canvas width="100%"
+				   height="50">
+			<!-- Allows displaying or hiding of answers for a question-->
+			<mx:HBox right="30">
+				<!-- Fix for Bug #19888-->
+				<s:Label text="Show Answers"
+						 fontSize="12"
+						 color="#000000"
+						 paddingTop="5"
+						 right="35"/>
+				<s:CheckBox right="10"
+							id="chkShowAnswers"
+							change="{toggleShowAnswers()}"
+							chromeColor="#E0EFFB"/>
+			</mx:HBox>
+			<s:Label x="0" y="24" color="#000000" fontWeight="bold" paddingLeft="10"
+					 text="QuestionPaper : {questionPaperVO.questionPaperName}"/>
+			<s:Label y="24" right="30" color="#000000"
+					 text="Max. Marks : {questionPaperVO.maxTotalMarks}"/>
+		</mx:Canvas>
+		<mx:HRule width="100%"/>
+		<mx:VBox id="vBoxQuestion"
+				 y="0"
+				 width="100%"
+				 height="100%"
+				 cornerRadius="17"
+				 textAlign="left">
+			<!-- Fix For Bug #20151-->
+			<mx:VBox width="100%"					 
+					 paddingLeft="5">
+				<!-- Displays the questions and answers -->
+				<!-- Fix for Bug#19043:Start-->
+				<mx:Repeater id="rpQuiz"
+							 dataProvider="{questions}"
+							 maxHeight="{vBoxQuestion.height}" height="100%"
+							 maxWidth="{vBoxQuestion.width}" width="100%">
+					<questionPaper:QuestionPaperQuestionPreview id="quizQuestions"
+																width="100%" minWidth="450"
+																quesItem="{rpQuiz.currentItem}"
+																qno="{rpQuiz.currentIndex+1}"
+																showAnswers="{showAnswers}"/>
+				</mx:Repeater>
+				<!-- Fix for Bug#19043:End-->
+			</mx:VBox>
+			<s:Label id="lblRandomText"
+					 paddingLeft="10" color="#000000"
+					 fontSize="12"/>
+
+		</mx:VBox>
+		<mx:VBox width="100%"
+				 height="48"
+				 chromeColor="#CCCCCC"
+				 horizontalAlign="center"
+				 horizontalCenter="0"
+				 verticalCenter="0"
+				 verticalAlign="bottom"
+				 paddingBottom="2">
+			<mx:HRule width="100%"/>
+			<components:ImageButton id="btnClose" visible="{!ClassroomContext.checkIsClassRoom}"
+									label="Close" chromeColor="#E0EFFB"
+									click="closeQuestionPaperPreview()" color="#000000"
+									cornerRadius="3"/>
+		</mx:VBox>
+	</mx:VBox>
+</components:InsidePanel>

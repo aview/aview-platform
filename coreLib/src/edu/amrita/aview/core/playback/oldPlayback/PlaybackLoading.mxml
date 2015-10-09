@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="226"
+		   height="116">
+
+	<mx:SWFLoader source="@Embed(source='assets/flash/loading.swf')"
+				  horizontalCenter="0"
+				  verticalCenter="-22"
+				  height="50"
+				  horizontalAlign="center"
+				  verticalAlign="bottom"/>
+	<mx:Label text="Please wait.... Loading in progress..."
+			  horizontalCenter="0"
+			  verticalCenter="18"
+			  fontSize="13"
+			  width="100%"
+			  textAlign="center"/>
+
+</mx:Canvas>
+

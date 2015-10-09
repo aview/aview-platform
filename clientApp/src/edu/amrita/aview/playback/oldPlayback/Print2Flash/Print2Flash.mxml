@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:SWFLoader xmlns:mx="http://www.adobe.com/2006/mxml"
+			  scaleContent="false"
+			  init="LoadedInt=setInterval(CheckLoaded,1)"
+			  width="100%"
+			  height="100%">
+
+	<mx:Metadata>
+        [Event(name="onPageChanged", type="edu.amrita.aview.playback.oldPlayback.Print2Flash.PageChangedEvent")]
+        [Event(name="onVisibleAreaChanged", type="edu.amrita.aview.playback.oldPlayback.Print2Flash.VisibleAreaEvent")]
+        [Event(name="onZoomChanged", type="edu.amrita.aview.playback.oldPlayback.Print2Flash.ZoomChangedEvent")]
+        [Event(name="onToolChanged", type="edu.amrita.aview.playback.oldPlayback.Print2Flash.ToolChangedEvent")]
+        [Event(name="onSelection", type="edu.amrita.aview.playback.oldPlayback.Print2Flash.Selection")]
+        [Event(name="onLoaded", type="flash.events.Event")]
+        [Event(name="onPageLoaded", type="edu.amrita.aview.playback.oldPlayback.Print2Flash.PageLoadedEvent")]        
+    </mx:Metadata>
+
+	<mx:Script source="Print2FlashHandler.as"/>
+</mx:SWFLoader>

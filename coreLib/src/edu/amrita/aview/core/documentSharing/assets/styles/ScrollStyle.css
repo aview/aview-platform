@@ -1,0 +1,34 @@
+/* CSS file */
+.Vscrl{
+			        downArrowUpSkin: Embed(source="assets/images/downArrow.png");
+			        downArrowOverSkin: Embed(source="assets/images/downArrow.png");
+			        downArrowDownSkin: Embed(source="assets/images/downArrow.png");
+			        upArrowUpSkin: Embed(source="assets/images/upArrow.png");
+				    upArrowOverSkin: Embed(source="assets/images/upArrow.png");
+				    upArrowDownSkin: Embed(source="assets/images/upArrow.png");
+				    thumbDownSkin: 
+				        Embed(source="assets/images/ScrollTrack_Skin.png");
+/*				        scaleGridLeft="7", scaleGridTop="5", 
+				        scaleGridRight="8", scaleGridBottom="7");*/
+				        
+				    thumbUpSkin: 
+				        Embed(source="assets/images/ScrollTrack_Skin.png");
+/*				        scaleGridLeft="7", scaleGridTop="5", 
+				        scaleGridRight="8", scaleGridBottom="7");*/
+				        
+				    thumbOverSkin: 
+				        Embed(source="assets/images/ScrollTrack_Skin.png");
+/*				        scaleGridLeft="7", scaleGridTop="5", 
+				        scaleGridRight="8", scaleGridBottom="7");*/
+				        
+				    trackSkin: 
+				        Embed(source="assets/images/ScrollTrack_Skin.png");
+/*				        scaleGridLeft="7", scaleGridTop="4", 
+				        scaleGridRight="8", scaleGridBottom="6" );   */
+				   track-colors:"0b333c","0b333c";
+			      } 
+
+.toggleSwitch
+{
+	skinClass:ClassReference("edu.amrita.aview.core.shared.components.toggleSwitch.ToggleSwiitchSkin");
+}

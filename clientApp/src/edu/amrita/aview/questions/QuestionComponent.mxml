@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: QuestionComponent.mxml
+Module		: Question
+Developer(s): Ravishankar
+Reviewer(s)	: Meena S
+
+This feature provides the Viewer a forum to raise questions during a live classroom session.
+The Question & Answer tab's UI layout provides a text input field for typing the question.
+Click on Post button registers the question across the session through a datagrid. Other
+Viewers may choose to vote for a question by selecting the question and voting for it with
+the Vote button click.
+The Presenter can choose to mark a question answered / deleted by selecting the question
+and clicking the answerQuestionButton or deleteQuestionButton accordingly. Besides these
+two actions, the Moderator can choose to Vote for a question.
+The question marked answered has a change in colour and is pushed to the bottom of the
+question's list. Deleted questions are removed from the question's list.
+
+-->
+
+<mx:Canvas xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:components="edu.amrita.aview.common.components.*"
+		  bottom="5"
+		  top="5"
+		  left="5"
+		  right="5"
+		  >
+	<fx:Script source="QuestionComponentHandler.as"/>
+	<fx:Script source="QuestionIcons.as"/>
+
+	<s:DataGrid 
+				width="100%"
+				top="0"
+				bottom="80"
+				variableRowHeight="true"
+				horizontalCenter="0"
+				textAlign="left"
+				id="questionDataGrid"
+				selectionChange="onClickQuestionGrid()"
+				click="onClickQuestionGrid()">
+		<s:columns>
+			<s:ArrayList>
+				<!-- Question datagrid column displaying the posted question -->
+				<s:GridColumn headerText="{resourceManager.getString('myResource','question.questiontext')}"
+							  dataField="question">
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer>
+
+								<components:ColorCells text="{data.question}"
+													   data="{data}"
+														maxWidth="190"
+														controlField="questionStatus"
+														controlVaule="ANSWERED"
+														skippedValue="SKIPPED"
+														defaultColor="0x000000"
+														customColor="0x008E00"
+														skippedColor="0xc80d0d"/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
+				<!-- Question datagrid column indicating the no. of votes in favour of the posted question -->
+				<s:GridColumn width="40"
+							  dataField="vote"
+							  headerText="{resourceManager.getString('myResource','question.votetext')}">
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer height="23"
+												textAlign="center">
+								<components:ColorCells text="{data.vote}"
+														textAlign="center"
+														width="100%"
+														controlField="questionStatus"
+														controlVaule="ANSWERED"
+														defaultColor="0x000000"
+														customColor="0x008E00"/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+	<s:VGroup id="questionActionGroup"
+			  horizontalCenter="0"
+			  top="{questionDataGrid.height}"				
+			  width="100%">
+		<!-- Text input field to facilitate typing the question to be posted -->
+		<s:TextInput id="questionInput"
+					 width="100%"
+					 height="30"
+					 color="#090A0A"
+					 borderColor="#000000"
+					 keyDown="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.viewer3DComp.viewer3DSWC.removeFocus()}"
+					 enter="postQuestion()"/>
+		<s:HGroup width="100%"
+				  gap="7"
+				  horizontalAlign="center"
+				  verticalAlign="bottom">
+			<!-- Button to mark the selected question as Answered. Button available only for Moderator / Presenter Role(s) -->
+			<s:Button id="answerQuestionButton"
+					  click="setQuestionToAnswered()"
+					  skinClass="edu.amrita.aview.common.skins.CustomTransparentButtonSkin"
+					  icon="{answerDisabled_icon}"
+					  width="30"
+					  height="30"
+					  cornerRadius="5"
+					  useHandCursor="true"
+					  buttonMode="true"
+					  mouseChildren="false"
+					  enabled="false"
+					  fontFamily="Georgia"
+					  fontSize="10"
+					  fontWeight="bold"
+					  toolTip="Answer Question"/>
+			<!-- Button to delete the selected question. Button available only for Moderator / Presenter Role(s) -->
+			<s:Button id="deleteQuestionButton"
+					  click="deleteQuestion()"
+					  skinClass="edu.amrita.aview.common.skins.CustomTransparentButtonSkin"
+					  icon="{deleteDisabled_icon}"
+					  width="30"
+					  height="30"
+					  cornerRadius="5"
+					  useHandCursor="true"
+					  buttonMode="true"
+					  mouseChildren="false"
+					  enabled="false"
+					  fontFamily="Georgia"
+					  fontSize="10"
+					  fontWeight="bold"
+					  toolTip="Delete Question"/>
+			<!-- Button to vote in favour of the selected question. Button available only for Moderator / Viewer Role(s) -->
+			<s:Button id="voteQuestionButton"
+					  click="voteForQuestion()"
+					  fontFamily="Georgia"
+					  width="30"
+					  height="30"
+					  cornerRadius="5"
+					  skinClass="edu.amrita.aview.common.skins.CustomTransparentButtonSkin"
+					  icon="{voteDsiabled_icon}"
+					  useHandCursor="true"
+					  buttonMode="true"
+					  enabled="false"
+					  fontSize="10"
+					  fontWeight="bold"
+					  toolTip="Vote for a Question"/>
+			<!-- Button to post the question entered in the text input field. Button available only for Viewer Role -->
+			<s:Button id="postQuestionButton"
+					  width="30"
+					  height="30"
+					  click="postQuestion()"
+					  skinClass="edu.amrita.aview.common.skins.CustomTransparentButtonSkin"
+					  icon="{post_icon}"
+					  keyDown="enterQuestion(event)"
+					  useHandCursor="true"
+					  cornerRadius="5"
+					  buttonMode="true"
+					  color="#040404"
+					  fontFamily="Georgia"
+					  fontSize="10"
+					  fontWeight="bold"
+					  toolTip="{resourceManager.getString('myResource','question.postquestion')}"/>
+		</s:HGroup>
+	</s:VGroup>
+</mx:Canvas>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: CategoryWiseResult.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Thirumalai murugan
+
+CategoryWiseResult.mxml component displays the category wise result , once the quiz is submitted
+by the student .
+-->
+<!--Canvas to hold the evaluation result-->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:ns1="components.*"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%"
+		   height="100%"
+		   initialize="initCategoryWiseResult()"
+		   focusColor="#A9F9A0">
+	<!-- Script to include handler -->
+	<fx:Script source="CategoryWiseResultUIHandler.as"/>
+	<!--Label to show the Heading for evaluation-->
+	<s:Label top="10"
+			 fontFamily="Arial"
+			 fontSize="15"
+			 color="#000000"
+			 fontWeight="bold"
+			 text="Category Wise Result"
+			 horizontalCenter="0"/>
+	<!--DataGrid to show the evaluation-->
+	<s:DataGrid id="dgStudentResult" top="40" width="100%" height="128" chromeColor="#E0EFFB"
+				color="#000000" dataProvider="{quizResult}">
+		<s:columns>
+			<s:ArrayList>
+				<!--To show category column-->
+				<s:GridColumn dataField="category"
+							  headerText="Category"
+							  width="300"/>
+				<!--To show sub category column-->
+				<s:GridColumn dataField="subCategory"
+							  headerText="SubCategory"
+							  width="300"/>
+				<!--To show difficulty Level of the question-->
+				<s:GridColumn dataField="difficultyLevel"
+							  headerText="Difficulty Level"
+							  width="120"/>
+				<!-- Shows count of students who attended quiz from classroom i.e local -->
+				<s:GridColumn dataField="local"
+							  headerText="Result % (Local)"
+							  width="120"/>
+				<!-- Shows count of students who attended quiz using Mobile i.e remote -->
+				<s:GridColumn dataField="remote"
+							  headerText="Result % (Remote)"
+							  width="120"/>
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+</mx:Canvas>

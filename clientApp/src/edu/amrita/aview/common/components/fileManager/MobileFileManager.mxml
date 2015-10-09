@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: MobileFileManager.mxml
+Module		: FileManager
+Developer(s): Salil George, Ganesan A, Jeevanantham N
+Reviewer(s)	: Pradeesh
+
+This component is a wrapper component to,
+
+	1. Load files
+	2. Upload files
+	3. Create folder
+	4. Delete folder/files.
+	5. Move files to common file list
+
+-->
+<s:Callout xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   creationComplete="onInitilize()"
+		   mouseDownOutside="close()"
+		   verticalPosition="middle"
+		   width="{parentApplication.width/1.7}"
+		   contentBackgroundColor="#071124"
+		   moveForSoftKeyboard="false"
+		   resizeForSoftKeyboard="false">
+	<fx:Metadata>
+		[Event(name="onUploadCompleted", type="edu.amrita.aview.core.shared.components.fileManager.events.UploadCompletedEvent")]
+		[Event(name="onDownloadRequest", type="edu.amrita.aview.core.shared.components.fileManager.events.DownloadRequestedEvent")]
+		[Event(name="onCloseFileComponentEvent", type="edu.amrita.aview.core.shared.components.fileManager.events.CloseFileComponentEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			
+			import mx.core.FlexGlobals;
+
+			protected function mobileFileManagerTooltipOpenHandler(event:MouseEvent):void
+			{
+				var mobileTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				mobileTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<fx:XMLList id="treeXmlListDp"/>
+		<fx:XMLList id="centralRepXMLList"/>
+		<s:HTTPService id="fileListService"
+					   result="fileListResultHandler(event)"
+					   fault="faultHandler(event)"/>
+		<s:HTTPService id="checkFileExistsService"
+					   result="checkFileExistResultHandler(event)"
+					   fault="checkFileExistFaultHandler(event)"/>
+		<s:HTTPService id="centralRepHTTPService"
+					   result="centralRepHTTPServiceResultHandler(event)"
+					   fault="centralFaultHandler(event)"
+					   method="POST">
+			<s:request xmlns="">
+				<libraryXML>{FlexGlobals.topLevelApplication.mainApp.xmlClassRepository}</libraryXML>
+				<supportedFiles>{filetypeSupported}</supportedFiles>
+			</s:request>
+		</s:HTTPService>
+		<s:HTTPService id="copyFileService"
+					   result="copyFileServiceResultHandler(event)"
+					   fault="faultHandler(event)"
+					   method="POST"
+					   resultFormat="xml">
+			<s:request xmlns="">
+				<sourceURL>{sourceURL}</sourceURL>
+				<orgFileName>{orgFileName}</orgFileName>
+				<destURL>{destURL}</destURL>
+				<fileType>{fileType}</fileType>
+			</s:request>
+		</s:HTTPService>
+		<!--HTTPService is to call server files delete.php,deleteDirectory.php and createDirectory.php-->
+		<s:HTTPService id="deleteService"
+					   result="refresh(event)"
+					   fault="faultHandler(event)"/>
+		<s:HTTPService id="checkFileExistanceService"/>
+		<s:HTTPService id="createServerSideFolderService"
+					   fault="faultHandler(event)"/>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="Institute"/>
+		<s:State name="Course"/>
+	</s:states>
+	
+	<fx:Script source="FileManagerAS.as"/>
+	<fx:Script source="MobileUploadAS.as"/>
+	
+	<s:HGroup gap="10"
+			  width="100%">
+		<s:VGroup width="45%"
+				  height="100%"
+				  left="0"
+				  id="personalArea"
+				  paddingTop="10"
+				  paddingLeft="5">
+
+			<s:Group width="100%"
+					 height="20%">
+				<s:Rect width="100%"
+						height="100%">
+					<s:fill>
+						<s:SolidColor color="#071124"/>
+					</s:fill>
+					<s:filters>
+						<s:GlowFilter alpha="0.4"
+									  blurX="0"
+									  blurY="24"
+									  color="0xFFFFFF"
+									  inner="true"
+									  strength="1"/>
+					</s:filters>
+				</s:Rect>
+				<!--Title for presenter library-->
+				<s:HGroup width="100%"
+						  height="100%"
+						  verticalAlign="middle"
+						  paddingLeft="5">
+					<s:Label text="Local Library"
+							 color="#cccccc"
+							 fontSize="14"
+							 fontWeight="bold"/>
+				</s:HGroup>
+			</s:Group>
+			<!--To display list of documents in presenter library-->
+			<s:List id="fileList"
+					height="{parentApplication.height/2.5}"
+					width="100%"
+					dataProvider="{documentList}"
+					fontSize="14"
+					labelField="@label"
+					fontWeight="bold"
+					change="documentFileList(event)"
+					click="selection(event)"
+					alternatingItemColors="[#071124, #071124]"
+					color="#ffffff"
+					verticalScrollPolicy="auto"
+					horizontalScrollPolicy="auto"/>
+			<s:HGroup height="100%"
+					  width="98%"
+					  gap="0"
+					  horizontalCenter="0"
+					  paddingBottom="10">
+				<!--Back button-->
+				<s:Button id="btnNavigateBack"
+						  width="20%"
+						  height="100%"
+						  icon="@Embed(source='assets/mobileAssets/back.png')"
+						  visible="false"
+						  click="backWardNavigate(event)"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  toolTip="Move to back"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--Upload button-->
+				<s:Button id="uploadBtn"
+						  click="showUpload()"
+						  width="20%"
+						  height="100%"
+						  icon="@Embed(source='assets/mobileAssets/upload.png')"
+						  toolTip="Upload new document"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--Download button-->
+				<s:Button click="requestDownload()"
+						  id="downloadBtn"
+						  enabled="false"
+						  width="20%"
+						  height="100%"
+						  icon="@Embed(source='assets/mobileAssets/disabledownload.png')"
+						  toolTip="Downloading and opening is Not Allowed"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--Folder creation button-->
+				<s:Button id="createBtn"
+						  click="openFolderCreation(event)"
+						  width="20%"
+						  height="100%"
+						  icon="@Embed(source='assets/mobileAssets/folder-new.png')"
+						  toolTip="Create new remote folder"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--Delete button-->
+				<s:Button click="deleteFile(event)"
+						  id="deleteBtn"
+						  enabled="true"
+						  width="20%"
+						  height="100%"
+						  icon="@Embed(source='assets/mobileAssets/delete.png')"
+						  toolTip="Delete remote folder/document"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+			</s:HGroup>
+		</s:VGroup>
+		<s:VGroup verticalAlign="middle"
+				  width="10%"
+				  height="100%"
+				  horizontalAlign="center"
+				  id="documentMoveGroup">
+			<s:Group width="100%"
+					 height="40">
+				<s:Rect width="100%"
+						height="100%">
+					<s:fill>
+						<s:SolidColor color="0xFFFFFF"/>
+					</s:fill>
+					<s:filters>
+						<s:GlowFilter alpha="1"
+									  blurX="3"
+									  blurY="200"
+									  color="0xFFFFFF"
+									  knockout="true"
+									  strength="1"/>
+					</s:filters>
+				</s:Rect>
+				<!--File move button-->
+				<s:Button width="100%"
+						  height="100%"
+						  click="moveByBtn()"
+						  label=">>"
+						  id="btnCopyFile"
+						  toolTip="Share your files"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+			</s:Group>
+		</s:VGroup>
+		<s:VGroup height="100%"
+				  width="45%"
+				  right="0"
+				  id="commonArea"
+				  paddingTop="10"
+				  paddingRight="5">
+
+			<s:Group width="100%"
+					 height="20%">
+				<s:Rect width="100%"
+						height="100%">
+					<s:fill>
+						<s:SolidColor color="#071124"/>
+					</s:fill>
+					<s:filters>
+						<s:GlowFilter alpha="0.4"
+									  blurX="0"
+									  blurY="24"
+									  color="0xFFFFFF"
+									  inner="true"
+									  strength="1"/>
+					</s:filters>
+				</s:Rect>
+				<!--Title for common library-->
+				<s:HGroup width="100%"
+						  height="100%"
+						  verticalAlign="middle"
+						  paddingLeft="5">
+					<s:Label text="Central Library"
+							 verticalAlign="middle"
+							 color="#cccccc"
+							 fontSize="14"
+							 fontWeight="bold"/>
+				</s:HGroup>
+			</s:Group>
+			<!--To display list of documents in common library -->
+			<s:List id="commonFileList"
+					height="{parentApplication.height/2.5}"
+					width="100%"
+					dataProvider.Institute="{InstituteListName}"
+					fontSize="14"
+					labelField="@label"
+					change.Institute="instituteFileList(event)"
+					click="selectionInCommon(event)"
+					fontWeight="bold"
+					dropEnabled="true"
+					dragEnabled="false"
+					alternatingItemColors="[#071124, #071124]"
+					color="#ffffff"
+					verticalScrollPolicy="auto"
+					horizontalScrollPolicy="auto"/>
+			<s:HGroup id="commonFileManagerControls"
+					  height="100%"
+					  horizontalCenter="0"
+					  width="100%"
+					  gap="0"
+					  paddingBottom="10">
+				<!--Back button-->
+				<s:Button id="btnPrevious"
+						  visible.Institute="false"
+						  icon="@Embed(source='assets/mobileAssets/back.png')"
+						  width="20%"
+						  height="100%"
+						  click="commonBackWardNavigate(event)"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  toolTip="Move to back"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--File upload button-->
+				<s:Button id="commonUploadBtn"
+						  click="showUpload()"
+						  icon="@Embed(source='assets/mobileAssets/disableupload.png')"
+						  enabled="false"
+						  width="20%"
+						  height="100%"
+						  toolTip="Uploading is Not Allowed"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--File load button-->
+				<s:Button click="requestDownload()"
+						  id="commonDownloadBtn"
+						  enabled="false"
+						  width="20%"
+						  height="100%"
+						  icon="@Embed(source='assets/mobileAssets/disabledownload.png')"
+						  toolTip="Downloading and opening is Not Allowed"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--Folder creation button-->
+				<s:Button id="commonCreateBtn"
+						  click="openFolderCreation(event)"
+						  icon="@Embed(source='assets/mobileAssets/disablefolder-new.png')"
+						  enabled="false"
+						  width="20%"
+						  height="100%"
+						  toolTip="Folder creation is Not Allowed"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--File delete button-->
+				<s:Button click="deleteFile(event)"
+						  id="commonDeleteBtn"
+						  enabled="false"
+						  width="20%"
+						  height="100%"
+						  icon="@Embed(source='assets/mobileAssets/disabledelete.png')"
+						  toolTip="Deletion is Not Allowed"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+				<!--Download button-->
+				<s:Button click="downloadToLocalDisc()"
+						  id="downloadDiscBtn"
+						  enabled="false"
+						  width="20%"
+						  height="100%"
+						  icon="@Embed(source='assets/mobileAssets/disabledownloadTopc.png')"
+						  toolTip="No Permission to Download the document to your Local Disc"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  rollOver="mobileFileManagerTooltipOpenHandler(event)"
+						  mouseDown="mobileFileManagerTooltipOpenHandler(event)"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+</s:Callout>

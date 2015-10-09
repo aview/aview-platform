@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: LocationBasedResult.mxml
+Module		: Evaluation
+Developer(s): Sethu subramanian N, Abhirami, Swati, Radha, Mathiyalakan.
+Reviewer(s)	: Thirumalai murugan
+
+LocationBasedResult.mxml component displays the location based result .
+The location can be either local(PC based) or remote(Mobile) .
+-->
+<!-- Container for the location based result-->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:ns1="components.*"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%"
+		   height="100%"
+		   initialize="initLocationBaseResult()"
+		   focusColor="#A9F9A0">
+	<fx:Script source="LocationBasedResultUIHandler.as"/>
+	<!-- Label to hold the heading for location based result-->
+	<s:Label top="10"
+			 fontFamily="Arial"
+			 fontSize="15"
+			 color="#000000"
+			 fontWeight="bold"
+			 text="Location Based Result"
+			 horizontalCenter="0"/>
+	<!--DataGrid for the location based result-->
+	<s:DataGrid id="locationBasedResultDg" top="40" width="100%" height="128" chromeColor="#E0EFFB"
+				color="#000000" dataProvider="{quizResult}">
+		<s:columns>
+			<s:ArrayList>
+				<!-- Column for showing the total students-->
+				<s:GridColumn dataField="totalStudents"
+							  headerText="Total Students"
+							  width="50"/>
+				<!-- Column for showing the correct answer (classroom i.e local)-->
+				<s:GridColumn dataField="correctAnswer"
+							  headerText="Correct Answer(Local)"
+							  width="300"/>
+				<!-- Column for showing correct answer as percent (classroom i.e local)-->
+				<s:GridColumn dataField="correctPercent"
+							  headerText="Correct % (Local)"
+							  width="120"/>
+				<!-- Column for showing correct answer remote (mobile i.e remote) -->
+				<s:GridColumn dataField="correctAnswerRemote"
+							  headerText="Correct Answer (Remote)"
+							  width="120"/>
+				<!-- Column for showing correct answer as percent (mobile i.e remote) -->
+				<s:GridColumn dataField="correctPercentRemote"
+							  headerText="Correct % (Remote)"
+							  width="120"/>
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+	<!--To maintain the space between the datagrid and barchart-->
+	<s:Spacer y="{locationBasedResultDg.y+locationBasedResultDg.height}"
+			  id="spacerForChart"
+			  height="10%"/>
+	<!--Container for the barchart-->
+	<mx:Canvas id="canvasForChart"
+			   y="{spacerForChart.y+spacerForChart.height}"
+			   width="801"
+			   height="90%"
+			   includeInLayout="false"
+			   horizontalCenter="0">
+		<!--Columnchart component to display the location based result -->
+		<mx:ColumnChart id="columnChartForLocationResult" width="656" height="208" color="#000000"
+						columnWidthRatio="0.40" dataProvider="{locationBasedACForChart}"
+						horizontalCenter="0" type="overlaid" verticalCenter="0">
+			<!-- Displays response type i.e local or remote as X-axis -->
+			<mx:horizontalAxis>				
+				<mx:CategoryAxis categoryField="responseType"
+								 title="Location"/>
+			</mx:horizontalAxis>
+			<!-- Displays total students on Y-axis -->
+			<mx:verticalAxis>
+				<mx:LinearAxis interval="1"
+							   title="Total Students"/>
+			</mx:verticalAxis>
+			<!-- Data Labels for horizontal and vertical axis respectively -->
+			<mx:series>
+				<mx:ColumnSeries yField="totalStudents"/>
+				<mx:ColumnSeries yField="correctAnswer"/>
+			</mx:series>
+		</mx:ColumnChart>
+	</mx:Canvas>
+</mx:Canvas>

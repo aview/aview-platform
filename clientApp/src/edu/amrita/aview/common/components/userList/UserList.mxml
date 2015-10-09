@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: UserList.mxml
+Module		: Common
+Developer(s): Ajith Kumar R,Aneesh P.S, Ashish Pillai,SonyKAntony
+Reviewer(s)	: Veena Gopal K.V
+UserList is a custom component for holding names and icons of all online users in A-VIEW.
+-->
+<!--
+Dependencies : main.mxml,Video_ScriptCode.as
+-->
+<!--
+VGCR:- description for each section
+-->
+
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		height="100%"
+		width="100%"
+		x="0"
+		y="0">
+	<mx:Script source="Icons.as"/>
+	<mx:Script source="UserListHandler.as"/>
+	<mx:Resize id="offlineUserExpand"
+			  heightFrom="0"
+			  heightTo="200"
+			  target="{offlineUsersList}"/>
+	<mx:Resize id="offlineUserColapse"
+			   heightFrom="200"
+			   heightTo="0"
+			   target="{offlineUsersList}"/>
+	<mx:HBox id="usersSort"
+			 width="100%"
+			 horizontalAlign="center">
+		<s:Button skinClass="edu.amrita.aview.common.skins.BorderlessButtonSkin"
+				  id="releaseAllSingle"
+				  click="releaseAll()"
+				  height="25"
+				  width="27"
+				  toolTip="Release All Handraises"
+				  icon="{ReleaseIcon}"
+				  cornerRadius="5"/>
+		<s:ComboBox id="comboSort"
+					dataProvider="{Constants.SORT_OPTION}"
+					prompt="  -Select-"
+					horizontalScrollPolicy="off"
+					change="applyFilters()"
+					width="85"
+					fontSize="11"
+					height="25"
+					labelField="sortOpt"
+					toolTip="User/Institute Selection"
+					itemRenderer="edu.amrita.aview.core.entry.ComboBoxItemRender"/>
+		
+		<s:TextInput width="95"
+					 height="24"
+					 id="userSearch"
+					 focusIn="clearUserSearch()"
+					 change="applyFilters()"
+					 color="#B1ABAB"
+					 text="{Constants.USER_SEARCH_STR}"
+					 toolTip="{Constants.USER_SEARCH_TOOLTIP}"
+					 fontSize="11"/>
+	</mx:HBox>
+	<mx:HBox id="usersBox"
+			 width="100%"
+			 height="100%"
+			 verticalAlign="middle"
+			 horizontalAlign="center">
+		
+		<mx:DataGrid
+					 id="userGrid"
+					 columnWidth="{data.width}"
+					 width="100%"
+					 height="100%"
+					 rowHeight="42"
+					 click="onClick()"
+					 itemRollOver="lastRollOverIndex = event.rowIndex;trace('event.rowIndex'+event.rowIndex)"
+					 scroll="datagrid1_scrollHandler(event)"
+					 rightClick="createlist()"
+					 sortableColumns="false"
+					 selectionColor="#ADD8E6"
+					 headerStyleName="dataGridHeader">
+			<mx:columns>
+				<mx:DataGridColumn itemRenderer="edu.amrita.aview.common.components.userList.UserNameRenderer"
+								   headerText="Name (Count {userCount})"
+								   wordWrap="true"/>
+				<mx:DataGridColumn itemRenderer="edu.amrita.aview.common.components.userList.UserSelectedCount"
+								   headerText=" IC"
+								   width="20"
+								   wordWrap="true">
+					<mx:headerRenderer>
+						<mx:Component>
+							<mx:Text toolTip="Interaction Count"/>
+						</mx:Component>
+					</mx:headerRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn itemRenderer="edu.amrita.aview.common.components.userList.StatusIconRenderer"
+								   width="45"
+								   headerText="Status"
+								   wordWrap="true"/>
+			</mx:columns>
+			
+		</mx:DataGrid>
+		
+		</mx:HBox>
+		
+	
+	<mx:HBox width="100%"
+			 buttonMode="true"
+			 click="showHideclickHandler(event)"
+			 paddingLeft="5"
+			 paddingRight="5"
+			 includeInLayout="{(ClassroomContext.aviewClass.classType == 'Meeting')}"
+			 visible="{(ClassroomContext.aviewClass.classType == 'Meeting')}"
+			 useHandCursor="true"
+			 verticalAlign="middle">
+		<mx:Label width="100%"
+				  fontWeight="bold"
+				  text="Users not attending"
+				  click="showHideclickHandler(event)"
+				  useHandCursor="true"
+				  buttonMode="true"/>
+		<mx:HBox dropShadowVisible="false"
+				 horizontalAlign="center"
+				 horizontalGap="0"
+				 paddingBottom="5"
+				 paddingLeft="5"
+				 paddingRight="5"
+				 paddingTop="5"
+				 verticalAlign="middle"
+				 verticalCenter="0"
+				 horizontalCenter="0">
+			<mx:Image id="imgArrowDown"
+					  buttonMode="true" visible="false" includeInLayout="false"
+					  click="showHideclickHandler(event)"
+					  source="@Embed('/edu/amrita/aview/contacts/assets/images/arrowDown.png')"
+					  useHandCursor="true"/>
+			<mx:Image id="imgArrowUp"
+					  buttonMode="true"
+					  visible="true" includeInLayout="true"
+					  click="showHideclickHandler(event)"
+					  source="@Embed('/edu/amrita/aview/contacts/assets/images/arrowUp.png')"
+					  useHandCursor="true"/>
+		</mx:HBox>
+	</mx:HBox>
+	
+	<mx:List id="offlineUsersList"
+			 width="100%"
+			 height="0"
+			 includeInLayout="{(ClassroomContext.aviewClass.classType == 'Meeting')}"
+			 visible="{(ClassroomContext.aviewClass.classType == 'Meeting')}"
+			 dataProvider="{FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.offlineUsersArray}">
+		<mx:itemRenderer>
+			<mx:Component>
+				<mx:HBox width="100%"
+						 paddingBottom="5"
+						 paddingLeft="7"
+						 paddingRight="7"
+						 paddingTop="5" verticalScrollPolicy="off" horizontalScrollPolicy="off"
+						 verticalAlign="middle">
+					<mx:Image id="imgUserOnline"
+							  visible="{data.user.userStatus=='online'?true:false}"
+							  includeInLayout="{data.user.userStatus=='online'?true:false}"
+							  source="@Embed('/edu/amrita/aview/contacts/assets/images/online.png')"/>
+					<mx:Image id="imgUserBusy"
+							  visible="{data.user.userStatus=='busy'?true:false}"
+							  includeInLayout="{data.user.userStatus=='busy'?true:false}"
+							  source="@Embed('/edu/amrita/aview/contacts/assets/images/busy.png')"/>
+					<mx:Image id="imgUserOffline"
+							  visible="{data.user.userStatus=='offline'?true:false}"
+							  includeInLayout="{data.user.userStatus=='offline'?true:false}"
+							  source="@Embed('/edu/amrita/aview/contacts/assets/images/offline.png')"/>
+					
+					<s:Label text="{data.user.userDisplayName}" 
+							 maxDisplayedLines="1" 
+							 toolTip="{data.user.userDisplayName}" width="100%"/>
+				</mx:HBox>
+			</mx:Component>
+		</mx:itemRenderer>
+	</mx:List>
+	
+</mx:VBox>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+File		: ClassRegistrationComp.mxml
+Module		: GCLM
+Developer(s): Ramesh G, Sethu Subramanian N
+Reviewer(s)	:
+
+This component is used as header renderer for moderator column in datagrid
+-->
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					xmlns:s="library://ns.adobe.com/flex/spark"
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					width="66"
+					height="20"
+					chromeColor="#E0EFFB"
+					clipAndEnableScrolling="true">
+	<s:layout>
+		<s:HorizontalLayout paddingLeft="6" verticalAlign="middle"/>
+	</s:layout>
+	<!-- Label to show moderator -->
+	<s:Label id="lblData"
+			 left="7"
+			 width="100%"
+			 height="100%"
+			 fontWeight="bold"
+			 maxDisplayedLines="1"
+			 text="Moderator"
+			 textAlign="left"
+			 verticalAlign="middle"/>
+
+</s:GridItemRenderer>

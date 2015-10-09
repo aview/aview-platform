@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ChatToolBox.mxml
+Module		: Chat
+Developer(s): Jeevanantham N
+Reviewer(s)	: Pradeesh 
+
+ChatToolBox component is used to send chat messages.
+
+-->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 width="100%"
+		 height="100%">
+	<fx:Script>
+		<![CDATA[
+			
+			import edu.amrita.aview.core.shared.components.mobileComponents.toolTip.MobileToolTip;
+			import edu.amrita.aview.core.shared.events.ChatEvent;
+			
+			
+			import mx.core.FlexGlobals;
+
+			/**
+			 * @private
+			 *
+			 * To dispatch event, when presenter clicks on sendChat button
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			private function sendChatHandler(event:MouseEvent):void
+			{
+				dispatchEvent(new ChatEvent(ChatEvent.SEND_CHAT_MESSAGE,chatMessageInput.text));
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function sendButtonTooltipHandler(event:MouseEvent):void
+			{
+				var sendChatTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				sendChatTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			/**
+			 * @public
+			 *
+			 * To close/hide the soft keyboard
+			 *
+			 * @return void
+			 */
+			public function closeChatModuleKeyboard():void
+			{
+				if (FlexGlobals.topLevelApplication.chatComp.isChatSoftKeyboardActivate)
+				{
+					stage.focus=null;
+					FlexGlobals.topLevelApplication.chatComp.isChatSoftKeyboardActivate=false;
+				}
+			}
+			/**
+			 * @protected
+			 *
+			 * Set isChatSoftKeyboardActivate as true when sofkeyboard is open
+			 *
+			 * @param event of SoftKeyboardEvent
+			 * @return void
+			 */
+			protected function chatSoftKeyboardActivateHandler(event:SoftKeyboardEvent):void
+			{
+				FlexGlobals.topLevelApplication.chatComp.isChatSoftKeyboardActivate=true;
+			}
+			/**
+			 * @protected
+			 *
+			 * To navigates to specific module,If moderator had changed module , while softkwyboard is opened
+			 *
+			 * @param event of SoftKeyboardEvent
+			 * @return void
+			 */
+			protected function chatSoftKeyboardDeactivateHandler(event:SoftKeyboardEvent):void
+			{
+				FlexGlobals.topLevelApplication.chatComp.isChatSoftKeyboardActivate=false;
+				if (FlexGlobals.topLevelApplication.isModuleChanged)
+				{
+					FlexGlobals.topLevelApplication.isModuleChanged=false;
+					FlexGlobals.topLevelApplication.videoModuleEntry=2;
+					FlexGlobals.topLevelApplication.userModuleEntry=2;
+					// ashwini: is the following line really used? Is there a function called setActiveModule at the topLevelApplication?
+					FlexGlobals.topLevelApplication.setActiveModule(false);
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%"
+			  height="100%"
+			  paddingLeft="3"
+			  gap="4">
+		<!--Text input to enter chat message-->
+		<s:TextInput id="chatMessageInput"
+					 height="100%"
+					 width="80%"
+					 color="#090A0A"
+					 text="Hello"
+					 editable="true"
+					 contentBackgroundColor="#FFFFFF"
+					 />
+		<!--Send button to send chat message-->
+		<s:Button id="sendButton"
+				  width="20%"
+				  click="sendChatHandler(event)"
+				  color="#040404"
+				  enabled="{FlexGlobals.topLevelApplication.mainApp.usersConnection.netConnection.netconnected}"
+				  icon="@Embed('/views/assets/send_chat.png')"
+				  toolTip="Send Chat Message"
+				  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+				  rollOver="sendButtonTooltipHandler(event)"
+				  mouseDown="sendButtonTooltipHandler(event)"/>
+	</s:HGroup>
+</s:Group>

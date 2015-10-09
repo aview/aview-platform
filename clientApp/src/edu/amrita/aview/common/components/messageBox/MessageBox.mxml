@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: MessageBox.mxml
+Module		: common
+Developer(s): Ramesh G
+Reviewer(s)	: Remya T,Vishnupreethi k
+
+For showing the custom message box
+-->
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:components="spark.components.*"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  xmlns:customComponent="edu.amrita.aview.core.shared.components.*"
+					  maxWidth="320"
+					  defaultButton.ST_OK="{btnOkay}"
+					  defaultButton.ST_OKCANCEL="{btnCancel}"
+					  defaultButton.ST_YESNO="{btnNo}"
+					  defaultButton.NOTIF_OK="{btnOkayNotIf}">
+	<!--Script to include handler  -->
+	<fx:Script source="MessageBoxHandler.as"/>
+
+	<s:states>
+		<s:State name="MSG"/>
+		<s:State name="ST_OK"/>
+		<s:State name="ST_OKCANCEL"/>
+		<s:State name="ST_YESNO"/>
+
+		<s:State name="NOTIF"/>
+		<s:State name="NOTIF_OK"/>
+	</s:states>
+
+	<s:BorderContainer width="100%" backgroundColor="0xEBEBEE" borderColor="0x969696"
+					   borderWeight="0" cornerRadius="5" dropShadowVisible="true">
+
+		<!-- Includes in the states MSG,ST_OK,ST_OKCANCEL,ST_YESNO-->
+		<s:VGroup includeIn="MSG,ST_OK,ST_OKCANCEL,ST_YESNO" width="100%"
+				  gap.ST_OKCANCEL="0">
+			<s:BorderContainer width="100%" backgroundColor="#2a5ea4" borderColor="#ABBED4"
+					   borderStyle="solid" borderVisible="true" chromeColor="#ABBED4"
+					   cornerRadius="5">
+				<!--Message icons 
+				<s:Image source="{this.icon}"/>-->
+				<!--Message box title -->
+				<s:Label width="100%" height="27" color="#FFFFFF" fontSize="14" fontWeight="bold"
+						 paddingBottom="1" paddingLeft="5" paddingRight="5" paddingTop="1"
+						 text="{this.title}" verticalAlign="middle"/>
+				<s:BorderContainer includeIn="MSG,ST_OK,ST_OKCANCEL,ST_YESNO" x="0" y="27" width="100%"
+								   backgroundColor="#EBEBEE" borderVisible="false">
+					
+				
+					<s:VGroup includeIn="MSG,ST_OK,ST_OKCANCEL,ST_YESNO" width="100%"
+							  gap="0"
+							  contentBackgroundAlpha="1.0" contentBackgroundColor="#EBEBEE">
+				<!--Line seperator
+				<s:Line includeIn="MSG,ST_OKCANCEL,ST_YESNO" width="100%">
+					<s:stroke>
+						<s:SolidColorStroke color="0x5b5b5b"
+											weight="2"/>
+					</s:stroke>
+				</s:Line>-->
+				<!--Message details-->
+						<s:HGroup width="100%" gap="15" paddingBottom="3" paddingLeft="5"
+								  paddingRight="5" paddingTop="5" verticalAlign="top">
+							<s:Image source="{this.icon}"/>
+								<s:HGroup width="100%" height="100%" verticalAlign="middle">
+									<s:Label width="100%" maxHeight="300" color="#2E2E2E" fontSize="14"
+											 fontWeight="normal" maxDisplayedLines="6" paddingBottom="10"
+											 paddingLeft="15" paddingRight="15" paddingTop="12"
+											 text="{this.message}"/>
+								</s:HGroup>
+							</s:HGroup>
+						<!--Button area-->
+						<s:Group id="controlContainer" includeIn="ST_OK,ST_OKCANCEL,ST_YESNO"
+								 width="100%" height="40">
+							<s:HGroup bottom="0" width="100%" height="100%" horizontalAlign="center"
+									  paddingLeft="10" paddingRight="10" verticalAlign="middle">
+								
+								<customComponent:ImageButton id="btnOkay" includeIn="ST_OK,ST_OKCANCEL"
+															 height="27" label="OK"
+															 chromeColor="#1177C5"
+															 click="okayBtn_clickHandler(event)"
+															 color="#FFFFFF"
+															 fontFamily="Arial" fontSize="12"
+															 fontWeight="bold"
+															 width.ST_OK="70"
+															 creationComplete="setSkin(event)"
+															 width.ST_OKCANCEL="30%"/>
+								<customComponent:ImageButton id="btnCancel" includeIn="ST_OKCANCEL"
+															 width="30%" height="27" label="Cancel"
+															 chromeColor="#1177C5"
+															 click="cancelBtn_clickHandler(event)"
+															 color="#FFFFFF" 
+															 creationComplete="setSkin(event)"
+															 fontFamily="Arial" fontSize="12"
+															 fontWeight="bold"/>
+								<customComponent:ImageButton id="btnYes" includeIn="ST_YESNO" width="30%"
+															 height="27" label="Yes"
+															 chromeColor="#1177C5"
+															 click="yesBtn_clickHandler(event)"
+															 color="#FFFFFF" 
+															 creationComplete="setSkin(event)"
+															 fontFamily="Arial" fontSize="12"
+															 fontWeight="bold"/>
+								<customComponent:ImageButton id="btnNo" includeIn="ST_YESNO" width="30%"
+															 height="27" label="No"
+															 chromeColor="#1177C5"
+															 click="noBtn_clickHandler(event)"
+															 color="#FFFFFF" 
+															 creationComplete="setSkin(event)"
+															 fontFamily="Arial" fontSize="12"
+															 fontWeight="bold"/>
+							</s:HGroup>
+						</s:Group>	
+					</s:VGroup>
+				</s:BorderContainer>
+			</s:BorderContainer>
+		</s:VGroup>
+		<!-- Includes in the states NOTIF, NOTIF_OK-->
+		<s:VGroup includeIn="NOTIF, NOTIF_OK" width="100%">
+			<s:HGroup includeIn="NOTIF, NOTIF_OK" width="100%" height="100%" gap="9"
+					  paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="15">
+				<s:Image width="20%" source="{this.iconZ}"/>
+				<s:Label width="80%" maxHeight="300" fontSize="15" fontWeight="normal"
+						 maxDisplayedLines="6" paddingBottom="5" paddingLeft="5" paddingRight="5"
+						 paddingTop="12" text="{this.msg}" verticalAlign="middle"/>
+			</s:HGroup>
+			<s:HGroup includeIn="NOTIF_OK" bottom="0" width="100%" height="100%"
+					  horizontalAlign="right" paddingBottom="10" paddingRight="10"
+					  verticalAlign="bottom">
+				<customComponent:ImageButton id="btnOkayNotIf" height="27" label="OK"
+											 chromeColor="#1177C5"
+											 click="okayBtn_clickHandler(event)" color="#FFFFFF"
+											 fontFamily="Arial" fontSize="12"
+											 fontWeight="bold"
+											 creationComplete="setSkin(event)"
+											 width.NOTIF_OK="70"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:BorderContainer>
+</s:SkinnableContainer>

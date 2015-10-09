@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Window xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   layout="absolute"
+		   color="#000506"
+		   systemChrome="standard"
+		   type="normal"
+		   backgroundColor="#e0effb"
+		   statusBarBackgroundColor="#2a5da4"
+		   windowResize="aviewPlayBackComp.PlaybackWindowResizeHandler()"
+		   closing="aviewPlayBackComp.playbackWindowCloseHandler()"
+		   xmlns:Print2Flash="edu.amrita.aview.core.playback.oldPlayback.Print2Flash.*"
+		   width="100%"
+		   height="100%"
+		   minWidth="1024"
+		   minHeight="666"
+		   creationComplete="init(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			public var aviewPlayBackComp:Aview_Playback=new Aview_Playback();
+			
+			protected function init(event:FlexEvent):void
+			{
+				this.addElement(aviewPlayBackComp);
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</mx:Window>

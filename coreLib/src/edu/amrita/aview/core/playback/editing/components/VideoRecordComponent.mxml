@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab,
+// Amrita Vishwa Vidyapeetham. All rights reserved.
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab.
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+
+<!---
+
+File		: VideoRecordingComponent.mxml
+Module		: Video Editing
+Developer(s): Ashish Pillai
+Reviewer(s)	: Remya T
+
+File contains the UI related code for selecting the audio/video driver and bandwidth for publishing video
+to server.
+
+-->
+<!-- Main panel of recording component -->
+<mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="627" height="268" backgroundColor="#E0EFFB"
+		  creationComplete="initVideoRecordComponent()" dropShadowVisible="false"
+		  horizontalScrollPolicy="off" layout="absolute" title="Video Editing - Record Video"
+		  verticalScrollPolicy="off">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+		]]>
+	</fx:Script>
+
+	<!-- Script to include handler -->
+	<fx:Script source="../scripts/VideoRecordComponentScript.as"/>
+
+	<!-- Local Video playing component -->
+	<mx:HBox id="hbxVideoDisplay" x="6" y="5" width="271" height="224" backgroundColor="#000000">
+		<!--	<mx:VideoDisplay width="100%" height="100%" id="vdDisplay1"/>-->
+	</mx:HBox>
+	<mx:Label id="lblAudioNotification" visible="false" x="82" y="146" color="#f11515"
+			  fontFamily="Verdana" fontSize="12" fontWeight="bold" text="Audio Only Mode">
+
+	</mx:Label>
+
+	<!-- Selecting audio only option -->
+	<mx:HBox id="hBoxStreamingOption" x="288" y="5" color="#000000">
+		<mx:Label fontSize="12" fontWeight="bold" text="Streaming Option :"/>
+		<mx:RadioButtonGroup id="rbgAudioOption" change="streamingOptionChange()"/>
+		<mx:RadioButton id="rbAudioOnly" label="Audio only" groupName="rbgAudioOption"/>
+		<mx:RadioButton id="rbAudioVideo" label="Audio and Video" groupName="rbgAudioOption"
+						selected="true"/>
+	</mx:HBox>
+
+	<mx:VBox x="298" y="54" verticalGap="15">
+		<mx:Label id="lblUserSettings" y="63" color="#000000" fontSize="12" fontWeight="bold"/>
+		<!-- Camera canvas -->
+		<mx:Canvas id="hbxCamera">
+			<mx:Label id="lbSelectCamera" width="120" color="#000000" fontWeight="bold"
+					  text="Select Camera" verticalCenter="0"/>
+			<mx:ComboBox id="cmbCameraSelect" x="{lbSelectCamera.width+10}" width="180"
+						 color="#000000" fontSize="12" fontWeight="bold"
+						 itemRenderer="mx.controls.Label" rollOverColor="#e0effb"
+						 selectionColor="#99d0ff" toolTip="Select video driver">
+			</mx:ComboBox>
+		</mx:Canvas>
+		<!-- Microphone canvas -->
+		<mx:Canvas id="hbxMic">
+			<mx:Label id="lblSelectmMic" width="120" color="#000000" fontWeight="bold"
+					  text="Select Microphone" verticalCenter="0"/>
+			<mx:ComboBox id="cmbMicSelect" x="{lblSelectmMic.width+10}" width="180" color="#000000"
+						 fontSize="12" fontWeight="bold" itemRenderer="mx.controls.Label"
+						 rollOverColor="#e0effb" selectionColor="#99d0ff"
+						 toolTip="Select audio driver">
+			</mx:ComboBox>
+		</mx:Canvas>
+		<!-- Bandwidth canvas -->
+		<mx:Canvas x="70" y="189">
+			<mx:Label id="lblVideoQuality" width="120" color="#000000" fontWeight="bold"
+					  text="Select Video Quality " verticalCenter="0"/>
+			<mx:ComboBox id="cmbBandwidthSelect" x="{lblVideoQuality.width+10}" width="182"
+						 color="#000000"
+						 dataProvider="{Constants.availableVideoPublishingBandwidths}" fontSize="12"
+						 fontWeight="bold" labelField="index" rollOverColor="#e0effb"
+						 selectionColor="#99d0ff" toolTip="Select Bandwidth"/>
+		</mx:Canvas>
+		<mx:Canvas   x="70" >
+			<!-- Refresh button -->
+			<mx:HBox horizontalAlign="center" horizontalGap="30" >
+				
+			
+			<s:Button id="btnRefresh" width="78" height="26" label="Refresh" click="refresh()"
+					  color="#000000"
+					  enabled="{FlexGlobals.topLevelApplication.mainApp.scanHardwareEnableFlag}"
+					  fontSize="12" fontWeight="bold"/>
+			<!-- Streaming button -->
+			<s:Button id="btnStart" width="78" height="26" label="Start" click="startVideo()"
+					  color="#000000" enabled="false" fontSize="12" fontWeight="bold"/>
+			<!-- Cancel button -->
+			<s:Button id="btnCancel" width="78" height="26" label="Cancel" click="cancelRecording()"
+					  color="#000000" fontSize="12" fontWeight="bold"/>
+
+			</mx:HBox>
+		</mx:Canvas>
+	</mx:VBox>
+	<s:Label id="lblRecordingTime" visible="false" x="413" y="260" fontWeight="bold"
+			 text="00 : 00 : 00"/>
+</mx:Panel>

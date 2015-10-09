@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+// Copyright  © 2013 E-Learning Research Lab, 
+// Amrita Vishwa Vidyapeetham. All rights reserved. 
+// E-Learning Research Lab and the A-VIEW logo are trademarks or
+// registered trademarks of E-Learning Research Lab. 
+// All other names used are the trademarks of their respective owners.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+
+File		: ClassroomLayoutView.mxml
+Module		: Classroom
+Developer(s): Salil George, Ganesan A, Jeevanantham N
+Reviewer(s)	: Pradeesh , Jayakrishnan R
+
+ClassroomLayoutView component used to display/change the various modules (Consolidated, Document, Whiteboard, 3D, Chat and Userlist).
+
+-->
+
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:views="views.*"
+		backgroundColor="#071124"
+		backgroundAlpha="0.0"
+		initialize="initClsLayout()" 
+		xmlns:toolSets="views.toolSets.*"
+		creationComplete="init(event)" 
+		xmlns:Drawer="views.components.Drawer.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.amrita.aview.core.entry.ModuleRO;
+			import edu.amrita.aview.questions.PostQuestionComponent;
+			import edu.amrita.aview.questions.QuestionComponentMobile;
+			
+			import mx.events.FlexEvent;
+			
+			import views.toolSets.LoadingComponent;
+			/**
+			 * 
+			 * Used to set playIcon icon for Video start/stop button.
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/play_25.png")]
+			public var playIcon:Class;
+			/**
+			 * Used to set stopVideo icon for Video start/stop button.
+			 */
+			[Bindable]
+			[Embed(source="/views/assets/stop_25.png")]
+			public var stopVideoIcon:Class;
+			/**
+			 * @protected
+			 *
+			 * To show tooltip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function userModuleTooltipHandler(event:MouseEvent):void
+			{
+				var userModuleTooltip:MobileToolTip = MobileToolTip.open(event.target.toolTip.toString(),event.currentTarget as DisplayObject);
+				userModuleTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+			protected function btnDrawerHandler(event:MouseEvent = null):void
+			{
+				if(!FlexGlobals.topLevelApplication.isDrawerClicked){
+					FlexGlobals.topLevelApplication.loadinComponent  = PopUpManager.createPopUp(this,LoadingComponent,true) as LoadingComponent;
+					FlexGlobals.topLevelApplication.loadinComponent.width = FlexGlobals.topLevelApplication.width/3;
+					FlexGlobals.topLevelApplication.loadinComponent.height = 100;
+					FlexGlobals.topLevelApplication.loadinComponent.x =FlexGlobals.topLevelApplication.width/1.9;
+					FlexGlobals.topLevelApplication.loadinComponent.y = (FlexGlobals.topLevelApplication.height - 100)/2;
+					FlexGlobals.topLevelApplication.isDrawerClicked = true;
+				}
+					
+				if (stage){
+					stage.frameRate=7;
+				}
+				if(!isSliderAddedtoStage){
+					if(FlexGlobals.topLevelApplication.selectedModuleIndex == 2 && FlexGlobals.topLevelApplication.isDrawerCompleted == false){
+						viewContainer.removeAllElements();
+					}
+					FlexGlobals.topLevelApplication.slider.addElement(FlexGlobals.topLevelApplication.sliderDrawer);
+					FlexGlobals.topLevelApplication.slider.height = FlexGlobals.topLevelApplication.height;
+					
+					if(((FlexGlobals.topLevelApplication.width/100)*45)>= FlexGlobals.topLevelApplication.slider.width)
+					{
+						FlexGlobals.topLevelApplication.slider.width = (FlexGlobals.topLevelApplication.width/100)*45;
+					}
+					isSliderAddedtoStage = true;
+					if(event != null){
+						FlexGlobals.topLevelApplication.isSliderOpenedManually = true;
+					}
+					this.addElement(FlexGlobals.topLevelApplication.slider);
+					FlexGlobals.topLevelApplication.slider.addEventListener(FlexEvent.CREATION_COMPLETE,sliderCreationCompleteHandler);
+					FlexGlobals.topLevelApplication.sliderDrawer.videoStartStopIcon=FlexGlobals.topLevelApplication.sliderDrawer.playIcon;
+				}else{
+					if(FlexGlobals.topLevelApplication.slider.isShowing){
+						FlexGlobals.topLevelApplication.slider.animate(false);
+						if(FlexGlobals.topLevelApplication.selectedModuleIndex == 2){
+							if (stage){
+								stage.frameRate=7;
+							}
+						}
+						enableDisableAudioVideoSettings(false);
+						FlexGlobals.topLevelApplication.sliderDrawer.stopLocalVideo();
+						//MOBILE_ISPRING:
+						/* if(FlexGlobals.topLevelApplication.docComp.pptLoaded){
+							FlexGlobals.topLevelApplication.docComp.showStageWebView();
+						} */
+					}else{
+						//MOBILE_ISPRING:
+						/* if(FlexGlobals.topLevelApplication.docComp.pptLoaded){
+							FlexGlobals.topLevelApplication.docComp.hideStageWebView();
+						} */
+						FlexGlobals.topLevelApplication.slider.animate(true);
+						FlexGlobals.topLevelApplication.sliderDrawer.videoStartStopIcon=FlexGlobals.topLevelApplication.sliderDrawer.playIcon;
+						FlexGlobals.topLevelApplication.sliderDrawer.startLocalVideo();
+					}
+				}
+				
+			}
+			protected function init(event:FlexEvent):void
+			{
+				consolidatedContainer.removeAllElements();
+				if(FlexGlobals.topLevelApplication.screenTypes == Constants.SCREENTYPE_ALLINONE){
+					colaborationBtnsContainer.visible = false;
+					colaborationBtnsContainer.includeInLayout = false;
+					consolidatedContainer.visible = true;
+					consolidatedContainer.includeInLayout = true;
+					consolidatedContainer.percentHeight = 100;
+					consolidatedContainer.percentWidth = 30;
+					viewContainer.percentHeight = 100;
+					viewContainer.percentWidth = 70;
+					FlexGlobals.topLevelApplication.consolidated.percentHeight=100;
+					FlexGlobals.topLevelApplication.consolidated.percentWidth=100;
+					consolidatedContainer.addElement(FlexGlobals.topLevelApplication.consolidated);
+					if(FlexGlobals.topLevelApplication.mainApp.getUserSO(ClassroomContext.currentPresenterName)!= null && FlexGlobals.topLevelApplication.mainApp.getUserSO(ClassroomContext.currentPresenterName).isVideoPublishing)
+					{
+						if(FlexGlobals.topLevelApplication.mainApp.isPresenterAdded == false){
+							FlexGlobals.topLevelApplication.mainApp.isPresenterAdded = true
+							var presenterObj:Object = new Object();
+							FlexGlobals.topLevelApplication.consolidated.presenterTitle = Constants.PRESENTER_VIDEO_TITLE+ FlexGlobals.topLevelApplication.mainApp.getUserSO(ClassroomContext.currentPresenterName).userDisplayName;
+							presenterObj.contextName = FlexGlobals.topLevelApplication.consolidated.presenterTitle+"(Video)";
+							FlexGlobals.topLevelApplication.consolidated.presenterValuesArray.addItem(presenterObj);
+							FlexGlobals.topLevelApplication.consolidated.dropdownPresenter.selectedIndex = 1;
+							FlexGlobals.topLevelApplication.consolidated.dropdownPresenter.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+						}
+					}
+					else{
+						FlexGlobals.topLevelApplication.consolidated.dropdownPresenter.selectedIndex = 0;
+						FlexGlobals.topLevelApplication.consolidated.dropdownPresenter.dispatchEvent(new IndexChangeEvent(IndexChangeEvent.CHANGE));
+					}
+				}
+				else{
+					colaborationBtnsContainer.visible = true;
+					colaborationBtnsContainer.includeInLayout = true;
+				}
+				//btn_handraise.addEventListener(MouseEvent.CLICK, FlexGlobals.topLevelApplication.mainApp.actionButtons.onClickHandRaise);
+				videoStartStopIcon=playIcon;
+			}
+			protected function sliderCreationCompleteHandler(event:FlexEvent):void
+			{
+				FlexGlobals.topLevelApplication.sliderDrawer.lblExisSession.addEventListener(MouseEvent.CLICK,exitAviewApplication);
+				FlexGlobals.topLevelApplication.sliderDrawer.accountSetting.lblLogout.addEventListener(MouseEvent.CLICK,logoutApplication);
+				FlexGlobals.topLevelApplication.sliderDrawer.accountSetting.lblChangePassword.addEventListener(MouseEvent.CLICK,changePassWordHandler);
+				FlexGlobals.topLevelApplication.sliderDrawer.helpSetting.lblUserManual.addEventListener(MouseEvent.CLICK,showHelpDocument);
+				FlexGlobals.topLevelApplication.sliderDrawer.helpSetting.lblNews.addEventListener(MouseEvent.CLICK, newsHandler);
+				FlexGlobals.topLevelApplication.sliderDrawer.helpSetting.lblAboutUs.addEventListener(MouseEvent.CLICK, aboutUsHandler);
+				FlexGlobals.topLevelApplication.sliderDrawer.helpSetting.lblAboutAview.addEventListener(MouseEvent.CLICK, aboutAviewHandler);
+				FlexGlobals.topLevelApplication.sliderDrawer.helpSetting.lblUpcomingEvents.addEventListener(MouseEvent.CLICK, upComingEventsHandler);
+				FlexGlobals.topLevelApplication.sliderDrawer.helpSetting.lblContactUs.addEventListener(MouseEvent.CLICK, contactUsHandler);
+				FlexGlobals.topLevelApplication.sliderDrawer.audioSetting.lblRefreshVideo.addEventListener(MouseEvent.CLICK,refreshAllVideos);
+				FlexGlobals.topLevelApplication.sliderDrawer.performanceSetting.lblVideo.addEventListener(MouseEvent.CLICK,performanceHandler);
+				FlexGlobals.topLevelApplication.sliderDrawer.userSetting.toggleMui.addEventListener(Event.CHANGE,changeMuiSettingHandler);
+				FlexGlobals.topLevelApplication.sliderDrawer.checkFollowPresenter.addEventListener(MouseEvent.CLICK,changeFollowPresenter);
+				FlexGlobals.topLevelApplication.sliderDrawer.screenType.rgbScreenOption.addEventListener(Event.CHANGE,changerbgScreenTypeOption);
+				//MOBILE_ISPRING:FlexGlobals.topLevelApplication.docComp.hideStageWebView();
+				if(!FlexGlobals.topLevelApplication.isSliderOpenedManually){
+					enableDisableAudioVideoSettings(true);
+				}
+			}
+			
+			protected function btnLocalVideoClickHandler(event:MouseEvent):void
+			{
+				if(FlexGlobals.topLevelApplication.isVideoPrefrenceON){
+					FlexGlobals.topLevelApplication.saveVideoSettingsToFile();
+					startPublishVideo();
+				}else{
+					MessageBox.show("Your video cannot be started when video is OFF in the performance setting .Once the you turns ON video, you can start your video.", "Info - Performance", MessageBox.MB_OK, this, null, null, MessageBox.IC_INFO);
+				}
+			}
+			
+			protected function btnPostQuestionClickHandler(event:MouseEvent):void
+			{
+				var postQuestionComp:PostQuestionComponent = new PostQuestionComponent;
+				postQuestionComp.open(this);
+				postQuestionComp.isPopUp=true;
+				PopUpManager.centerPopUp(postQuestionComp);
+			}
+			[Bindable]
+			public var videoStartStopIcon:Class;
+			public function startPublishVideo():void
+			{
+				//if MUI status is ON and tablet user tries to start the video, display the alert message
+				//Otherwise stop the video
+				if (FlexGlobals.topLevelApplication.mainApp.isMUISelected && ClassroomContext.moderatorName != "" && FlexGlobals.topLevelApplication.mainApp.getUserSO(ClassroomContext.userVO.userName).userRole == Constants.VIEWER_ROLE)
+				{
+					//If videoStartStopIcon is playIcon, display the alert message
+					//Otherwsie stop publish the video to serevr
+					if (videoStartStopIcon == playIcon)
+					{
+						MessageBox.show("Your video cannot be started as the presenter has turned on Multiple User Interaction(MUI) feature.Once the presenter turns off MUI, you can start your video.", "Info - CPU usage optimization", MessageBox.MB_OK, this, null, null, MessageBox.IC_INFO);
+						btnLocalVideo.enabled=true;
+					}
+					else
+					{
+						btnLocalVideo.enabled=true;
+						FlexGlobals.topLevelApplication.mainApp.stopPublish();
+						videoStartStopIcon=playIcon;
+						FlexGlobals.topLevelApplication.videoPublishStatus=true;
+						btnLocalVideo.toolTip="Start your video";
+						//True only if user not able to interact with presenter
+						if (FlexGlobals.topLevelApplication.mainApp.isRestrictionAdded)
+						{
+							FlexGlobals.topLevelApplication.mainApp.isRestrictionAdded=false;
+							FlexGlobals.topLevelApplication.videoPublishStatus=false;
+							//isSetting=false;
+						}
+					}
+					
+				}
+				else
+				{
+					//If  user not started his video, open video setting call-out to publish video
+					//Otherwise stop the video
+					if (FlexGlobals.topLevelApplication.videoPublishStatus ){
+						FlexGlobals.topLevelApplication.videoPublishStatus=false;
+						//btnDrawerHandler();
+						FlexGlobals.topLevelApplication.slider.animate(false);
+						if(FlexGlobals.topLevelApplication.selectedModuleIndex == 2){
+							if (stage){
+								stage.frameRate=7;
+							}
+						}
+						enableDisableAudioVideoSettings(false);
+						FlexGlobals.topLevelApplication.sliderDrawer.stopLocalVideo();
+						FlexGlobals.topLevelApplication.mainApp.stopPublish();
+						videoStartStopIcon=playIcon;
+						btnLocalVideo.toolTip="Start your video";
+						btnLocalVideo.enabled=true;
+						FlexGlobals.topLevelApplication.isVideoON=false;
+					}else{
+						if(!isSliderAddedtoStage){
+							FlexGlobals.topLevelApplication.isSliderOpenedManually = false;
+							btnDrawerHandler();
+						}else{
+							FlexGlobals.topLevelApplication.slider.animate(true);
+							FlexGlobals.topLevelApplication.sliderDrawer.videoStartStopIcon=FlexGlobals.topLevelApplication.sliderDrawer.playIcon;
+							FlexGlobals.topLevelApplication.sliderDrawer.startLocalVideo();
+							enableDisableAudioVideoSettings(true);
+						}
+						videoStartStopIcon=stopVideoIcon;
+						btnLocalVideo.toolTip="Stop your video";
+						FlexGlobals.topLevelApplication.mainApp.setStreamingStatus();
+						FlexGlobals.topLevelApplication.mainApp.publishVideo();
+						//localVideoDisplay();
+						FlexGlobals.topLevelApplication.isVideoON=true;
+						FlexGlobals.topLevelApplication.videoPublishStatus=true;
+					}
+				}
+				//isUserTriggerVideoBtn = true;
+			}
+
+			private function enableDisableAudioVideoSettings(bool:Boolean):void{
+				FlexGlobals.topLevelApplication.sliderDrawer.audioSetting.visible = bool;
+				FlexGlobals.topLevelApplication.sliderDrawer.audioSetting.includeInLayout  =bool;
+				FlexGlobals.topLevelApplication.sliderDrawer.isAudioSettingOpen = bool;
+				if(bool){
+					FlexGlobals.topLevelApplication.sliderDrawer.hideItem(FlexGlobals.topLevelApplication.sliderDrawer.audioSetting);
+				}
+			}
+			public var handraise:Boolean;
+			/**
+			 * @public 
+			 * @param event of type MouseEvent
+			 * 
+			 */
+			public function onClickHandRaise():void
+			{
+				FlexGlobals.topLevelApplication.mainApp.lstUsers.hideMenu();
+				if (FlexGlobals.topLevelApplication.mainApp.handRaise())
+				{
+					FlexGlobals.topLevelApplication.mainApp.actionButtons.handraise=false;
+					FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible = true;
+					setupHandraise();
+				}
+			}
+			/**
+			 * @public 
+			 * @param event of type MouseEvent
+			 * 
+			 */
+			public function onClickHandraiseRelease():void
+			{
+				FlexGlobals.topLevelApplication.mainApp.lstUsers.hideMenu();
+				if (FlexGlobals.topLevelApplication.mainApp.releaseHandRaise())
+				{
+					FlexGlobals.topLevelApplication.mainApp.actionButtons.handraise=true;
+					FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible = false;
+					setupHandraise();
+				}
+			}
+			/**
+			 *@public 
+			 * 
+			 */
+			public function setupHandraise():void
+			{
+				
+				btn_handrelease.includeInLayout=FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible;
+				btn_handrelease.visible=FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible;
+				btn_handrelease.enabled=FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible;
+				
+				btn_handraise.includeInLayout=!FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible;
+				btn_handraise.visible=!FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible;
+				//if (ClassroomContext.IS_AUDIO_VIDEO_ENABLED)
+					//btn_handraise.enabled=!FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible;
+			}
+			/**
+			 * @protected
+			 *
+			 * To show tool-tip
+			 *
+			 * @param event of MouseEvent
+			 * @return void
+			 */
+			protected function userNameTolltipOpenHandler(event:MouseEvent):void
+			{
+				var videoModuleTooltip:MobileToolTip=MobileToolTip.open(event.target.toolTip.toString(), event.currentTarget as DisplayObject);
+				videoModuleTooltip.handleToolTipPosition(event.currentTarget as DisplayObject);
+			}
+		]]>
+	</fx:Script>
+	<fx:Script source="../views/toolSets/Icons.as"/>
+	<fx:Script source="./viewHandlers/ClassroomLayoutViewHandler.as"/>
+	<fx:Script source="../edu/amrita/aview/questions/QuestionIcons.as"/>
+	
+	<s:titleLayout>
+		<s:HorizontalLayout paddingLeft="0"
+							paddingRight="0"/>
+	</s:titleLayout>
+	<s:titleContent>
+		<!-- Header of the view, contains aview logo and module name-->
+		<s:Group id="titleContentBox"
+				 width="100%"
+				 height="100%">
+			<s:Rect width="100%"
+					height="100%"
+					x="0"
+					y="0">
+				<s:fill>
+					<s:BitmapFill source="@Embed('/views/assets/window_bg.jpg')" 
+								  fillMode="repeat" />
+				</s:fill>
+			</s:Rect>
+			<s:HGroup width="100%"
+					  height="100%"
+					  verticalAlign="middle"
+					  paddingTop="-3"
+					  gap="-2">
+				<s:Button id="btnDrawer"
+						  width="10%"
+						  left="0"
+						  height="100%"
+						  icon="@Embed('/views/assets/menu.png')"
+						  toolTip="Menu"
+						  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+						  click="btnDrawerHandler(event)"/>
+				<s:Group width="25%"
+						 height="100%">
+					<s:HGroup width="100%"
+							  height="100%"
+							  verticalAlign="middle"
+							  horizontalAlign="left"
+							  paddingLeft="15">
+						<s:Image source="{defaultBanner}"/>
+					</s:HGroup>
+				</s:Group>
+				<!-- Network status-->
+				<s:HGroup id="groupNotificationStatusGrpContainer" 
+						 visible="{FlexGlobals.topLevelApplication.notificationStatusContainer}" 
+						 width="20%" 
+						 height="40"
+						 verticalAlign="middle"
+						 horizontalAlign="center">
+					<s:Image width="40" 
+							 height="30"
+							 id="imageConnectionIcon"
+							 click="groupNotificationStatusGrpContainer.visible=true;"
+							 source="{FlexGlobals.topLevelApplication.connectionStatusIcon}"
+							 useHandCursor="true"/>
+					<s:Label id="lblConnectionStatus"  
+							 fontWeight="bold"  
+							 click="groupNotificationStatusGrpContainer.visible=true;" 
+							 color="#FFFFFF"
+							 text="{FlexGlobals.topLevelApplication.connectionStatusMessage}" 
+							 textAlign="left"
+							 useHandCursor="true" 
+							 verticalAlign="middle"
+							 buttonMode="true"/>
+				</s:HGroup>
+				<s:Spacer width="5%"
+						  height="100%">
+				</s:Spacer>
+				<!--Container to display user action buttons-->
+				<s:HGroup right="0"
+						 height="100%"
+						 width="53%"
+						 visible="true"
+						 id="actionBtnGroup"
+						 verticalAlign="middle"
+						 verticalCenter="0"
+						 x="{FlexGlobals.topLevelApplication.width - actionBtnGroup.width}"
+						 includeInLayout="true">
+					<!--<s:VGroup id="controlButtonsGroup"
+							  height="100%"
+							  width="100%">-->
+					<s:Label text="{'Welcome ' +ClassroomContext.userVO.fname + ClassroomContext.userVO.lname}"
+							 color="0xFFFFFF"
+							 height="100%"
+							 maxWidth="150"
+							 verticalAlign="middle"
+							 textAlign="center"
+							 fontFamily="Calibri"
+							 fontSize="14" 
+							 fontWeight="bold" 
+							 maxDisplayedLines="1"
+							 paddingRight="10"
+							 toolTip="{ClassroomContext.userVO.fname + ClassroomContext.userVO.lname}"
+							 rollOver="userNameTolltipOpenHandler(event)"
+							 mouseDown="userNameTolltipOpenHandler(event)"/>
+					
+					<s:Button id="btn_handraise"
+							  width="100%"
+							  height="100%" 
+							  icon="{handRaiseIcon}"
+							  visible="{!FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible}"
+							  includeInLayout="{!FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible}"
+							  useHandCursor="true" 
+							  buttonMode="true"
+							  mouseChildren="false"
+							  toolTip="Request interaction with Presenter" 
+							  enabled="{!FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible}"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  rollOver="userModuleTooltipHandler(event)"
+							  mouseDown="userModuleTooltipHandler(event)"
+							  click="onClickHandRaise()"/>
+					
+					<s:Button id="btn_handrelease"
+							  icon="{HandraiseReleaseIcon}"
+							  visible="{FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible}"
+							  includeInLayout="{FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible}"
+							  useHandCursor="true"
+							  buttonMode="true"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  mouseChildren="false"
+							  toolTip="Release the handraise request"
+							  enabled="{FlexGlobals.topLevelApplication.mainApp.actionButtons.isBtnHandRaiseReleaseVisible}"
+							  width="100%"
+							  height="100%"
+							  click="onClickHandraiseRelease()"
+							  rollOver="userModuleTooltipHandler(event)"
+							  mouseDown="userModuleTooltipHandler(event)"/>
+					<!--</s:VGroup>-->
+					<s:Button id="btnLocalVideo"
+							  width="100%"
+							  height="100%"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  toolTip="Start your video"
+							  click="btnLocalVideoClickHandler(event)"
+							  icon="{videoStartStopIcon}"
+							  rollOver="userModuleTooltipHandler(event)"
+							  mouseDown="userModuleTooltipHandler(event)"/>
+					<s:Button id="btnPostQuestion"
+								width="100%"
+								height="100%" 
+								icon="{post_icon}"
+								visible="true"
+								includeInLayout="true"
+								useHandCursor="true" 
+								buttonMode="true"
+								mouseChildren="false"
+								toolTip="Post question" 
+								enabled="true"
+								skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+								rollOver="userModuleTooltipHandler(event)"
+								mouseDown="userModuleTooltipHandler(event)"
+								click="btnPostQuestionClickHandler(event)"/>
+					<s:Button id="btnRefresh"
+							  width="100%"
+							  height="100%"
+							  enabled="{FlexGlobals.topLevelApplication.isRefreshBtnEnabled}"
+							  click="FlexGlobals.topLevelApplication.mainApp.refreshVideo()"
+							  icon="{refreshVideoIcon}"
+							  skinClass="edu.amrita.aview.core.shared.skins.mobile.MobileButtonSkin"
+							  toolTip="Refresh incoming video"
+							  rollOver="userModuleTooltipHandler(event)"
+							  mouseDown="userModuleTooltipHandler(event)"/>
+				</s:HGroup>
+			</s:HGroup>
+		</s:Group>
+	</s:titleContent>
+	<!-- Containers to display action buttons and views-->
+	<s:Group height="100%"
+			  width="100%">
+		<s:VGroup width="100%"
+				  height="100%"
+				  gap="-1" 
+				  verticalAlign="middle" 
+				  horizontalAlign="center"
+				  id="parentViewContainer">
+			<s:HGroup id="colaborationBtnsContainer"
+				 width="100%" />
+			<s:HGroup width="100%"
+					  height="100%"
+					  gap="0"
+					  y="{colaborationBtnsContainer.y+colaborationBtnsContainer.height}"
+					  id="groupMainContainer">
+				<s:HGroup id="viewContainer"
+						 height="100%"
+						 width="100%" />
+				<s:Group width="2"
+						 height="100%" >
+					<s:Rect width="100%"
+							height="100%">
+						<s:fill>
+							<s:SolidColor color="#000000"/>
+						</s:fill>
+					</s:Rect>
+				</s:Group>
+				<s:Group id="consolidatedContainer" 
+						  width="10%"
+						  height="100%" >
+					<s:Rect width="100%"
+							height="100%">
+						<s:fill>
+							<s:SolidColor color="#000000"/>
+						</s:fill>
+					</s:Rect>
+				</s:Group>
+			</s:HGroup>
+		</s:VGroup>
+	</s:Group>
+</s:View>
