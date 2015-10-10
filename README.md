@@ -5,7 +5,7 @@
 
 # License
 ----------------
-The code in this repository is licensed under CC-BY-SA- unless otherwise noted. Please see the [LICENSE] file for details.
+The code in this repository is licensed under CC-BY-SA unless otherwise noted. Please follow the link for more details.
 https://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 # Documentation
