@@ -3,6 +3,11 @@
 
  *A-VIEW* (Amrita Virtual Interactive E-Learning World) is an internet based virtual knowledge sharing platform, developed by Amrita E-Learning Research Labs, Amrita University, Kollam
 
+# License
+----------------
+The code in this repository is licensed under CC-BY-SA- unless otherwise noted. Please see the [LICENSE] file for details.
+https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 # Documentation
 --------------
 *Download & Installation* (http://aview.in/aview)
