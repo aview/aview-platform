@@ -1,4 +1,4 @@
-# aview-platform
+# AVIEW platform
 
 
  *A-VIEW* (Amrita Virtual Interactive E-Learning World) is an internet based virtual knowledge sharing platform, developed by Amrita E-Learning Research Labs, Amrita University, Kollam
