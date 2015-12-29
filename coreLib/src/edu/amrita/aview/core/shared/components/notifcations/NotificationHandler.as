@@ -11,16 +11,16 @@ import mx.core.FlexGlobals;
 import mx.managers.ISystemManager;
 import mx.managers.PopUpManager;
 
-[Embed(source="assets/images/mic.png")]
+[Embed(source="/edu/amrita/aview/core/shared/components/notifcations/assets/images/mic.png")]
 [Bindable]
 public static var mic:Class;
-[Embed(source="assets/images/micMute.png")]
+[Embed(source="/edu/amrita/aview/core/shared/components/notifcations/assets/images/micMute.png")]
 [Bindable]
 public static var micMute:Class;
-[Embed(source="assets/images/presenter.png")]
+[Embed(source="/edu/amrita/aview/core/shared/components/notifcations/assets/images/presenter.png")]
 [Bindable]
 public static var presenter:Class;
-[Embed(source="assets/images/interaction.png")]
+[Embed(source="/edu/amrita/aview/core/shared/components/notifcations/assets/images/interaction.png")]
 [Bindable]
 public static var interaction:Class;
 

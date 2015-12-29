@@ -453,13 +453,13 @@
 			</s:HGroup>
 		</s:BorderContainer>
 		<s:Image right="6" bottom="0"
-				 source="@Embed('edu/amrita/aview/core/login/boilerplate/assets/images/popuparrow.png')"/>
+				 source="@Embed('/edu/amrita/aview/core/login/boilerplate/assets/images/popuparrow.png')"/>
 		<s:Image right="6" top="6" buttonMode="true"
 				 click="notificationStatusContainer.visible=false;"
-				 source="@Embed('edu/amrita/aview/core/login/boilerplate/assets/images/close.png')"
+				 source="@Embed('/edu/amrita/aview/core/login/boilerplate/assets/images/close.png')"
 				 toolTip="Close" useHandCursor="true"
 				 smoothingQuality.mainapp="high"
 				 smooth.mainapp="true"
-				 source.mainapp="@Embed('edu/amrita/aview/core/login/boilerplate/assets/images/close.png')"/>
+				 source.mainapp="@Embed('/edu/amrita/aview/core/login/boilerplate/assets/images/close.png')"/>
 	</mx:Canvas>
 </s:BorderContainer>

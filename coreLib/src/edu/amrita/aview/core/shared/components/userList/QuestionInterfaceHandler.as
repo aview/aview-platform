@@ -45,11 +45,11 @@ public var questInter:StatusIconRenderer;
 
 
 [Bindable]
-[Embed(source='edu/amrita/aview/core/shared/components/userList/assets/images/questionInteract.png')]
+[Embed(source='/edu/amrita/aview/core/shared/components/userList/assets/images/questionInteract.png')]
 public var interactionActionIconStart:Class;
 
 [Bindable]
-[Embed(source='edu/amrita/aview/core/shared/components/userList/assets/images/questionInteractstop.png')]
+[Embed(source='/edu/amrita/aview/core/shared/components/userList/assets/images/questionInteractstop.png')]
 public var interactionActionIconStop:Class;
 
 /**

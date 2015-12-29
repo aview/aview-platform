@@ -221,7 +221,7 @@
 										  verticalAlign="middle"/>
 					</s:layout>
 					<s:Image id="btnBandWidth" buttonMode="true" click="showBandwidthWindow();changeBackground('bandwidth')"
-							 source="@Embed('edu/amrita/aview/core/entry/assets/images/bandwidth.png')"
+							 source="@Embed('/edu/amrita/aview/core/entry/assets/images/bandwidth.png')"
 							 toolTip="Check your bandwidth" useHandCursor="true"/>
 					<s:Label id="lblBandWidth" buttonMode="true" click="showBandwidthWindow()"
 							 color="#12548E" fontFamily="Calibri" fontWeight="bold"

@@ -49,13 +49,13 @@ package edu.amrita.aview.core.shared.components.fileManager.TreeCustomDesign
 		 */		
 		public var btnCancel:Button;
 		[Bindable]
-		[Embed("../assets/images/CancelProcess.png")]
+		[Embed("/edu/amrita/aview/core/shared/components/fileManager/assets/images/CancelProcess.png")]
 		public var cancelIcon:Class;
 		[Bindable]
-		[Embed("edu/amrita/aview/core/shared/components/fileManager/assets/images/loading.swf")]
+		[Embed("/edu/amrita/aview/core/shared/components/fileManager/assets/images/loading.swf")]
 		public var loadingIcon:Class;
 		[Bindable]
-		[Embed("edu/amrita/aview/core/shared/components/fileManager/assets/images/clock.png")]
+		[Embed("/edu/amrita/aview/core/shared/components/fileManager/assets/images/clock.png")]
 		public var waitingIcon:Class;
 		/**
 		 * Constructor

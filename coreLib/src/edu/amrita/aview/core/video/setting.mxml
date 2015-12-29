@@ -529,7 +529,7 @@ This is a pop-up component in the AVIEW main window for selecting drivers.
 						 fontFamily="Times New Roman" fontSize="13" fontWeight="bold" text="*"/>
 				<mx:HRule x="0" y="18" width="100%" height="1" chromeColor="#ADC8DB"/>
 				<s:Image right="0" top="18" smooth="true" smoothingQuality="high"
-						 source="@Embed('edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
+						 source="@Embed('/edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
 			</mx:Canvas>
 			<mx:Canvas id="stdVideoSettings" width="97%" backgroundColor="#E0EFFB" chromeColor="#E0EFFB"
 					   contentBackgroundAlpha="1.0" contentBackgroundColor="#E0EFFB">
@@ -644,7 +644,7 @@ This is a pop-up component in the AVIEW main window for selecting drivers.
 				<mx:HRule y="2" width="100%" height="1" chromeColor="#ADC8DB" horizontalCenter="0"/>
 				
 				<s:Image right="1" top="2" smooth="true" smoothingQuality="high"
-						 source="@Embed('edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
+						 source="@Embed('/edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
 				<mx:HBox x="0" y="3" width="100%" height="40" horizontalAlign="center"
 						 paddingLeft="10" paddingRight="10" verticalAlign="middle">
 					
@@ -780,7 +780,7 @@ This is a pop-up component in the AVIEW main window for selecting drivers.
 		<s:Label x="16" y="9" color="#3D444A" fontSize="14" fontWeight="bold" text="Audio/Video Settings"/>
 		<mx:HRule y="25" width="95%" height="1" chromeColor="#ADC8DB" horizontalCenter="0"/>
 		<s:Image right="9" top="25" smooth="true" smoothingQuality="high"
-				 source="@Embed('edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
+				 source="@Embed('/edu/amrita/aview/core/video/assets/images/settings-arrow.png')"/>
 		
 		<!--<components:MxImageButton id="btnViewDesktop0" visible="{this.width==368?false:true}"
 								  width="100" height="22" label="Pretesting" buttonMode="true"

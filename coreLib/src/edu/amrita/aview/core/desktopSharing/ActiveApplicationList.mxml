@@ -60,5 +60,5 @@ This file is the custom component for choosing the active applications for shari
 	</s:VGroup>
 	<!--Fix for issue #16280-->
 	<s:Button id="btnRefresh" right="4" top="-28" width="24" cornerRadius="3" toolTip="Refresh" click="FlexGlobals.topLevelApplication.mainApp.mainContainerComp.classroomComp.refreshAppList()"
-			  icon="@Embed('edu/amrita/aview/core/desktopSharing/assets/images/Refresh.png')"/>
+			  icon="@Embed('/edu/amrita/aview/core/desktopSharing/assets/images/Refresh.png')"/>
 </s:Panel>

@@ -225,7 +225,7 @@ package edu.amrita.aview.core.entry
 		public static const FMS_SERVER_CHECK_FIREWAL:String="cts001.aview.in";
 		
 		//Setting the log level to INFO
-		public static const LOG_LEVEL:Number = LogEventLevel.INFO; // get all logs during desktop debugging.
+		public static const LOG_LEVEL:Number = 4;
 		
 		public static const FMS_SERVER_PORT:Number=1935;
 		public static const CONTENT_SERVER_PORT:Number=80;

@@ -251,27 +251,27 @@ applicationType::DesktopWeb{
  * Icon used for pop-out function
  */
 [Bindable]
-[Embed(source="assets/images/view-fullscreen1.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/view-fullscreen1.png")]
 private var popoutIcon:Class;
 
 /**
  * Icon used  for pop-in function
  */
 [Bindable]
-[Embed(source="assets/images/windows_nofullscreen.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/windows_nofullscreen.png")]
 private var popinIcon:Class;
 
 /**
  * Icon used for show pointer function.
  */
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/showPointer_new.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/showPointer_new.png")]
 [Bindable]
 private var showPointerIcon:Class;
 
 /**
  * Icon used for remove pointer function.
  */
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/showPointer_newselected.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/showPointer_newselected.png")]
 [Bindable]
 private var removePointerIcon:Class;
 
@@ -291,44 +291,44 @@ private var enableTextToolImage:Class;
  * //PNCR: #BugFix: 14762
  * Images to enable or disable erase tool
  */
-/*[Embed(source="assets/images/eraserSelected.png")]
+/*[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/eraserSelected.png")]
 [Bindable]
 private var disableEraseToolEnableSizeSelectionImage:Class;*/
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/erasersmallSelected_new.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/erasersmallSelected_new.png")]
 [Bindable]
 private var SmallEraserSelectionImage:Class;
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/mediumEraserSelected_new.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/mediumEraserSelected_new.png")]
 [Bindable]
 private var MediumEraserSelectionImage:Class;
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/LargeEraserSelected_new.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/LargeEraserSelected_new.png")]
 [Bindable]
 private var LargeEraserSelectionImage:Class;
 
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/RectangleSelected_new.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/RectangleSelected_new.png")]
 [Bindable]
 private var RectangleSelectionImage:Class;
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/circleSelected_new.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/circleSelected_new.png")]
 [Bindable]
 private var CircleSelectionImage:Class;
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/lineSelected_new.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/lineSelected_new.png")]
 [Bindable]
 private var LineSelectionImage:Class;
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/Eraser_new.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/Eraser_new.png")]
 [Bindable]
 private var EraseToolImage:Class;
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/Shapes.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/Shapes.png")]
 [Bindable]
 private var ShapeToolImage:Class;
 
-[Embed(source="edu/amrita/aview/core/whiteboard/assets/images/defaultShape.png")]
+[Embed(source="/edu/amrita/aview/core/whiteboard/assets/images/defaultShape.png")]
 [Bindable]
 private var ShapeDefault:Class;
 /**

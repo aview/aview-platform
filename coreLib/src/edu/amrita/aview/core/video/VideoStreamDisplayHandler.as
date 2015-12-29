@@ -86,7 +86,7 @@ public var videoReceive_Icon:Class;
 public var videoNotReceive_Icon:Class;
 
 [Bindable]
-[Embed(source="assets/images/videoWall_videoFade.png")]
+[Embed(source="/edu/amrita/aview/core/video/assets/images/videoWall_videoFade.png")]
 public var videoFade_Icon:Class;
 
 [Bindable]
@@ -95,11 +95,11 @@ public var video_Receive:Class;
 
 /* Video wall icons  */
 [Bindable]
-[Embed(source="assets/images/videoWall_DisabledMic.png")]
+[Embed(source="/edu/amrita/aview/core/video/assets/images/videoWall_DisabledMic.png")]
 public var videoWall_disabledMicIcon:Class;
 
 [Bindable]
-[Embed(source="edu/amrita/aview/core/video/assets/images/talk.png")]
+[Embed(source="/edu/amrita/aview/core/video/assets/images/talk.png")]
 public var videoWall_pushToTalkUnmute_Icon:Class;
 
 [Bindable]

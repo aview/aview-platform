@@ -97,12 +97,12 @@
 			 useHandCursor="true"/>
 	<s:Image right="19" top="-21" buttonMode="true" click="localVideoFullScreen()" smooth="true"
 			 smoothingQuality="high"
-			 source="@Embed('edu/amrita/aview/core/video/assets/images/myVideoPopout.png')"
+			 source="@Embed('/edu/amrita/aview/core/video/assets/images/myVideoPopout.png')"
 			 toolTip="Pop out" useHandCursor="true" id="btnPopoout"/>
 	<s:Image x="167" y="-21" source="@Embed('/edu/amrita/aview/core/video/assets/images/myvideo-seperator.png')"/>
 	<s:Image id="btnClose" right="5" top="-15" buttonMode="true" click="titleWindow_close(this)"
 			 smooth="true" smoothingQuality="high"
-			 source="@Embed('edu/amrita/aview/core/video/assets/images/video_close_icon.png')"
+			 source="@Embed('/edu/amrita/aview/core/video/assets/images/video_close_icon.png')"
 			 toolTip="Close" useHandCursor="true"/>
 	<!--Fix for issue #17572-->
 </s:TitleWindow>

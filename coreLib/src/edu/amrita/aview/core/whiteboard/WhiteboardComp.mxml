@@ -76,7 +76,7 @@
 				   <s:HGroup height="100%" verticalAlign="middle" horizontalAlign="center" enabled="{presenterControls.visible}">
 					   <s:Image id="previousBtn" buttonMode="true" click="{navigateToPreviousPage();}"
 								enabled="false" smooth="true" smoothingQuality="high"
-								source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/titlePrevious.png')"
+								source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/titlePrevious.png')"
 								useHandCursor="true"/>
 					   <s:TextInput id="currentPagwb" width="33" height="22" color="#030303"
 									focusOut="{checkCurrPageValueChange()}"
@@ -91,7 +91,7 @@
 								verticalAlign="bottom"/>
 					   <s:Image id="nextBtn" buttonMode="true" click="{navigateToNextPage();}"
 								smooth="true" smoothingQuality="high" toolTip="Next Page"
-								source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/titleNext.png')"
+								source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/titleNext.png')"
 								useHandCursor="true"/>
 					   <mx:VRule width="1" height="100%" chromeColor="#B8CEDF"/>
 					  <!-- <s:Label id="pageNumDisplay"
@@ -142,7 +142,7 @@
 		eventually ends the drawing-->
 		
 		<s:Image id="pageNoImage" left="3" top="36"
-				 source="@Embed(source='assets/images/pageNo.png')"/>
+				 source="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/pageNo.png')"/>
 		<!--- Page number of the current whiteboard page-->
 		
 		
@@ -184,18 +184,18 @@
 					   chromeColor="#CCCCCC" click="menuButtonClickHandler(event)" cornerRadius="5"
 					   >
 		<s:Image id="showhideButton" x="34" y="2" width="11" height="7"
-				 source="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/wbshowhideup.png')"/>
+				 source="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/wbshowhideup.png')"/>
 		<s:Image id="toolTitleBar" buttonMode="true" mouseDown="toolTitleBarhandleDown(event)"
 				 mouseUp="toolTitleBarhandleUp(event)"
-				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/toolstab.png')"
+				 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/toolstab.png')"
 				 useHandCursor="true"/>
 		<s:Image id="toolshowhideButton" left="35" top="1" buttonMode="true" toolTip="Hide toolbar"
 				 click="showhidetoolTitleBar();"
-				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/wbshowhideup.png')"
+				 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/wbshowhideup.png')"
 				 useHandCursor="true"/>
 		<s:Image id="toolMenu" visible="false" top="15" width="49" buttonMode="true"
 				 click="showhidetoolTitleBar();"
-				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/toolbox.png')"
+				 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/toolbox.png')"
 				 useHandCursor="true"/>
 		<mx:VBox id="toolsbox" left="2" right="143" top="15" height="311" borderVisible="false"
 				 horizontalAlign="center" verticalAlign="top" verticalGap="2">
@@ -203,15 +203,15 @@
 			<!---<s:Button height="32"
 			width="34"
 			id="collaborationControlButton"
-			icon="@Embed(source='assets/images/collaborationMode.png')"
+			icon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/collaborationMode.png')"
 			toolTip="{resourceManager.getString('myResource','whiteboardcomp.collaborationtooltip')}"
 			click="showCollaborationOptions()"
 			color="#000000"
 			mouseOver="removeToolOptions(event)"/> -->			
 			<components:ImageButton id="newPage" width="45" height="29" click="newPageHandler();"
 									color="#000000"
-									imageSkin="@Embed('edu/amrita/aview/core/whiteboard/assets/images/newsheet.png')"
-									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/newsheetdisabled.png')"
+									imageSkin="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/newsheet.png')"
+									imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/newsheetdisabled.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="New Page"/>		
 			
@@ -219,7 +219,7 @@
 			<!--- Previous Page Button Contol -->
 			<!--<s:Button id="previousBtn"
 			click="{navigateToPreviousPage();}"
-			icon="@Embed(source='assets/images/back.png')"
+			icon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/back.png')"
 			toolTip="{resourceManager.getString('myResource','whiteboardcomp.prevoiustooltip')}"
 			height="32"
 			width="24"
@@ -240,15 +240,15 @@
 			<components:ImageButton id="showPointer" width="45" height="29"
 									click="enableDisablePointer()" color="#000000" cornerRadius="2"
 									imageSkin="{pointerIcon}"
-									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/showPointer_newdisabled.png')"
+									imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/showPointer_newdisabled.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="{resourceManager.getString('myResource','whiteboardcomp.removepointertool')}"/>
 			
 			<!--- Clear button--><!--mouseOver="removeToolOptions(event)" fixed for 16382 -->
 			<components:ImageButton id="clearBtn" width="45" height="29" click="clearScratchPad()"
 									color="#000000" cornerRadius="2"
-									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/clearWhiteboard_new.png')"
-									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/clearWhiteboard_newselected.png')"
+									imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/clearWhiteboard_new.png')"
+									imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/clearWhiteboard_newselected.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="{resourceManager.getString('myResource','whiteboardcomp.clearwhiteboardtool')}"/>
 			
@@ -261,20 +261,20 @@
 			color="#000000"
 			toolTip="{resourceManager.getString('myResource','whiteboardcomp.restorewhiteboardtool')}"
 			skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
-			imageSkinDisabled="@Embed(source='assets/images/restoreDisabled.png')"
-			imageSkin="@Embed(source='assets/images/restoreEnabled.png')"
+			imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/restoreDisabled.png')"
+			imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/restoreEnabled.png')"
 			enabled="false"
 			mouseOver="removeToolOptions(event)" visible="false" />-->
 			<components:ImageButton id="btnUndo" width="45" height="29" click="undo()"
 									color="#000000"
-									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/undo_new.png')"
-									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/undo_newdisabled.png')"
+									imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/undo_new.png')"
+									imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/undo_newdisabled.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="Undo"/>
 			<components:ImageButton id="btnRedo" width="45" height="29" click="redo()"
 									color="#000000"
-									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/redo_new.png')"
-									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/redo_newdisabled.png')"
+									imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/redo_new.png')"
+									imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/redo_newdisabled.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="Redo"/>
 			
@@ -294,8 +294,8 @@
 			label="R"/>-->
 			<components:ImageButton id="btnSelect" width="45" height="29"
 									click="enableObjectSelection()" color="#000000"
-									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/select_new.png')"
-									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/select_newselected.png')"
+									imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/select_new.png')"
+									imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/select_newselected.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="Select Object"/>
 			<!--- Button to  select text tool -->
@@ -308,14 +308,14 @@
 									toolTip="{resourceManager.getString('myResource','whiteboardcomp.texttooltip')}"/> 
 			<!--- Button to  select free hand tool -->
 			<components:ImageButton id="btnFreehand" width="45" height="29" click="setFreehandTool()"
-									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/freehand_new.png')"
-									imageSkinDisabled="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/freehand_newselected.png')"
+									imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/freehand_new.png')"
+									imageSkinDisabled="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/freehand_newselected.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="{resourceManager.getString('myResource','whiteboardcompimagefreehandtool')}"/>
 			<!--- Button to  select eraser tool -->
 			<components:ImageButton id="btnEraser" width="45" height="29"
 									click="showHideEraserMenu();shapesOptionBox.visible=false;"
-									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/Eraser_new.png')"
+									imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/Eraser_new.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasertooltip')}"/>
 			
@@ -325,20 +325,20 @@
 			</s:layout>-->
 			<!-- disabledIcon="@Embed(source='assets/images/eraserSmallSelected.png')" -->
 			<!--<s:Button toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"
-			id="btnEraserSmall" horizontalCenter="0" icon="@Embed(source='assets/images/eraserSmall.png')"
+			id="btnEraserSmall" horizontalCenter="0" icon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/eraserSmall.png')"
 			width="26" y="3" height="26" click="setEraserTool(event)"/>-->
 			<!--disabledIcon="@Embed(source='assets/images/eraserMediumSelected.png')" -->
 			<!--<s:Button toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"
-			id="btnEraserMedium" horizontalCenter="0" icon="@Embed(source='assets/images/eraserMedium.png')"
+			id="btnEraserMedium" horizontalCenter="0" icon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/eraserMedium.png')"
 			y="32" width="36" height="36" click="setEraserTool(event)"/>-->
 			<!--disabledIcon="@Embed(source='assets/images/eraserLargeSelected.png')" -->
 			<!--<s:Button toolTip="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"
-			id="btnEraserLarge" horizontalCenter="0" icon="@Embed(source='assets/images/eraserLarge.png')"
+			id="btnEraserLarge" horizontalCenter="0" icon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/eraserLarge.png')"
 			y="72" width="51" height="51" click="setEraserTool(event)"/>-->
 			<!--</s:BorderContainer>-->	
 			<!--- Button to  select Shapes tool -->
 			<components:ImageButton id="btnShapes" width="45" height="29" click="showHideShapeMenu();eraserOptionBox.visible=false;"
-									imageSkin="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/defaultShape.png')"
+									imageSkin="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/defaultShape.png')"
 									skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 									toolTip="Shapes"/>
 			<!--- Button to enablle pop out functionality. Using pop out functinality user can open whiteboard
@@ -361,7 +361,7 @@
 					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
 				</s:layout>
 				<s:Image id="btnEraserSmall" buttonMode="true"
-						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/eraserSmall_new.png')"
+						 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/eraserSmall_new.png')"
 						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"
 						 useHandCursor="true"/>
 				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
@@ -377,7 +377,7 @@
 					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
 				</s:layout>
 				<s:Image id="btnEraserMedium" buttonMode="true"
-						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/eraserMedium_new.png')"
+						 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/eraserMedium_new.png')"
 						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"
 						 useHandCursor="true"/>
 				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
@@ -393,30 +393,30 @@
 					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
 				</s:layout>
 				<s:Image id="btnEraserLarge" buttonMode="true"
-						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/eraserLarge_new.png')"
+						 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/eraserLarge_new.png')"
 						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"
 						 useHandCursor="true"/>
 				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
 						 text="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"
 						 verticalAlign="middle"/>
 			</s:BorderContainer>
-			<!-- disabledIcon="@Embed(source='assets/images/eraserSmallSelected.png')" -->
+			<!-- disabledIcon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/eraserSmallSelected.png')" -->
 			<!--<s:Image id="btnEraserSmall" width="134" 
 			label="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"
 			click="setEraserTool(event)"
-			icon="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/eraserSmall_new.png')"
+			icon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/eraserSmall_new.png')"
 			toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasersmalltooltip')}"/>-->
 			<!--disabledIcon="@Embed(source='assets/images/eraserMediumSelected.png')" -->
 			<!--<s:Button id="btnEraserMedium" width="134"
 			label="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"
 			click="setEraserTool(event)"
-			icon="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/eraserMedium_new.png')"
+			icon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/eraserMedium_new.png')"
 			toolTip="{resourceManager.getString('myResource','whiteboardcomp.erasermediumtooltip')}"/>-->
 			<!--disabledIcon="@Embed(source='assets/images/eraserLargeSelected.png')" -->
 			<!--<s:Button id="btnEraserLarge" width="134"
 			label="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"
 			click="setEraserTool(event)"
-			icon="@Embed(source='edu/amrita/aview/core/whiteboard/assets/images/eraserLarge_new.png')"
+			icon="@Embed(source='/edu/amrita/aview/core/whiteboard/assets/images/eraserLarge_new.png')"
 			toolTip="{resourceManager.getString('myResource','whiteboardcomp.eraserlargetooltip')}"/>
 		-->			</s:BorderContainer>
 		<s:BorderContainer id="shapesOptionBox" visible="false" left="49" top="294" width="134"
@@ -431,7 +431,7 @@
 					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
 				</s:layout>
 				<s:Image id="btnRectangel" buttonMode="true" click="setRectTool(event)"
-						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/rectangle_new.png')"
+						 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/rectangle_new.png')"
 						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagecomptooltip')}"
 						 useHandCursor="true"/>
 				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
@@ -447,7 +447,7 @@
 					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
 				</s:layout>
 				<s:Image id="btnCircle" buttonMode="true" click="setCircleTool(event)"
-						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/circle_new.png')"
+						 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/circle_new.png')"
 						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagecircletool')}"
 						 useHandCursor="true"/>
 				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
@@ -463,7 +463,7 @@
 					<s:HorizontalLayout paddingLeft="5" paddingRight="5" verticalAlign="middle"/>
 				</s:layout>
 				<s:Image id="btnLine" buttonMode="true" click="setlineTool()"
-						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/line_new.png')"
+						 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/line_new.png')"
 						 toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagestraighttool')}"
 						 useHandCursor="true"/>
 				<s:Label color="#3E3E3E" fontFamily="Calibri" fontSize="14"
@@ -482,7 +482,7 @@
 			<!--<s:Button id="btnCircle" width="134"
 			label="{resourceManager.getString('myResource','whiteboardcomp.imagecircletool')}"
 			click="setCircleTool(event)"
-			icon="@Embed('edu/amrita/aview/core/whiteboard/assets/images/circle_new.png')"
+			icon="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/circle_new.png')"
 			mouseOver="removeToolOptions(event)"
 			toolTip="{resourceManager.getString('myResource','whiteboardcomp.imagecircletool')}"/>-->
 			
@@ -518,11 +518,11 @@
 		<s:Image id="propertiesTitleBar" buttonMode="true"
 				 mouseDown="propertiesTitleBarhandleDown(event)"
 				 mouseUp="propertiesTitleBarhandleUp(event)"
-				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/propertiestab.png')"
+				 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/propertiestab.png')"
 				 useHandCursor="true"/>
 		<s:Image id="propMenu" visible="false" y="0" left="15" width="64" height="49"
 				 buttonMode="true" click="showhideProbTitleBar();"
-				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/properties.png')"
+				 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/properties.png')"
 				 useHandCursor="true"/>
 		<mx:HBox id="propBox" y="0" left="14" height="49" borderVisible="false"
 				 horizontalAlign="left" horizontalGap="0">
@@ -536,7 +536,7 @@
 					<s:BasicLayout/>
 				</s:layout>
 				<s:Image left="10" top="18" height="28"
-						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/Textsize.png')"/>
+						 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/Textsize.png')"/>
 				<s:Spacer width="100%"/> 
 				<s:Label x="5" y="5" height="14" color="#000000" fontFamily="Calibri" fontSize="12"
 						 text="Font Size" textAlign="center"/>
@@ -547,7 +547,7 @@
 								  value="{textFondStepper.minimum}"/>
 			</s:BorderContainer>
 			<s:Image left="48"
-					 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
+					 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
 			<!-- //PNCR: #BugFix: 14762 Commeted because, added it programically in function 'changePresenterButtonsMode' 
 			imageSkinDisabled="@Embed(source='assets/images/textToolSelected.png')" -->
 			<!--- Numeric stepper to set line thickness -->
@@ -555,7 +555,7 @@
 							   backgroundColor="#EBEAEA" borderColor="#000000" borderStyle="solid"
 							   borderVisible="false" horizontalCenter="0">
 				<s:Image left="12" top="19" height="27"
-						 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/Linethickness.png')"/>
+						 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/Linethickness.png')"/>
 				<s:Label y="5" height="14" color="#000000" fontFamily="Calibri" fontSize="12"
 						 horizontalCenter="-6" text="Line Thickness"/>
 				
@@ -568,7 +568,7 @@
 								  textAlign="center"
 								  toolTip="{resourceManager.getString('myResource','whiteboardcomp.linethicktooltip')}"/>
 			</s:BorderContainer>
-			<s:Image source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
+			<s:Image source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
 			<!--- Color picker component to select line color -->
 			<s:BorderContainer id="colorBox" width="90" height="48" backgroundColor="#EBEAEA"
 							   borderColor="#000000" borderStyle="solid" borderVisible="false">
@@ -612,7 +612,7 @@
 				</s:HGroup>
 				
 			</s:BorderContainer>
-			<s:Image source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
+			<s:Image source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/seperator2.jpg')"/>
 			<s:BorderContainer id="collaborationBox" width="123" height="48"
 							   backgroundColor="#EBEAEA" borderColor="#000000" borderStyle="solid"
 							   borderVisible="false" horizontalCenter="0">
@@ -637,7 +637,7 @@
 		</mx:HBox>
 		<s:Image id="propshowhideButton" left="0" top="1" buttonMode="true"
 				 click="showhideProbTitleBar()"
-				 source="@Embed('edu/amrita/aview/core/whiteboard/assets/images/propertiesshowhide.png')"
+				 source="@Embed('/edu/amrita/aview/core/whiteboard/assets/images/propertiesshowhide.png')"
 				 useHandCursor="true"/>
 	</s:BorderContainer>
 	

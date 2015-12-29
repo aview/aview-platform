@@ -14,7 +14,7 @@
 	<fx:Script source="NotificationHandler.as"/>
 	<s:Image source="{this.notificationImages}"/>
 	<s:Image height="100%"
-			 source="@Embed('edu/amrita/aview/core/shared/components/notifcations/assets/images/seperator.png')"/>
+			 source="@Embed('/edu/amrita/aview/core/shared/components/notifcations/assets/images/seperator.png')"/>
 	<s:VGroup width="100%" height="100%" horizontalAlign="left" paddingLeft="10"
 			  verticalAlign="middle">
 		<s:Label width="100%" color="#2E2E2E" fontFamily="Calibri" fontSize="14" fontWeight="normal"

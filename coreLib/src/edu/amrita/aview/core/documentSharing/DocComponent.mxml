@@ -255,8 +255,8 @@ creating remote folders, openig a remote file, navigation through document, rota
 	<components:ImageButton id="previousBtn" visible="false" left="2" width="45" height="45"
 							alpha="0.1" buttonMode="true" click="getPreviousPage()"
 							cornerRadius="20" fontSize="11" fontWeight="bold"
-							imageSkin="@Embed(source='edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
-							imageSkinDisabled="@Embed('edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
+							imageSkin="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
+							imageSkinDisabled="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
 							mouseChildren="false" mouseOut="{previousBtn.alpha=0.1}"
 							mouseOver="{previousBtn.alpha=1.0}"
 							skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
@@ -264,22 +264,22 @@ creating remote folders, openig a remote file, navigation through document, rota
 							useHandCursor="true" verticalCenter="0"/>
 	<!--<components:ImageButton id="previousBtn" visible="true" width="45" height="45"
 	chromeColor="#FFFFFF" click="getPreviousPage()"
-	imageSkin="@Embed('edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
+	imageSkin="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/prev.png')"
 	skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
 	toolTip="{resourceManager.getString('myResource','doccomp.previoustool')}"
 	/>-->
 	
 	<!--<components:ImageButton id="next" visible="true" x="560"  width="45" height="45"
 	click="getNextPage()"
-	imageSkin="@Embed('edu/amrita/aview/core/documentSharing/assets/images/next.png')"
+	imageSkin="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/next.png')"
 	toolTip="{resourceManager.getString('myResource','doccomp.nextpagetool')}"
 	verticalCenter="0" right="0" skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"/>-->
 	
 	<components:ImageButton id="next" visible="false" right="2" width="45" height="45" alpha="0.1"
 							buttonMode="true" click="getNextPage()" cornerRadius="20" fontSize="11"
 							fontWeight="bold"
-							imageSkin="@Embed(source='edu/amrita/aview/core/documentSharing/assets/images/next.png')"
-							imageSkinDisabled="@Embed('edu/amrita/aview/core/documentSharing/assets/images/next.png')"
+							imageSkin="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/next.png')"
+							imageSkinDisabled="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/next.png')"
 							mouseChildren="false" mouseOut="{next.alpha=0.1}"
 							mouseOver="{next.enabled==true?alpha=1.0:alpha=0.1}"
 							skinClass="edu.amrita.aview.core.shared.skins.ImageButtonSkin"
@@ -393,13 +393,13 @@ creating remote folders, openig a remote file, navigation through document, rota
 				<!--STUDENT_REFRESH-->
 				<!--For Guest Login: Disable Library button for Guest user -->
 				<s:Image id="ViewerDocument" buttonMode="true" click="showFileList()"
-						 source="@Embed('edu/amrita/aview/core/documentSharing/assets/images/library_new.png')"
+						 source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/library_new.png')"
 						 toolTip="{resourceManager.getString('myResource','doccomp.librarytool')}"
 						 useHandCursor="true"
 						 visible="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}"
 						 includeInLayout="{ClassroomContext.userVO.role != Strings.GUEST_TYPE}"/>
 				<s:Image id="studentRefreshBtn" buttonMode="true" enabled="false" click="refreshDocument()"
-				source="@Embed('edu/amrita/aview/core/documentSharing/assets/images/refresh_new.png')"
+				source="@Embed('/edu/amrita/aview/core/documentSharing/assets/images/refresh_new.png')"
 				toolTip="{resourceManager.getString('myResource','doccomp.refreshtool')}"
 				useHandCursor="true"/>
 				<!-- Issue #119 -->
@@ -463,7 +463,7 @@ creating remote folders, openig a remote file, navigation through document, rota
 			
 		</s:BorderContainer>
 		<s:Image id="showhideButton" right="2" top="1" buttonMode="true" click="showhide();"
-				 source="@Embed(source='edu/amrita/aview/core/documentSharing/assets/images/docshowhideup.png')"
+				 source="@Embed(source='/edu/amrita/aview/core/documentSharing/assets/images/docshowhideup.png')"
 				 useHandCursor="true" toolTip="Hide toolbar"/>
 	</s:BorderContainer>
 </s:BorderContainer>

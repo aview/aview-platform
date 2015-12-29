@@ -19,9 +19,9 @@
 	</fx:Declarations>
 	<s:HGroup left="3" right="3" top="0" bottom="0">
 		<s:Image smooth="true" smoothingQuality="high"
-				 source="@Embed('edu/amrita/aview/core/login/boilerplate/assets/images/logout_bg.jpg')"/>
+				 source="@Embed('/edu/amrita/aview/core/login/boilerplate/assets/images/logout_bg.jpg')"/>
 		<s:Image smooth="true" smoothingQuality="high"
-				 source="@Embed('edu/amrita/aview/core/login/boilerplate/assets/images/logout-seperation.jpg')"/>
+				 source="@Embed('/edu/amrita/aview/core/login/boilerplate/assets/images/logout-seperation.jpg')"/>
 	</s:HGroup>
 	<s:VGroup x="19" y="0" width="260" height="100%" gap="0" horizontalAlign="left"
 			  verticalAlign="middle">

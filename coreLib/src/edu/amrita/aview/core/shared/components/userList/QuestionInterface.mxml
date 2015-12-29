@@ -54,10 +54,10 @@
 								<s:HGroup visible="{questions[questionIndex].questionStatus=='UNANSWERED'?true:false}"
 										  width="100%" height="48" horizontalAlign="center" verticalAlign="bottom">
 									<s:Image buttonMode="true" smooth="true" smoothingQuality="high" toolTip="Mark as Answered"
-											 source="@Embed('edu/amrita/aview/core/shared/components/userList/assets/images/questionTick.png')"
+											 source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/questionTick.png')"
 											 useHandCursor="true" click="setQuestionToAnswered()"/>
 									<s:Image buttonMode="true" smooth="true" smoothingQuality="high" click="deleteQuestion()" toolTip="Delete Question"
-											 source="@Embed('edu/amrita/aview/core/shared/components/userList/assets/images/delete.png')"
+											 source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/delete.png')"
 											 useHandCursor="true"/>
 									<s:Image buttonMode="true" click="startInteraction()" smooth="true" 
 											 smoothingQuality="high" id="btnInteraction"
@@ -65,7 +65,7 @@
 											 toolTip="Start Interaction with user" useHandCursor="true"/>
 									<s:Image buttonMode="true" click="skipQuestion()" smooth="true"
 											 smoothingQuality="high" toolTip="Clicking on this button will remove the notification from userlist and mark all unread questions as skipped"
-											 source="@Embed('edu/amrita/aview/core/shared/components/userList/assets/images/done.png')"
+											 source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/done.png')"
 											 useHandCursor="true"/>
 								</s:HGroup>
 							</s:NavigatorContent>
@@ -92,7 +92,7 @@
 											 horizontalAlign="left" horizontalGap="5"
 											 paddingLeft="5" paddingTop="1" verticalAlign="middle">
 										<s:Image smooth="true" smoothingQuality="high"
-												 source="@Embed('edu/amrita/aview/core/shared/components/userList/assets/images/skipped.png')"/>
+												 source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/skipped.png')"/>
 
 										<s:Label color="#c14a3a" text="Skipped" textAlign="left"
 												 verticalAlign="bottom"/>
@@ -106,7 +106,7 @@
 						<s:Image visible="{questionIndex==questions.length-1?false:true}" id="btnNext"
 								 buttonMode="true" click="nextQuestion()" smooth="true"
 								 smoothingQuality="high"
-								 source="@Embed('edu/amrita/aview/core/shared/components/userList/assets/images/next.png')"
+								 source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/next.png')"
 								 toolTip="Next" useHandCursor="true"/>
 					</s:VGroup>
 				</s:BorderContainer>
@@ -123,10 +123,10 @@
 							 textAlign="center" verticalAlign="middle"/>
 					<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center">				
 						<s:Button width="64" height="22" click="startInteraction()"
-								  icon="@Embed('edu/amrita/aview/core/shared/components/userList/assets/images/interact.png')"
+								  icon="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/interact.png')"
 								  toolTip="Interaction with user"/>
 						<s:Button width="60" height="22" click="ignoreHandraise()"
-								  icon="@Embed('edu/amrita/aview/core/shared/components/userList/assets/images/ignore.png')"
+								  icon="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/ignore.png')"
 								  toolTip="Ignore the handraise request"/>
 					</s:HGroup>
 				</s:BorderContainer>
@@ -134,7 +134,7 @@
 		</mx:ViewStack>
 		<!--Fix for Bug#17245-->
 		<s:Image right="5" top="6" buttonMode="true" smooth="true" smoothingQuality="high" toolTip="Close" click="questionInterfaceCloseHandler()"
-				 source="@Embed('edu/amrita/aview/core/shared/components/userList/assets/images/close.png')"
+				 source="@Embed('/edu/amrita/aview/core/shared/components/userList/assets/images/close.png')"
 				 useHandCursor="true"/>
 	</s:BorderContainer>
 	<s:Image left="0" top="29" smooth="true" smoothingQuality="high"

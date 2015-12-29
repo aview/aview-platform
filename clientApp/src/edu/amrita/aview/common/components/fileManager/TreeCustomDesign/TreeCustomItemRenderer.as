@@ -72,9 +72,9 @@ package edu.amrita.aview.common.components.fileManager.TreeCustomDesign
 			// AKCR: please move the hard-coded string to the constant file of this package
 			super.createChildren();
 			processingItem=new SWFLoader();
-			processingItem.source='edu/amrita/aview/common/components/fileManager/assets/images/loading.swf';
+			processingItem.source='/edu/amrita/aview/common/components/fileManager/assets/images/loading.swf';
 			waitingItem=new Image();
-			waitingItem.source='edu/amrita/aview/common/components/fileManager/assets/images/clock.png';
+			waitingItem.source='/edu/amrita/aview/common/components/fileManager/assets/images/clock.png';
 			btnCancel=new Button();
 			btnCancel.setStyle("icon",cancelIcon);
 			btnCancel.addEventListener(MouseEvent.CLICK,cancelClickHandler)
