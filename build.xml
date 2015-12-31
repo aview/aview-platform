@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AVC Build File" basedir="." default="build" xmlns:c="antlib:it.haefelinger.flaka" xmlns:ac="antlib:net.sf.antcontrib">
+     <!-- location of property file -->
+    <property file="${basedir}/build.properties" description="properities for builds" />
+	<xmlproperty file="${CLIENT_APP_SOURCE_DIR}/${APP_NAME}-app.xml" />
+    <xmlproperty file="${CLIENT_APP_SOURCE_DIR}/config/ServerDetails.xml" />
+    <xmlproperty file="${CLIENT_APP_SOURCE_DIR}/config/UpdationServer.xml" />
+
+	<!-- set path to FLEX_HOME -->
+
+	<condition property="FLEX_HOME" value="${flex.home.windows}">  
+   		<os family="windows"/>
+	</condition>
+	<condition property="FLEX_HOME" value="${flex.home.mac}">  
+   		<os family="mac"/>
+	</condition>
+	<condition property="FLEX_HOME" value="${flex.home.unix}">  
+   		<os family="unix"/>
+	</condition>
+	<fail unless="FLEX_HOME" message="flex.home should be set (in build.properties file)"/>
+	
+	<!-- set Environment -->
+
+	<condition property="isWindows" value="true">
+	    <and>
+			<not>
+				<isset property="isDevice"/>
+			</not>
+			<os family="windows"/>
+		</and>
+	</condition>
+	<condition property="isMac" value="true">
+	    <and>
+			<not>
+				<isset property="isDevice"/>
+			</not>
+			<os family="mac"/>
+	    </and>
+	</condition>	
+
+	<!-- set path to flex tasks and compiler -->
+
+	<property name="FLEX_TASKS" value="${FLEX_HOME}/ant/lib/flexTasks.jar"/>
+	<property name="ADT" value="${FLEX_HOME}/lib/adt.jar"/>
+	<property name="AUTO_LIB_ROOT" value="${FLEX_HOME}/frameworks/libs"/>
+	<property name="MXMLC.JAR" value="${FLEX_HOME}/lib/mxmlc.jar"/>
+	
+	<!-- set path to Flashplayer logfile -->
+	<condition property="FLASHPLAYER_LOG_DIR" value="${user.home}\Application Data\Macromedia\Flash Player\Logs">  
+   		<os family="windows"/>
+	</condition>
+	
+	<condition property="FLASHPLAYER_LOG_DIR" value="${user.home}/Library/Preferences/Macromedia/Flash Player/Logs">  		
+   		<os family="mac"/>
+	</condition>
+	
+	<condition property="FLASHPLAYER_LOG_DIR" value="${user.home}/.macromedia/Flash_Player/Logs">  
+   		<os family="unix"/>
+	</condition>
+	
+	<property name="FLASHPLAYER_LOG_FILE" value="${FLASHPLAYER_LOG_DIR}/flashlog.txt"/> 
+
+	<!-- FlexUnit ant task -->
+	<taskdef resource="flexUnitTasks.tasks">
+		<classpath>
+			<pathelement location="${basedir}/misc/flexUnitTasks-4.1.0_RC2-28.jar"/>
+		</classpath>
+	</taskdef>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml">
+		<classpath>
+			<pathelement location="${basedir}/misc/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+	<!-- adding xmltask.jar to easily manipulate xml, merged from 3.7 -->
+	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask">
+		<classpath>
+		  <pathelement location="${basedir}/misc/xmltask.jar"/>
+		</classpath>
+	</taskdef>
+
+	<taskdef uri="antlib:it.haefelinger.flaka" resource="it/haefelinger/flaka/antlib.xml" classpath="${basedir}/misc/ant-flaka-1.02.02.jar">
+	</taskdef>
+
+	<!-- additional tasks -->
+
+	<taskdef name="mxmlc" classname="flex.ant.MxmlcTask" classpath="${FLEX_TASKS}"/>
+    <taskdef name="compc" classname="flex.ant.CompcTask" classpath="${FLEX_TASKS}"/>
+    <taskdef name="asdoc" classname="flex.ant.AsDocTask" classpath="${FLEX_TASKS}"/>
+
+	<!-- individual properties -->
+	<condition property="MAIN_SOURCE_FILE" value="${CLIENT_APP_SOURCE_DIR}/${APP_NAME}.mxml">
+		   <not>  
+		      <isset property="isDevice"/>
+		   </not>
+	</condition>
+	<condition property="MAIN_SOURCE_FILE" value="${CLIENT_APP_SOURCE_DIR}/${MOBILE_APP_NAME}.mxml">  
+		<istrue value="${isDevice}"/>
+	</condition>
+	<condition property="APP_DESCRIPTOR" value="${CLIENT_APP_SOURCE_DIR}/${APP_NAME}-app.xml">
+		   <not>  
+		      <isset property="isDevice"/>
+		   </not>
+	</condition>
+	<condition property="APP_DESCRIPTOR" value="${CLIENT_APP_SOURCE_DIR}/${MOBILE_APP_NAME}-app.xml">  
+		<istrue value="${isDevice}"/>
+	</condition>
+	
+	<condition property="VERSION_LABEL" value="${application.versionLabel}">
+	   <not>  
+	      <isset property="version.number"/>
+	   </not>
+	</condition>
+	
+ 	<condition property="VERSION_LABEL" value="${version.number}">
+      <isset property="version.number"/>
+	</condition>
+    <propertyregex property="VERSION_NUMBER"
+              input="${VERSION_LABEL}"
+              regexp="([0-9]*)\.([0-9]*)\..*"
+              select="\1.\2"
+              casesensitive="false" />
+	
+    <property name="SERVER_BLOCKS" value="${server_blocks}"/>
+
+    <condition property="UPDATE_SERVER" value="${update_servers.server.ip}">
+       <not>  
+          <isset property="update_server"/>
+       </not>
+    </condition>
+
+    <condition property="CENTRAL_DATABASE_SERVER" value="${servers.server.ip}">
+       <not>  
+          <isset property="central_database_server"/>
+       </not>
+    </condition>
+	
+	<condition property="CENTRAL_BIOMETRIC_SERVER" value="${servers.server.ip}">
+       <not>  
+          <isset property="central_biometric_server"/>
+       </not>
+    </condition>
+	
+    <condition property="UPDATE_SERVER" value="${update_server}">
+      <isset property="update_server"/>
+    </condition>
+    <condition property="CENTRAL_DATABASE_SERVER" value="${central_database_server}">
+      <isset property="central_database_server"/>
+    </condition>
+	<condition property="CENTRAL_BIOMETRIC_SERVER" value="${central_biometric_server}">
+      <isset property="central_biometric_server"/>
+    </condition>
+	<condition property="INNOSETUP_DIR" value="${INNOBASE_DIR}">
+			<and>
+				<os family="windows"/>
+				<available file="${INNOBASE_DIR}" type="dir"/>
+			</and>
+	</condition>
+
+    <target name="build" depends="init" description="compiles application">
+		<antcall target="package" />
+        <antcall target="create-installer"/>
+    </target>
+
+
+	<target name="replace-version-number">
+        <replaceregexp file="${CLIENT_APP_SOURCE_DIR}/main.mxml"
+                       match="public static const AVIEW_VERSION:String=&quot;.*&quot;"
+                       replace="public static const AVIEW_VERSION:String=&quot;${VERSION_LABEL}&quot;"
+                       byline="true"
+        />
+        <replaceregexp file="${CORE_LIB_SOURCE_DIR}/edu/amrita/aview/core/entry/Constants.as"
+                      match="public static const LOG_LEVEL.*"
+                       replace="public static const LOG_LEVEL:Number = ${LOGGING_LEVEL};"
+                       byline="true"
+        />
+	</target>
+
+	
+	<!-- Realease Tasks -->
+	
+	<target name="certificate" unless="CERTIFICATE_FLAG">
+        <java jar="${ADT}" fork="true"
+            failonerror="true">
+			<arg value="-certificate"/>
+            <arg value="-cn"/>
+            <arg value="${CERT_NAME}"/>
+            <arg value="-ou"/>
+            <arg value="${CERT_ORG_UNIT}"/>
+            <arg value="-o"/>
+            <arg value="${CERT_ORG_NAME}"/>
+            <arg value="-c"/>
+            <arg value="${CERT_COUNTRY}"/>
+            <arg value="${CERT_KEY_TYPE}"/>
+            <arg value="${KEYSTORE}"/>
+            <arg value="${CERT_PASSWORD}"/>
+        </java>
+    </target>
+
+	<target name="copy-replace-file-desktop" unless="isDevice">
+		<echo>**********Replacing for Desktop client**************</echo>
+		<copy overwrite="true" file="${CLIENT_APP_SOURCE_DIR}/${APP_NAME}-app.xml" tofile="${BUILD_DIR}/${APP_NAME}-app.xml"/>
+		<replace file="${BUILD_DIR}/${APP_NAME}-app.xml" token="[This value will be overwritten by Flex Builder in the output app.xml]" value="${APP_NAME}.swf"/>
+		<replaceregexp file="${BUILD_DIR}/${APP_NAME}-app.xml"
+		               match="versionLabel&gt;(.*)versionLabel"
+		               replace="versionLabel&gt;${VERSION_LABEL}&lt;/versionLabel"
+		               byline="true"
+		/>
+		<replaceregexp file="${BUILD_DIR}/${APP_NAME}-app.xml"
+		               match="versionNumber&gt;(.*)versionNumber"
+		               replace="versionNumber&gt;${VERSION_NUMBER}&lt;/versionNumber"
+		               byline="true"
+		/>
+	</target>
+
+	<target name="replace-content" depends="">
+        <copy todir="${BUILD_DIR}">
+            <fileset casesensitive="false" dir="${CLIENT_APP_SOURCE_DIR}" id="images">
+                <include name="**/*.png" />
+                <include name="**/*.jpg" />
+                <include name="**/*.tif" />
+                <include name="**/*.gif" />
+                <include name="**/*.mp3" />
+                <include name="**/*.ttf" />
+                <include name="**/*.xml" />
+				<include name="**/*.json" />
+                <include name="**/*.swf" />
+                <include name="**/*.exe" />
+                <!-- <include name="**/*.dll" /> -->
+                <include name="**/*.css" />
+                <include name="**/*.jar" />
+                <include name="**/*.sh" />
+                <include name="**/*.cer" />
+            </fileset>
+        </copy>
+	
+	<antcall target="copy-replace-file-desktop"/>		
+        <replaceregexp 
+        	file="${BUILD_DIR}/config/UpdationServer.xml"
+        	match="ip&gt;(.*)ip"
+        	replace="ip&gt;${UPDATE_SERVER}&lt;/ip"
+        	byline="true"
+        />
+  
+		<replaceregexp 
+        	file="${BUILD_DIR}/config/ServerDetails.xml"
+        	match="&lt;biometricserverip&gt;(.*)biometricserverip&gt;"
+        	replace="&lt;biometricserverip&gt;${CENTRAL_BIOMETRIC_SERVER}&lt;/biometricserverip&gt;"
+        	byline="true"
+        />
+ 
+		<copy overwrite="true" file="${basedir}/misc/update-template.xml" tofile="${RELEASE_DIR}/update-${VERSION_LABEL}.xml"/>
+		<copy overwrite="true" file="${basedir}/misc/SC.exe" tofile="${basedir}/SC.exe"/>
+        <replace file="${RELEASE_DIR}/update-${VERSION_LABEL}.xml" token="[VERSION]" value="${VERSION_LABEL}"/>
+        <replace file="${RELEASE_DIR}/update-${VERSION_LABEL}.xml" token="[UPDATE-SERVER]" value="${UPDATE_SERVER}"/>
+	</target>
+	
+	<target name="compile-swc-lib"
+        description="Compiles the core library and places SWC in a CLient application directory to be packaged."
+		unless="keep-generated-actionscript">
+    	<compc 
+			output="${LIBRARY_DIR}/coreLib.swc"
+			fork="true"
+			maxmemory="${MAX_HEAP_MEMORY}"
+			locale="${LOCALE}"
+			keep-generated-actionscript="true"
+			include-classes="edu.amrita.aview.core.entry.ClassRoomSgl edu.amrita.aview.core.entry.ClassroomComponent edu.amrita.aview.core.entry.ComboBoxItemRender edu.amrita.aview.core.entry.Copyright edu.amrita.aview.core.entry.ForgotPassword edu.amrita.aview.core.entry.HelpMenu edu.amrita.aview.core.entry.HideLeftPannelComp edu.amrita.aview.core.entry.HomePage edu.amrita.aview.core.entry.IconRenderer edu.amrita.aview.core.evaluation.polling.Polling edu.amrita.aview.core.evaluation.polling.PollingWindow edu.amrita.aview.core.evaluation.quiz.QuizWindow edu.amrita.aview.core.gclm.aviewClass.ClassComp edu.amrita.aview.core.gclm.aviewClass.CreateClassComp">
+			<define name="applicationType::desktop" value="true"/>
+			<define name="applicationType::web" value="false"/> 
+			<define name="applicationType::mobile" value="false"/> 
+			<define name="applicationType::DesktopWeb" value="true"/> 
+			<define name="applicationType::DesktopMobile" value="true"/>
+			<source-path path-element="${CORE_LIB_SOURCE_DIR}" />
+			<source-path path-element="${CLIENT_APP_SOURCE_DIR}/locale/{locale}" />
+			<load-config filename="${FLEX_HOME}/frameworks/air-config.xml"/>
+			<swf-version>17</swf-version>
+			<library-path dir="${FLEX_HOME}/frameworks/libs" append="true">
+				<include name="*.swc" />
+			</library-path>
+			<library-path dir="${FLEX_HOME}/frameworks/libs/air" append="true">
+				<include name="*.swc" />
+			</library-path>
+			<library-path dir="${FLEX_HOME}/frameworks/locale" append="true">
+    			<include name="{locale}" />
+    		</library-path>
+    		<library-path dir="${CORE_LIB_LIB_DIR}" append="true">
+				<include name="*.swc" />
+			</library-path>			
+		</compc>  
+    </target>	
+
+	<target name="compile-client-app"
+        description="Compiles the AIR application to a SWF file and places SWF in a temp directory to be packaged."
+    	depends="replace-version-number"
+		unless="keep-generated-actionscript">
+    	<mxmlc 
+			fork="true"
+			file="${MAIN_SOURCE_FILE}"
+			output="${BUILD_DIR}/${APP_NAME}.swf"
+			debug="${DEBUG_FLAG}"
+			optimize="${OPTIMIZE}"
+			link-report="${RELEASE_DIR}/report.xml"
+    		locale="${LOCALE}"
+			configname="air"
+			static-rsls="true"
+            accessible="true"
+            failonerror="true"
+            maxmemory="${MAX_HEAP_MEMORY}">
+			<define name="applicationType::desktop" value="true"/> 
+			<define name="applicationType::web" value="false"/> 
+			<define name="applicationType::mobile" value="false"/> 
+			<define name="applicationType::DesktopWeb" value="true"/> 
+			<define name="applicationType::DesktopMobile" value="true"/>
+    		<compiler.context-root>/Main</compiler.context-root>
+			<source-path path-element="${CLIENT_APP_SOURCE_DIR}" />
+    		<swf-version>17</swf-version>
+			<library-path dir="${FLEX_HOME}/frameworks/libs" append="true">
+				<include name="*.swc" />
+			</library-path>
+			<library-path dir="${FLEX_HOME}/frameworks/libs/air" append="true">
+				<include name="*.swc" />
+			</library-path>
+			<library-path dir="${FLEX_HOME}/frameworks/locale" append="true">
+    			<include name="{locale}" />
+    		</library-path>
+    		<library-path dir="${LIBRARY_DIR}" append="true">
+				<include name="*.swc" />
+			</library-path>			
+		</mxmlc>  
+    </target>	
+		
+	<target name="protect" description="Encrypts the SWF file using the secureSWF file">
+        <antcall target="certificate" />
+        <antcall target="compile-swc-lib" />
+        <antcall target="compile-client-app" />
+    </target>
+
+    <target name="package"
+        description="Packages the build SWF file from a temp directory."
+		if="isWindows">
+		<echo>**********Desktop Package**********</echo>
+    	<antcall target="replace-content" />
+        <antcall target="protect" />    	
+    	<java jar="${ADT}" fork="true"
+			failonerror="true"
+            maxmemory="${MAX_HEAP_MEMORY}">
+            <arg value="-package"/>
+            <arg value="-storetype"/>
+            <arg value="${STORETYPE}"/>
+            <arg value="-keystore"/>
+            <arg value="${KEYSTORE}"/>
+            <arg value="-storepass"/>
+            <arg value="${CERT_PASSWORD}"/>
+    		<arg value="-tsa"/>
+    		<arg value="none"/>
+    		<arg value="-target"/>
+    		<arg value="native"/>
+            <arg value="${RELEASE_DIR}/${NATIVE_INSTALLER_NAME}-${VERSION_LABEL}.exe"/>
+			<arg value="${BUILD_DIR}/${APP_NAME}-app.xml"/>
+            <arg value="-C"/>
+            <arg value="${BUILD_DIR}"/>
+            <arg value="${BUILD_DIR}/*"/>
+            <arg value="-C"/>
+            <arg value="${basedir}"/>
+            <!-- <arg value="${basedir}/*.dll"/> -->
+        </java>
+    	<java jar="${ADT}" fork="true"
+            failonerror="true"
+            maxmemory="${MAX_HEAP_MEMORY}">
+            <arg value="-package"/>
+            <arg value="-storetype"/>
+            <arg value="${STORETYPE}"/>
+            <arg value="-keystore"/>
+            <arg value="${KEYSTORE}"/>
+            <arg value="-storepass"/>
+            <arg value="${CERT_PASSWORD}"/>
+    		<arg value="-tsa"/>
+    		<arg value="none"/>
+            <arg value="${RELEASE_DIR}/${NATIVE_INSTALLER_NAME}-${VERSION_LABEL}.air"/>
+            <arg value="${BUILD_DIR}/${APP_NAME}-app.xml"/>
+            <arg value="-C"/>
+            <arg value="${BUILD_DIR}"/>
+            <arg value="${BUILD_DIR}/*"/>
+            <arg value="-C"/>
+            <arg value="${basedir}"/>
+            <!-- <arg value="${basedir}/*.dll"/> -->
+        </java>
+    </target>
+
+    <target name="create-installer" if="isWindows">
+        <delete dir="${basedir}/A-VIEW" failOnError="false" includeEmptyDirs="true" />
+		<exec dir="${RELEASE_DIR}" executable="${RELEASE_DIR}/${NATIVE_INSTALLER_NAME}-${VERSION_LABEL}.exe" >
+            <arg line="-silent -desktopShortcut -eulaAccepted -allowDownload -location ${basedir}" /> 
+        </exec>
+		<property name="innosetup.file" value="ak_full"/>
+        <property name="innosetup.file" value="ak_sc"/>
+		<copy overwrite="true" file="${basedir}/iss/ak_full-template.iss" tofile="${basedir}/ak_full.iss"/>
+        <copy overwrite="true" file="${basedir}/iss/ak_au-template.iss" tofile="${basedir}/ak_au.iss"/>
+        <copy overwrite="true" file="${basedir}/iss/ak_au_air-template.iss" tofile="${basedir}/ak_au_air.iss"/>
+		<copy overwrite="true" file="${basedir}/iss/aview_classroom_logo-48x48.ico" tofile="${basedir}/aview_classroom_logo-48x48.ico"/>
+        <replace file="${basedir}/ak_full.iss" token="[VERSION]" value="${VERSION_LABEL}"/>
+        <replace file="${basedir}/ak_au.iss" token="[VERSION]" value="${VERSION_LABEL}"/>
+        <replace file="${basedir}/ak_au_air.iss" token="[VERSION]" value="${VERSION_LABEL}"/>
+		<exec dir="${basedir}" executable="${INNOSETUP_DIR}/Compil32.exe" >
+			<arg line="/cc 'ak_full.iss'" /> 
+		</exec>
+        <exec dir="${basedir}" executable="${INNOSETUP_DIR}/Compil32.exe" >
+            <arg line="/cc 'ak_au.iss'" /> 
+        </exec>
+        <exec dir="${basedir}" executable="${INNOSETUP_DIR}/Compil32.exe" >
+            <arg line="/cc 'ak_au_air.iss'" /> 
+        </exec>
+	</target>
+
+	<!-- Housekeeping -->	
+    <target name="init" depends="clean" description="Cleans the deploy file">
+       <mkdir dir="${BUILD_DIR}"/>
+        <mkdir dir="${RELEASE_DIR}"/>
+        <!-- <available file="${KEYSTORE}" property="CERTIFICATE_FLAG"/> -->
+    	<echo>FLEX HOME: ${FLEX_HOME}</echo>
+        <echo>Update Server: ${UPDATE_SERVER}</echo>
+        <echo>Central Database Server: ${SERVER_BLOCKS}</echo>
+		<echo>Central Biometric Server: ${CENTRAL_BIOMETRIC_SERVER}</echo>
+		<echo>Version: ${VERSION_LABEL} from:${VERSION_NUMBER} </echo>
+		<echo>-keep-generated-actionscript: ${keep-generated-actionscript} </echo>
+    </target>
+
+    <target name="clean" description="Cleans up old files.">
+    	<delete dir="${basedir}/A-VIEW" failOnError="false" includeEmptyDirs="true" />
+        <delete dir="${BUILD_DIR}" failOnError="false" includeEmptyDirs="true" />
+        <delete dir="${RELEASE_DIR}" failOnError="false" includeEmptyDirs="true" />
+		<delete file="${basedir}/clientApp/libs/coreLib.swc" failOnError="false"/>		
+    </target>
+	
+</project>
