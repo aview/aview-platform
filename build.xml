@@ -389,7 +389,7 @@
 
     <target name="create-installer" if="isWindows">
         <delete dir="${basedir}/A-VIEW" failOnError="false" includeEmptyDirs="true" />
-		<exec dir="${RELEASE_DIR}" executable="${RELEASE_DIR}/${NATIVE_INSTALLER_NAME}-${VERSION_LABEL}.exe" >
+	<exec dir="${RELEASE_DIR}" executable="${RELEASE_DIR}/${NATIVE_INSTALLER_NAME}-${VERSION_LABEL}.exe" >
             <arg line="-silent -desktopShortcut -eulaAccepted -allowDownload -location ${basedir}" /> 
         </exec>
 		<property name="innosetup.file" value="ak_full"/>
